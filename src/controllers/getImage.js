@@ -26,8 +26,11 @@ router.get('/image/:guid', async (req, res, next) => {
 
             if (req.query.width && req.query.height) {
                 // TODO: ensure width/height numbers
+                const w = parseInt(req.query.width, 10);
+                const h = parseInt(req.query.height, 10);
+
                 image = image
-                    .resize(req.query.width, req.query.height)
+                    .resize(w, h)
                     .embed()
             }
 
