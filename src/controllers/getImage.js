@@ -1,8 +1,9 @@
-const path       = require('path');
-const express    = require('express');
-const sharp      = require('sharp');
-const log        = require('../lib/log')(module);
-const imagesPath = require('../lib/imagesPath');
+const path            = require('path');
+const express         = require('express');
+const sharp           = require('sharp');
+const { isInt, isIn } = require('validator');
+const log             = require('../lib/log')(module);
+const imagesPath      = require('../lib/imagesPath');
 const {
     isGuid,
     fileExists
@@ -26,7 +27,13 @@ router.get('/image/:guid', (req, res) => {
             let image = sharp(imagePath);
 
             if (req.query.width && req.query.height) {
-                // TODO: ensure width/height numbers
+                if (!isInt(req.query.width) || !isInt(req.query.height)) {
+                    return res
+                        .status(400)
+                        .send({ error: 'INVALID_SIZE' })
+                        .end();
+                }
+
                 const w = parseInt(req.query.width, 10);
                 const h = parseInt(req.query.height, 10);
 
@@ -36,23 +43,29 @@ router.get('/image/:guid', (req, res) => {
             }
 
             if (req.query.format) {
-                // TODO: validate among ['jpeg', 'png', 'webp']
-                image = image
-                    .toFormat(req.query.format);
+                if (!isIn(req.query.format, ['jpeg', 'png', 'webp'])) {
+                    return res
+                        .status(400)
+                        .send({ error: 'INVALID_FORMAT' })
+                        .end();
+                }
+
+                image = image.toFormat(req.query.format);
             }
 
             log.debug(`querying ${req.params.guid}`, req.query);
 
-            return image.toBuffer();
-        })
-        .then((buf) => {
-            const format = req.query.format || 'png';
-            const image = `data:image/${format};base64,${buf.toString('base64')}`;
+            return image
+                .toBuffer()
+                .then((buf) => {
+                    const format = req.query.format || 'png';
+                    const image = `data:image/${format};base64,${buf.toString('base64')}`;
 
-            res
-                .status(200)
-                .send({ image })
-                .end();
+                    res
+                        .status(200)
+                        .send({ image })
+                        .end();
+                })
         })
         .catch((err) => {
             log.error(`couldn't find image ${req.params.guid}`, err);

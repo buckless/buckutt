@@ -28,6 +28,7 @@
     "mocha": "^3.5.0",
     "nconf": "^0.8.4",
     "sharp": "^0.18.2",
+    "validator": "^8.1.0",
     "winston": "^2.3.1",
     "winston-tcp-graylog": "^1.0.12"
   },

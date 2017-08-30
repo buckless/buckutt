@@ -46,6 +46,24 @@ describe('Image getter', () => {
             });
     });
 
+    it('should refuse request with wrong format', () => {
+        return axios
+            .get(url, { params: { format: 'foo' } })
+            .catch(({ response }) => {
+                assert.equal(400, response.status);
+                assert.equal('INVALID_FORMAT', response.data.error);
+            });
+    });
+
+    it('should refuse request with wrong size', () => {
+        return axios
+            .get(url, { params: { width: 'foo' } })
+            .catch(({ response }) => {
+                assert.equal(400, response.status);
+                assert.equal('INVALID_SIZE', response.data.error);
+            });
+    });
+
     after(() => {
         rimraf.sync(imagesPath);
 
