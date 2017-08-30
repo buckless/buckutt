@@ -52,13 +52,13 @@ router.get('/image/:guid', (req, res) => {
                 .toBuffer()
                 .then((buf) => {
                     const format = req.query.format || 'png';
-                    const image = `data:image/${format};base64,${buf.toString('base64')}`;
+                    const dataImage = `data:image/${format};base64,${buf.toString('base64')}`;
 
                     res
                         .status(200)
-                        .send({ image })
+                        .send({ image: dataImage })
                         .end();
-                })
+                });
         })
         .catch((err) => {
             log.error(`couldn't find image ${req.params.guid}`, err);

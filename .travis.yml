@@ -1,19 +1,18 @@
 language: node_js
 sudo: false
-
 services:
-  - docker
-
+- docker
 node_js:
-  - 8
-
+- 8
 script:
-  - yarn test
-  - yarn lint
-
+- yarn test
+- yarn lint
+after_script:
+- yarn coverage
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker build -t buckless/image-server .;
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push buckless/image-server;
-    fi
+- if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -t buckless/image-server
+  .; docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; docker push buckless/image-server;
+  fi
+env:
+  global:
+    secure: sDw1fq7lNh/vplPuoMOkXFzy0UDnk6Ke+rqDPU6hgQOCKkKaJajrwKPvowDbiSH5Abzkv9RE0sswa9TsvRZ4kw4sUjZbVsi6+JnK0XrsVb9E7OrY+Oze+gW2ZS+2omtULfQeeWv9G82ImgaEnomTf03p3D5LJnq0g8QVPSPfca9sTxv3sO+OjQv4ZWvFJhT49lwXhrhpWMDAiaO7n3ZMmxQF7mPB2zJp8pwiJdmLmS+hXEU6gY8/nHYw6kI8LcTRpBh4F89h8TuKktWVGIIKUEOTiCHzAJgUe0xDADQHOSU5tJtjUNuptDi9HScyYpHKWBpbfbDrI/XelO5/3d/WX88IbmMtx+RWehU3epuh7lpumx5R+S+hCPzLvQZ1tmtnU54/H+aSUIpRJB0MQQa4OmvL3n6XT6i/tDLAofda6x6Dw3hrkdQ1CfU5un04/KDOESkNNXVSVK2qBdd9CISp5X3mHTYjvlF80S3VHZEasnBjZnfTfJVI/zHpWLaE4scf62+weD7nAsalaMVOHLBioNJ/QybNHLqEtvC3ZjcVktYbTuj5fepeej11rnjTeqaAtD+BAxe+v4HFWdoqw6rGoGzIhDx7CjGgOGlNejGJr+dvAb3czCXD7lMknm3Szo9eVsbN0AhFXiQt6Zh7Oi0u7fICUYN4F2qif7oiAs7+Rj8=

@@ -15,12 +15,14 @@
     "start": "node src/app",
     "dev": "cross-env NODE_ENV=development nodemon src/app.js",
     "lint": "eslint . --fix",
-    "test": "cross-env NODE_ENV=test nyc --reporter=text-summary --reporter=html mocha"
+    "test": "cross-env NODE_ENV=test nyc --reporter=text-summary --reporter=html  --reporter=lcov mocha",
+    "coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
     "compression": "^1.7.0",
     "cors": "^2.8.4",
+    "coveralls": "^2.13.1",
     "express": "^4.15.4",
     "helmet": "^3.8.1",
     "lodash.memoize": "^4.1.2",

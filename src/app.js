@@ -45,19 +45,17 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
         .end();
 });
 
-app.start = () => {
-    return new Promise((resolve) => {
-        const server = app.listen(config.http.port, config.http.host, () => {
-            log.info('Server is listening %s:%d', config.http.host, config.http.port);
+app.start = () => new Promise((resolve) => {
+    const server = app.listen(config.http.port, config.http.host, () => {
+        log.info('Server is listening %s:%d', config.http.host, config.http.port);
 
-            // Keep server instance for closing it later
-            app.server = server;
+        // Keep server instance for closing it later
+        app.server = server;
 
-            // Avoid race condition on server starting before directory creation
-            mkdirp(imagesPath, resolve);
-        });
+        // Avoid race condition on server starting before directory creation
+        mkdirp(imagesPath, resolve);
     });
-};
+});
 
 app.stop = () => {
     const server = app.server;
