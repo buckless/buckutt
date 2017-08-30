@@ -25,10 +25,6 @@ function fileExists(path) {
     return new Promise((resolve, reject) => {
         fs.stat(path, (err, stats) => {
             if (err) {
-                if (err.code === 'ENOENT') {
-                    return resolve(false);
-                }
-
                 return reject(err);
             }
 

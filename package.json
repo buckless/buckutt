@@ -14,7 +14,8 @@
   "scripts": {
     "start": "node src/app",
     "dev": "cross-env NODE_ENV=development nodemon src/app.js",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "test": "cross-env NODE_ENV=test mocha test/ --bail"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
@@ -31,10 +32,12 @@
     "winston-tcp-graylog": "^1.0.12"
   },
   "devDependencies": {
+    "axios": "^0.16.2",
     "cross-env": "^5.0.5",
     "eslint": "^4.5.0",
     "eslint-config-airbnb-base": "^11.3.2",
     "eslint-plugin-import": "^2.7.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "rimraf": "^2.6.1"
   }
 }

@@ -10,8 +10,6 @@ const log         = require('./lib/log')(module);
 const imagesPath  = require('./lib/imagesPath');
 const controllers = require('./controllers');
 
-mkdirp.sync(imagesPath);
-
 const app = express();
 
 app.use(compression());
@@ -46,6 +44,37 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
         .end();
 });
 
-app.listen(config.http.port, config.http.host, () => {
-    log.info('Server is listening %s:%d', config.http.host, config.http.port);
-});
+app.start = () => {
+    return new Promise((resolve) => {
+        const server = app.listen(config.http.port, config.http.host, () => {
+            log.info('Server is listening %s:%d', config.http.host, config.http.port);
+
+            // Keep server instance for closing it later
+            app.server = server;
+
+            // Avoid race condition on server starting before directory creation
+            mkdirp(imagesPath, resolve);
+        });
+    });
+};
+
+app.stop = () => {
+    const server = app.server;
+
+    if (!server) {
+        return Promise.reject(new Error('server is not listening'));
+    }
+
+    const close  = require('util').promisify(server.close.bind(server));
+
+    return close();
+};
+
+module.exports = app;
+
+
+if (require.main === module) {
+    app
+        .start()
+        .catch(err => log.error(err));
+}

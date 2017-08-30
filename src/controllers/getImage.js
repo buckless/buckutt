@@ -10,7 +10,7 @@ const {
 
 const router = new express.Router();
 
-router.get('/image/:guid', (req, res, next) => {
+router.get('/image/:guid', (req, res) => {
     const filename = `${req.params.guid}.png`;
     const imagePath = path.join(imagesPath, filename);
 
@@ -55,7 +55,12 @@ router.get('/image/:guid', (req, res, next) => {
                 .end();
         })
         .catch((err) => {
-            next(err);
+            log.error(`couldn't find image ${req.params.guid}`, err);
+
+            return res
+                .status(404)
+                .send({ error: 'NOT_FOUND' })
+                .end();
         });
 });
 

@@ -27,7 +27,7 @@ router.post('/image/:guid', (req, res) => {
             .end();
     }
 
-    const filename = `${req.params.guid}.${image.format}`;
+    const filename = `${req.params.guid}.png`;
 
     image = sharp(image.buffer)
         .png()

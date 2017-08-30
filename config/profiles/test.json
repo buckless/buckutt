@@ -1,15 +1,16 @@
 {
+    "imagePath": "testImages/",
     "log": {
         "console": {
-            "level": "debug"
+            "level": "error"
         },
         "file": {
-            "level": "info"
+            "level": "none"
         },
         "morganStyle": "combined"
     },
     "http": {
         "host": "0.0.0.0",
-        "port": 3400
+        "port": 3406
     }
 }
