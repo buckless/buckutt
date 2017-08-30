@@ -24,6 +24,7 @@
     "helmet": "^3.8.1",
     "lodash.memoize": "^4.1.2",
     "mkdirp": "^0.5.1",
+    "mocha": "^3.5.0",
     "nconf": "^0.8.4",
     "sharp": "^0.18.2",
     "winston": "^2.3.1",
@@ -32,6 +33,8 @@
   "devDependencies": {
     "cross-env": "^5.0.5",
     "eslint": "^4.5.0",
+    "eslint-config-airbnb-base": "^11.3.2",
+    "eslint-plugin-import": "^2.7.0",
     "nodemon": "^1.11.0"
   }
 }

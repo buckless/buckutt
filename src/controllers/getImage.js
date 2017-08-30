@@ -1,15 +1,16 @@
-const fs                     = require('fs');
-const path                   = require('path');
-const express                = require('express');
-const sharp                  = require('sharp');
-const { isGuid, fileExists } = require('../lib/utils');
-const log                    = require('../lib/log')(module);
+const path       = require('path');
+const express    = require('express');
+const sharp      = require('sharp');
+const log        = require('../lib/log')(module);
+const imagesPath = require('../lib/imagesPath');
+const {
+    isGuid,
+    fileExists
+} = require('../lib/utils');
 
 const router = new express.Router();
 
-const imagesPath = path.resolve(__dirname, '..', '..', 'images');
-
-router.get('/image/:guid', async (req, res, next) => {
+router.get('/image/:guid', (req, res, next) => {
     const filename = `${req.params.guid}.png`;
     const imagePath = path.join(imagesPath, filename);
 
@@ -31,14 +32,16 @@ router.get('/image/:guid', async (req, res, next) => {
 
                 image = image
                     .resize(w, h)
-                    .embed()
+                    .embed();
             }
 
             if (req.query.format) {
                 // TODO: validate among ['jpeg', 'png', 'webp']
                 image = image
-                    .toFormat(req.query.format)
+                    .toFormat(req.query.format);
             }
+
+            log.debug(`querying ${req.params.guid}`, req.query);
 
             return image.toBuffer();
         })

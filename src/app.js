@@ -1,16 +1,16 @@
-const path        = require('path');
 const express     = require('express');
 const compression = require('compression');
 const helmet      = require('helmet');
-const cors        = require('cors')
+const cors        = require('cors');
 const mkdirp      = require('mkdirp');
 const bodyParser  = require('body-parser');
 const config      = require('../config');
 
-mkdirp.sync(path.join(__dirname, '..', 'images'));
-
 const log         = require('./lib/log')(module);
+const imagesPath  = require('./lib/imagesPath');
 const controllers = require('./controllers');
+
+mkdirp.sync(imagesPath);
 
 const app = express();
 
@@ -27,7 +27,7 @@ app.use(controllers);
 /**
  * 404 Error
  */
-app.use((req, res, next) => {
+app.use((req, res) => {
     res
         .status(404)
         .send({ error: 'NOT_FOUND' })
