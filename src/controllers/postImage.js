@@ -40,7 +40,7 @@ router.post('/image/:guid', (req, res) => {
                 .json({ })
                 .end();
         })
-        .catch((err) => {
+        .catch(/* istanbul ignore next */ (err) => {
             log.error('upload failed', err);
 
             res

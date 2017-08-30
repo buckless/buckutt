@@ -11,10 +11,12 @@ nconf
     .file({ file: path.join(__dirname, 'process.env.json') });
 
 // Load environment config file
+/* istanbul ignore next */
 const envName = nconf.get('NODE_ENV') || 'production';
 const config  = require(path.join(__dirname, 'profiles', envName));
 config.env    = envName;
 
+/* istanbul ignore if */
 if (config.log.console === 'debug') {
     console.log(`Config loaded: ${config.env}`);
 }

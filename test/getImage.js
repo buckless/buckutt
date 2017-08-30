@@ -7,6 +7,8 @@ const imagesPath = require('../src/lib/imagesPath');
 
 const {
     guid,
+    wrongGuid,
+    invalidGuid,
     image,
     png,
     webp,
@@ -14,6 +16,8 @@ const {
 } = require('./testData');
 
 const url = `http://localhost:${config.http.port}/image/${guid}`;
+const wrongUrl = `http://localhost:${config.http.port}/image/${wrongGuid}`;
+const invalidUrl = `http://localhost:${config.http.port}/image/foo`;
 
 describe('Image getter', () => {
     before(() => {
@@ -46,6 +50,24 @@ describe('Image getter', () => {
             });
     });
 
+    it('should refuse request with unknown guid', () => {
+        return axios
+            .get(wrongUrl)
+            .catch(({ response }) => {
+                assert.equal(404, response.status);
+                assert.equal('NOT_FOUND', response.data.error);
+            });
+    });
+
+    it('should refuse request with invalid guid', () => {
+        return axios
+            .get(invalidUrl)
+            .catch(({ response }) => {
+                assert.equal(400, response.status);
+                assert.equal('INVALID_GUID', response.data.error);
+            });
+    });
+
     it('should refuse request with wrong format', () => {
         return axios
             .get(url, { params: { format: 'foo' } })
@@ -57,7 +79,7 @@ describe('Image getter', () => {
 
     it('should refuse request with wrong size', () => {
         return axios
-            .get(url, { params: { width: 'foo' } })
+            .get(url, { params: { width: 'foo', height: 'foo' } })
             .catch(({ response }) => {
                 assert.equal(400, response.status);
                 assert.equal('INVALID_SIZE', response.data.error);

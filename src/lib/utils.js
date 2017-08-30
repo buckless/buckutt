@@ -28,6 +28,7 @@ function fileExists(path) {
                 return reject(err);
             }
 
+            /* istanbul ignore else */
             if (stats.isFile()) {
                 return resolve(true);
             }

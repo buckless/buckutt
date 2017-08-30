@@ -2,3 +2,5 @@ node_modules/
 yarn-error.log
 images/
 log/
+.nyc_output
+coverage

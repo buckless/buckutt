@@ -15,7 +15,7 @@
     "start": "node src/app",
     "dev": "cross-env NODE_ENV=development nodemon src/app.js",
     "lint": "eslint . --fix",
-    "test": "cross-env NODE_ENV=test mocha test/ --bail"
+    "test": "cross-env NODE_ENV=test nyc --reporter=text-summary --reporter=html mocha"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
@@ -27,6 +27,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^3.5.0",
     "nconf": "^0.8.4",
+    "nyc": "^11.1.0",
     "sharp": "^0.18.2",
     "validator": "^8.1.0",
     "winston": "^2.3.1",

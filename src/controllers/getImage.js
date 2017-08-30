@@ -16,14 +16,7 @@ router.get('/image/:guid', (req, res) => {
     const imagePath = path.join(imagesPath, filename);
 
     fileExists(imagePath)
-        .then((exists) => {
-            if (!exists) {
-                return res
-                    .status(404)
-                    .json({ error: 'NOT_FOUND' })
-                    .end();
-            }
-
+        .then(() => {
             let image = sharp(imagePath);
 
             if (req.query.width && req.query.height) {

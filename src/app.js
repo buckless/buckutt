@@ -35,6 +35,7 @@ app.use((req, res) => {
 /**
  * Internal Error
  */
+/* istanbul ignore next */
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     log.error('Unkown error', err);
 
@@ -61,6 +62,7 @@ app.start = () => {
 app.stop = () => {
     const server = app.server;
 
+    /* istanbul ignore if */
     if (!server) {
         return Promise.reject(new Error('server is not listening'));
     }
@@ -72,7 +74,7 @@ app.stop = () => {
 
 module.exports = app;
 
-
+/* istanbul ignore if */
 if (require.main === module) {
     app
         .start()

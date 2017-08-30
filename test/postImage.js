@@ -16,11 +16,10 @@ const {
 } = require('./testData');
 
 const url = `http://localhost:${config.http.port}/image/${guid}`;
+const invalidUrl = `http://localhost:${config.http.port}/image/foo`;
 
 describe('Image setter', () => {
-    before(() => {
-        return app.start();
-    });
+    before(() => app.start());
 
     it('should post an image', () => {
         return axios
@@ -29,6 +28,33 @@ describe('Image setter', () => {
                 assert.equal(200, res.status);
 
                 return fileExists(path.join(imagesPath, `${guid}.png`));
+            });
+    });
+
+    it('should refuse with invalid guid', () => {
+        return axios
+            .post(invalidUrl, { image })
+            .catch(({ response }) => {
+                assert.equal(400, response.status);
+                assert.equal('INVALID_GUID', response.data.error);
+            });
+    });
+
+    it('should refuse without image', () => {
+        return axios
+            .post(url)
+            .catch(({ response }) => {
+                assert.equal(400, response.status);
+                assert.equal('MISSING_IMAGE', response.data.error);
+            });
+    });
+
+    it('should refuse without wrong buffer', () => {
+        return axios
+            .post(url, { image: 'foobar' })
+            .catch(({ response }) => {
+                assert.equal(400, response.status);
+                assert.equal('INVALID_IMAGE', response.data.error);
             });
     });
 

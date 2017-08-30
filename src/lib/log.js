@@ -26,6 +26,7 @@ function timestamp() {
 module.exports = (moduleToUse) => {
     let path;
 
+    /* istanbul ignore if */
     if (typeof moduleToUse === 'string') {
         path = moduleToUse;
     } else {
@@ -38,6 +39,7 @@ module.exports = (moduleToUse) => {
 
     const transports = [];
 
+    /* istanbul ignore else */
     if (config.log.console !== 'none') {
         const consoleTransport = new winston.transports.Console({
             timestamp,
@@ -51,6 +53,7 @@ module.exports = (moduleToUse) => {
         transports.push(consoleTransport);
     }
 
+    /* istanbul ignore else */
     if (config.log.file !== 'none') {
         mkdirp.sync('./log');
 
@@ -69,6 +72,7 @@ module.exports = (moduleToUse) => {
     }
 
     // Graylog2
+    /* istanbul ignore next */
     if (config.log.graylog && config.log.graylog.gelfPro) {
         const graylogTransport = new WinstonTcpGraylog(config.log.graylog);
 
@@ -91,6 +95,7 @@ module.exports = (moduleToUse) => {
     return logger;
 };
 
+/* istanbul ignore next */
 module.exports.stream = {
     write(message) {
         module.exports('express').info(message);
