@@ -43,6 +43,10 @@ router.get('/image/:guid', (req, res) => {
                         .end();
                 }
 
+                if (req.query.format === 'jpeg') {
+                    image = image.flatten('#fff');
+                }
+
                 image = image.toFormat(req.query.format);
             }
 
