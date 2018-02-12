@@ -81,6 +81,7 @@ export default {
 <style>
     .b-header {
         background-color: #34495e;
+        position: relative;
 
         &.b-header--logged {
             padding-bottom: 1rem;

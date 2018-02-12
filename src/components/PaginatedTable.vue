@@ -205,8 +205,7 @@ export default {
 }
 
 .b-table__header,
-.b-table__body,
-.b-table__footer {
+.b-table__body {
     min-width: 570px;
 }
 
@@ -269,6 +268,18 @@ export default {
 
     & > button {
         margin: 10px 0;
+    }
+}
+
+@media (max-width: 520px) {
+    .b-table__footer > .b-table__row {
+        padding: 12px 0 0 0;
+    }
+
+    .b-table__footer > .b-table__row > .b-table__cell {
+        display: block;
+        padding: 0;
+        text-align: center;
     }
 }
 </style>
