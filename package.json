@@ -83,6 +83,7 @@
     "postcss-mixins": "^6.2.0",
     "postcss-nested": "^3.0.0",
     "postcss-simple-vars": "^4.1.0",
+    "raw-loader": "^0.5.1",
     "rimraf": "^2.6.2",
     "semver": "^5.4.1",
     "shelljs": "^0.7.8",

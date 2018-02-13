@@ -1,5 +1,9 @@
 {
     "NODE_ENV": "\"production\"",
     "name": "\"Buckless\"",
-    "color": "\"#34495e\""
+    "color": "\"#34495e\"",
+    "footerBackground": "\"#4f6f8f\"",
+    "footerColor": "\"#fff\"",
+    "contactMail": "\"contact@buckless.com\"",
+    "assignText": "\"Votre compte devrait être disponible quelques minutes après l'acquisition de votre place.\""
 }
