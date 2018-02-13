@@ -1,12 +1,12 @@
-const express      = require('express');
-const bcrypt       = require('bcryptjs');
-const { padStart } = require('lodash');
-const mailer       = require('../../lib/mailer');
-const dbCatch      = require('../../lib/dbCatch');
-const fetchFromAPI = require('../../ticketProviders');
-const APIError     = require('../../errors/APIError');
-const template     = require('../../mailTemplates');
-const config       = require('../../../config');
+const express            = require('express');
+const bcrypt             = require('bcryptjs');
+const { padStart, pick } = require('lodash');
+const mailer             = require('../../lib/mailer');
+const dbCatch            = require('../../lib/dbCatch');
+const fetchFromAPI       = require('../../ticketProviders');
+const APIError           = require('../../errors/APIError');
+const template           = require('../../mailTemplates');
+const config             = require('../../../config');
 
 /**
  * Assigner controller. Handles cards assignment
@@ -14,21 +14,22 @@ const config       = require('../../../config');
 const router = new express.Router();
 
 router.get('/services/assigner', (req, res, next) => {
-    const ticketId = req.query.ticketId;
+    const ticketOrMail = req.query.ticketOrMail;
 
-    if (!ticketId || ticketId.length === 0) {
-        return next(new APIError(module, 400, 'Invalid ticketId'));
+    if (!ticketOrMail || ticketOrMail.length === 0) {
+        return next(new APIError(module, 400, 'Invalid ticketOrMail'));
     }
 
     const { MeanOfLogin, User } = req.app.locals.models;
 
     let user;
     let pin;
+    let ticketId;
 
     MeanOfLogin
+        .where('type', 'in', ['ticketId', 'mail'])
         .where({
-            type   : 'ticketId',
-            data   : ticketId,
+            data   : ticketOrMail,
             blocked: false
         })
         .fetch({
@@ -37,18 +38,27 @@ router.get('/services/assigner', (req, res, next) => {
         .then(mol => ((mol) ? mol.toJSON() : null))
         .then((mol) => {
             if (mol && mol.user.id) {
-                return res
-                    .status(200)
-                    .json({
-                        id    : mol.user.id,
-                        credit: mol.user.credit,
-                        name  : `${mol.user.firstname} ${mol.user.lastname}`
-                    })
-                    .end();
+                if (req.user) {
+                    return res
+                        .status(200)
+                        .json({
+                            id    : mol.user.id,
+                            credit: mol.user.credit,
+                            name  : `${mol.user.firstname} ${mol.user.lastname}`
+                        })
+                        .end();
+                }
+
+                return res.status(404).end();
             }
+
             return fetchFromAPI(ticketId)
-                .then((userData) => {
+                .then((userData_) => {
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
+
+                    ticketId = userData_.ticketId;
+
+                    const userData = pick(userData_, ['firstname', 'lastname', 'nickname', 'mail', 'credit']);
 
                     userData.password = 'none';
                     userData.pin      = bcrypt.hashSync(pin);
@@ -93,18 +103,23 @@ router.get('/services/assigner', (req, res, next) => {
 
                     return Promise.all([mailMol.save(), ticketMol.save()]);
                 })
-                .then(() => res
-                    .status(200)
-                    .json({
-                        id    : user.id,
-                        credit: user.get('credit'),
-                        name  : `${user.get('firstname')} ${user.get('lastname')}`
-                    })
-                    .end());
+                .then(() => {
+                    if (req.user) {
+                        return res
+                            .status(200)
+                            .json({
+                                id    : user.id,
+                                credit: user.get('credit'),
+                                name  : `${user.get('firstname')} ${user.get('lastname')}`
+                            })
+                            .end();
+                    }
+
+                    return res.status(200).end();
+                });
         })
         .catch(err => dbCatch(module, err, next));
 });
-
 
 router.post('/services/assigner/groups', (req, res, next) => {
     const userId = req.body.user;

@@ -2,71 +2,72 @@
    "rights": {
       "all": ["admin"],
       "seller": {
-        "canSell": true,
-        "canReload": false,
-        "canAssign": false,
-        "read": [
-            "/events",
-            "/meansoflogin",
-            "/meansofpayment",
-            "/devices",
-            "/devices/search",
-            "/services/items",
-            "alert"
-        ],
-        "write": [
-            "/services/basket",
-            "/services/cancelTransaction"
-        ]
+          "canSell": true,
+          "canReload": false,
+          "canAssign": false,
+          "read": [
+              "/events",
+              "/meansoflogin",
+              "/meansofpayment",
+              "/devices",
+              "/devices/search",
+              "/services/items",
+              "alert"
+          ],
+          "write": [
+              "/services/basket",
+              "/services/cancelTransaction"
+          ]
       },
       "reloader": {
-        "canSell": false,
-        "canReload": true,
-        "canAssign": false,
-        "read": [
-            "/events",
-            "/devices",
-            "/meansoflogin",
-            "/meansofpayment",
-            "/meansofpayment/search",
-            "/services/items",
-            "alert"
-        ],
-        "write": [
-            "/services/basket"
-        ]
+          "canSell": false,
+          "canReload": true,
+          "canAssign": false,
+          "read": [
+              "/events",
+              "/devices",
+              "/meansoflogin",
+              "/meansofpayment",
+              "/meansofpayment/search",
+              "/services/items",
+              "alert"
+          ],
+          "write": [
+              "/services/basket"
+          ]
       },
       "assigner": {
-        "canSell": false,
-        "canReload": false,
-        "canAssign": true,
-        "read": [
-          "/users",
-          "/groups",
-          "/meansoflogin",
-          "/services/assigner"
-        ],
-        "write": [
-          "/users",
-          "/meansoflogin",
-          "/services/assigner/groups"
-        ]
+          "canSell": false,
+          "canReload": false,
+          "canAssign": true,
+          "read": [
+              "/users",
+              "/groups",
+              "/meansoflogin",
+              "/services/assigner"
+          ],
+          "write": [
+              "/users",
+              "/meansoflogin",
+              "/services/assigner/groups"
+          ]
       },
       "openUrls": [
-            "/",
-            "/services/login",
-            "/services/manager/askpin",
-            "/services/manager/generatepin",
-            "/services/deviceEssentials",
-            "/provider/callback"
+          "/",
+          "/services/login",
+          "/services/manager/askpin",
+          "/services/manager/generatepin",
+          "/services/deviceEssentials",
+          "/provider/callback",
+          "/services/assigner"
       ],
       "loggedUrls": [
-            "/services/manager/changepin",
-            "/services/manager/history",
-            "/services/manager/searchuser",
-            "/services/manager/transfer",
-            "/services/manager/reload",
-            "userCredit"
+          "/services/manager/changepin",
+          "/services/manager/history",
+          "/services/manager/searchuser",
+          "/services/manager/transfer",
+          "/services/manager/reload",
+          "userCredit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner"]
    }
