@@ -52,7 +52,7 @@ router.get('/services/assigner', (req, res, next) => {
                 return res.status(404).end();
             }
 
-            return fetchFromAPI(ticketId)
+            return fetchFromAPI(req.query.ticketOrMail)
                 .then((userData_) => {
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
 

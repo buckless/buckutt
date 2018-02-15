@@ -42,6 +42,7 @@
           "canAssign": true,
           "read": [
               "/users",
+              "/events",
               "/groups",
               "/meansoflogin",
               "/services/assigner"

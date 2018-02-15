@@ -8,7 +8,9 @@ const config   = require('../../config');
 module.exports = (connector) => {
     const authorize = config.rights;
 
-    if (config.rights.openUrls.indexOf(connector.path) > -1 || config.disableAuth) {
+    const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1 || config.disableAuth);
+
+    if (!needToken && !connector.user) {
         return Promise.resolve();
     }
 
