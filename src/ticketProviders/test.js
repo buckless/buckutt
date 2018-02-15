@@ -1,4 +1,4 @@
-module.exports = (ticketId) => Promise.resolve({
+module.exports = ticketId => Promise.resolve({
     firstname: 'Foo',
     lastname : 'Bar',
     mail     : 'foo@bar.com',
