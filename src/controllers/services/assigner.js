@@ -139,7 +139,7 @@ router.post('/services/assigner/groups', (req, res, next) => {
         const membership = new Membership({
             user_id  : userId,
             group_id : groupId,
-            period_id: req.event.defaultPeriod
+            period_id: req.event.defaultPeriod_id
         });
 
         return membership.save();
