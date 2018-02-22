@@ -49,14 +49,10 @@ export function removeArticleFromStep({ dispatch }, data) {
     const step      = data.step;
 
     if (step.set.articles.length > 1) {
-        return dispatch('removeArticleFromSet', {
-            article,
-            set      : step.set,
-            promotion: data.promotion
-        });
+        return dispatch('removeArticleFromSet', { article, promotion, set: step.set });
     }
 
-    return dispatch('removeArticleFromSet', { article, set: step.set })
+    return dispatch('removeArticleFromSet', { article, promotion, set: step.set })
         .then(() => dispatch('removeSetFromPromotion', { promotion, set: step.set }));
 }
 
