@@ -102,8 +102,10 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit }) => {
+export const buyer = (store, { cardNumber, credit_ }) => {
     const token = store.getters.tokenHeaders;
+
+    let credit = credit_;
 
     store.commit('SET_DATA_LOADED', false);
 
@@ -115,9 +117,10 @@ export const buyer = (store, { cardNumber, credit }) => {
     }
 
     let interfaceLoaderCredentials;
-    let shouldSendBasket = false;
-    let shouldWriteCredit = false;
-    let shouldClearBasket = false;
+    let shouldSendBasket   = false;
+    let shouldWriteCredit  = false;
+    let shouldClearBasket  = false;
+    let shouldCheckPending = false;
 
     if (!store.state.auth.device.config.doubleValidation) {
         shouldClearBasket = true;
@@ -131,11 +134,25 @@ export const buyer = (store, { cardNumber, credit }) => {
         }
     } else {
         if (store.state.auth.buyer.isAuth) {
-            shouldSendBasket = true;
-            shouldClearBasket = true;
+            shouldSendBasket   = true;
+            shouldClearBasket  = true;
+
+            if (store.state.auth.device.event.config.useCardData) {
+                shouldCheckPending = true;
+            }
         } else {
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
         }
+    }
+
+    if (shouldCheckPending) {
+        const pendingUrl = `/services/pendingCardUpdate/${store.state.auth.buyer.id}`;
+
+        initialPromise = initialPromise
+            .then(() => axios.get(pendingUrl, state.auth.seller.token))
+            .then((res) => {
+                credit += res.data.amount;
+            });
     }
 
     if (shouldSendBasket) {
