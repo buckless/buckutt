@@ -120,7 +120,7 @@ export const buyer = (store, { cardNumber, credit_ }) => {
     let shouldSendBasket   = false;
     let shouldWriteCredit  = false;
     let shouldClearBasket  = false;
-    let shouldCheckPending = false;
+    let shouldCheckPending = store.state.online.status;
 
     if (!store.state.auth.device.config.doubleValidation) {
         shouldClearBasket = true;
@@ -136,10 +136,6 @@ export const buyer = (store, { cardNumber, credit_ }) => {
         if (store.state.auth.buyer.isAuth) {
             shouldSendBasket   = true;
             shouldClearBasket  = true;
-
-            if (store.state.auth.device.event.config.useCardData) {
-                shouldCheckPending = true;
-            }
         } else {
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
         }
