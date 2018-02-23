@@ -45,7 +45,7 @@ export default {
         ]),
 
         log(mail, password) {
-            this.login({ meanOfLogin: config.mainMol, data: mail, password })
+            this.login({ meanOfLogin: config.defaultMol, data: mail, password })
                 .catch((err) => {
                     let message;
                     switch (err.message) {
