@@ -6,8 +6,7 @@ exports.seed = function (knex) {
             knex('groups').insert([
                 item({
                     id   : group_id,
-                    name : 'Défaut',
-                    event_id
+                    name : 'Défaut'
                 })
             ])
         )

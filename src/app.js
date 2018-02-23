@@ -85,7 +85,9 @@ app.start = () => {
         ca  : './ssl/certificates/ca/ca-crt.pem'
     };
 
-    let startingQueue = bookshelf.sync();
+    let startingQueue = bookshelf
+        .waitForDb(2, 15) // 15 retries, one every 2 seconds
+        .then(() => bookshelf.sync());
 
     /* istanbul ignore if */
     if (!fs.existsSync(sslFilesPath.key) ||
@@ -143,7 +145,10 @@ app.start = () => {
                     return reject(err);
                 }
 
-                log.info('Server is listening %s:%d', config.http.host, config.http.port);
+                log.info(
+                    'Server is listening %s://%s:%d', process.env.SERVER_PROTOCOL, config.http.host,
+                    config.http.port
+                );
 
                 fs.writeFileSync(LOCK_FILE, '1');
 
@@ -190,5 +195,7 @@ if (require.main === module) {
 
     app
         .start()
-        .catch(err => log.error(err));
+        .catch((err) => {
+            log.error('Start error: %s', err);
+        });
 }

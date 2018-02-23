@@ -18,8 +18,6 @@ const rights  = require(path.join(__dirname, 'rights'));
 const config  = _.merge(rights, env);
 config.env = envName;
 
-if (config.log.console === 'debug') {
-    console.log(`Config loaded: ${config.env}`);
-}
+console.log(`Config loaded: ${config.env}`);
 
 module.exports = config;

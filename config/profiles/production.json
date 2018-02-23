@@ -63,8 +63,8 @@
     "provider": {
         "name": "payline",
         "config": {
-            "id": "",
-            "password": "",
+            "id": "foo",
+            "password": "bar",
             "url": "",
             "contractNumber": "",
             "merchantName": ""
