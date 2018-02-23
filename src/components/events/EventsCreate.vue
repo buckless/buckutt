@@ -56,6 +56,7 @@ export default {
     methods: {
         ...mapActions([
             'createObject',
+            'updateObject',
             'notify',
             'notifyError'
         ]),
@@ -67,6 +68,8 @@ export default {
                 this.createObject({ route: 'periods', value: { name: event.name, ...this.newPeriod } })
             ];
 
+            let createdEvent;
+
             Promise.all(defaultPromises)
                 .then((defaultObjects) => {
                     event.defaultFundation_id = defaultObjects[0].id;
@@ -75,7 +78,17 @@ export default {
 
                     return this.createObject({ route: 'events', value: event });
                 })
-                .then((createdEvent) => {
+                .then((createdEvent_) => {
+                    createdEvent = createdEvent_;
+                    return this.updateObject({
+                        route: 'periods',
+                        value: {
+                            id      : createdEvent.defaultPeriod_id,
+                            event_id: createdEvent.id
+                        }
+                    });
+                })
+                .then(() => {
                     this.notify({ message: 'L\'événement a bien été créé' });
                     this.$router.push(`/events/${createdEvent.id}`);
                 })
