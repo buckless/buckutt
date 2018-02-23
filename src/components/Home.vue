@@ -48,7 +48,7 @@ export default {
         ]),
 
         log(mail, pin) {
-            this.login({ meanOfLogin: 'etuMail', data: mail, pin })
+            this.login({ meanOfLogin: process.env.defaultMol, data: mail, pin })
                 .then(() => this.$router.push('/reload'))
                 .catch(() => this.notify({ message: 'Identifiants incorrects.' }));
         }
