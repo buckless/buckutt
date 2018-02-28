@@ -142,10 +142,10 @@ export const buyer = (store, { cardNumber, credit_ }) => {
     }
 
     if (shouldCheckPending) {
-        const pendingUrl = `/services/pendingCardUpdate/${config.buyerMeanOfLogin}/${cardNumber}`;
+        const pendingUrl = `${config.api}/services/pendingCardUpdate/${config.buyerMeanOfLogin}/${cardNumber}`;
 
         initialPromise = initialPromise
-            .then(() => axios.get(pendingUrl, store.state.auth.seller.token))
+            .then(() => axios.get(pendingUrl, store.getters.tokenHeaders))
             .then((res) => {
                 credit += res.data.amount;
             });

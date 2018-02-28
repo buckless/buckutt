@@ -31,7 +31,7 @@ export default {
         },
 
         ...mapState({
-            basketStatus: state => state.basket.basketStatus,
+            basketStatus: state => state.basket.basketStatus
         }),
 
         ...mapGetters(['basketAmount', 'reloadAmount'])
