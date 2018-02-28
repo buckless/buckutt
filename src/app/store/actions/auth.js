@@ -145,7 +145,7 @@ export const buyer = (store, { cardNumber, credit_ }) => {
         const pendingUrl = `/services/pendingCardUpdate/${store.state.auth.buyer.id}`;
 
         initialPromise = initialPromise
-            .then(() => axios.get(pendingUrl, state.auth.seller.token))
+            .then(() => axios.get(pendingUrl, store.state.auth.seller.token))
             .then((res) => {
                 credit += res.data.amount;
             });
