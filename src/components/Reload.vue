@@ -7,6 +7,8 @@
             <form @submit.prevent="reload(customAmount || amount)">
                 <section class="mdc-card__supporting-text">
                     Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.
+                    <br/>
+                    Toutes les opérations en ligne ne sont effectives qu'après une opération physique.
                     <div class="b-reload__boxes">
                         <button class="mdc-button"
                             @click.prevent="chooseBox(10)"

@@ -25,11 +25,13 @@ export function autoLoginUser({ commit, dispatch }) {
 export function loadHistory({ state, commit, dispatch }) {
     if (state.app.loggedUser) {
         get('history')
-            .then((results) => {
+            .then((result) => {
                 const newUser  = state.app.loggedUser;
-                newUser.credit = results.credit;
+                newUser.credit = result.credit;
+
                 dispatch('updateLoggedUser', newUser);
-                commit('REPLACEHISTORY', results.history.filter(entry => !entry.isRemoved));
+                commit('REPLACEHISTORY', result.history.filter(entry => !entry.isRemoved));
+                commit('SET_PENDING_AMOUNT', result.pending);
             });
     }
 }

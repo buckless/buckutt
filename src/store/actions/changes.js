@@ -21,14 +21,20 @@ export function initSocket({ commit, dispatch, state }, token) {
     });
 }
 
-export function registerUserCredit({ state, dispatch }) {
+export function registerUserCredit({ state, commit, dispatch }) {
     state.changes.socket.emit('userCredit');
 
-    state.changes.socket.on('userCredit', (credit) => {
-        dispatch('updateLoggedUserField', {
-            field: 'credit',
-            value: credit
-        });
+    state.changes.socket.on('userCredit', (payload) => {
+        if (typeof payload.credit === 'number') {
+            dispatch('updateLoggedUserField', {
+                field: 'credit',
+                value: payload.credit
+            });
+        }
+
+        if (typeof payload.pending === 'number') {
+            commit('SET_PENDING_AMOUNT', payload.pending);
+        }
 
         dispatch('loadHistory');
     });

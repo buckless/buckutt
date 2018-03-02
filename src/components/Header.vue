@@ -3,7 +3,12 @@
         <h1>{{ barName }}</h1>
         <div class="b-header__credit" v-if="loggedUser">
             Mon solde :<br/>
-            <div>{{ loggedUser.credit | price(true) }}</div>
+            <div>
+                {{ loggedUser.credit | price(true) }}
+            </div>
+            <div class="b-header__credit__pending" v-if="pending">
+                <i class="material-icons">hourglass_empty</i> {{ pending | price(true) }} en attente
+            </div>
         </div>
         <router-link to="/logout" class="b-header__logout" v-if="loggedUser">
             <i class="material-icons">power_settings_new</i>
@@ -40,6 +45,7 @@ export default {
     computed: {
         ...mapState({
             loggedUser: state => state.app.loggedUser,
+            pending   : state => state.app.pending,
             logged    : state => !!state.app.loggedUser
         }),
 
@@ -105,6 +111,18 @@ export default {
                 line-height: 4rem;
                 margin-bottom: 2rem;
                 margin-top: 0.5rem;
+            }
+
+            & > .b-header__credit__pending {
+                margin-bottom: 2rem;
+                display: flex;
+                margin-top: -2rem;
+                align-items: center;
+                justify-content: center;
+
+                & > i {
+                    margin-right: 5px;
+                }
             }
         }
 

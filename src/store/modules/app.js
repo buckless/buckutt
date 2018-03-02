@@ -1,7 +1,8 @@
 const state = {
     loggedUser: null,
     history   : [],
-    users     : []
+    users     : [],
+    pending   : 0
 };
 
 const mutations = {
@@ -26,6 +27,10 @@ const mutations = {
 
     CHANGEUSERS(state_, users) {
         state_.users = users;
+    },
+
+    SET_PENDING_AMOUNT(state_, pending) {
+        state_.pending = pending;
     }
 };
 

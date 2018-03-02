@@ -6,6 +6,7 @@
             </section>
             <form @submit.prevent="transferWrapper(currentPin, amount, user)">
                 <section class="mdc-card__supporting-text">
+                    Toutes les opérations en ligne ne sont effectives qu'après une opération physique.
                     <b-autocomplete label="Destinataire" id="b-name" @input="defineUser" class="b--inputwidth" required="required" error="Un utilisateur doit être sélectionné"/>
                     <label class="mdc-text-field" ref="currentPin">
                         <input type="password" class="mdc-text-field__input" required minlength="4" v-model="currentPin">
