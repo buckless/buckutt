@@ -91,9 +91,24 @@ router.get('/services/manager/history', (req, res) => {
             withDeleted: true
         });
 
-    let history = [];
+    const pendingCardUpdatesQuery = () => models.PendingCardUpdate
+        .where({ user_id: req.history.user })
+        .fetchAll();
 
-    purchaseQuery()
+    let history = [];
+    let pending = 0;
+
+    pendingCardUpdatesQuery()
+        .then((pendingCardUpdates) => {
+            if (pendingCardUpdates) {
+                pending = pendingCardUpdates
+                    .toJSON()
+                    .map(p => p.amount)
+                    .reduce((a, b) => a + b, 0);
+            }
+
+            return purchaseQuery();
+        })
         .then((result) => {
             history = result
                 .toJSON()
@@ -209,6 +224,7 @@ router.get('/services/manager/history', (req, res) => {
                 .status(200)
                 .json({
                     credit: req.history.credit,
+                    pending,
                     history
                 })
                 .end();

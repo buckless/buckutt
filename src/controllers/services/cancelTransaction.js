@@ -74,15 +74,15 @@ router.post('/services/cancelTransaction', (req, res, next) => {
     amountPromise
         .then((amount) => {
             req.pendingCardUpdates = {};
-            req.usersToUpdate      = [];
 
             if (req.transaction.model === 'Purchase' || req.transaction.model === 'Refund') {
                 getUserInst(models.User, req.transaction.data.buyer_id)
                     .then((user) => {
                         user.set('credit', user.get('credit') + amount);
-                        req.usersToUpdate.push(user);
-
-                        req.pendingCardUpdates[user.id] = amount;
+                        req.pendingCardUpdates[user.id] = {
+                            user,
+                            amount
+                        };
 
                         next();
                     });
@@ -94,31 +94,34 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                         }
 
                         user.set('credit', user.get('credit') - amount);
-                        req.usersToUpdate.push(user);
-
-                        req.pendingCardUpdates[user.id] = -1 * amount;
+                        req.pendingCardUpdates[user.id] = {
+                            user,
+                            amount: -1 * amount
+                        };
 
                         next();
                     });
             } else {
                 getUserInst(models.User, req.transaction.data.sender_id)
                     .then((user) => {
-                        user.set('credit', user.get('credit') + amount);
-                        req.usersToUpdate.push(user);
-
-                        req.pendingCardUpdates[user.id] = amount;
-
-                        return getUserInst(models.User, req.transaction.data.reciever_id);
-                    })
-                    .then((user) => {
                         if (user.get('credit') - amount < 0) {
                             return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
                         }
 
                         user.set('credit', user.get('credit') - amount);
-                        req.usersToUpdate.push(user);
+                        req.pendingCardUpdates[user.id] = {
+                            user,
+                            amount: -1 * amount
+                        };
 
-                        req.pendingCardUpdates[user.id] = amount;
+                        return getUserInst(models.User, req.transaction.data.reciever_id);
+                    })
+                    .then((user) => {
+                        user.set('credit', user.get('credit') + amount);
+                        req.pendingCardUpdates[user.id] = {
+                            user,
+                            amount
+                        };
 
                         next();
                     });
@@ -128,31 +131,40 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 });
 
 router.post('/services/cancelTransaction', (req, res, next) => {
-    const usersToUpdate = [];
+    const queries = [];
 
-    req.usersToUpdate.forEach((user) => {
-        user.set('updated_at', new Date());
-        usersToUpdate.push(user.save());
-    });
-
-    if (req.query.addPendingCardUpdates && rightsDetails(req.user).admin) {
-        Object.keys(req.pendingCardUpdates).forEach((user) => {
-            const pendingCardUpdate = new req.app.locals.models.PendingCardUpdate({
+    Object.keys(req.pendingCardUpdates).forEach((user) => {
+        let query;
+        if (req.event.useCardData && req.query.addPendingCardUpdate && rightsDetails(req.user).admin) {
+            query = new req.app.locals.models.PendingCardUpdate({
                 user_id: user,
-                amount : req.pendingCardUpdates[user]
+                amount : req.pendingCardUpdates[user].amount
             });
+        } else {
+            query = req.pendingCardUpdates[user].user;
+            query.set('updated_at', new Date());
+        }
 
-            usersToUpdate.push(pendingCardUpdate.save());
-        });
-    }
+        queries.push(query.save());
+    });
 
     const Model = req.app.locals.models[req.transaction.model];
 
-    Promise.all(usersToUpdate)
+    Promise.all(queries)
         .then(() => new Model({ id: req.transaction.data.id }).destroy())
         .then(() => {
-            usersToUpdate.forEach((user) => {
-                req.app.locals.modelChanges.emit('userCreditUpdate', user);
+            queries.forEach((query) => {
+                const userCreditUpdate = {
+                    id: query.get('user_id') || query.get('id')
+                };
+
+                if (query.get('amount')) {
+                    userCreditUpdate.pending = query.get('amount');
+                } else {
+                    userCreditUpdate.credit = query.get('credit');
+                }
+
+                req.app.locals.modelChanges.emit('userCreditUpdate', userCreditUpdate);
             });
         })
         .then(() =>

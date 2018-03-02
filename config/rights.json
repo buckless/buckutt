@@ -12,6 +12,7 @@
               "/devices",
               "/devices/search",
               "/services/items",
+              "/services/pendingCardUpdate",
               "alert"
           ],
           "write": [
@@ -30,6 +31,7 @@
               "/meansofpayment",
               "/meansofpayment/search",
               "/services/items",
+              "/services/pendingCardUpdate",
               "alert"
           ],
           "write": [
@@ -45,7 +47,8 @@
               "/events",
               "/groups",
               "/meansoflogin",
-              "/services/assigner"
+              "/services/assigner",
+              "/services/pendingCardUpdate"
           ],
           "write": [
               "/users",

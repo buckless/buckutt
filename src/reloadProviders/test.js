@@ -15,11 +15,6 @@ module.exports = (app) => {
             transaction.set('state', 'ACCEPTED');
 
             if (transaction.get('state') === 'ACCEPTED') {
-                const userCredit = knex('users')
-                    .where({ id: transaction.get('user_id') })
-                    .increment('credit', transaction.get('amount'))
-                    .returning('credit');
-
                 const newReload = new Reload({
                     credit   : transaction.get('amount'),
                     type     : 'card',
@@ -31,19 +26,15 @@ module.exports = (app) => {
 
                 const pendingCardUpdate = new PendingCardUpdate({
                     user_id: transaction.get('user_id'),
-                    amount : -1 * transaction.get('amount')
+                    amount : transaction.get('amount')
                 });
 
                 return Promise
-                    .all([userCredit, newReload.save(), transaction.save(), pendingCardUpdate.save()])
+                    .all([newReload.save(), transaction.save(), pendingCardUpdate.save()])
                     .then((res) => {
-                        // First [0] : userCredit promise
-                        // Second [0] : returning credit column
-                        const newUserCredit = res[0][0];
-
                         app.locals.modelChanges.emit('userCreditUpdate', {
-                            id    : transaction.get('user_id'),
-                            credit: newUserCredit
+                            id     : transaction.get('user_id'),
+                            pending: transaction.get('amount')
                         });
                     });
             }

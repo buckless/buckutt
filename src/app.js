@@ -146,7 +146,7 @@ app.start = () => {
                 }
 
                 log.info(
-                    'Server is listening %s://%s:%d', process.env.SERVER_PROTOCOL, config.http.host,
+                    'Server is listening %s://%s:%d', process.env.SERVER_PROTOCOL || 'https', config.http.host,
                     config.http.port
                 );
 

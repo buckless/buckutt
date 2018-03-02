@@ -20,7 +20,7 @@ router.get('/services/assigner', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid ticketOrMail'));
     }
 
-    const { MeanOfLogin, User } = req.app.locals.models;
+    const { MeanOfLogin, User, Reload } = req.app.locals.models;
 
     let user;
     let pin;
@@ -101,7 +101,16 @@ router.get('/services/assigner', (req, res, next) => {
                         blocked: false
                     });
 
-                    return Promise.all([mailMol.save(), ticketMol.save()]);
+                    const initialReload = new Reload({
+                        credit   : user.get('credit'),
+                        type     : 'initial',
+                        trace    : req.query.ticketId,
+                        point_id : req.point_id,
+                        buyer_id : user.id,
+                        seller_id: user.id
+                    });
+
+                    return Promise.all([mailMol.save(), ticketMol.save(), initialReload.save()]);
                 })
                 .then(() => {
                     if (req.user) {

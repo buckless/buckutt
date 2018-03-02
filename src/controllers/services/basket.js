@@ -228,24 +228,16 @@ router.post('/services/basket', (req, res, next) => {
     Promise
         .all([updateCredit].concat(purchases).concat(reloads))
         .then(() => {
-            if (req.query.offline) {
-                return 0;
-            }
-
-            return bookshelf.knex('pendingCardUpdates')
-                .where({ user_id: req.user.id })
-                .update({ active: false, deleted_at: new Date() })
-                .returning('amount')
-                .then(amounts => (amounts || []).reduce((a, b) => a + b, 0));
-        })
-        .then((pendingCardUpdates) => {
-            req.app.locals.modelChanges.emit('userCreditUpdate', req.buyer);
+            req.app.locals.modelChanges.emit('userCreditUpdate', {
+                id     : req.buyer.id,
+                credit : req.buyer.credit,
+                pending: newCredit - req.buyer.credit
+            });
 
             return res
                 .status(200)
                 .json({
                     transactionIds,
-                    pendingCardUpdates,
                     ...req.buyer
                 })
                 .end();

@@ -58,11 +58,6 @@ module.exports = (app) => {
                 transaction.set('state', req.etupay.step);
 
                 if (req.etupay.paid) {
-                    const userCredit = knex('users')
-                        .where({ id: transaction.get('user_id') })
-                        .increment('credit', transaction.get('amount'))
-                        .returning('credit');
-
                     const newReload = new Reload({
                         credit   : transaction.get('amount'),
                         type     : 'card',
@@ -74,19 +69,15 @@ module.exports = (app) => {
 
                     const pendingCardUpdate = new PendingCardUpdate({
                         user_id: transaction.get('user_id'),
-                        amount : -1 * transaction.get('amount')
+                        amount : transaction.get('amount')
                     });
 
                     return Promise
-                        .all([userCredit, newReload.save(), transaction.save(), pendingCardUpdate.save()])
+                        .all([newReload.save(), transaction.save(), pendingCardUpdate.save()])
                         .then((results) => {
-                            // First [0] : userCredit promise
-                            // Second [0] : returning credit column
-                            const newUserCredit = results[0][0];
-
                             req.app.locals.modelChanges.emit('userCreditUpdate', {
-                                id    : transaction.get('user_id'),
-                                credit: newUserCredit
+                                id     : transaction.get('user_id'),
+                                pending: transaction.get('amount')
                             });
                         });
                 }

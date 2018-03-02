@@ -1,9 +1,10 @@
-const bcrypt_  = require('bcryptjs');
-const express  = require('express');
-const Promise  = require('bluebird');
-const logger   = require('../../../lib/log');
-const dbCatch  = require('../../../lib/dbCatch');
-const APIError = require('../../../errors/APIError');
+const bcrypt_       = require('bcryptjs');
+const express       = require('express');
+const Promise       = require('bluebird');
+const logger        = require('../../../lib/log');
+const dbCatch       = require('../../../lib/dbCatch');
+const { bookshelf } = require('../../../lib/bookshelf');
+const APIError      = require('../../../errors/APIError');
 
 const log = logger(module);
 
@@ -59,7 +60,7 @@ router.post('/services/manager/transfer', (req, res, next) => {
 router.post('/services/manager/transfer', (req, res, next) => {
     const models = req.app.locals.models;
 
-    let amount = parseInt(req.body.amount, 10);
+    const amount = parseInt(req.body.amount, 10);
 
     if (req.user.credit - amount < 0) {
         return next(new APIError(module, 400, 'Not enough sender credit', {
@@ -77,6 +78,13 @@ router.post('/services/manager/transfer', (req, res, next) => {
         }));
     }
 
+    if (req.user.id === req.recieverUser.id) {
+        return res
+            .status(200)
+            .json({ newCredit: req.user.credit })
+            .end();
+    }
+
     const newTransfer = new models.Transfer({
         amount
     });
@@ -84,52 +92,32 @@ router.post('/services/manager/transfer', (req, res, next) => {
     newTransfer.set('sender_id', req.user.id);
     newTransfer.set('reciever_id', req.recieverUser.id);
 
-    models.User
-        .where({ id: newTransfer.get('reciever_id') })
-        .fetch()
-        .then((reciever) => {
-            reciever.set('credit', reciever.get('credit') + amount);
-            reciever.set('updated_at', new Date());
+    const updateSender = new models.PendingCardUpdate({
+        user_id: req.user.id,
+        amount : -1 * amount
+    });
 
-            return reciever.save();
-        })
-        .then(() =>
-            models.User
-                .where({ id: newTransfer.get('sender_id') })
-                .fetch())
-        .then((sender) => {
-            sender.set('credit', sender.get('credit') - amount);
-            sender.set('updated_at', new Date());
+    const updateReciever = new models.PendingCardUpdate({
+        user_id: req.recieverUser.id,
+        amount
+    });
 
-            return sender.save();
-        })
-        .then(() => newTransfer.save())
+    return Promise
+        .all([
+            updateSender.save(),
+            updateReciever.save(),
+            newTransfer.save()
+        ])
         .then(() => {
-            const PendingCardUpdate = req.app.locals.models.PendingCardUpdate;
-
-            const pendingCardUpdateSender = new PendingCardUpdate({
-                user_id: req.user.id,
-                amount : -1 * amount
+            req.app.locals.modelChanges.emit('userCreditUpdate', {
+                id     : req.user.id,
+                pending: -1 * amount
             });
 
-            const pendingCardUpdateReciever = new PendingCardUpdate({
-                user_id: req.recieverUser.id,
-                amount
+            req.app.locals.modelChanges.emit('userCreditUpdate', {
+                id     : req.recieverUser.id,
+                pending: amount
             });
-
-            return Promise.all([pendingCardUpdateSender.save(), pendingCardUpdateReciever.save()]);
-        })
-        .then(() => {
-            if (newTransfer.get('reciever_id') === newTransfer.get('sender_id')) {
-                amount = 0;
-            }
-
-            // Only useful for modelChanges
-            req.user.credit -= amount;
-            req.recieverUser.credit += amount;
-
-            req.app.locals.modelChanges.emit('userCreditUpdate', req.user);
-            req.app.locals.modelChanges.emit('userCreditUpdate', req.recieverUser);
 
             return res
                 .status(200)
