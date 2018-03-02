@@ -5,12 +5,12 @@ const authData = {
     }
 };
 
-if (sessionStorage.hasOwnProperty('token')) {
-    authData.headers.Authorization = `Bearer ${sessionStorage.getItem('token')}`;
-}
-
 export function updateBearer(token) {
-    authData.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+        authData.headers.Authorization = `Bearer ${token}`;
+    } else {
+        delete authData.headers.Authorization;
+    }
 }
 
 /**

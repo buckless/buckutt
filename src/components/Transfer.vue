@@ -14,7 +14,7 @@
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
                     <label class="mdc-text-field" ref="amount">
-                        <input type="number" class="mdc-text-field__input" required v-model="amount">
+                        <input type="number" class="mdc-text-field__input" required step="0.01" min="0" v-model="amount">
                         <span class="mdc-text-field__label">Montant</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
@@ -57,7 +57,10 @@ export default {
 
         transferWrapper(currentPin, amount, user) {
             this.transfer({ currentPin, amount, user })
-                .then(message => this.notify(message))
+                .then((message) => {
+                    this.notify(message);
+                    this.$router.push('/history');
+                })
                 .catch(error => this.notify(error));
         }
     },

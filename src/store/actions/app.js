@@ -4,6 +4,23 @@ import { get, post, updateBearer } from '../../lib/fetch';
  * Global actions
  */
 
+export function setToken(_, token) {
+    updateBearer(token);
+    if (token) {
+        sessionStorage.setItem('token', token);
+    } else {
+        sessionStorage.removeItem('token');
+    }
+}
+
+export function logoutUser({ dispatch }) {
+    dispatch('clearHistory');
+    dispatch('setToken');
+    dispatch('updateLoggedUser');
+    dispatch('closeSocket');
+    sessionStorage.clear();
+}
+
 export function updateLoggedUser({ commit }, loggedUser) {
     sessionStorage.setItem('user', JSON.stringify(loggedUser));
     commit('UPDATELOGGEDUSER', loggedUser);
@@ -18,6 +35,7 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 export function autoLoginUser({ commit, dispatch }) {
     if (sessionStorage.hasOwnProperty('token')) {
         commit('UPDATELOGGEDUSER', JSON.parse(sessionStorage.getItem('user')));
+        dispatch('setToken', sessionStorage.getItem('token'));
         dispatch('loadUser');
     }
 }
@@ -49,10 +67,8 @@ export function login({ dispatch }, credentials) {
     return post('login', credentials)
         .then((result) => {
             if (result.user) {
-                sessionStorage.setItem('token', result.token);
+                dispatch('setToken', result.token);
                 dispatch('updateLoggedUser', result.user);
-                updateBearer(result.token);
-
                 dispatch('loadUser');
                 return result.user;
             }
