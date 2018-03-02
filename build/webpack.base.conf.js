@@ -36,7 +36,13 @@ let base = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/@buckless/signed-number')]
+        include: [
+          resolve('src'),
+          resolve('test'),
+          resolve('node_modules/@buckless/signed-number'),
+          resolve('node_modules/ws'),
+          resolve('node_modules/engine.io-client')
+        ]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
