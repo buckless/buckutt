@@ -124,7 +124,10 @@ router.post('/services/basket', (req, res, next) => {
         return next(new APIError(module, 400, 'Not enough credit'));
     }
 
-    if (req.event.maxPerAccount && req.buyer.credit - totalCost > req.event.maxPerAccount && !req.event.useCardData) {
+    if (req.event.maxPerAccount &&
+        req.buyer.credit - totalCost > req.event.maxPerAccount &&
+        reloadOnly > 0 &&
+        !req.event.useCardData) {
         const max = (req.event.maxPerAccount / 100).toFixed(2);
         return next(new APIError(module, 400, `Maximum exceeded : ${max}€`, { user: req.user.id }));
     }
