@@ -56,6 +56,17 @@
               "/services/assigner/groups"
           ]
       },
+      "controler": {
+          "canSell": false,
+          "canReload": false,
+          "canAssign": false,
+          "canControl": true,
+          "read": [
+              "/users",
+              "/groups",
+              "/events"
+          ]
+      },
       "openUrls": [
           "/",
           "/services/login",
@@ -73,6 +84,6 @@
           "/services/manager/reload",
           "userCredit"
       ],
-      "pinLoggingAllowed": ["seller", "reloader", "assigner"]
+      "pinLoggingAllowed": ["seller", "reloader", "assigner", "controler"]
    }
 }
