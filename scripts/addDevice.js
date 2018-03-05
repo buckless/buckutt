@@ -24,7 +24,7 @@ function createDir(opts) {
 function setDeviceConfig(opts, fingerprint) {
     log.info('Inserting device in database');
 
-    const device = new models.Device({ name: opts.deviceName, fingerprint });
+    const device = new models.Device({ name: opts.deviceName, fingerprint, isUser: opts.isUser });
     const wiket  = new models.Wiket({
         period_id: opts.periodId,
         point_id : opts.pointId
