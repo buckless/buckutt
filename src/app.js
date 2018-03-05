@@ -110,7 +110,7 @@ app.start = () => {
 
                 const password = process.env.NODE_ENV === 'development' ? 'development' : randomstring.generate();
 
-                return addDevice({ isUser: true, admin: true, deviceName: 'admin', password });
+                return addDevice({ admin: true, deviceName: 'admin', password });
             })
             .then((adminPassword) => {
                 log.info(`[ admin .p12 password ] ${adminPassword}`);

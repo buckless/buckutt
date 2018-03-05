@@ -117,6 +117,9 @@ function addDevice(opts) {
 
     if (opts.admin) {
         initialPromise = getAdminPeriodPoint(opts);
+        opts.isUser    = true;
+    } else {
+        opts.isUser    = false;
     }
 
     return initialPromise
