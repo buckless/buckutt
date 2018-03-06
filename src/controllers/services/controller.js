@@ -8,20 +8,7 @@ const config   = require('../../../config');
  */
 const router = new express.Router();
 
-router.get('/services/controler', (req, res, next) => {
-    /*
-    {
-        [
-            {
-                cardId: '...',
-                groups: [
-                    { groupId: '...', start: Date, end: Date }
-                ]
-            }
-        ]
-    }
-    */
-
+router.get('/services/controller', (req, res, next) => {
     req.app.locals.models.MeanOfLogin
         .where({
             type: 'cardId',
