@@ -121,6 +121,8 @@ export default {
                     this.$refs.history.onCard(value, credit);
                 } else if (this.seller.isAuth && this.seller.canAssign) {
                     this.$refs.assign.onBarcode(value);
+                } else if (this.seller.isAuth && this.seller.canControl) {
+                    this.$refs.controller.onCard(value);
                 } else {
                     this.$refs.login.validate(value, credit);
                 }
@@ -178,7 +180,7 @@ export default {
             } else {
                 this.updateEssentials();
             }
-        }, this.seller.canAssign ? 3 * 60 * 1000 : 60 * 1000);
+        }, (this.seller.canAssign || this.seller.canControl) ? 3 * 60 * 1000 : 60 * 1000);
 
         if (window.localStorage.getItem('pendingRequests')) {
             this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));

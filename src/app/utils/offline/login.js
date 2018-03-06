@@ -20,9 +20,10 @@ export default (deviceSellers, credentials) => new Promise((resolve, reject) => 
         return reject({ response: { data: { message: 'Not enough rights' } } });
     }
 
-    const canSell   = validRights.some(right => right.name === 'seller');
-    const canReload = validRights.some(right => right.name === 'reloader');
-    const canAssign = validRights.some(right => right.name === 'assigner');
+    const canSell    = validRights.some(right => right.name === 'seller');
+    const canReload  = validRights.some(right => right.name === 'reloader');
+    const canAssign  = validRights.some(right => right.name === 'assigner');
+    const canControl = validRights.some(right => right.name === 'controller');
 
     return resolve({
         data: {
@@ -33,7 +34,7 @@ export default (deviceSellers, credentials) => new Promise((resolve, reject) => 
                 lastname : seller.lastname,
                 canSell,
                 canReload,
-                canAssign
+                canControl
             }
         }
     });

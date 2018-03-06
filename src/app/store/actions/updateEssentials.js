@@ -1,12 +1,16 @@
-import axios               from 'axios';
-import hasEssentials       from '../../utils/offline/hasEssentials';
-import AssignerOfflineData from '../../../lib/assignerOfflineData';
+import axios         from 'axios';
+import hasEssentials from '../../utils/offline/hasEssentials';
+import OfflineData   from '../../../lib/offlineData';
 
+
+// offlineData once booleans
 let assignedUsers = false;
 
 export const updateEssentials = (store, force) => {
-    return axios
-        .get(`${config.api}/services/deviceEssentials`)
+    const offlineData = new OfflineData();
+
+    return offlineData.init()
+        .then(() => axios.get(`${config.api}/services/deviceEssentials`))
         .then((res) => {
             if (!store.state.auth.device.point.id || store.state.auth.seller.canAssign || force) {
                 store.dispatch('setPoint', {
@@ -42,10 +46,12 @@ export const updateEssentials = (store, force) => {
         })
         .then((res) => {
             if (!res) {
+                if (store.state.auth.seller.canControl) {
+                    return axios.get(`${config.api}/services/controller`, store.getters.tokenHeaders);
+                }
+
                 return;
             }
-
-            const assignerOfflineData = new AssignerOfflineData();
 
             const users = res.data.map(user => [
                 user.id,
@@ -54,9 +60,26 @@ export const updateEssentials = (store, force) => {
                 user.credit
             ]);
 
-            return assignerOfflineData.init()
-                .then(() => assignerOfflineData.empty())
-                .then(() => assignerOfflineData.insert(users));
+            return offlineData.empty('users')
+                .then(() => offlineData.insert('users', users));
+        })
+        .then((res) => {
+            if (!res) {
+                return;
+            }
+
+            window.db = offlineData;
+
+            const accesses = res.data.map((access, i) => [
+                i + 1,
+                access.cardId,
+                access.group,
+                access.start,
+                access.end
+            ]);
+
+            return offlineData.empty('accesses')
+                .then(() => offlineData.insert('accesses', accesses));
         })
         .catch((err) => {
             console.log(err);

@@ -20,7 +20,7 @@
         <search v-show="subpage === 'search'" @assign="assignModal"/>
         <barcode v-show="subpage === 'barcode'" @assign="assignModal"/>
         <modal v-show="assignModalOpened" :credit="assignModalCredit" :name="assignModalName" ref="modal" @close="closeModal"/>
-        <modal-ok v-if="showOkModal"/>
+        <ok v-if="showOkModal" @click.native="showOkModal = false"/>
     </div>
 </template>
 
@@ -34,7 +34,7 @@ import AssignerOfflineData from '../../lib/assignerOfflineData';
 import Barcode             from './Assigner-Barcode';
 import Search              from './Assigner-Search';
 import Modal               from './Assigner-Modal';
-import Ok                  from './Assigner-Ok';
+import Ok                  from './Ok';
 
 export default {
     components: {
@@ -42,7 +42,7 @@ export default {
         Search,
         Modal,
         Barcode,
-        'modal-ok': Ok
+        Ok
     },
 
     data() {
@@ -209,10 +209,6 @@ export default {
         ok() {
             this.showOkModal = true;
             this.closeModal();
-
-            setTimeout(() => {
-                this.showOkModal = false;
-            }, 1500);
         },
 
         ...mapActions(['addPendingRequest', 'updateEssentials'])

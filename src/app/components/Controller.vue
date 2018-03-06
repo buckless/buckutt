@@ -1,6 +1,6 @@
 <template>
     <div class="b-controller">
-        <chooser v-if="chooser" @groups="setGroups"/>
+        <chooser v-if="chooser" @groups="setGroups" @cancel="chooser = false" :defaultGroups="currentGroups"/>
         <button @click="chooser = true">Changer de groupe</button>
         <p>
             <strong>Groupe(s) actuel(s)</strong> :
@@ -12,19 +12,26 @@
             <br/>
             Scannez une carte pour vérifier son accès
         </p>
+        <ok v-if="showOkModal" :status="okModalStatus" @click.native="showOkModal = false"/>
     </div>
 </template>
 
 <script>
-import Chooser from './Controller-Chooser'
+import { mapActions } from 'vuex';
+import Chooser        from './Controller-Chooser';
+import Ok             from './Ok';
+import OfflineData    from '../../lib/offlineData';
 
 export default {
     components: {
+        Ok,
         Chooser
     },
 
     data() {
         return {
+            showOkModal: false,
+            okModalStatus: null,
             chooser: false,
             currentGroups: [  ]
         }
@@ -34,7 +41,43 @@ export default {
         setGroups(groups) {
             this.currentGroups = groups;
             this.chooser = false;
-        }
+        },
+
+        onCard(cardId) {
+            this.db
+                .cardAccesses(cardId)
+                .then((accesses) => {
+                    let match = false;
+
+                    for (let i = accesses.length - 1; i >= 0; i--) {
+                        // check if group matches one of currentGroups
+                        if (!this.currentGroups.find(group => group.id === accesses[i].group)) {
+                            continue;
+                        }
+
+                        const now   = new Date();
+                        const start = new Date(accesses[i].start);
+                        const end   = new Date(accesses[i].end);
+
+                        // check if now is between [start, end]
+                        if (now - start >= 0 && end - now >= 0) {
+                            match = true;
+                        }
+                    }
+
+                    this.okModalStatus = match;
+                    this.showOkModal = true;
+                });
+        },
+
+        ...mapActions(['updateEssentials'])
+    },
+
+    mounted() {
+        this.db = new OfflineData();
+
+        this.updateEssentials();
+        this.db.init();
     }
 }
 </script>
@@ -44,7 +87,6 @@ export default {
 
 .b-controller {
     width: 100%;
-    position: relative;
     background-color: #fafafa;
     text-align: center;
 }
