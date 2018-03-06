@@ -67,7 +67,10 @@
               "/events",
               "/services/controller"
           ],
-          "write": []
+          "write": [
+              "/accesses",
+              "/services/controller"
+          ]
       },
       "openUrls": [
           "/",

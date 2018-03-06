@@ -1,7 +1,8 @@
-const express  = require('express');
-const dbCatch  = require('../../lib/dbCatch');
-const APIError = require('../../errors/APIError');
-const config   = require('../../../config');
+const express       = require('express');
+const { bookshelf } = require('../../lib/bookshelf');
+const dbCatch       = require('../../lib/dbCatch');
+const APIError      = require('../../errors/APIError');
+const config        = require('../../../config');
 
 /**
  * Assigner controller. Handles cards assignment
@@ -46,6 +47,36 @@ router.get('/services/controller', (req, res, next) => {
                 .json(accesses)
                 .end();
         })
+        .catch(err => dbCatch(module, err, next));
+});
+
+router.post('/services/controller', (req, res, next) => {
+    return req.app.locals.models.MeanOfLogin
+        .query(q => q.where(bookshelf.knex.raw('lower(data)'), '=', req.body.cardId.toLowerCase().trim()))
+        .where({
+            type   : 'cardId',
+            blocked: false
+        })
+        .fetch()
+        .then(mol => ((mol) ? mol.toJSON() : null))
+        .then((mol) => {
+            if (!mol) {
+                const errDetails = {
+                    mol  : infos.type,
+                    point: req.Point_id
+                };
+
+                return next(new APIError(module, 401, 'User not found', errDetails));
+            }
+
+            const access = new req.app.locals.models.Access({
+                meanOfLogin_id: mol.id,
+                operator_id: req.user.id
+            });
+
+            return access.save();
+        })
+        .then(() => res.status(200).json({}).end())
         .catch(err => dbCatch(module, err, next));
 });
 
