@@ -9,52 +9,41 @@ const config   = require('../../../config');
 const router = new express.Router();
 
 router.get('/services/controller', (req, res, next) => {
-    req.app.locals.models.MeanOfLogin
-        .where({
-            type: 'cardId',
-            blocked: false
-        })
+    req.app.locals.models.Membership
+        .where('group_id', '!=', req.event.defaultGroup_id)
         .fetchAll({
             withRelated: [
+                'period',
                 'user',
-                { 'user.memberships': q => q.where('group_id', '!=', req.event.defaultGroup_id) },
-                'user.memberships.period'
+                { 'user.meansOfLogin': q => q.where({ type: 'cardId', blocked: false }) }
             ]
         })
-        .then((mols) => mols ? mols.toJSON() : null)
-        .then((mols) => {
-            if (!mols) {
+        .then((memberships) => memberships ? memberships.toJSON() : null)
+        .then((memberships) => {
+            if (!memberships) {
                 return [];
             }
 
-            const rights = [];
+            const accesses = [];
 
-            for (let i = mols.length - 1; i >= 0; i--) {
-                const groups = [];
-
-                const memberships = mols[i].user.memberships;
-
-                for (let j = memberships.length - 1; j >= 0; j--) {
-                    groups.push({
-                        groupId: memberships[j].group_id,
-                        start  : memberships[j].period.start,
-                        end    : memberships[j].period.end
-                    });
-                }
-
-                if (groups.length === 0) {
+            for (let i = memberships.length - 1; i >= 0; i--) {
+                if (!memberships[i].user ||
+                    !memberships[i].user.meansOfLogin ||
+                    !memberships[i].user.meansOfLogin.length) {
                     continue;
                 }
 
-                rights.push({
-                    cardId: mols[i].data,
-                    groups
+                accesses.push({
+                    cardId: memberships[i].user.meansOfLogin[0].data,
+                    group : memberships[i].group_id,
+                    start : memberships[i].period.start,
+                    end   : memberships[i].period.end
                 });
             }
 
             return res
                 .status(200)
-                .json(rights)
+                .json(accesses)
                 .end();
         })
         .catch(err => dbCatch(module, err, next));
