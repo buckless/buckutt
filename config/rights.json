@@ -64,8 +64,10 @@
           "read": [
               "/users",
               "/groups",
-              "/events"
-          ]
+              "/events",
+              "/services/controler"
+          ],
+          "write": []
       },
       "openUrls": [
           "/",
