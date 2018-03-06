@@ -31,7 +31,7 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
 
     return initialPromise
         .then((res) => {
-            if (!res.data.user.canSell && !res.data.user.canReload && !res.data.user.canAssign) {
+            if (!res.data.user.canSell && !res.data.user.canReload && !res.data.user.canAssign && !res.data.user.canControl) {
                 return Promise.reject({ response: { data: { message: 'Not enough rights' } } });
             }
 
@@ -44,10 +44,11 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
                 lastname   : res.data.user.lastname,
                 canSell    : res.data.user.canSell,
                 canReload  : res.data.user.canReload,
-                canAssign  : res.data.user.canAssign
+                canAssign  : res.data.user.canAssign,
+                canControl : res.data.user.canControl
             });
 
-            if (!res.data.user.canAssign) {
+            if (!res.data.user.canAssign && !res.data.user.canControl) {
                 commit('SET_DATA_LOADED', false);
 
                 return dispatch('dataLoader')

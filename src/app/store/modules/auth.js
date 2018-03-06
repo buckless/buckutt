@@ -39,6 +39,7 @@ const initialState = {
         canSell          : false,
         canReload        : false,
         canAssign        : false,
+        canControl       : false,
         disconnectWarning: false
     },
     groups: []
@@ -93,6 +94,7 @@ const mutations = {
         state.seller.canSell     = payload.canSell;
         state.seller.canReload   = payload.canReload;
         state.seller.canAssign   = payload.canAssign;
+        state.seller.canControl  = payload.canControl;
     },
 
     SET_GROUPS(state, groups) {

@@ -9,6 +9,7 @@
             <items v-if="!loginState && seller.canSell && !history" />
             <sidebar v-if="!loginState && seller.canSell && !history" />
             <assigner v-if="!loginState && seller.canAssign && !history" ref="assign" />
+            <controller v-if="!loginState && seller.canControl && !history" ref="controller" />
         </main>
         <reload
             v-if="!loginState"
@@ -52,6 +53,7 @@ import Error             from './components/Error';
 import Alert             from './components/Alert';
 import Offline           from './components/Offline';
 import Assigner          from './components/Assigner';
+import Controller        from './components/Controller';
 import AlcoholWarning    from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
 import WaitingForBuyer   from './components/WaitingForBuyer';
@@ -72,6 +74,7 @@ export default {
         Alert,
         Offline,
         Assigner,
+        Controller,
         AlcoholWarning,
         DisconnectWarning,
         WaitingForBuyer,
