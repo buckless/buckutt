@@ -1,7 +1,7 @@
 <template>
     <div class="b-controller">
         <chooser v-if="chooser" @groups="setGroups" @cancel="chooser = false" :defaultGroups="currentGroups"/>
-        <button @click="chooser = true">Changer de groupe</button>
+        <button @click="chooser = true">Changer de groupe(s)</button>
         <p>
             <strong>Groupe(s) actuel(s)</strong> :
             <br/>
@@ -17,10 +17,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import Chooser        from './Controller-Chooser';
-import Ok             from './Ok';
-import OfflineData    from '../../lib/offlineData';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import axios                                from 'axios';
+
+import Chooser     from './Controller-Chooser';
+import Ok          from './Ok';
+import OfflineData from '../../lib/offlineData';
 
 export default {
     components: {
@@ -33,8 +35,16 @@ export default {
             showOkModal: false,
             okModalStatus: null,
             chooser: false,
-            currentGroups: [  ]
+            currentGroups: []
         }
+    },
+
+    computed: {
+        ...mapState({
+            online: state => state.online.status,
+            seller: state => state.auth.seller.id
+        }),
+        ...mapGetters(['tokenHeaders'])
     },
 
     methods: {
@@ -65,12 +75,28 @@ export default {
                         }
                     }
 
+                    if (match) {
+                        const access = {
+                            operator_id: this.seller,
+                            cardId
+                        };
+
+                        if (this.online) {
+                            axios.post(`${config.api}/services/controller`, access, this.tokenHeaders);
+                        } else {
+                            this.addPendingRequest({
+                                url : `${config.api}/services/controller`,
+                                body: access
+                            });
+                        }
+                    }
+
                     this.okModalStatus = match;
                     this.showOkModal = true;
                 });
         },
 
-        ...mapActions(['updateEssentials'])
+        ...mapActions(['updateEssentials', 'addPendingRequest'])
     },
 
     mounted() {
