@@ -13,8 +13,12 @@
                     </div class="b-table__row">
                 </div class="b-table__header">
                 <div class="b-table__body">
-                    <div class="b-table__row" v-for="data in displayedData">
+                    <div class="b-table__row" v-for="(data, index) in displayedData">
                         <div v-for="header in headers" class="b-table__cell" :class="header.class">
+                            <template v-if="data.warning && index === 0">
+                                <mdl-tooltip :target="data.id" v-html="data.warning" class="b--uncapitalize"></mdl-tooltip>
+                                <i :id="data.id" class="material-icons b-table__warning">warning</i>
+                            </template>
                             <span v-if="header.type === 'price'">
                                 {{ lodget(data, header.field) | price(true) }}
                             </span>
@@ -24,6 +28,9 @@
                             <span v-else>
                                 {{ lodget(data, header.field) }}
                             </span>
+                            <ul v-if="header.list" class="b-table__list">
+                                <li v-for="article in lodget(data, header.list)">{{ article }}</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

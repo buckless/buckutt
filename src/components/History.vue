@@ -11,7 +11,7 @@
                         { title: 'Type', field: 'type' },
                         { title: 'Localisation', field: 'point' },
                         { title: 'Objet', field: 'object', list: 'articles' },
-                        { title: 'Vendeur', field: 'operator', class: 'b--capitalized' },
+                        { title: 'Opérateur', field: 'operator', class: 'b--capitalized' },
                         { title: 'Valeur', field: 'amount', type: 'price', class: 'b-table__numeric-cell' }
                     ]"
                     :data="displayedHistory"
