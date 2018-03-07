@@ -122,7 +122,7 @@ export const buyer = (store, { cardNumber, credit }) => {
     let shouldSendBasket   = false;
     let shouldWriteCredit  = false;
     let shouldClearBasket  = false;
-    let shouldCheckPending = store.state.online.status;
+    let shouldCheckPending = false;
 
     if (!store.state.auth.device.config.doubleValidation) {
         shouldClearBasket = true;
@@ -130,7 +130,8 @@ export const buyer = (store, { cardNumber, credit }) => {
         shouldSendBasket = true;
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
-            shouldWriteCredit = true;
+            shouldCheckPending = store.state.online.status;
+            shouldWriteCredit  = true;
         } else {
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
         }
@@ -139,6 +140,7 @@ export const buyer = (store, { cardNumber, credit }) => {
             shouldSendBasket   = true;
             shouldClearBasket  = true;
         } else {
+            shouldCheckPending         = store.state.online.status;
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
         }
     }
