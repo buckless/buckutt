@@ -70,13 +70,13 @@ export default {
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            buyer      : state => state.auth.buyer,
+            buyer      : state => state.auth.buyer
         })
     },
 
     methods: {
         onCard(value, credit) {
-            if (this.localCardNumber.length === 0) {
+            if (this.cardNumber.length === 0) {
                 this.localCardNumber = value;
                 return;
             }
