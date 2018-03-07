@@ -79,6 +79,9 @@ export default {
             if (this.cardNumber.length === 0) {
                 this.localCardNumber = value;
                 return;
+            } else if (this.cardNumber !== value) {
+                this.$store.commit('ERROR', { message: 'Different card used' });
+                return;
             }
 
             if (!this.selectedEntry) {
