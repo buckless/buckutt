@@ -104,10 +104,10 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit_ }) => {
+export const buyer = (store, { cardNumber, credit }) => {
     const token = store.getters.tokenHeaders;
 
-    let credit = credit_;
+    let cardCredit = credit;
 
     store.commit('SET_DATA_LOADED', false);
 
@@ -149,13 +149,13 @@ export const buyer = (store, { cardNumber, credit_ }) => {
         initialPromise = initialPromise
             .then(() => axios.get(pendingUrl, store.getters.tokenHeaders))
             .then((res) => {
-                credit += res.data.amount;
+                cardCredit += res.data.amount;
             });
     }
 
     if (shouldSendBasket) {
-        if (typeof credit === 'number') {
-            store.commit('OVERRIDE_BUYER_CREDIT', credit);
+        if (typeof cardCredit === 'number') {
+            store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
         }
 
         initialPromise = initialPromise
@@ -167,6 +167,7 @@ export const buyer = (store, { cardNumber, credit_ }) => {
     }
 
     if (shouldWriteCredit && store.state.auth.device.event.config.useCardData) {
+        console.log(store.state.ui.lastUser.credit);
         initialPromise = initialPromise.then(() => {
             window.nfc.write(
                 window.nfc.creditToData(store.state.ui.lastUser.credit, config.signingKey)
@@ -181,8 +182,8 @@ export const buyer = (store, { cardNumber, credit_ }) => {
     initialPromise = initialPromise
         .then(() => store.dispatch('interfaceLoader', interfaceLoaderCredentials))
         .then(() => {
-            if (typeof credit === 'number' && store.state.auth.device.event.config.useCardData) {
-                store.commit('OVERRIDE_BUYER_CREDIT', credit);
+            if (typeof cardCredit === 'number' && store.state.auth.device.event.config.useCardData) {
+                store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
             }
 
             if (shouldSendBasket && shouldWriteCredit && store.state.auth.device.event.config.useCardData) {

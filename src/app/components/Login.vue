@@ -76,6 +76,7 @@ export default {
 
             console.log('login-validate', cardNumber, credit)
             if (this.seller.isAuth) {
+                console.log(Number.isInteger(credit));
                 if (Number.isInteger(credit)) {
                     this.setBuyer({
                         cardNumber,
@@ -108,9 +109,9 @@ export default {
         },
 
         ...mapActions({
-            sellerId        : 'sellerId',
-            setBuyer        : 'buyer',
-            login           : 'login'
+            sellerId: 'sellerId',
+            setBuyer: 'buyer',
+            login   : 'login'
         })
     },
 

@@ -123,7 +123,6 @@ export const sendBasket = (store, payload = {}) => {
         initialPromise = Promise.resolve({
             data: {
                 transactionIds,
-                pendingCardUpdates: 0,
                 credit: store.getters.credit
             }
         });
@@ -142,10 +141,8 @@ export const sendBasket = (store, payload = {}) => {
             });
 
             store.commit('ID_BUYER', {
-                id    : lastBuyer.data.id,
-                credit: store.state.auth.device.event.config.useCardData
-                    ? store.getters.credit + lastBuyer.data.pendingCardUpdates
-                    : lastBuyer.data.credit,
+                id       : lastBuyer.data.id,
+                credit   : lastBuyer.data.credit,
                 firstname: lastBuyer.data.firstname,
                 lastname : lastBuyer.data.lastname
             });
