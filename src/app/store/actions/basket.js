@@ -153,7 +153,8 @@ export const sendBasket = (store, payload = {}) => {
             store.commit('REMOVE_RELOADS');
             store.commit('SET_BASKET_STATUS', 'WAITING');
             store.commit('SET_LAST_USER', {
-                name  : (store.state.auth.buyer.firstname) ?
+                display: false,
+                name   : (store.state.auth.buyer.firstname) ?
                     `${store.state.auth.buyer.firstname} ${store.state.auth.buyer.lastname}` :
                     null,
                 credit: store.state.auth.buyer.credit,

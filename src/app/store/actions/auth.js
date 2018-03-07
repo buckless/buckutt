@@ -123,22 +123,28 @@ export const buyer = (store, { cardNumber, credit }) => {
     let shouldWriteCredit  = false;
     let shouldClearBasket  = false;
     let shouldCheckPending = false;
+    let shouldChangeBuyer  = false;
 
-    if (!store.state.auth.device.config.doubleValidation) {
+    if (store.state.basket.basketStatus === 'WAITING_FOR_REWRITE') {
+        shouldWriteCredit = true;
+        shouldChangeBuyer = true;
+    } else if (!store.state.auth.device.config.doubleValidation) {
         shouldClearBasket = true;
         // First time: sendBasket will active "WAITING_FOR_BUYER" and return
         shouldSendBasket = true;
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
+            shouldChangeBuyer  = true;
             shouldCheckPending = store.state.online.status;
-            shouldWriteCredit  = true;
+            shouldWriteCredit  = store.state.auth.device.event.config.useCardData;
         } else {
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
         }
     } else {
         if (store.state.auth.buyer.isAuth) {
-            shouldSendBasket   = true;
-            shouldClearBasket  = true;
+            shouldSendBasket  = true;
+            shouldClearBasket = true;
+            shouldChangeBuyer = true;
         } else {
             shouldCheckPending         = store.state.online.status;
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
@@ -162,18 +168,18 @@ export const buyer = (store, { cardNumber, credit }) => {
 
         initialPromise = initialPromise
             .then(() => store.dispatch('sendBasket', { cardNumber }))
-            .then(() => store.commit('SET_BASKET_STATUS', 'WAITING'));
+            .then(() => store.commit('SET_BASKET_STATUS', 'WAITING'))
     } else {
         initialPromise = initialPromise
             .then(() => store.commit('SET_BUYER_MOL', cardNumber));
     }
 
-    if (shouldWriteCredit && store.state.auth.device.event.config.useCardData) {
-        initialPromise = initialPromise.then(() => {
+    if (shouldWriteCredit) {
+        initialPromise = initialPromise.then(() =>
             window.nfc.write(
                 window.nfc.creditToData(store.state.ui.lastUser.credit, config.signingKey)
-            );
-        });
+            )
+        );
     }
 
     if (shouldClearBasket) {
@@ -187,8 +193,10 @@ export const buyer = (store, { cardNumber, credit }) => {
                 store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
             }
 
-            if (shouldSendBasket && shouldWriteCredit && store.state.auth.device.event.config.useCardData) {
+            if (shouldChangeBuyer) {
+                store.commit('OPEN_TICKET');
                 store.commit('LOGOUT_BUYER');
+                store.commit('SET_BASKET_STATUS', 'WAITING');
             }
         })
         .catch((err) => {
@@ -196,6 +204,9 @@ export const buyer = (store, { cardNumber, credit }) => {
 
             if (err.message === 'Network Error') {
                 store.commit('ERROR', { message: 'Server not reacheable' });
+                return;
+            } else if (err.message === 'Write failed : Error: Error: java.lang.Exception') {
+                store.commit('SET_BASKET_STATUS', 'WAITING_FOR_REWRITE');
                 return;
             }
 
