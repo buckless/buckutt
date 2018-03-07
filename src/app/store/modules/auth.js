@@ -104,13 +104,13 @@ const mutations = {
     },
 
     ID_BUYER(state, payload) {
-        state.buyer.isAuth       = true;
-        state.buyer.id           = payload.id;
-        state.buyer.credit       = payload.credit;
-        state.buyer.firstname    = payload.firstname;
-        state.buyer.lastname     = payload.lastname;
-        state.buyer.groups       = payload.groups;
-        state.buyer.purchases    = payload.purchases;
+        state.buyer.isAuth    = true;
+        state.buyer.id        = payload.id;
+        state.buyer.credit    = payload.credit;
+        state.buyer.firstname = payload.firstname;
+        state.buyer.lastname  = payload.lastname;
+        state.buyer.groups    = payload.groups;
+        state.buyer.purchases = payload.purchases;
     },
 
     OVERRIDE_BUYER_CREDIT(state, credit) {

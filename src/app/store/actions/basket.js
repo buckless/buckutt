@@ -26,6 +26,9 @@ export const sendBasket = (store, payload = {}) => {
     if (!store.state.auth.device.config.doubleValidation) {
         if (store.state.basket.basketStatus !== 'WAITING_FOR_BUYER') {
             store.commit('SET_BASKET_STATUS', 'WAITING_FOR_BUYER');
+            if (payload.cardNumber) {
+                store.commit('SET_BUYER_MOL', payload.cardNumber);
+            }
             return;
         }
     }

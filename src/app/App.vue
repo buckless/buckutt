@@ -113,14 +113,12 @@ export default {
             const value = this.inputValue;
             this.inputValue = '';
 
-            if (this.waitingForBuyer || !this.buyer.isAuth) {
-                if (this.seller.isAuth && this.history) {
-                    this.$refs.history.onCard(value, credit);
-                } else if (this.seller.isAuth && this.seller.canAssign) {
-                    this.$refs.assign.onBarcode(value);
-                } else {
-                    this.$refs.login.validate(value, credit);
-                }
+            if (this.seller.isAuth && this.history) {
+                this.$refs.history.onCard(value, credit);
+            } else if (this.seller.isAuth && this.seller.canAssign) {
+                this.$refs.assign.onBarcode(value);
+            } else if (this.waitingForBuyer || !this.buyer.isAuth) {
+                this.$refs.login.validate(value, credit);
             }
         },
 

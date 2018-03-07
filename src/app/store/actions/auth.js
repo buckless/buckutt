@@ -169,7 +169,6 @@ export const buyer = (store, { cardNumber, credit }) => {
     }
 
     if (shouldWriteCredit && store.state.auth.device.event.config.useCardData) {
-        console.log(store.state.ui.lastUser.credit);
         initialPromise = initialPromise.then(() => {
             window.nfc.write(
                 window.nfc.creditToData(store.state.ui.lastUser.credit, config.signingKey)
