@@ -13,11 +13,10 @@
                     </div class="b-table__row">
                 </div class="b-table__header">
                 <div class="b-table__body">
-                    <div class="b-table__row" v-for="(data, index) in displayedData">
-                        <div v-for="header in headers" class="b-table__cell" :class="header.class">
+                    <div class="b-table__row" v-for="(data, index) in displayedData" :class="{ 'b-table__row--removed': data.warning }">
+                        <div v-for="header in headers" class="b-table__cell" :class="header.class" :class="">
                             <template v-if="data.warning && index === 0">
-                                <mdl-tooltip :target="data.id" v-html="data.warning" class="b--uncapitalize"></mdl-tooltip>
-                                <i :id="data.id" class="material-icons b-table__warning">warning</i>
+                                <i class="material-icons">delete</i>
                             </template>
                             <span v-if="header.type === 'price'">
                                 {{ lodget(data, header.field) | price(true) }}
@@ -232,6 +231,10 @@ export default {
         display: flex;
         align-items: center;
     }
+}
+
+.b-table__row--removed {
+    background-color: #f0f0f0;
 }
 
 .b-table__row:not(.b-table__header-row) {
