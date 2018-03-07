@@ -29,6 +29,9 @@
 
 `$ electron-rebuild`
 
+## Build docker image
+`$ docker-build -t buckless/client .`
+
 ## Development
 ### Browser
 `$ yarn dev:browser`
