@@ -35,7 +35,7 @@ import { mapGetters, mapState } from 'vuex';
 import debounce from 'lodash.debounce';
 import axios from 'axios';
 
-import AssignerOfflineData from '../../lib/assignerOfflineData';
+import OfflineData from '../../lib/offlineData';
 
 export default {
     data() {
@@ -94,7 +94,7 @@ export default {
     },
 
     mounted() {
-        this.db = new AssignerOfflineData();
+        this.db = new OfflineData();
 
         this.db.init();
     }

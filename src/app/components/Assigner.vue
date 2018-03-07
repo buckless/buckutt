@@ -28,13 +28,13 @@
 import axios                                from 'axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
-import barcode             from '../../lib/barcode';
-import AssignerOfflineData from '../../lib/assignerOfflineData';
-// import CreateAccount    from './Assigner-CreateAccount';
-import Barcode             from './Assigner-Barcode';
-import Search              from './Assigner-Search';
-import Modal               from './Assigner-Modal';
-import Ok                  from './Ok';
+import barcode          from '../../lib/barcode';
+import OfflineData      from '../../lib/offlineData';
+// import CreateAccount from './Assigner-CreateAccount';
+import Barcode          from './Assigner-Barcode';
+import Search           from './Assigner-Search';
+import Modal            from './Assigner-Modal';
+import Ok               from './Ok';
 
 export default {
     components: {
@@ -215,7 +215,7 @@ export default {
     },
 
     mounted() {
-        this.db = new AssignerOfflineData();
+        this.db = new OfflineData();
 
         this.updateEssentials();
         this.db.init();
