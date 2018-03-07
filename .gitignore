@@ -9,3 +9,4 @@ cordova/www
 cordova/platforms
 cordova/plugins
 config/profiles/*.json
+buckless-certificate.p12
