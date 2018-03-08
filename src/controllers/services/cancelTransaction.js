@@ -1,4 +1,5 @@
 const express       = require('express');
+const { bookshelf } = require('../../lib/bookshelf');
 const APIError      = require('../../errors/APIError');
 const rightsDetails = require('../../lib/rightsDetails');
 const logger        = require('../../lib/log');
@@ -78,11 +79,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
             if (req.transaction.model === 'Purchase' || req.transaction.model === 'Refund') {
                 getUserInst(models.User, req.transaction.data.buyer_id)
                     .then((user) => {
-                        user.set('credit', user.get('credit') + amount);
-                        req.pendingCardUpdates[user.id] = {
-                            user,
-                            amount
-                        };
+                        req.pendingCardUpdates[user.id] = amount;
 
                         next();
                     });
@@ -93,11 +90,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                             return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
                         }
 
-                        user.set('credit', user.get('credit') - amount);
-                        req.pendingCardUpdates[user.id] = {
-                            user,
-                            amount: -1 * amount
-                        };
+                        req.pendingCardUpdates[user.id] = amount: -1 * amount;
 
                         next();
                     });
@@ -108,20 +101,12 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                             return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
                         }
 
-                        user.set('credit', user.get('credit') - amount);
-                        req.pendingCardUpdates[user.id] = {
-                            user,
-                            amount: -1 * amount
-                        };
+                        req.pendingCardUpdates[user.id] = -1 * amount;
 
                         return getUserInst(models.User, req.transaction.data.reciever_id);
                     })
                     .then((user) => {
-                        user.set('credit', user.get('credit') + amount);
-                        req.pendingCardUpdates[user.id] = {
-                            user,
-                            amount
-                        };
+                        req.pendingCardUpdates[user.id] = amount;
 
                         next();
                     });
@@ -138,34 +123,40 @@ router.post('/services/cancelTransaction', (req, res, next) => {
         if (req.event.useCardData && req.query.addPendingCardUpdate && rightsDetails(req.user).admin) {
             query = new req.app.locals.models.PendingCardUpdate({
                 user_id: user,
-                amount : req.pendingCardUpdates[user].amount
-            });
+                amount : req.pendingCardUpdates[user]
+            })
+                .save()
+                .then(() => ({
+                    id     : user,
+                    pending: req.pendingCardUpdates[user]
+                }));
         } else {
-            query = req.pendingCardUpdates[user].user;
-            query.set('updated_at', new Date());
+            query = bookshelf
+                .knex('users')
+                .where({ id: user })
+                .update({
+                    updated_at: new Date(),
+                    credit    : bookshelf.knex.raw(`credit + ${req.pendingCardUpdates[user]}`)
+                })
+                .returning('credit')
+                .then(credit => ({
+                    id: user,
+                    credit
+                }));
         }
 
-        queries.push(query.save());
+        queries.push(query);
     });
 
     const Model = req.app.locals.models[req.transaction.model];
 
     Promise.all(queries)
-        .then(() => new Model({ id: req.transaction.data.id }).destroy())
-        .then(() => {
-            queries.forEach((query) => {
-                const userCreditUpdate = {
-                    id: query.get('user_id') || query.get('id')
-                };
-
-                if (query.get('amount')) {
-                    userCreditUpdate.pending = query.get('amount');
-                } else {
-                    userCreditUpdate.credit = query.get('credit');
-                }
-
-                req.app.locals.modelChanges.emit('userCreditUpdate', userCreditUpdate);
+        .then((results) => {
+            results.forEach((result) => {
+                req.app.locals.modelChanges.emit('userCreditUpdate', result);
             });
+
+            return new Model({ id: req.transaction.data.id }).destroy();
         })
         .then(() =>
             res
