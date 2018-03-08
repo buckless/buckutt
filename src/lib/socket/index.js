@@ -3,7 +3,8 @@ const fs     = require('fs');
 const config = require('../../../config');
 
 const opts = {
-    pfx               : fs.readFileSync(JSON.parse(config.certificate.path)),
+    // pfx               : fs.readFileSync(JSON.parse(config.certificate.path)),
+    pfx               : null,
     passphrase        : JSON.parse(config.certificate.password),
     rejectUnauthorized: false
 };

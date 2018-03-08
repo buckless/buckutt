@@ -51,7 +51,7 @@ export default {
 .b-waiting-for-buyer__modal__text {
     & > span:first-child {
         display: inline-block;
-        color: var(--red);
+        color: $red;
     }
 
     & > span:last-child {
@@ -59,7 +59,7 @@ export default {
         margin: 10px 10px 0;
         font-size: 16px;
         font-weight: normal;
-        color: var(--black) !important;
+        color: $black !important;
     }
 }
 </style>

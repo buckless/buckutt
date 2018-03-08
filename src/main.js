@@ -47,7 +47,7 @@ function createWindow() {
         password   : JSON.parse(config.certificate.password)
     };
 
-    app.importCertificate(opts, result => console.log(result));
+    // app.importCertificate(opts, result => console.log(result));
 }
 
 app.on('ready', createWindow);

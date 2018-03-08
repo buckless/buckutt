@@ -200,7 +200,7 @@ export default {
 
 .b-history__text a {
     display: inline-block;
-    color: var(--red);
+    color: $red;
     margin-top: 16px;
     text-decoration: none;
 }
@@ -235,16 +235,16 @@ export default {
 
 .b-history__list__entry__reload {
     font-weight: bold;
-    color: var(--green);
+    color: $green;
 }
 
 .b-history__list__entry__cost {
     font-weight: bold;
-    color: var(--orange);
+    color: $orange;
 }
 
 .b-history__list__entry__button {
-    background: var(--red);
+    background: $red;
     color: #fff;
     cursor: pointer;
     padding: 5px 10px;

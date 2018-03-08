@@ -63,7 +63,7 @@ export default {
         color: #fff;
 
         &:after {
-            background-color: var(--red);
+            background-color: $red;
         }
     }
 }

@@ -122,7 +122,7 @@ export default {
 }
 
 .b-upper-bar__buyer__credit--negative {
-    color: var(--red);
+    color: $red;
     font-weight: bold;
 }
 
@@ -154,7 +154,7 @@ export default {
     }
 
     .b-upper-bar__actions__action-cancel--active > .b-icon {
-        color: var(--red);
+        color: $red;
     }
 }
 </style>

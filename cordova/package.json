@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "displayName": "Buckless Client",
   "cordova": {
-    "platforms": [
-      "android"
-    ],
+    "platforms": [],
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-client-cert-authentication": {},

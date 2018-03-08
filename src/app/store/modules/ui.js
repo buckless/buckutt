@@ -17,6 +17,7 @@ const initialState = {
 const mutations = {
     SET_DATA_LOADED(state, loaded = true) {
         state.dataLoaded = loaded;
+        console.log('elmumuxe');
     },
 
     APPEND_INPUT_STREAM(state, { key }) {

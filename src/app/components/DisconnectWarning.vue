@@ -62,7 +62,7 @@ export default {
 .b-disconnect-warning__modal__buttons > button {
     background-color: #fff;
     border: 0;
-    color: var(--lightblue);
+    color: $lightblue;
     cursor: pointer;
     height: 36px;
     padding: 0 16px;
@@ -71,11 +71,11 @@ export default {
     text-transform: uppercase;
 
     &:last-child {
-        color: var(--red);
+        color: $red;
     }
 
     &:active, &:focus, &:hover {
-        background-color: color(var(--black) a(0.075));
+        background-color: color($black a(0.075));
     }
 }
 

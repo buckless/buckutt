@@ -139,7 +139,7 @@ export default {
 }
 
 .b-reload__modal__topbar__cancel {
-    color: var(--lightblue);
+    color: $lightblue;
     cursor: pointer;
     flex: 0;
     font-size: 14px;
@@ -154,7 +154,7 @@ export default {
 }
 
 .b-reload__modal__currency {
-    color: color(var(--black) a(0.65));
+    color: color($black a(0.65));
     font-size: 25px;
     margin-bottom: 15px;
     text-align: center;
@@ -172,9 +172,9 @@ export default {
 
     & > button {
         border: 0;
-        background-color: var(--green);
+        background-color: $green;
         border-radius: 2px;
-        box-shadow: 0 2px 4px color(var(--black) a(0.25));
+        box-shadow: 0 2px 4px color($black a(0.25));
         color: #fff;
         cursor: pointer;
         height: 45px;
@@ -182,7 +182,7 @@ export default {
     }
 
     & > button:last-child {
-        background-color: var(--lightorange);
+        background-color: $lightorange;
         margin: 10px 0;
     }
 }

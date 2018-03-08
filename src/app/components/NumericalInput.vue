@@ -130,7 +130,7 @@ export default {
 
 .b-numerical-input__row__button {
     background: #fff;
-    border: 1px solid color(var(--black) a(0.25));
+    border: 1px solid color($black a(0.25));
     border-radius: 1px;
     cursor: pointer;
     flex: 1;

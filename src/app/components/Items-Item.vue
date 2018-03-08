@@ -83,8 +83,8 @@ export default {
 @import '../main.css';
 
 .b-item {
-    box-shadow: 0 0 2px color(var(--black) a(0.25)),
-                0 2px 3px color(var(--black) a(0.25));
+    box-shadow: 0 0 2px color($black a(0.25)),
+                0 2px 3px color($black a(0.25));
     border-radius: 2px;
     cursor: pointer;
     height: 150px;
@@ -93,7 +93,7 @@ export default {
     width: 150px;
 
     &--selected {
-        border: 4px solid var(--lightblue);
+        border: 4px solid $lightblue;
     }
 }
 
@@ -113,7 +113,7 @@ export default {
 }
 
 .b-item__count, .b-item__minus {
-    background-color: var(--red);
+    background-color: $red;
     border-radius: 50%;
     color: #fff;
     font-weight: bold;
@@ -127,7 +127,7 @@ export default {
 }
 
 .b-item__minus {
-    background-color: var(--orange);
+    background-color: $orange;
     top: calc(50% - 15px);
     z-index: 2;
 
@@ -156,7 +156,7 @@ export default {
 }
 
 .b-item__price {
-    background: var(--green);
+    background: $green;
     border-bottom-right-radius: 2px;
     color: #000;
     left: 0;

@@ -68,7 +68,7 @@ export default {
     width: 100%;
 
     &:active, &:focus, &:hover {
-        background-color: color(var(--black) a(0.3));
+        background-color: color($black a(0.3));
     }
 }
 </style>

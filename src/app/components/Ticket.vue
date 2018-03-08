@@ -66,7 +66,7 @@ export default {
 
     & > hr {
         border: 0;
-        border-top: 1px solid color(var(--black) a(0.2));
+        border-top: 1px solid color($black a(0.2));
         position: relative;
         top: -35px;
         width: 50px;
