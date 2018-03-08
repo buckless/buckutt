@@ -14,8 +14,10 @@ const mutations = {
     },
 
     REMOVE_FROM_HISTORY(state, payload) {
+        const index = state.history.findIndex(entry => entry.transactionIds === payload.transactionIds)
+
         state.history.splice(
-            state.history.indexOf(payload),
+            index,
             1
         );
     },
