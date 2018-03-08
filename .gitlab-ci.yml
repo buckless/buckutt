@@ -1,0 +1,18 @@
+image: node:alpine
+
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_DB: buckless_test
+  POSTGRES_USER: buckless
+  POSTGRES_PASSWORD: "buckless"
+
+cache:
+  paths:
+    - node_modules/
+
+job:
+  script:
+    - yarn lint
+    - yarn test
