@@ -179,10 +179,9 @@ router.post('/services/basket', (req, res, next) => {
 
             const savePurchase = purchase
                 .save()
+                .then(() => transactionIds.purchases.push(purchase.id))
                 .then(() => Promise.all(Object.keys(countIds).map((articleId) => {
                     const count = countIds[articleId];
-
-                    transactionIds.purchases.push(purchase.id);
 
                     return bookshelf
                         .knex('articles_purchases')
