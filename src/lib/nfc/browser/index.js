@@ -43,6 +43,16 @@ module.exports = class NFC extends EventEmitter {
             this.emit('cardType', 'mockedCard');
             this.emit('data', mock.cardValue);
         };
+
+        window.mock.print = () => {
+            if (!localStorage.hasOwnProperty('mocked-card')) {
+                throw new Error('You need to use mock.storeCard to create a mocked card first');
+            }
+
+            const mock = JSON.parse(localStorage.getItem('mocked-card'));
+
+            console.log(mock);
+        };
     }
 
     write(data) {
@@ -51,9 +61,9 @@ module.exports = class NFC extends EventEmitter {
         // do not store cardValue as buffer because it can't be restored as a buffer
         mock.cardValue = nfc.dataToCredit(data, config.signingKey);
 
-        console.log('write-data', mock.cardValue);
+        console.warn(`Writing card to local storage : ${mock.cardId}(${mock.cardValue})`);
 
-        localStorage.setItem('mocked-card', JSON.stringify({ cardId, cardValue }));
+        localStorage.setItem('mocked-card', JSON.stringify({ cardId: mock.cardId, cardValue: mock.cardValue }));
     }
 
     dataToCredit(data, signingKey) {
