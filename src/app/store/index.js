@@ -18,7 +18,7 @@ Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV === 'development';
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
     state: {
         isReloadOpen : false,
         meanOfPayment: 'card',
@@ -39,3 +39,37 @@ export default new Vuex.Store({
     strict : debug,
     plugins: debug ? [createLogger()] : []
 });
+
+if (module.hot) {
+    // accept actions and mutations as hot modules
+    module.hot.accept(['./modules/auth', './modules/basket', './modules/history', './modules/items'
+        , './modules/online', './modules/reload', './modules/ui'], () => {
+
+        console.log('Hot update triggered');
+        const newAuth    = require('./modules/auth').default;
+        const newBasket  = require('./modules/basket').default;
+        const newHistory = require('./modules/history').default;
+        const newItems   = require('./modules/items').default;
+        const newOnline  = require('./modules/online').default;
+        const newReload  = require('./modules/reload').default;
+        const newUi      = require('./modules/ui').default;
+
+        console.log(newOnline.mutations.SET_ONLINE);
+
+        store.hotUpdate({
+            modules: {
+                auth   : newAuth,
+                basket : newBasket,
+                history: newHistory,
+                items  : newItems,
+                online : newOnline,
+                reload : newReload,
+                ui     : newUi,
+            }
+        });
+
+        setTimeout(() => { console.log(store) }, 2000);
+    });
+}
+
+export default store;

@@ -5,10 +5,11 @@ const initialState = {
     currentTab  : 0,
     currentTabId: null,
     lastUser    : {
-        name  : null,
-        bought: 0,
-        reload: 0,
-        credit: 0
+        display: false,
+        name   : null,
+        bought : 0,
+        reload : 0,
+        credit : 0
     },
     error: null
 };
@@ -16,6 +17,7 @@ const initialState = {
 const mutations = {
     SET_DATA_LOADED(state, loaded = true) {
         state.dataLoaded = loaded;
+        console.log('elmumuxe');
     },
 
     APPEND_INPUT_STREAM(state, { key }) {
@@ -33,6 +35,10 @@ const mutations = {
     CHANGE_TAB(state, { tab, index }) {
         state.currentTab   = index;
         state.currentTabId = tab;
+    },
+
+    OPEN_TICKET(state) {
+        state.lastUser.display = true;
     },
 
     SET_LAST_USER(state, payload) {

@@ -34,7 +34,7 @@ export const cancelEntry = (store, payload) => {
                 .concat(cancelReloads)
                 .map(body => axios.post(cancelUrl, body, store.getters.tokenHeaders));
 
-            return Promise.all(reqs)
+            return Promise.all(reqs);
         } else {
             // we're offline
 

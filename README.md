@@ -8,9 +8,6 @@
 - npm >= 5.6
 - node >= 8.9.1
 - node-gyp >= 3.6.2
-- electron
-- electron-rebuild
-- cordova
 - Android requirements (https://cordova.apache.org/docs/fr/latest/guide/platforms/android/)
 
 
@@ -18,7 +15,7 @@
 ### Set Python npm version
 `node-gyp` will fail if the default Python version is Python 3.x. Workaround :
 
-`$ echo export npm_config_python=[PATH_TO_PYTHON2.7] >> ~/[.zshrc||.bashrc] && source ~/[.zshrc||.bashrc]`
+`$ npm config set python [PATH_TO_PYTHON2.7]`
 
 ### Dependencies
 `$ git clone git@lab.buckless.com:core/client.git`
@@ -27,7 +24,7 @@
 ### Electron dependencies
 `yarn` installs native bindings for the OS's `node` version. As electron's `node` version is behind, native bindings needs to be recompiled. Be sure to do the following command before building or developing with electron:
 
-`$ electron-rebuild`
+`$ yarn buildnative`
 
 ## Build docker image
 `$ docker-build -t buckless/client .`

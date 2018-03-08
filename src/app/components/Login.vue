@@ -108,9 +108,9 @@ export default {
         },
 
         ...mapActions({
-            sellerId        : 'sellerId',
-            setBuyer        : 'buyer',
-            login           : 'login'
+            sellerId: 'sellerId',
+            setBuyer: 'buyer',
+            login   : 'login'
         })
     },
 
@@ -139,7 +139,7 @@ export default {
 
 .b-login__card {
     background-color: #fff;
-    box-shadow: 0 2px 4px color(var(--black) a(0.3));
+    box-shadow: 0 2px 4px color($black a(0.3));
     margin: 40px auto;
     max-width: 500px;
     min-height: 100px;
@@ -154,7 +154,7 @@ export default {
 }
 
 .b-login__card__password {
-    border: 1px solid color(var(--black) a(0.2));
+    border: 1px solid color($black a(0.2));
     height: 45px;
     line-height: 45px;
     margin: 20px 0;

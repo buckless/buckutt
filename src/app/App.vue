@@ -22,7 +22,7 @@
         <alert v-if="alert" />
         <offline />
         <waiting-for-buyer />
-        <Ticket v-if="lastUser.credit && !loginState && !doubleValidation" :user="lastUser" />
+        <Ticket v-if="lastUser.display && !loginState && !doubleValidation" :user="lastUser" />
         <input
             class="b--out-of-screen"
             type="text"
@@ -88,17 +88,18 @@ export default {
 
     computed: {
         ...mapState({
-            buyer           : state => state.auth.buyer,
-            seller          : state => state.auth.seller,
-            basketStatus    : state => state.basket.basketStatus,
-            loaded          : state => state.ui.dataLoaded,
-            waitingForBuyer : state => state.basket.basketStatus === 'WAITING_FOR_BUYER',
-            lastUser        : state => state.ui.lastUser,
-            doubleValidation: state => state.auth.device.config.doubleValidation,
-            useCardData     : state => state.auth.device.event.config.useCardData,
-            online          : state => state.online.status,
-            history         : state => state.history.opened,
-            alert           : state => state.auth.alert
+            buyer            : state => state.auth.buyer,
+            seller           : state => state.auth.seller,
+            basketStatus     : state => state.basket.basketStatus,
+            loaded           : state => state.ui.dataLoaded,
+            waitingForBuyer  : state => state.basket.basketStatus === 'WAITING_FOR_BUYER',
+            waitingForRewrite: state => state.basket.basketStatus === 'WAITING_FOR_REWRITE',
+            lastUser         : state => state.ui.lastUser,
+            doubleValidation : state => state.auth.device.config.doubleValidation,
+            useCardData      : state => state.auth.device.event.config.useCardData,
+            online           : state => state.online.status,
+            history          : state => state.history.opened,
+            alert            : state => state.auth.alert
         }),
 
         ...mapGetters(['loginState'])
@@ -113,14 +114,12 @@ export default {
             const value = this.inputValue;
             this.inputValue = '';
 
-            if (this.waitingForBuyer || !this.buyer.isAuth) {
-                if (this.seller.isAuth && this.history) {
-                    this.$refs.history.onCard(value, credit);
-                } else if (this.seller.isAuth && this.seller.canAssign) {
-                    this.$refs.assign.onBarcode(value);
-                } else {
-                    this.$refs.login.validate(value, credit);
-                }
+            if (this.seller.isAuth && this.history) {
+                this.$refs.history.onCard(value, credit);
+            } else if (this.seller.isAuth && this.seller.canAssign) {
+                this.$refs.assign.onBarcode(value);
+            } else if (this.waitingForBuyer || this.waitingForRewrite || !this.buyer.isAuth) {
+                this.$refs.login.validate(value, credit);
             }
         },
 

@@ -26,6 +26,9 @@ export const sendBasket = (store, payload = {}) => {
     if (!store.state.auth.device.config.doubleValidation) {
         if (store.state.basket.basketStatus !== 'WAITING_FOR_BUYER') {
             store.commit('SET_BASKET_STATUS', 'WAITING_FOR_BUYER');
+            if (payload.cardNumber) {
+                store.commit('SET_BUYER_MOL', payload.cardNumber);
+            }
             return;
         }
     }
@@ -123,7 +126,6 @@ export const sendBasket = (store, payload = {}) => {
         initialPromise = Promise.resolve({
             data: {
                 transactionIds,
-                pendingCardUpdates: 0,
                 credit: store.getters.credit
             }
         });
@@ -142,10 +144,8 @@ export const sendBasket = (store, payload = {}) => {
             });
 
             store.commit('ID_BUYER', {
-                id    : lastBuyer.data.id,
-                credit: store.state.auth.device.event.config.useCardData
-                    ? store.getters.credit + lastBuyer.data.pendingCardUpdates
-                    : lastBuyer.data.credit,
+                id       : lastBuyer.data.id,
+                credit   : lastBuyer.data.credit,
                 firstname: lastBuyer.data.firstname,
                 lastname : lastBuyer.data.lastname
             });
@@ -153,7 +153,8 @@ export const sendBasket = (store, payload = {}) => {
             store.commit('REMOVE_RELOADS');
             store.commit('SET_BASKET_STATUS', 'WAITING');
             store.commit('SET_LAST_USER', {
-                name  : (store.state.auth.buyer.firstname) ?
+                display: false,
+                name   : (store.state.auth.buyer.firstname) ?
                     `${store.state.auth.buyer.firstname} ${store.state.auth.buyer.lastname}` :
                     null,
                 credit: store.state.auth.buyer.credit,

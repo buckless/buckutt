@@ -161,7 +161,7 @@ export default {
 
 .b-assigner-create-account button {
     margin: 32px 0;
-    background-color: var(--green);
+    background-color: $green;
     color: #fff;
     cursor: pointer;
     border: 0;

@@ -47,7 +47,7 @@ export default {
 @import '../main.css';
 
 .b-header {
-    background-color: var(--blue);
+    background-color: $blue;
     color: #fff;
     height: 112px;
     width: 100%;

@@ -50,12 +50,18 @@ export default {
 
     data() {
         return {
-            selectedEntry: null,
-            cardNumber: ''
+            selectedEntry  : null,
+            localCardNumber: ''
         }
     },
 
     computed: {
+        cardNumber() {
+            return this.buyer.isAuth
+                ? this.buyer.meanOfLogin
+                : this.localCardNumber;
+        },
+
         entries() {
             return this.$store.state.history.history
                 .filter(e => e.cardNumber === this.cardNumber)
@@ -63,14 +69,18 @@ export default {
         },
 
         ...mapState({
-            useCardData: state => state.auth.device.event.config.useCardData
+            useCardData: state => state.auth.device.event.config.useCardData,
+            buyer      : state => state.auth.buyer
         })
     },
 
     methods: {
         onCard(value, credit) {
             if (this.cardNumber.length === 0) {
-                this.cardNumber = value;
+                this.localCardNumber = value;
+                return;
+            } else if (this.cardNumber !== value) {
+                this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
             }
 
@@ -102,6 +112,10 @@ export default {
                         window.nfc.write(
                             window.nfc.creditToData(newCredit, config.signingKey)
                         );
+                    }
+
+                    if (this.buyer.isAuth) {
+                        this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
                     }
 
                     this.$refs.modal.ok();
@@ -186,7 +200,7 @@ export default {
 
 .b-history__text a {
     display: inline-block;
-    color: var(--red);
+    color: $red;
     margin-top: 16px;
     text-decoration: none;
 }
@@ -221,16 +235,16 @@ export default {
 
 .b-history__list__entry__reload {
     font-weight: bold;
-    color: var(--green);
+    color: $green;
 }
 
 .b-history__list__entry__cost {
     font-weight: bold;
-    color: var(--orange);
+    color: $orange;
 }
 
 .b-history__list__entry__button {
-    background: var(--red);
+    background: $red;
     color: #fff;
     cursor: pointer;
     padding: 5px 10px;

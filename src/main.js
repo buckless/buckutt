@@ -47,10 +47,7 @@ function createWindow() {
         password   : JSON.parse(config.certificate.password)
     };
 
-    // On macOS, use `$ security import buckless-certificate.p12 -P password`
-    if (process.platform !== 'darwin') {
-        app.importCertificate(opts, result => console.log(result));
-    }
+    // app.importCertificate(opts, result => console.log(result));
 }
 
 app.on('ready', createWindow);

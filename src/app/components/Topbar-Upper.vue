@@ -24,16 +24,16 @@
                 <i class="b-icon">history</i>
             </div>
             <div
-                v-if="displayLogout"
-                class="b-upper-bar__actions__action-eject"
-                @click="logout">
-                <i class="b-icon">eject</i>
-            </div>
-            <div
                 v-if="!loginState && seller.canReload && seller.canSell"
                 class="b-upper-bar__actions__action-reload"
                 @click="openReloadModal">
                 <i class="b-icon">attach_money</i>
+            </div>
+            <div
+                v-if="displayLogout"
+                class="b-upper-bar__actions__action-eject"
+                @click="logout">
+                <i class="b-icon">eject</i>
             </div>
         </div>
     </div>
@@ -122,7 +122,7 @@ export default {
 }
 
 .b-upper-bar__buyer__credit--negative {
-    color: var(--red);
+    color: $red;
     font-weight: bold;
 }
 
@@ -154,7 +154,7 @@ export default {
     }
 
     .b-upper-bar__actions__action-cancel--active > .b-icon {
-        color: var(--red);
+        color: $red;
     }
 }
 </style>

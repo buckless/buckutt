@@ -19,6 +19,10 @@ export default (state, error) => {
         return 'Client introuvable';
     }
 
+    if (error.message === 'Different card used') {
+        return 'Une carte différente de la carte initiale a été utilisée.';
+    }
+
     if (error.message === 'This device doesn\'t meet the minimal requirements to run offline.') {
         return 'Cet équippement ne possède pas les données minimum pour fonctionner hors-ligne.';
     }
