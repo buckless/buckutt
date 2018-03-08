@@ -43,7 +43,7 @@ module.exports = class NFC extends EventEmitter {
 
         window.mock.scan = (name) => {
             if (!localStorage.hasOwnProperty('mocked-cards')) {
-                throw new Error('You need to use mock.storeCard to create a mocked card first');
+                throw new Error('You need to use mock.addCard to create a mocked card first');
             }
 
             if (name.length === 0) {
@@ -69,8 +69,8 @@ module.exports = class NFC extends EventEmitter {
         };
 
         window.mock.print = () => {
-            if (!localStorage.hasOwnProperty('mocked-card')) {
-                throw new Error('You need to use mock.storeCard to create a mocked card first');
+            if (!localStorage.hasOwnProperty('mocked-cards')) {
+                throw new Error('You need to use mock.addCard to create a mocked card first');
             }
 
             const cards = JSON.parse(localStorage.getItem('mocked-cards'));
