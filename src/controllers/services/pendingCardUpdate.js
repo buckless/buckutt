@@ -68,11 +68,11 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
             });
 
             return res
-            .status(200)
-            .json({ amount })
-            .end();
+                .status(200)
+                .json({ amount })
+                .end();
         })
-        .catch(err => dbCatch(module, err, next))
+        .catch(err => dbCatch(module, err, next));
 });
 
 module.exports = router;
