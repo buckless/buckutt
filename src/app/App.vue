@@ -2,27 +2,27 @@
     <div
         id="app"
         @click="refocus">
-        <topbar :buyer="buyer" :seller="seller" />
+        <topbar />
         <main class="b-main">
             <login v-show="loginState" ref="login" />
-            <history v-if="!loginState && history" ref="history" />
-            <items v-if="!loginState && seller.canSell && !history" />
-            <sidebar v-if="!loginState && seller.canSell && !history" />
-            <assigner v-if="!loginState && seller.canAssign && !history" ref="assign" />
+            <history v-if="isSellerMode && history" ref="history" />
+            <items v-if="isSellerMode && !history" />
+            <sidebar v-if="isSellerMode && !history" />
+            <assigner v-if="isAssignerMode" ref="assign" />
         </main>
         <reload
-            v-if="!loginState"
-            :reloadOnly="!seller.canSell && seller.canReload" />
+            v-if="isReloaderMode"
+            :reloadOnly="!isSellerMode && isReloaderMode" />
         <transition name="b--fade">
             <loading v-if="loaded === false" />
         </transition>
-        <alcohol-warning />
-        <disconnect-warning :seller="seller" />
+        <alcohol-warning v-if="isSellerMode" />
+        <disconnect-warning />
         <error />
         <alert v-if="alert" />
         <offline />
-        <waiting-for-buyer />
-        <Ticket v-if="lastUser.display && !loginState && !doubleValidation" :user="lastUser" />
+        <waiting-for-buyer v-if="isCashMode" />
+        <Ticket v-if="lastUser.display && isCashMode && !doubleValidation" :user="lastUser" />
         <input
             class="b--out-of-screen"
             type="text"
@@ -102,7 +102,7 @@ export default {
             alert            : state => state.auth.alert
         }),
 
-        ...mapGetters(['loginState'])
+        ...mapGetters(['loginState', 'isAssignerMode', 'isSellerMode', 'isReloaderMode', 'isCashMode'])
     },
 
     methods: {
@@ -114,9 +114,9 @@ export default {
             const value = this.inputValue;
             this.inputValue = '';
 
-            if (this.seller.isAuth && this.history) {
+            if (this.isCashMode && this.seller.isAuth && this.history) {
                 this.$refs.history.onCard(value, credit);
-            } else if (this.seller.isAuth && this.seller.canAssign) {
+            } else if (this.seller.isAuth && this.isAssignerMode) {
                 this.$refs.assign.onBarcode(value);
             } else if (this.waitingForBuyer || this.waitingForRewrite || !this.buyer.isAuth) {
                 this.$refs.login.validate(value, credit);

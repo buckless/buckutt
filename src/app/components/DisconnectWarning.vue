@@ -22,12 +22,9 @@
 import { mapState, mapActions } from 'vuex';
 
 export default {
-    props: {
-        seller: { type: Object, required: true }
-    },
-
     computed: mapState({
-        disconnectWarning: state => state.auth.seller.disconnectWarning
+        disconnectWarning: state => state.auth.seller.disconnectWarning,
+        seller           : state => state.auth.seller
     }),
 
     methods: mapActions([ 'pursueLogout', 'cancelLogout' ])

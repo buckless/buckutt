@@ -17,14 +17,14 @@
         </div>
         <div class="b-upper-bar__actions">
             <div
-                v-if="!loginState && seller.canSell"
+                v-if="isSellerMode"
                 class="b-upper-bar__actions__action-cancel"
                 :class="historyClass"
                 @click="toggleHistory">
                 <i class="b-icon">history</i>
             </div>
             <div
-                v-if="!loginState && seller.canReload && seller.canSell"
+                v-if="isReloaderMode && isSellerMode"
                 class="b-upper-bar__actions__action-reload"
                 @click="openReloadModal">
                 <i class="b-icon">attach_money</i>
@@ -46,22 +46,18 @@ import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
 
 export default {
-    props: {
-        buyer : { type: Object, required: true },
-        seller: { type: Object, required: true }
-    },
-
     components: {
         Currency,
         LiveTime
     },
 
     computed: {
-        ...mapGetters(['loginState', 'credit']),
+        ...mapGetters(['credit', 'isSellerMode', 'isReloaderMode']),
 
         ...mapState({
             history      : state => state.history.opened,
-            displayLogout: state => state.auth.seller.meanOfLogin.length > 0
+            displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
+            buyer        : state => state.auth.buyer
         }),
 
         historyClass() {

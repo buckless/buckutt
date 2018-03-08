@@ -13,7 +13,7 @@
             <div class="b-assigner__home__spacing"></div>
             <div class="b-assigner__home__button" :class="barcodeClasses" @click="subpage = 'barcode'">
                 <i class="b-icon">create</i>
-                <h3>Rentrer un code-barre</h3>
+                <h3>Rentrer un numéro de place</h3>
             </div>
         </div>
         <!-- <create-account v-show="subpage === 'create'"/> -->

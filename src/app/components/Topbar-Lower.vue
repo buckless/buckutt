@@ -35,16 +35,13 @@ import { mapState, mapGetters } from 'vuex';
 import Tab from './Topbar-Lower-Tab';
 
 export default {
-    props: {
-        buyer : { type: Object, required: true },
-        seller: { type: Object, required: true }
-    },
-
     computed: {
         ...mapState({
             point  : state => state.auth.device.point.name,
             event  : state => state.auth.device.event.name,
-            history: state => state.history.opened
+            history: state => state.history.opened,
+            seller : state => state.auth.seller,
+            buyer  : state => state.auth.buyer
         }),
 
         ...mapGetters(['tabs', 'loginState'])

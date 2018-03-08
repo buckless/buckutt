@@ -3,9 +3,9 @@
         <div class="b-header__user-image" v-if="buyer.isAuth && showPicture">
             <img src="../assets/placeholder.jpg" height="112" width="112" />
         </div>
-        <upper :buyer="buyer" :seller="seller" />
+        <upper />
         <div class="b-header__separator"></div>
-        <lower :buyer="buyer" :seller="seller" />
+        <lower />
         <reload />
     </header>
 </template>
@@ -20,11 +20,6 @@ import Upper from './Topbar-Upper';
 import Reload from './Topbar-Reload';
 
 export default {
-    props: {
-        buyer : { type: Object, required: true },
-        seller: { type: Object, required: true }
-    },
-
     components: {
         Lower,
         Upper,
@@ -37,7 +32,9 @@ export default {
         },
 
         ...mapState({
-            showPicture: state => state.auth.device.config.showPicture
+            showPicture: state => state.auth.device.config.showPicture,
+            seller     : state => state.auth.seller,
+            buyer      : state => state.auth.buyer
         })
     }
 };

@@ -8,7 +8,7 @@
                 @blur="giveFocusBack"
                 @keyup="search"
                 class="b-assigner-barcode__input"
-                placeholder="Nom"
+                placeholder="Numéro de place"
                 v-model="barcode">
 
             <h4>Résultats :</h4>
@@ -24,7 +24,7 @@
                     v-if="matches[0].name"
                     @click="selectUser(match)">{{ match.name }}</div>
             </div>
-            <p v-show="matches.length === 0 && barcode.length === 0">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
+            <p v-show="matches.length === 0 && barcode.length === 0">Cherchez un utilisateur par son numéro de place. Trois caractères minimums.</p>
             <p v-show="matches.length === 0 && barcode.length > 2">Aucun résultat.</p>
         </form>
     </div>
