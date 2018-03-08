@@ -9,39 +9,63 @@ module.exports = class NFC extends EventEmitter {
         console.warn('NFC is mocked in browser');
         this.emit('reader');
 
-        window.mock = {};
+        window.mock = {
+            actualCard: ''
+        };
 
-        window.mock.storeCard = (cardId, cardValue) => {
+        window.mock.addCard = (name, cardId, cardValue) => {
             // do not store cardValue as buffer because it can't be restored as a buffer
             if (typeof cardValue !== 'number') {
                 throw new Error('cardValue should not be passed into nfc.creditToData');
             }
 
-            if (cardId.length > 0) {
-                console.warn(`Writing card to local storage : ${cardId}(${cardValue})`);
-
-                localStorage.setItem('mocked-card', JSON.stringify({
-                    cardId,
-                    cardValue
-                }));
+            if (cardId.length === 0) {
+                throw new Error('cardId should bet set');
             }
+
+            if (name.length === 0) {
+                throw new Error('name should bet set');
+            }
+
+            console.warn(`Writing card ${name} to local storage : ${cardId}(${cardValue})`);
+
+            const cards = localStorage.hasOwnProperty('mocked-cards')
+                ? JSON.parse(localStorage.getItem('mocked-cards'))
+                : {};
+
+            cards[name] = {
+                cardId,
+                cardValue
+            };
+
+            localStorage.setItem('mocked-cards', JSON.stringify(cards));
         };
 
-        window.mock.scan = () => {
-            if (!localStorage.hasOwnProperty('mocked-card')) {
+        window.mock.scan = (name) => {
+            if (!localStorage.hasOwnProperty('mocked-cards')) {
                 throw new Error('You need to use mock.storeCard to create a mocked card first');
             }
 
-            const mock = JSON.parse(localStorage.getItem('mocked-card'));
+            if (name.length === 0) {
+                throw new Error('name should bet set');
+            }
+
+            const cards = JSON.parse(localStorage.getItem('mocked-cards'));
+
+            if (!cards.hasOwnProperty(name)) {
+                throw new Error('card not found');
+            }
+
+            mock.actualCard = name;
 
             // do not store cardValue as buffer because it can't be restored as a buffer
             // we create the buffer directly on read
-            mock.cardValue = nfc.creditToData(mock.cardValue, config.signingKey);
+            cards[name].cardValue = nfc.creditToData(cards[name].cardValue, config.signingKey);
 
-            this.emit('uid', mock.cardId);
+            this.emit('uid', cards[name].cardId);
             this.emit('atr', '0');
             this.emit('cardType', 'mockedCard');
-            this.emit('data', mock.cardValue);
+            this.emit('data', cards[name].cardValue);
         };
 
         window.mock.print = () => {
@@ -49,21 +73,30 @@ module.exports = class NFC extends EventEmitter {
                 throw new Error('You need to use mock.storeCard to create a mocked card first');
             }
 
-            const mock = JSON.parse(localStorage.getItem('mocked-card'));
+            const cards = JSON.parse(localStorage.getItem('mocked-cards'));
 
-            console.log(mock);
+            console.log(cards);
+        };
+
+        window.mock.clean = () => {
+            localStorage.removeItem('mocked-cards');
         };
     }
 
     write(data) {
-        const mock = JSON.parse(localStorage.getItem('mocked-card'));
+        const cards = JSON.parse(localStorage.getItem('mocked-cards'));
+
+        if (!cards[mock.actualCard]) {
+            throw new Error('card not found');
+        }
 
         // do not store cardValue as buffer because it can't be restored as a buffer
-        mock.cardValue = nfc.dataToCredit(data, config.signingKey);
+        cards[mock.actualCard].cardValue = nfc.dataToCredit(data, config.signingKey);
 
-        console.warn(`Writing card to local storage : ${mock.cardId}(${mock.cardValue})`);
+        const debugData = `${cards[mock.actualCard].cardId}(${cards[mock.actualCard].cardValue})`;
+        console.warn(`Writing card to local storage : ${debugData}`);
 
-        localStorage.setItem('mocked-card', JSON.stringify({ cardId: mock.cardId, cardValue: mock.cardValue }));
+        localStorage.setItem('mocked-cards', JSON.stringify(cards));
     }
 
     dataToCredit(data, signingKey) {
