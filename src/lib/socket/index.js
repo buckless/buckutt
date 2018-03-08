@@ -1,4 +1,4 @@
-const io     = require('socket.io-client');
+const io     = require('socket.io-client/dist/socket.io.js');
 const fs     = require('fs');
 const config = require('../../../config');
 

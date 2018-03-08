@@ -3,7 +3,7 @@
         <div class="b-lower-bar__tabs">
             <tab
                 v-for="(tab, i) in tabs"
-                v-if="!loginState && seller.canSell"
+                v-if="!loginState && seller.canSell && !history"
                 :name="tab.name"
                 :id="tab.id"
                 :key="tab.id"
@@ -42,8 +42,9 @@ export default {
 
     computed: {
         ...mapState({
-            point: state => state.auth.device.point.name,
-            event: state => state.auth.device.event.name
+            point  : state => state.auth.device.point.name,
+            event  : state => state.auth.device.event.name,
+            history: state => state.history.opened
         }),
 
         ...mapGetters(['tabs', 'loginState'])
