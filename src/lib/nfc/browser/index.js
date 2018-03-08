@@ -34,6 +34,8 @@ module.exports = class NFC extends EventEmitter {
 
             const mock = JSON.parse(localStorage.getItem('mocked-card'));
 
+            // do not store cardValue as buffer because it can't be restored as a buffer
+            // we create the buffer directly on read
             mock.cardValue = nfc.creditToData(mock.cardValue, config.signingKey);
 
             this.emit('uid', mock.cardId);
@@ -46,7 +48,8 @@ module.exports = class NFC extends EventEmitter {
     write(data) {
         const mock = JSON.parse(localStorage.getItem('mocked-card'));
 
-        mock.cardValue = data;
+        // do not store cardValue as buffer because it can't be restored as a buffer
+        mock.cardValue = nfc.dataToCredit(data, config.signingKey);
 
         console.log('write-data', mock.cardValue);
 
