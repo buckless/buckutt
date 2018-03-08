@@ -15,6 +15,7 @@
     "db": {
         "client": "pg",
         "connection": {
+            "host"    : "postgres",
             "database": "buckless_test",
             "user"    : "buckless",
             "password": "buckless"
