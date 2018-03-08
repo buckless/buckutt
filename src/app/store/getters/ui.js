@@ -8,4 +8,4 @@ export const isDegradedModeActive = state => !state.online.status && state.auth.
 export const isAssignerMode = (state, getters) => !getters.loginState && state.auth.seller.canAssign;
 export const isSellerMode   = (state, getters) => !getters.loginState && !getters.isAssignerMode && state.auth.seller.canSell;
 export const isReloaderMode = (state, getters) => !getters.loginState && !getters.isAssignerMode && state.auth.seller.canReload;
-export const isCashMode     = getters => getters.isSellerMode || getters.isReloaderMode;
+export const isCashMode     = (_, getters) => getters.isSellerMode || getters.isReloaderMode;
