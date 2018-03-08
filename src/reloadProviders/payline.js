@@ -3,7 +3,6 @@ const Payline  = require('flav-payline');
 const moment   = require('moment');
 const APIError = require('../errors/APIError');
 const dbCatch  = require('../lib/dbCatch');
-const { knex } = require('../lib/bookshelf');
 const ns       = require('../lib/ns');
 const config   = require('../../config');
 
@@ -127,7 +126,7 @@ module.exports = (app) => {
 
                     return Promise
                         .all([newReload.save(), transaction.save(), pendingCardUpdate.save()])
-                        .then((results) => {
+                        .then(() => {
                             req.app.locals.modelChanges.emit('userCreditUpdate', {
                                 id     : transaction.get('user_id'),
                                 pending: transaction.get('amount')

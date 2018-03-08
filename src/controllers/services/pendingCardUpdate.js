@@ -2,6 +2,7 @@ const express       = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
 const logger        = require('../../lib/log');
 const dbCatch       = require('../../lib/dbCatch');
+const APIError      = require('../../errors/APIError');
 
 const log = logger(module);
 

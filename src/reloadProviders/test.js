@@ -1,6 +1,5 @@
-const uuid     = require('uuid');
-const { knex } = require('../lib/bookshelf');
-const config   = require('../../config');
+const uuid   = require('uuid');
+const config = require('../../config');
 
 module.exports = (app) => {
     const Transaction       = app.locals.models.Transaction;
@@ -31,7 +30,7 @@ module.exports = (app) => {
 
                 return Promise
                     .all([newReload.save(), transaction.save(), pendingCardUpdate.save()])
-                    .then((res) => {
+                    .then(() => {
                         app.locals.modelChanges.emit('userCreditUpdate', {
                             id     : transaction.get('user_id'),
                             pending: transaction.get('amount')
