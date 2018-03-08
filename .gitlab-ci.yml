@@ -12,6 +12,9 @@ cache:
   paths:
     - node_modules/
 
+before_script:
+  - yarn
+
 job:
   script:
     - yarn lint
