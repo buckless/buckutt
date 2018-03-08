@@ -90,7 +90,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                             return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
                         }
 
-                        req.pendingCardUpdates[user.id] = amount: -1 * amount;
+                        req.pendingCardUpdates[user.id] = -1 * amount;
 
                         next();
                     });
