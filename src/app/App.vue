@@ -204,12 +204,14 @@ export default {
                 let credit;
 
                 try {
-                    credit = nfc.dataToCredit(data.toLowerCase(), config.signingKey);
+                    credit = nfc.dataToCredit(data.toLowerCase ? data.toLowerCase() : data, config.signingKey);
                     console.log('nfc-data', credit);
                 } catch (err) {
                     if (err.message === 'Signature does not match') {
                         console.log('signature does not match');
                     }
+
+                    console.log(err);
                 }
 
                 // set input value to previous uid
@@ -227,11 +229,6 @@ export default {
         nfc.on('error', (err) => {
             console.error(err);
         });
-
-        window.scan = (inputValue) => {
-            this.inputValue = '' + inputValue;
-            this.validate();
-        };
     }
 };
 </script>

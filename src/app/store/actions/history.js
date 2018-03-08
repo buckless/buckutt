@@ -26,7 +26,6 @@ export const cancelEntry = (store, payload) => {
             id
         }));
 
-
         if (store.state.online.status) {
             // we're still online
 

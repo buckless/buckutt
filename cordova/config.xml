@@ -27,4 +27,8 @@
     <plugin name="cordova-plugin-keyboard" spec="^1.2.0" />
     <plugin name="cordova-sqlite-storage" spec="^2.2.0" />
     <plugin name="cordova-plugin-mifare-ultralight" spec="^1.0.1" />
+    <plugin name="cordova-android-support-gradle-release" spec="^1.2.0">
+        <variable name="ANDROID_SUPPORT_VERSION" value="26.+" />
+    </plugin>
+    <engine name="android" spec="^6.2.3" />
 </widget>

@@ -10,11 +10,15 @@
       "phonegap-plugin-barcodescanner": {},
       "cordova-plugin-keyboard": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-mifare-ultralight": {}
+      "cordova-plugin-mifare-ultralight": {},
+      "cordova-android-support-gradle-release": {
+        "ANDROID_SUPPORT_VERSION": "26.+"
+      }
     }
   },
   "dependencies": {
-    "cordova-android": "^7.0.0",
+    "cordova-android": "^6.2.3",
+    "cordova-android-support-gradle-release": "^1.2.0",
     "cordova-client-cert-authentication": "^1.0.0",
     "cordova-plugin-compat": "^1.1.0",
     "cordova-plugin-keyboard": "^1.2.0",
