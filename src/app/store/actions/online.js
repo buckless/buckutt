@@ -1,6 +1,6 @@
 import axios          from 'axios';
 import merge          from 'lodash.merge';
-import ioClient       from 'socket.io-client/dist/socket.io.js';
+import io             from 'socket.io-client/dist/socket.io.js';
 import { sendBasket } from './basket';
 import q              from '../../utils/q';
 
@@ -26,7 +26,7 @@ export const setupSocket = (store, token) => {
         };
     }
 
-    socket = ioClient(config.api, { rejectUnauthorized: false, ...opts });
+    socket = io(config.api, { rejectUnauthorized: false, ...opts });
 
     socket.on('connect', () => {
         store.commit('SET_ONLINE');
