@@ -92,17 +92,17 @@ export default {
                 credit = 0;
             }
 
+            const newCredit = credit + this.creditDifference(this.selectedEntry);
+
+            if (newCredit < 0) {
+                this.$store.commit('ERROR', { message: 'Not enough credit' });
+                return;
+            }
+
             this
                 .cancelEntry(this.selectedEntry)
                 .then(() => {
                     if (!credit) {
-                        return;
-                    }
-
-                    const newCredit = credit + this.creditDifference(this.selectedEntry);
-
-                    if (newCredit < 0) {
-                        this.$store.commit('ERROR', { message: 'Not enough credit' });
                         return;
                     }
 

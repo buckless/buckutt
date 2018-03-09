@@ -205,7 +205,7 @@ export const buyer = (store, { cardNumber, credit }) => {
             if (err.message === 'Network Error') {
                 store.commit('ERROR', { message: 'Server not reacheable' });
                 return;
-            } else if (err.message === 'Write failed : Error: Error: java.lang.Exception') {
+            } else if (err.message.startsWith('Write failed')) {
                 store.commit('SET_BASKET_STATUS', 'WAITING_FOR_REWRITE');
                 return;
             }

@@ -23,6 +23,8 @@ module.exports = class NFC extends EventEmitter {
     }
 
     dataToCredit(data, signingKey) {
+        console.log(data);
+        console.log(signingKey);
         return decode(data, signingKey, rusha.createHash);
     }
 
