@@ -14,7 +14,7 @@
                 </div class="b-table__header">
                 <div class="b-table__body">
                     <div class="b-table__row" v-for="(data, index) in displayedData" :class="{ 'b-table__row--removed': data.warning }">
-                        <div v-for="header in headers" class="b-table__cell" :class="header.class" :class="">
+                        <div v-for="header in headers" class="b-table__cell" :class="header.class">
                             <template v-if="data.warning && index === 0">
                                 <i class="material-icons">delete</i>
                             </template>
