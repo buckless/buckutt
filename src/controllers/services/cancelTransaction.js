@@ -58,7 +58,10 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 });
 
 router.post('/services/cancelTransaction', (req, res, next) => {
-    const models = req.app.locals.models;
+    const models         = req.app.locals.models;
+    const isFromAdmin    = req.query.addPendingCardUpdate && rightsDetails(req.user).admin;
+    // Don't check if from client and card data are used
+    const checkApiCredit = isFromAdmin || !req.event.useCardData;
 
     let amountPromise;
     switch (req.transaction.model) {
@@ -86,7 +89,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
             } else if (req.transaction.model === 'Reload') {
                 getUserInst(models.User, req.transaction.data.buyer_id)
                     .then((user) => {
-                        if (user.get('credit') - amount < 0) {
+                        if (user.get('credit') - amount < 0 && checkApiCredit) {
                             return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
                         }
 
@@ -97,7 +100,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
             } else {
                 getUserInst(models.User, req.transaction.data.sender_id)
                     .then((user) => {
-                        if (user.get('credit') - amount < 0) {
+                        if (user.get('credit') - amount < 0 && checkApiCredit) {
                             return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
                         }
 
@@ -120,7 +123,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 
     Object.keys(req.pendingCardUpdates).forEach((user) => {
         let query;
-        if (req.event.useCardData && req.query.addPendingCardUpdate && rightsDetails(req.user).admin) {
+        if (req.query.addPendingCardUpdate && rightsDetails(req.user).admin) {
             query = new req.app.locals.models.PendingCardUpdate({
                 user_id: user,
                 amount : req.pendingCardUpdates[user]
