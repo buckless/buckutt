@@ -8,6 +8,7 @@
 - npm >= 5.6
 - node >= 8.9.1
 - node-gyp >= 3.6.2
+- cordova
 - Android requirements (https://cordova.apache.org/docs/fr/latest/guide/platforms/android/)
 
 
