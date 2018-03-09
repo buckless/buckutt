@@ -1,6 +1,5 @@
 const express  = require('express');
 const dbCatch  = require('../lib/dbCatch');
-const { knex } = require('../lib/bookshelf');
 const config   = require('../../config');
 
 const providerConfig = config.provider.config;
@@ -74,7 +73,7 @@ module.exports = (app) => {
 
                     return Promise
                         .all([newReload.save(), transaction.save(), pendingCardUpdate.save()])
-                        .then((results) => {
+                        .then(() => {
                             req.app.locals.modelChanges.emit('userCreditUpdate', {
                                 id     : transaction.get('user_id'),
                                 pending: transaction.get('amount')

@@ -2,6 +2,7 @@ const express       = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
 const logger        = require('../../lib/log');
 const dbCatch       = require('../../lib/dbCatch');
+const APIError      = require('../../errors/APIError');
 
 const log = logger(module);
 
@@ -67,11 +68,11 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
             });
 
             return res
-            .status(200)
-            .json({ amount })
-            .end();
+                .status(200)
+                .json({ amount })
+                .end();
         })
-        .catch(err => dbCatch(module, err, next))
+        .catch(err => dbCatch(module, err, next));
 });
 
 module.exports = router;

@@ -1,10 +1,9 @@
-const bcrypt_       = require('bcryptjs');
-const express       = require('express');
-const Promise       = require('bluebird');
-const logger        = require('../../../lib/log');
-const dbCatch       = require('../../../lib/dbCatch');
-const { bookshelf } = require('../../../lib/bookshelf');
-const APIError      = require('../../../errors/APIError');
+const bcrypt_  = require('bcryptjs');
+const express  = require('express');
+const Promise  = require('bluebird');
+const logger   = require('../../../lib/log');
+const dbCatch  = require('../../../lib/dbCatch');
+const APIError = require('../../../errors/APIError');
 
 const log = logger(module);
 
