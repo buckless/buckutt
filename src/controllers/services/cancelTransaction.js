@@ -53,6 +53,8 @@ router.post('/services/cancelTransaction', (req, res, next) => {
             };
 
             next();
+
+            return Promise.resolve();
         })
         .catch(err => dbCatch(module, err, next));
 });
