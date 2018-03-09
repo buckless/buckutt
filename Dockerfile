@@ -13,7 +13,7 @@ RUN apk update && \
 COPY package.json /usr/src/buckless-manager/
 COPY yarn.lock /usr/src/buckless-manager/
 
-RUN yarn install
+RUN yarn --ignore-scripts
 
 COPY . /usr/src/buckless-manager/
 
