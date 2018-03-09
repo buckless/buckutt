@@ -20,7 +20,9 @@ module.exports.ioServer = (httpServer, app) => {
     const io = require('socket.io')(httpServer, {
         serveClient           : false,
         engine                : 'uws',
-        handlePreflightRequest: false
+        handlePreflightRequest: false,
+        pingInterval          : 10000,
+        pingTimeout           : 5000
     });
 
     app.locals.io = io;
