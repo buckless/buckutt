@@ -1,6 +1,19 @@
 <template>
     <div class="b-assigner-search">
         <form>
+            <div class="b-assigner-search__type">
+                <a
+                    :class="{ 'b--active': searchBy === 'ticketId' }"
+                    @click.prevent="searchBy = 'ticketId'">
+                    Par numéro de ticket
+                </a>
+                <a
+                    :class="{ 'b--active': searchBy === 'name' }"
+                    @click.prevent="searchBy = 'name'">
+                    Par nom
+                </a>
+            </div>
+
             <input
                 type="text"
                 name="search"
@@ -8,8 +21,8 @@
                 @blur="giveFocusBack"
                 @keyup="search"
                 class="b-assigner-search__input"
-                placeholder="Nom"
-                v-model="name">
+                :placeholder="searchBy === 'name' ? 'Nom' : 'Numéro de ticket'"
+                v-model="searchInput">
 
             <h4>Résultats :</h4>
             <div class="b-assigner-search__results" v-show="matches.length > 0">
@@ -24,8 +37,8 @@
                     v-if="matches[0].name"
                     @click="selectUser(match)">{{ match.name }}</div>
             </div>
-            <p v-show="matches.length === 0 && name.length === 0">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
-            <p v-show="matches.length === 0 && name.length > 2">Aucun résultat.</p>
+            <p v-show="matches.length === 0 && searchInput.length === 0">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
+            <p v-show="matches.length === 0 && searchInput.length > 2">Aucun résultat.</p>
         </form>
     </div>
 </template>
@@ -40,8 +53,9 @@ import AssignerOfflineData from '../../lib/assignerOfflineData';
 export default {
     data() {
         return {
+            searchBy: 'name',
             db: null,
-            name: '',
+            searchInput: '',
             matches: []
         };
     },
@@ -56,17 +70,35 @@ export default {
 
     methods: {
         search: debounce(function () {
-            if (this.name.length <= 2) {
+            if (this.searchInput.length <= 2) {
                 return;
             }
 
             if (this.online) {
-                axios.get(`${config.api}/services/manager/searchuser?name=${this.name}`, this.tokenHeaders)
-                    .then((res) => {
-                        this.matches = res.data;
-                    });
+                if (this.searchBy === 'name') {
+                    axios.get(`${config.api}/services/manager/searchuser?name=${this.searchInput}`, this.tokenHeaders)
+                        .then((res) => {
+                            this.matches = res.data;
+                        });
+                } else {
+                    const filterRel = [ {
+                        embed   : 'meansOfLogin',
+                        filters : [
+                            ['type', '=', 'ticketId'],
+                            ['data', 'like', `${this.searchInput}%`]
+                        ],
+                        required: true
+                    } ];
+
+                    const embed = encodeURIComponent(JSON.stringify(filterRel));
+
+                    axios.get(`${config.api}/users?embed=${embed}`, this.tokenHeaders)
+                        .then((res) => {
+                            this.matches = res.data;
+                        });
+                }
             } else {
-                this.db.findByName(this.name)
+                this.db.findUser(this.searchInput)
                     .then((users) => {
                         this.matches = users;
                     });
@@ -75,10 +107,7 @@ export default {
 
         selectUser(user) {
             if (this.online) {
-                axios.get(`${config.api}/users/${user.id}`, this.tokenHeaders)
-                    .then((res) => {
-                        this.$emit('assign', res.data.credit, `${res.data.firstname} ${res.data.lastname}`, res.data.id);
-                    });
+                this.$emit('assign', user.credit, `${res.data.firstname} ${res.data.lastname}`, user.id);
             } else {
                 this.$emit('assign', user.credit, user.name, user.id);
             }
@@ -103,6 +132,22 @@ export default {
 
 <style scoped>
 @import '../main.css';
+
+.b-assigner-search__type {
+    display: flex;
+    justify-content: space-around;
+
+    & > a {
+        color: var(--lightblue);
+        padding: 5px 10px;
+        border-radius: 3px;
+
+        &.b--active {
+            background-color: var(--lightblue);
+            color: #fff;
+        }
+    }
+}
 
 .b-assigner-search {
     background-color: #f3f3f3;

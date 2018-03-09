@@ -7,18 +7,17 @@
             </div>
             <div class="b-assigner__home__spacing"></div>
             <div class="b-assigner__home__button" :class="searchClasses" @click="subpage = 'search'">
-                <i class="b-icon">person</i>
-                <h3>Rentrer un nom</h3>
+                <i class="b-icon">create</i>
+                <h3>Recherche manuelle</h3>
             </div>
             <div class="b-assigner__home__spacing"></div>
-            <div class="b-assigner__home__button" :class="barcodeClasses" @click="subpage = 'barcode'">
-                <i class="b-icon">create</i>
-                <h3>Rentrer un numéro de place</h3>
+            <div class="b-assigner__home__button" :class="createClasses" @click="subpage = 'create'">
+                <i class="b-icon">person_add</i>
+                <h3>Compte anonyme</h3>
             </div>
         </div>
-        <!-- <create-account v-show="subpage === 'create'"/> -->
+        <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
         <search v-show="subpage === 'search'" @assign="assignModal"/>
-        <barcode v-show="subpage === 'barcode'" @assign="assignModal"/>
         <modal v-show="assignModalOpened" :credit="assignModalCredit" :name="assignModalName" ref="modal" @close="closeModal"/>
         <modal-ok v-if="showOkModal"/>
     </div>
@@ -30,18 +29,16 @@ import { mapGetters, mapState, mapActions } from 'vuex';
 
 import barcode             from '../../lib/barcode';
 import AssignerOfflineData from '../../lib/assignerOfflineData';
-// import CreateAccount    from './Assigner-CreateAccount';
-import Barcode             from './Assigner-Barcode';
+import CreateAccount        from './Assigner-CreateAccount';
 import Search              from './Assigner-Search';
 import Modal               from './Assigner-Modal';
 import Ok                  from './Assigner-Ok';
 
 export default {
     components: {
-        // CreateAccount,
+        CreateAccount,
         Search,
         Modal,
-        Barcode,
         'modal-ok': Ok
     },
 
@@ -70,11 +67,11 @@ export default {
                 : '';
         },
 
-        // createClasses() {
-        //     return (this.subpage === 'create')
-        //         ? 'b-assigner__home__button--active'
-        //         : '';
-        // },
+        createClasses() {
+            return (this.subpage === 'create')
+                ? 'b-assigner__home__button--active'
+                : '';
+        },
 
         barcodeClasses() {
             return (this.subpage === 'barcode')
@@ -185,6 +182,15 @@ export default {
         },
 
         onBarcode(value, isFromBarcode) {
+            if (!value) {
+                return;
+            }
+
+            if (this.subpage === 'create') {
+                this.$refs.create.assignCard(value);
+                return;
+            }
+
             if (this.assignModalOpened) {
                 this.assignCard(value);
                 return;
@@ -236,7 +242,7 @@ export default {
 
 .b-assigner__home {
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
     min-height: 170px;
     padding: 10px;
 

@@ -10,8 +10,8 @@
                 <br/>
                 Approchez la carte cashless
                 <span>Gardez le contact jusqu'à la validation</span>
-                <h4 v-if="groups.length > 0">Groupes :</h4>
-                <div class="b-assigner-modal__modal__text__groups" v-if="groups.length > 0">
+                <h4 v-if="groups.length > 0 && showGroups">Groupes :</h4>
+                <div class="b-assigner-modal__modal__text__groups" v-if="groups.length > 0 && showGroups">
                     <div class="b-assigner-modal__modal__text__groups__group" v-for="group in groups">
                         <input type="checkbox" name="group" class="b--out-of-screen" :id="group.id" v-model="activeGroups" :value="group">
                         <label :for="group.id">
@@ -30,8 +30,12 @@ import Currency     from './Currency';
 
 export default {
     props: {
-        name: String,
-        credit: Number
+        name  : String,
+        credit: Number,
+        showGroups: {
+            type   : Boolean,
+            default: true
+        }
     },
 
     components: {

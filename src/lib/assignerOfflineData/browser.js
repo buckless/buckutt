@@ -1,4 +1,4 @@
-const Dexie = require('dexie');
+const Dexie = require('dexie').default;
 
 class AssignerOfflineData {
     constructor() {
@@ -40,7 +40,14 @@ class AssignerOfflineData {
             .toArray();
     }
 
-    insert(users) {
+    insert(users_) {
+        const users = users_.map(user => ({
+            uid    : user[0],
+            name   : user[1],
+            barcode: user[2],
+            credit : user[3]
+        }));
+
         return this.db.users.bulkPut(users);
     }
 }

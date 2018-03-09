@@ -1,94 +1,118 @@
 <template>
     <div class="b-assigner-create-account">
-        <form @submit.prevent="createAccount">
-            <h4>Informations personnelles :</h4>
+        <form @submit.prevent="assignModalOpened = true">
             <input
-                type="text"
-                name="Prénom"
+                type="Number"
+                name="credit"
                 @focus="keepFocus"
                 @blur="giveFocusBack"
                 class="b-assigner-create-account__input"
-                placeholder="Prénom"
+                step="0.1"
+                placeholder="Crédit (euros)"
                 autocomplete="off"
-                v-model="firstname">
-            <input
-                type="text"
-                name="Nom"
-                @focus="keepFocus"
-                @blur="giveFocusBack"
-                class="b-assigner-create-account__input"
-                placeholder="Nom"
-                autocomplete="off"
-                v-model="lastname">
+                v-model="credit">
             <h4>Groupes :</h4>
-            <div class="b-assigner-create-account__groups">
+            <div class="b-assigner-create-account__groups" v-if="groups.length > 0">
                 <div class="b-assigner-create-account__groups__group" v-for="group in groups">
-                    <input type="checkbox" name="group" class="b--out-of-screen" :id="group.id" v-model="groups" :value="activeGroups">
-                    <label :for="group.id" @click.prevent.stop="select($event)">
+                    <input type="checkbox" name="group" class="b--out-of-screen" :id="group.id" v-model="activeGroups" :value="group">
+                    <label :for="group.id">
                         {{ group.name }}
                     </label>
                 </div>
             </div>
-            <button @click.prevent="createAccount">Valider</button>
+            <button @click.prevent="assignModalOpened = true">Valider</button>
         </form>
+        <modal v-show="assignModalOpened" :credit="numberCredit" name="Anon anon" :showGroups="false" @close="assignModalOpened = false"/>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
-import bcrypt from 'bcryptjs';
-import pad from 'lodash.padstart';
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
+
+import Modal from './Assigner-Modal';
 
 export default {
+    components: {
+        Modal
+    },
+
     data() {
         return {
-            firstname: '',
-            lastname: '',
+            assignModalOpened: false,
+            credit: null,
             activeGroups: []
         }
     },
 
     computed: {
+        numberCredit() {
+            return Math.round(this.credit * 100);
+        },
+
         ...mapState({
-            groups: state => state.auth.groups.filter(group => group.name !== 'Défaut')
+            online     : state => state.online.status,
+            point      : state => state.auth.device.point.id,
+            seller     : state => state.auth.seller.id,
+            groups     : state => state.auth.groups.filter(group => group.name !== 'Défaut'),
+            useCardData: state => state.auth.device.event.config.useCardData
         }),
 
         ...mapGetters(['tokenHeaders'])
     },
 
     methods: {
-        createAccount()  {
-            const pin = pad(Math.floor(Math.random() * 10000), 4, '0');
-            const hash = bcrypt.hashSync(pin, 10);
+        assignCard(cardId) {
+            if (this.assignModalOpened) {
+                let promise = Promise.resolve();
+                const groups = this.activeGroups.map(group => group.id);
 
-            alert(`Code PIN de l'utilisateur : ${pin}`)
+                const anon = {
+                    credit: this.numberCredit ? this.numberCredit : 0,
+                    cardId,
+                    groups
+                };
 
-            if (this.firstname.length < 2 || this.lastname.length < 2) {
-                return;
-            }
-
-            let user;
-
-            axios
-                .post(`${config.api}/users`, {
-                    firstname: this.firstname,
-                    lastname : this.lastname,
-                    pin      : hash,
-                    password : 'none'
-                }, this.tokenHeaders)
-                .then((res) => {
-                    user = res.data;
-
-                    return Promise.all(this.activeGroups.map((group) => {
-                        return axios.post(`${config.api}/users/${user.id}/groups/${group.id}`, {}, this.tokenHeaders);
+                if (this.online) {
+                    promise = promise.then(() => axios.post(
+                        `${config.api}/services/assigner/anon`,
+                        anon,
+                        this.tokenHeaders
+                    ));
+                } else {
+                    promise = promise.then(() => this.addPendingRequest({
+                        url: `${config.api}/services/assigner/anon`,
+                        body: anon
                     }));
-                });
+                }
+
+                promise = promise
+                    .catch((err) => {
+                        if (err.response.data.message === 'Duplicate Entry') {
+                            // ignore duplicate entry, write to card anyway
+                            this.useCardData && window.nfc.write(
+                                window.nfc.creditToData(this.assignModalCredit, config.signingKey)
+                            );
+
+                            this.ok();
+                        }
+
+                        this.$store.commit('ERROR', err.response.data);
+                    });
+
+                this.useCardData && window.nfc.write(
+                    window.nfc.creditToData(this.numberCredit, config.signingKey)
+                );
+
+                this.ok();
+            }
         },
 
-        select(e) {
-            // avoid scrolling top
-            e.currentTarget.previousElementSibling.checked = !e.currentTarget.previousElementSibling.checked;
+        ok() {
+            this.$emit('ok');
+            this.assignModalOpened = false;
+            this.credit = null;
+            this.activeGroups = [];
         },
 
         keepFocus() {
@@ -97,7 +121,9 @@ export default {
 
         giveFocusBack() {
             document.querySelector('#app > input').disabled = false;
-        }
+        },
+
+        ...mapActions(['addPendingRequest'])
     }
 }
 </script>
