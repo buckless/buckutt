@@ -7,7 +7,7 @@ CMD ["yarn", "start"]
 WORKDIR /usr/src/buckless-server
 
 RUN apk update && \
-    apk add --no-cache git openssh openssl && \
+    apk add --no-cache git openssh openssl make gcc g++ python && \
     mkdir -p /usr/src/buckless-server
 
 COPY package.json /usr/src/buckless-server/
