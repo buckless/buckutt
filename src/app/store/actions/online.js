@@ -52,6 +52,11 @@ export const reconnect = (store) => {
         return;
     }
 
+    console.log('is-online', store.state.online.status);
+    if (!store.state.online.status) {
+        return;
+    }
+
     const storedRequests = store.state.online.pendingRequests;
     const offlineDate    = store.state.online.dateToSend;
     const failedRequests = [];
@@ -64,9 +69,9 @@ export const reconnect = (store) => {
         pin        : store.state.auth.seller.pin
     };
 
-    let promise = (store.state.auth.seller.token) ?
+    let promise = (store.getters.tokenHeaders) ?
         Promise.resolve() :
-        axios.post(`${config.api}/services/login`, credentials, store.getters.tokenHeaders)
+        axios.post(`${config.api}/services/login`, credentials)
             .then(res => store.commit('UPDATE_TOKEN', res.data.token));
 
     storedRequests.forEach((request) => {

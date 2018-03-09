@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 const initialState = {
     opened: false,
     history: [],
@@ -23,6 +25,15 @@ const mutations = {
         );
     },
 
+    REMOVE_PENDING_CANCELLATION(state, payload) {
+        const index = state.pendingCancellations.findIndex(entry => entry.transactionIds === payload.transactionIds);
+
+        state.pendingCancellations.splice(
+            index,
+            1
+        );
+    },
+
     UPDATE_HISTORY_ENTRY(state, payload) {
         // update history
         let entry;
@@ -35,30 +46,33 @@ const mutations = {
             }
         }
 
-        const newHistory = {
-            ...entry,
-            transactionIds: payload.basketData.transactionIds
-        };
+        if (entry && index) {
+          const newHistory = {
+              ...entry,
+              transactionIds: payload.basketData.transactionIds
+          };
 
-        state.history.splice(index, 1, newHistory);
+          state.history.splice(index, 1, newHistory);
+        }
 
         // update pendingCancellations
-        entry = null;
-        index = null;
+        // entry = null;
+        // index = null;
 
         for (let i = state.pendingCancellations.length - 1; i >= 0; i--) {
             if (state.pendingCancellations[i].transactionIds === payload.transactionId) {
-                entry = state.history[i];
-                index = i;
+                Vue.set(state.pendingCancellations[i], 'transactionIds', payload.basketData.transactionIds);
+                // entry = state.history[i];
+                // index = i;
             }
         }
 
-        const newPendingCancellation = {
-            ...entry,
-            transactionIds: payload.basketData.transactionIds
-        };
+        // const newPendingCancellation = {
+        //    ...entry,
+        //    transactionIds: payload.basketData.transactionIds
+        // };
 
-        state.pendingCancellations.splice(index, 1, newHistory);
+        // state.pendingCancellations.splice(index, 1, newHistory);
         window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
     },
 

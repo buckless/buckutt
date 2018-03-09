@@ -31,15 +31,15 @@ const initialState = {
     seller: {
         isAuth           : false,
         meanOfLogin      : '',
-        pin              : null,
-        id               : null,
-        token            : null,
-        firstname        : null,
-        lastname         : null,
+        pin              : '',
+        id               : '',
+        token            : '',
+        firstname        : '',
+        lastname         : '',
         canSell          : false,
         canReload        : false,
         canAssign        : false,
-        disconnectWarning: false
+        disconnectWarning: false,
     },
     groups: []
 };

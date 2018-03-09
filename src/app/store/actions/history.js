@@ -75,7 +75,7 @@ export const sendValidCancellations = (store) => {
             store.state.history.pendingCancellations
                 .filter((pending) => typeof pending.transactionIds === 'object')
                 .forEach((pending) => {
-                    store.dispatch('removeFromHistory', pending);
+                    store.commit('REMOVE_PENDING_CANCELLATION', pending);
                 });
         });
 };
