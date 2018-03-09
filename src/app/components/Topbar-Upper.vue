@@ -17,14 +17,13 @@
         </div>
         <div class="b-upper-bar__actions">
             <div
-                v-if="isSellerMode"
+                v-if="isSellerMode && !history"
                 class="b-upper-bar__actions__action-cancel"
-                :class="historyClass"
                 @click="toggleHistory">
                 <i class="b-icon">history</i>
             </div>
             <div
-                v-if="isReloaderMode && isSellerMode"
+                v-if="isReloaderMode && isSellerMode && !history"
                 class="b-upper-bar__actions__action-reload"
                 @click="openReloadModal">
                 <i class="b-icon">attach_money</i>
@@ -32,7 +31,7 @@
             <div
                 v-if="displayLogout"
                 class="b-upper-bar__actions__action-eject"
-                @click="logout">
+                @click="routeLogout">
                 <i class="b-icon">eject</i>
             </div>
         </div>
@@ -58,14 +57,20 @@ export default {
             history      : state => state.history.opened,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
             buyer        : state => state.auth.buyer
-        }),
-
-        historyClass() {
-            return this.history ? 'b-upper-bar__actions__action-cancel--active' : '';
-        }
+        })
     },
 
-    methods: mapActions(['openReloadModal', 'toggleHistory', 'logout'])
+    methods: {
+        ...mapActions(['openReloadModal', 'toggleHistory', 'logout']),
+
+        routeLogout() {
+            if (this.history) {
+                return this.toggleHistory();
+            }
+
+            this.logout();
+        }
+    }
 };
 </script>
 

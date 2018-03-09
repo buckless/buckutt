@@ -32,6 +32,10 @@ export const interfaceLoader = (store, credentials) => {
                 });
             }
 
+            if (credentials) {
+                store.commit('SET_BUYER_MOL', credentials.mol.trim());
+            }
+
             if (res.data.articles) {
                 store.commit('SET_ITEMS', res.data.articles);
             }

@@ -11,10 +11,11 @@ const mutations = {
 
     ADD_PENDING_CANCELLATION(state, payload) {
         state.pendingCancellations.push(payload);
+        window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
     },
 
     REMOVE_FROM_HISTORY(state, payload) {
-        const index = state.history.findIndex(entry => entry.transactionIds === payload.transactionIds)
+        const index = state.history.findIndex(entry => entry.transactionIds === payload.transactionIds);
 
         state.history.splice(
             index,
@@ -58,6 +59,7 @@ const mutations = {
         };
 
         state.pendingCancellations.splice(index, 1, newHistory);
+        window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
     },
 
     TOGGLE_HISTORY(state) {

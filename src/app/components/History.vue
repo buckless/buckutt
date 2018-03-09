@@ -21,7 +21,7 @@
                         <span class="b-history__list__entry__reload" v-if="entry.reload">
                             <currency :value="entry.reload" showPlus />
                         </span>
-                        <span class="b-history__list__entry__cost">
+                        <span class="b-history__list__entry__cost" v-if="entry.cost">
                             -<currency :value="entry.cost" />
                         </span>
                     </div>
@@ -77,8 +77,13 @@ export default {
     methods: {
         onCard(value, credit) {
             if (this.cardNumber.length === 0) {
-                this.localCardNumber = value;
-                return;
+                this.$store.commit('SET_DATA_LOADED', false);
+                return this
+                    .interfaceLoader({ type: config.buyerMeanOfLogin, mol: value })
+                    .then(() => {
+                        this.$store.commit('SET_DATA_LOADED', true);
+                        this.localCardNumber = value;
+                    });
             } else if (this.cardNumber !== value) {
                 this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
@@ -88,24 +93,24 @@ export default {
                 return;
             }
 
-            if (!Number.isInteger(credit)) {
-                credit = 0;
+            let selectedCredit = credit || this.buyer.credit;
+
+            if (!Number.isInteger(selectedCredit)) {
+                selectedCredit = 0;
             }
 
-            const newCredit = credit + this.creditDifference(this.selectedEntry);
+            const newCredit = selectedCredit + this.creditDifference(this.selectedEntry);
 
-            if (newCredit < 0) {
+            if (newCredit < 0 && this.useCardData) {
+                this.selectedEntry = null;
                 this.$store.commit('ERROR', { message: 'Not enough credit' });
                 return;
             }
 
+            this.$store.commit('SET_DATA_LOADED', false);
             this
                 .cancelEntry(this.selectedEntry)
                 .then(() => {
-                    if (!credit) {
-                        return;
-                    }
-
                     this.removeFromHistory(this.selectedEntry);
 
                     if (this.useCardData) {
@@ -119,6 +124,7 @@ export default {
                     }
 
                     this.$refs.modal.ok();
+                    this.$store.commit('SET_DATA_LOADED', true);
 
                     setTimeout(() => {
                         this.selectedEntry = null;
@@ -173,7 +179,7 @@ export default {
             return -1 * (entry.reload - entry.cost);
         },
 
-        ...mapActions(['toggleHistory', 'cancelEntry', 'removeFromHistory'])
+        ...mapActions(['toggleHistory', 'cancelEntry', 'removeFromHistory', 'interfaceLoader'])
     }
 };
 </script>
