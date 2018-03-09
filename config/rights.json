@@ -53,7 +53,8 @@
           "write": [
               "/users",
               "/meansoflogin",
-              "/services/assigner/groups"
+              "/services/assigner/groups",
+              "/services/assigner/anon"
           ]
       },
       "openUrls": [

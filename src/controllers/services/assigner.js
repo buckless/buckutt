@@ -163,4 +163,76 @@ router.post('/services/assigner/groups', (req, res, next) => {
         .catch(err => dbCatch(module, err, next));
 });
 
+router.post('/services/assigner/anon', (req, res, next) => {
+    const credit = req.body.credit;
+    const groups = req.body.groups;
+    const cardId = req.body.cardId;
+
+    if (!cardId || cardId.length === 0) {
+        return next(new APIError(module, 400, 'Invalid cardId'));
+    }
+
+    if (!Number.isInteger(credit)) {
+        return next(new APIError(module, 400, 'Invalid credit'));
+    }
+
+    if (!groups || !Array.isArray(groups)) {
+        return next(new APIError(module, 400, 'Invalid groups'));
+    }
+
+    const User        = req.app.locals.models.User;
+    const Membership  = req.app.locals.models.Membership;
+    const Reload      = req.app.locals.models.Reload;
+    const MeanOfLogin = req.app.locals.models.MeanOfLogin;
+
+    const user = new User({
+        firstname: 'anon',
+        lastname : 'anon',
+        mail     : 'anon@anon.com',
+        pin      : 'none',
+        password : 'none',
+        credit
+    });
+
+    user
+        .save()
+        .then(() => {
+            const memberships = groups.map((groupId) => {
+                const membership = new Membership({
+                    user_id  : user.id,
+                    group_id : groupId,
+                    period_id: req.event.defaultPeriod_id
+                });
+
+                return membership.save();
+            });
+
+            const mol = new MeanOfLogin({
+                type   : 'cardId',
+                data   : cardId,
+                blocked: false,
+                user_id: user.id
+            }).save();
+
+            const reload = credit > 0
+                ? new Reload({
+                    credit,
+                    type     : 'anon',
+                    trace    : 'anon',
+                    point_id : req.point_id,
+                    buyer_id : user.id,
+                    seller_id: req.user.id
+                }).save()
+                : Promise.resolve();
+
+            return Promise.all(memberships.concat([ reload, mol ]));
+        })
+        .then(() =>
+            res
+                .status(200)
+                .json({})
+                .end())
+        .catch(err => dbCatch(module, err, next));
+});
+
 module.exports = router;
