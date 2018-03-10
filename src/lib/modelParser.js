@@ -11,6 +11,7 @@ const modelsNames = {
     memberships   : 'Membership',
     meansoflogin  : 'MeanOfLogin',
     meansofpayment: 'MeanOfPayment',
+    accesses      : 'Access',
     periods       : 'Period',
     wikets        : 'Wiket',
     points        : 'Point',

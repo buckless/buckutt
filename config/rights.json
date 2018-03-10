@@ -57,6 +57,22 @@
               "/services/assigner/anon"
           ]
       },
+      "controller": {
+          "canSell": false,
+          "canReload": false,
+          "canAssign": false,
+          "canControl": true,
+          "read": [
+              "/users",
+              "/groups",
+              "/events",
+              "/services/controller"
+          ],
+          "write": [
+              "/accesses",
+              "/services/controller"
+          ]
+      },
       "openUrls": [
           "/",
           "/services/login",
@@ -74,6 +90,6 @@
           "/services/manager/reload",
           "userCredit"
       ],
-      "pinLoggingAllowed": ["seller", "reloader", "assigner"]
+      "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
    }
 }
