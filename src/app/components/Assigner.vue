@@ -19,7 +19,7 @@
         <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
         <search v-show="subpage === 'search'" @assign="assignModal"/>
         <modal v-show="assignModalOpened" :credit="assignModalCredit" :name="assignModalName" ref="modal" @close="closeModal"/>
-        <modal-ok v-if="showOkModal"/>
+        <ok v-if="showOkModal" @click.native="showOkModal = false"/>
     </div>
 </template>
 
@@ -28,18 +28,18 @@ import axios                                from 'axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
 import barcode             from '../../lib/barcode';
-import AssignerOfflineData from '../../lib/assignerOfflineData';
-import CreateAccount        from './Assigner-CreateAccount';
+import OfflineData         from '../../lib/offlineData';
+import CreateAccount       from './Assigner-CreateAccount';
 import Search              from './Assigner-Search';
 import Modal               from './Assigner-Modal';
-import Ok                  from './Assigner-Ok';
+import Ok                  from './Ok';
 
 export default {
     components: {
         CreateAccount,
         Search,
         Modal,
-        'modal-ok': Ok
+        Ok
     },
 
     data() {
@@ -215,17 +215,13 @@ export default {
         ok() {
             this.showOkModal = true;
             this.closeModal();
-
-            setTimeout(() => {
-                this.showOkModal = false;
-            }, 1500);
         },
 
         ...mapActions(['addPendingRequest', 'updateEssentials'])
     },
 
     mounted() {
-        this.db = new AssignerOfflineData();
+        this.db = new OfflineData();
 
         this.updateEssentials();
         this.db.init();

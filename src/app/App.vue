@@ -8,6 +8,7 @@
             <history v-if="isSellerMode && history" ref="history" />
             <items v-if="isSellerMode && !history" />
             <sidebar v-if="isSellerMode && !history" />
+            <controller v-if="isControllerMode" ref="controller" />
             <assigner v-if="isAssignerMode" ref="assign" />
         </main>
         <reload
@@ -52,6 +53,7 @@ import Error             from './components/Error';
 import Alert             from './components/Alert';
 import Offline           from './components/Offline';
 import Assigner          from './components/Assigner';
+import Controller        from './components/Controller';
 import AlcoholWarning    from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
 import WaitingForBuyer   from './components/WaitingForBuyer';
@@ -72,6 +74,7 @@ export default {
         Alert,
         Offline,
         Assigner,
+        Controller,
         AlcoholWarning,
         DisconnectWarning,
         WaitingForBuyer,
@@ -102,7 +105,7 @@ export default {
             alert            : state => state.auth.alert
         }),
 
-        ...mapGetters(['loginState', 'isAssignerMode', 'isSellerMode', 'isReloaderMode', 'isCashMode'])
+        ...mapGetters(['loginState', 'isAssignerMode', 'isSellerMode', 'isReloaderMode', 'isControllerMode', 'isCashMode'])
     },
 
     methods: {
@@ -118,6 +121,8 @@ export default {
                 this.$refs.history.onCard(value, credit);
             } else if (this.seller.isAuth && this.isAssignerMode) {
                 this.$refs.assign.onBarcode(value);
+            } else if (this.seller.isAuth && this.isControllerMode) {
+                this.$refs.controller.onCard(value);
             } else if (this.waitingForBuyer || this.waitingForRewrite || !this.buyer.isAuth) {
                 this.$refs.login.validate(value, credit);
             }
@@ -174,7 +179,7 @@ export default {
             } else {
                 this.updateEssentials();
             }
-        }, this.seller.canAssign ? 3 * 60 * 1000 : 60 * 1000);
+        }, (this.seller.canAssign || this.seller.canControl) ? 3 * 60 * 1000 : 60 * 1000);
 
         if (window.localStorage.getItem('pendingRequests')) {
             this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));
