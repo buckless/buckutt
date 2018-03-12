@@ -64,7 +64,7 @@ export const updateEssentials = (store, force) => {
                 .then(() => offlineData.insert('users', users));
         })
         .then((res) => {
-            if (!res) {
+            if (!res || !Array.isArray(res.data)) {
                 return;
             }
 

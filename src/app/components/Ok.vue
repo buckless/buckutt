@@ -8,8 +8,10 @@
 <script>
 export default {
     props: {
-        status: Boolean,
-        default: true
+        status: {
+          type: Boolean,
+          default: true
+        }
     },
 
     computed: {
