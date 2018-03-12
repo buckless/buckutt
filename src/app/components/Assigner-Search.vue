@@ -138,12 +138,12 @@ export default {
     justify-content: space-around;
 
     & > a {
-        color: var(--lightblue);
+        color: $lightblue;
         padding: 5px 10px;
         border-radius: 3px;
 
         &.b--active {
-            background-color: var(--lightblue);
+            background-color: $lightblue;
             color: #fff;
         }
     }

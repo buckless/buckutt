@@ -23,7 +23,7 @@
         <alert v-if="alert" />
         <offline />
         <waiting-for-buyer v-if="isCashMode" />
-        <Ticket v-if="lastUser.display && isCashMode && !doubleValidation" :user="lastUser" />
+        <ticket v-if="lastUser.display && isCashMode && !doubleValidation" :user="lastUser" />
         <input
             class="b--out-of-screen"
             type="text"
