@@ -142,6 +142,8 @@ router.post('/services/assigner/groups', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid groups'));
     }
 
+    groups.push(req.event.defaultGroup_id);
+
     const Membership = req.app.locals.models.Membership;
 
     const memberships = groups.map((groupId) => {
@@ -179,6 +181,8 @@ router.post('/services/assigner/anon', (req, res, next) => {
     if (!groups || !Array.isArray(groups)) {
         return next(new APIError(module, 400, 'Invalid groups'));
     }
+
+    groups.push(req.event.defaultGroup_id);
 
     const User        = req.app.locals.models.User;
     const Membership  = req.app.locals.models.Membership;
