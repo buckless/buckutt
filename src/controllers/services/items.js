@@ -134,29 +134,25 @@ router.get('/services/items', (req, res, next) => {
 
                 if (price.article && price.article.id) {
                     const matchReqPoint = point => point.id === req.point.id;
-                    let categories      = price.article.categories
-                        .filter(cat => cat.points.some(matchReqPoint));
-
-                    categories = (categories.length > 0) ?
-                        categories
-                            .map(category => (
-                                { id: category.id, name: category.name, priority: category.priority }
-                            )) :
-                        [{ id: 'default', name: 'Hors catégorie', priority: -1 }];
-
-                    categories.forEach((category) => {
-                        articles.push({
-                            id     : price.article.id,
-                            name   : price.article.name,
-                            vat    : price.article.vat,
-                            alcohol: price.article.alcohol,
-                            price  : {
-                                id    : price.id,
-                                amount: price.amount
-                            },
-                            category
+                    price.article.categories
+                        .filter(cat => cat.points.some(matchReqPoint))
+                        .forEach((category) => {
+                            articles.push({
+                                id     : price.article.id,
+                                name   : price.article.name,
+                                vat    : price.article.vat,
+                                alcohol: price.article.alcohol,
+                                price  : {
+                                    id    : price.id,
+                                    amount: price.amount
+                                },
+                                category: {
+                                    id      : category.id,
+                                    name    : category.name,
+                                    priority: category.priority
+                                }
+                            });
                         });
-                    });
                 }
             });
 
