@@ -45,7 +45,7 @@ router.get('/services/manager/searchuser', (req, res) => {
                     id       : user.id,
                     firstname: user.firstname,
                     lastname : user.lastname,
-                    credit   : userRights.assigner ? user.credit : undefined
+                    credit   : userRights.assign ? user.credit : undefined
                 }))
                 .sort((a, b) => {
                     const aName = `${a.firstname} ${a.lastname}`;
