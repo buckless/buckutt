@@ -34,18 +34,16 @@
                 </div>
             </div>
         </div>
-        <modal v-if="selectedEntry" ref="modal" @cancel="selectedEntry = null"/>
+        <nfc mode="write" successText="Transaction annulée !" @read="onCard" @cancel="selectedEntry = null" v-if="selectedEntry" />
     </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Modal                    from './History-Modal';
 import Currency                 from './Currency';
 
 export default {
     components: {
-        Modal,
         Currency
     },
 
@@ -119,16 +117,19 @@ export default {
                     this.removeFromHistory(this.selectedEntry);
 
                     if (this.useCardData) {
-                        window.nfc.write(
-                            window.nfc.creditToData(newCredit, config.signingKey)
-                        );
+                        return new Promise(resolve => {
+                            window.app.$root.$emit('readyToWrite', newCredit);
+                            window.app.$root.$on('writeCompleted', () => resolve());
+                        });
                     }
 
+                    return Promise.resolve();
+                })
+                .then(() => {
                     if (this.buyer.isAuth) {
                         this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
                     }
 
-                    this.$refs.modal.ok();
                     this.$store.commit('SET_DATA_LOADED', true);
 
                     setTimeout(() => {

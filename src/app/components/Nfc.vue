@@ -1,14 +1,17 @@
 <template>
     <div class="b-writer">
-        <template v-if="mode === 'write' && display">
+        <template v-if="mode === 'write'">
             <div
                 class="b-writer__drop"
                 @click="cancel"></div>
             <div class="b-writer__modal">
-                <div class="b-writer__modal__text">
+                <div class="b-writer__modal__text" v-if="!success">
                     <span v-if="rewrite">L'écriture de la carte a échoué</span>
                     <template v-else>Approchez la carte cashless</template>
                     <span>Gardez le contact jusqu'à la validation du paiement</span>
+                </div>
+                <div class="b-writer__modal__text" v-else>
+                    {{ successText }}
                 </div>
             </div>
         </template>
@@ -32,7 +35,8 @@ import { mapState } from 'vuex';
 
 export default {
     props: {
-        mode: String
+        mode       : String,
+        successText: String
     },
 
     data() {
@@ -40,7 +44,7 @@ export default {
             inputValue: '',
             isCordova : process.env.TARGET === 'cordova',
             rewrite   : false,
-            display   : true
+            success   : false
         }
     },
 
@@ -55,7 +59,6 @@ export default {
 
         cancel() {
             if (!this.rewrite) {
-                this.display = false;
                 this.$emit('cancel');
             }
         },
@@ -109,13 +112,14 @@ export default {
             this.$root.$on('readyToWrite', (credit) => {
                 nfc
                     .write(nfc.creditToData(credit, config.signingKey))
-                    .then(() => this.$root.$emit('writeCompleted'))
+                    .then(() => {
+                        this.success = true;
+                        this.$root.$emit('writeCompleted');
+                    })
                     .catch(() => {
                         this.rewrite = true;
                     });
             });
-
-            this.display = true;
         },
 
         destroyListeners() {
@@ -134,11 +138,6 @@ export default {
     },
 
     mounted() {
-        this.setListeners();
-    },
-
-    beforeUpdate() {
-        this.destroyListeners();
         this.setListeners();
     },
 
