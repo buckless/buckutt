@@ -4,8 +4,6 @@
             <input
                 type="Number"
                 name="credit"
-                @focus="keepFocus"
-                @blur="giveFocusBack"
                 class="b-assigner-create-account__input"
                 step="0.1"
                 placeholder="Crédit (euros)"
@@ -22,7 +20,10 @@
             </div>
             <button @click.prevent="assignModalOpened = true">Valider</button>
         </form>
-        <modal v-show="assignModalOpened" :credit="numberCredit" name="Anon anon" :showGroups="false" @close="assignModalOpened = false"/>
+        <nfc mode="write" @read="assignCard" @cancel="assignModalOpened = false" v-if="assignModalOpened">
+            <strong>Compte anonyme</strong><br />
+            Nouveau crédit: <strong><currency :value="numberCredit" /></strong>
+        </nfc>
     </div>
 </template>
 
@@ -30,11 +31,11 @@
 import axios from 'axios';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-import Modal from './Assigner-Modal';
+import Currency from './Currency';
 
 export default {
     components: {
-        Modal
+        Currency
     },
 
     data() {
@@ -64,7 +65,7 @@ export default {
     methods: {
         assignCard(cardId) {
             if (this.assignModalOpened) {
-                let promise = Promise.resolve();
+                let promise  = Promise.resolve();
                 const groups = this.activeGroups.map(group => group.id);
 
                 const anon = {
@@ -87,24 +88,18 @@ export default {
                 }
 
                 promise = promise
-                    .catch((err) => {
-                        if (err.response.data.message === 'Duplicate Entry') {
-                            // ignore duplicate entry, write to card anyway
-                            this.useCardData && window.nfc.write(
-                                window.nfc.creditToData(this.assignModalCredit, config.signingKey)
-                            );
-
-                            this.ok();
-                        }
-
-                        this.$store.commit('ERROR', err.response.data);
-                    });
-
-                this.useCardData && window.nfc.write(
-                    window.nfc.creditToData(this.numberCredit, config.signingKey)
-                );
-
-                this.ok();
+                    .then(() => Promise.resolve(true))
+                    .catch(err => err.response.data.message === 'Duplicate Entry'
+                        ? Promise.resolve(true)
+                        : Promise.reject(err))
+                    .then(write => write && this.useCardData
+                        ? new Promise(resolve => {
+                            window.app.$root.$emit('readyToWrite', this.numberCredit);
+                            window.app.$root.$on('writeCompleted', () => resolve());
+                        })
+                        : Promise.resolve())
+                    .then(() => this.ok())
+                    .catch(err => this.$store.commit('ERROR', err.response.data));
             }
         },
 
@@ -113,14 +108,6 @@ export default {
             this.assignModalOpened = false;
             this.credit = null;
             this.activeGroups = [];
-        },
-
-        keepFocus() {
-            document.querySelector('#app > input').disabled = true;
-        },
-
-        giveFocusBack() {
-            document.querySelector('#app > input').disabled = false;
         },
 
         ...mapActions(['addPendingRequest'])

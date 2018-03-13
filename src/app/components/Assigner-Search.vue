@@ -17,8 +17,6 @@
             <input
                 type="text"
                 name="search"
-                @focus="keepFocus"
-                @blur="giveFocusBack"
                 @keyup="search"
                 class="b-assigner-search__input"
                 :placeholder="searchBy === 'name' ? 'Nom' : 'Numéro de ticket'"
@@ -107,19 +105,10 @@ export default {
 
         selectUser(user) {
             if (this.online) {
-                console.log(user);
                 this.$emit('assign', user.credit, `${user.firstname} ${user.lastname}`, user.id);
             } else {
                 this.$emit('assign', user.credit, user.name, user.id);
             }
-        },
-
-        keepFocus() {
-            document.querySelector('#app > input').disabled = true;
-        },
-
-        giveFocusBack() {
-            document.querySelector('#app > input').disabled = false;
         }
     },
 

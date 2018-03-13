@@ -6,9 +6,11 @@
                 @click="cancel"></div>
             <div class="b-writer__modal">
                 <div class="b-writer__modal__text" v-if="!success">
-                    <span v-if="rewrite">L'écriture de la carte a échoué</span>
-                    <template v-else>Approchez la carte cashless</template>
-                    <span>Gardez le contact jusqu'à la validation du paiement</span>
+                    <span v-if="rewrite" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
+                    <span v-else class="b-writer__modal__text__card">Approchez la carte cashless</span>
+                    Gardez le contact jusqu'à la validation du paiement
+                    <br /><br />
+                    <slot></slot>
                 </div>
                 <div class="b-writer__modal__text" v-else>
                     {{ successText }}
@@ -157,24 +159,24 @@ export default {
 .b-writer__modal {
     @add-mixin modal 350px;
 
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
     padding: 30px 0;
     text-align: center;
 }
 
 .b-writer__modal__text {
-    & > span:first-child {
-        display: inline-block;
+    & > .b-writer__modal__text__error {
+        display: block;
+        font-size: 18px;
+        font-weight: bold;
         color: $red;
     }
 
-    & > span:last-child {
-        display: inline-block;
+    & > .b-writer__modal__text__card {
+        display: block;
         margin: 10px 10px 0;
-        font-size: 16px;
-        font-weight: normal;
-        color: $black !important;
+        font-size: 18px;
+        font-weight: bold;
     }
 }
 </style>
