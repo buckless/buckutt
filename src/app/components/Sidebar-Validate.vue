@@ -26,8 +26,7 @@ export default {
         statusClasses() {
             return {
                 'b-sidebar-validate--doing': this.basketStatus === 'DOING' ||
-                    this.basketStatus === 'WAITING_FOR_BUYER' ||
-                    this.basketStatus === 'WAITING_FOR_REWRITE',
+                    this.basketStatus === 'WAITING_FOR_BUYER',
                 'b-sidebar-validate--error': this.basketStatus === 'ERROR'
             };
         },

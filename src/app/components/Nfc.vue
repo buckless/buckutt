@@ -1,6 +1,6 @@
 <template>
-    <div class="b-writer" v-if="display">
-        <template v-if="mode === 'write'">
+    <div class="b-writer">
+        <template v-if="mode === 'write' && display">
             <div
                 class="b-writer__drop"
                 @click="cancel"></div>
@@ -32,9 +32,7 @@ import { mapState } from 'vuex';
 
 export default {
     props: {
-        data : Object,
-        mode : String,
-        write: Boolean
+        mode: String
     },
 
     data() {
@@ -52,17 +50,14 @@ export default {
         },
 
         onCard(credit = null) {
-            if (this.mode === 'read') {
-                this.$emit('read', this.inputValue, credit);
-            }
+            this.$emit('read', this.inputValue, credit);
         },
 
         cancel() {
-            if (this.rewrite) {
-                display = false;
+            if (!this.rewrite) {
+                this.display = false;
+                this.$emit('cancel');
             }
-
-            this.$emit('cancel');
         },
 
         hideVirtualKeyboard() {
@@ -71,9 +66,9 @@ export default {
             }
         },
 
-        nfcListen() {
+        setListeners() {
             if (!window.nfc) {
-                setTimeout(this.nfcListen, 1000);
+                setTimeout(this.setListeners, 1000);
                 return;
             }
 
@@ -110,6 +105,25 @@ export default {
             nfc.on('error', (err) => {
                 console.error(err);
             });
+
+            this.$root.$on('readyToWrite', (credit) => {
+                nfc
+                    .write(nfc.creditToData(credit, config.signingKey))
+                    .then(() => this.$root.$emit('writeCompleted'))
+                    .catch(() => {
+                        this.rewrite = true;
+                    });
+            });
+
+            this.display = true;
+        },
+
+        destroyListeners() {
+            window.nfc.removeAllListeners('data');
+            window.nfc.removeAllListeners('uid');
+            window.nfc.removeAllListeners('error');
+            window.app.$root.$off('readyToWrite');
+            window.app.$root.$off('writeCompleted');
         }
     },
 
@@ -120,13 +134,16 @@ export default {
     },
 
     mounted() {
-        this.nfcListen();
+        this.setListeners();
+    },
+
+    beforeUpdate() {
+        this.destroyListeners();
+        this.setListeners();
     },
 
     beforeDestroy() {
-        window.nfc.removeAllListeners('data');
-        window.nfc.removeAllListeners('uid');
-        window.nfc.removeAllListeners('error');
+        this.destroyListeners();
     }
 }
 </script>

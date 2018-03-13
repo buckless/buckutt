@@ -64,14 +64,15 @@ export default {
         },
 
         entries() {
-            return this.$store.state.history.history
+            return this.history
                 .filter(e => e.cardNumber === this.cardNumber)
                 .map(e => this.resume(e));
         },
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            buyer      : state => state.auth.buyer
+            buyer      : state => state.auth.buyer,
+            history    : state => state.history.history
         })
     },
 
@@ -82,6 +83,9 @@ export default {
                 return this
                     .interfaceLoader({ type: config.buyerMeanOfLogin, mol: value })
                     .then(() => {
+                        if (typeof credit === 'number') {
+                            this.$store.commit('OVERRIDE_BUYER_CREDIT', credit);
+                        }
                         this.$store.commit('SET_DATA_LOADED', true);
                         this.localCardNumber = value;
                     });

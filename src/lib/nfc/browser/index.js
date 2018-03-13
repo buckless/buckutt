@@ -97,6 +97,8 @@ module.exports = class NFC extends EventEmitter {
         console.warn(`Writing card to local storage : ${debugData}`);
 
         localStorage.setItem('mocked-cards', JSON.stringify(cards));
+
+        return Promise.resolve();
     }
 
     dataToCredit(data, signingKey) {

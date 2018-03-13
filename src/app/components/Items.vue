@@ -4,7 +4,8 @@
             v-for="item in tabsItems"
             :item="item"
             :key="item.id"></item>
-        <nfc mode="read" @read="validate" />
+        <nfc mode="read" @read="validate" v-if="isWaiting && !isWriting" />
+        <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" />
     </div>
 </template>
 
@@ -22,7 +23,11 @@ export default {
         ...mapGetters(['tabsItems']),
 
         ...mapState({
-            buyer: state => state.auth.buyer
+            buyer    : state => state.auth.buyer,
+            isWaiting: state => state.basket.basketStatus === 'WAITING',
+            isWriting: state =>
+                state.basket.basketStatus === 'WAITING_FOR_BUYER' ||
+                state.basket.isWriting
         })
     },
 
@@ -34,7 +39,7 @@ export default {
         validate(cardNumber, credit) {
             console.log('items-validate', cardNumber, credit);
 
-            if (!this.buyer.isAuth) {
+            if (!this.buyer.isAuth || this.isWriting) {
                 if (Number.isInteger(credit)) {
                     this.setBuyer({
                         cardNumber,
@@ -46,6 +51,10 @@ export default {
                     });
                 }
             }
+        },
+
+        cancelBuy() {
+            this.$store.commit('SET_BASKET_STATUS', 'WAITING');
         }
     }
 };

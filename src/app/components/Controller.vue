@@ -11,6 +11,7 @@
             <br/>
             <br/>
             Scannez une carte pour vérifier son accès
+            <nfc mode="read" @read="onCard" />
         </p>
         <ok v-if="showOkModal" :status="okModalStatus" @click.native="showOkModal = false"/>
     </div>

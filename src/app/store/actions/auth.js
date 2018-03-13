@@ -119,6 +119,8 @@ export const buyer = (store, { cardNumber, credit }) => {
         return;
     }
 
+    store.commit('SET_WRITING', true);
+
     let interfaceLoaderCredentials;
     let shouldSendBasket   = false;
     let shouldWriteCredit  = false;
@@ -126,10 +128,7 @@ export const buyer = (store, { cardNumber, credit }) => {
     let shouldCheckPending = false;
     let shouldChangeBuyer  = false;
 
-    if (store.state.basket.basketStatus === 'WAITING_FOR_REWRITE') {
-        shouldWriteCredit = true;
-        shouldChangeBuyer = true;
-    } else if (!store.state.auth.device.config.doubleValidation) {
+    if (!store.state.auth.device.config.doubleValidation) {
         shouldClearBasket = true;
         // First time: sendBasket will active "WAITING_FOR_BUYER" and return
         shouldSendBasket = true;
@@ -176,11 +175,10 @@ export const buyer = (store, { cardNumber, credit }) => {
     }
 
     if (shouldWriteCredit) {
-        initialPromise = initialPromise.then(() =>
-            window.nfc.write(
-                window.nfc.creditToData(store.state.ui.lastUser.credit, config.signingKey)
-            )
-        );
+        initialPromise = initialPromise.then(() => new Promise(resolve => {
+            window.app.$root.$emit('readyToWrite', store.state.ui.lastUser.credit);
+            window.app.$root.$on('writeCompleted', () => resolve());
+        }));
     }
 
     if (shouldClearBasket) {
@@ -206,14 +204,14 @@ export const buyer = (store, { cardNumber, credit }) => {
             if (err.message === 'Network Error') {
                 store.commit('ERROR', { message: 'Server not reacheable' });
                 return;
-            } else if (err.message.startsWith('Write failed')) {
-                store.commit('SET_BASKET_STATUS', 'WAITING_FOR_REWRITE');
-                return;
             }
 
             store.commit('ERROR', err.response.data);
         })
-        .then(() => store.commit('SET_DATA_LOADED', true));
+        .then(() => {
+            store.commit('SET_DATA_LOADED', true);
+            store.commit('SET_WRITING', false);
+        });
 
     return initialPromise;
 };

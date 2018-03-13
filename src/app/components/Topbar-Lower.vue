@@ -3,7 +3,7 @@
         <div class="b-lower-bar__tabs">
             <tab
                 v-for="(tab, i) in tabs"
-                v-if="!loginState && seller.canSell && !history"
+                v-if="!loginState && isSellerMode && !history"
                 :name="tab.name"
                 :id="tab.id"
                 :key="tab.id"
@@ -44,7 +44,7 @@ export default {
             buyer  : state => state.auth.buyer
         }),
 
-        ...mapGetters(['tabs', 'loginState'])
+        ...mapGetters(['tabs', 'loginState', 'isSellerMode'])
     },
 
     components: {
