@@ -4,11 +4,12 @@
             v-for="item in tabsItems"
             :item="item"
             :key="item.id"></item>
+        <nfc mode="read" @read="validate" />
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 import Item from './Items-Item';
 
@@ -17,7 +18,36 @@ export default {
         Item
     },
 
-    computed: mapGetters(['tabsItems'])
+    computed: {
+        ...mapGetters(['tabsItems']),
+
+        ...mapState({
+            buyer: state => state.auth.buyer
+        })
+    },
+
+    methods: {
+        ...mapActions({
+            setBuyer: 'buyer'
+        }),
+
+        validate(cardNumber, credit) {
+            console.log('items-validate', cardNumber, credit);
+
+            if (!this.buyer.isAuth) {
+                if (Number.isInteger(credit)) {
+                    this.setBuyer({
+                        cardNumber,
+                        credit
+                    });
+                } else {
+                    this.setBuyer({
+                        cardNumber
+                    });
+                }
+            }
+        }
+    }
 };
 </script>
 

@@ -1,7 +1,5 @@
 <template>
-    <div
-        id="app"
-        @click="refocus">
+    <div id="app">
         <topbar />
         <main class="b-main">
             <login v-show="loginState" ref="login" />
@@ -22,17 +20,7 @@
         <error />
         <alert v-if="alert" />
         <offline />
-        <waiting-for-buyer v-if="isCashMode" />
         <ticket v-if="lastUser.display && isCashMode && !doubleValidation" :user="lastUser" />
-        <input
-            class="b--out-of-screen"
-            type="text"
-            ref="input"
-            v-model="inputValue"
-            :disabled="isCordova"
-            @focus="hideVirtualKeyboard"
-            autofocus
-            @keyup.enter="validate" />
     </div>
 </template>
 
@@ -56,7 +44,6 @@ import Assigner          from './components/Assigner';
 import Controller        from './components/Controller';
 import AlcoholWarning    from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
-import WaitingForBuyer   from './components/WaitingForBuyer';
 import Ticket            from './components/Ticket';
 import History           from './components/History';
 
@@ -77,63 +64,28 @@ export default {
         Controller,
         AlcoholWarning,
         DisconnectWarning,
-        WaitingForBuyer,
         Ticket,
         History
     },
 
-    data() {
-        return {
-            inputValue: '',
-            isCordova: process.env.TARGET === 'cordova'
-        };
-    },
-
     computed: {
         ...mapState({
-            buyer            : state => state.auth.buyer,
-            seller           : state => state.auth.seller,
-            basketStatus     : state => state.basket.basketStatus,
-            loaded           : state => state.ui.dataLoaded,
-            waitingForBuyer  : state => state.basket.basketStatus === 'WAITING_FOR_BUYER',
-            waitingForRewrite: state => state.basket.basketStatus === 'WAITING_FOR_REWRITE',
-            lastUser         : state => state.ui.lastUser,
-            doubleValidation : state => state.auth.device.config.doubleValidation,
-            useCardData      : state => state.auth.device.event.config.useCardData,
-            online           : state => state.online.status,
-            history          : state => state.history.opened,
-            alert            : state => state.auth.alert
+            buyer           : state => state.auth.buyer,
+            seller          : state => state.auth.seller,
+            basketStatus    : state => state.basket.basketStatus,
+            loaded          : state => state.ui.dataLoaded,
+            lastUser        : state => state.ui.lastUser,
+            doubleValidation: state => state.auth.device.config.doubleValidation,
+            useCardData     : state => state.auth.device.event.config.useCardData,
+            online          : state => state.online.status,
+            history         : state => state.history.opened,
+            alert           : state => state.auth.alert
         }),
 
         ...mapGetters(['loginState', 'isAssignerMode', 'isSellerMode', 'isReloaderMode', 'isControllerMode', 'isCashMode'])
     },
 
     methods: {
-        refocus() {
-            this.$refs.input.focus();
-        },
-
-        validate(credit = null) {
-            const value = this.inputValue;
-            this.inputValue = '';
-
-            if (this.isCashMode && this.seller.isAuth && this.history) {
-                this.$refs.history.onCard(value, credit);
-            } else if (this.seller.isAuth && this.isAssignerMode) {
-                this.$refs.assign.onBarcode(value);
-            } else if (this.seller.isAuth && this.isControllerMode) {
-                this.$refs.controller.onCard(value);
-            } else if (this.waitingForBuyer || this.waitingForRewrite || !this.buyer.isAuth) {
-                this.$refs.login.validate(value, credit);
-            }
-        },
-
-        hideVirtualKeyboard() {
-            if (process.env.TARGET === 'cordova') {
-                setTimeout(() => Keyboard.hide())
-            }
-        },
-
         ...mapActions([
             'setupSocket',
             'setSellers',
@@ -185,7 +137,6 @@ export default {
             this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));
         }
 
-        let uid = null;
         let nfc = {
             on() {}
         };
@@ -199,41 +150,6 @@ export default {
         }
 
         window.nfc = nfc;
-
-        if (this.useCardData) {
-            nfc.on('uid', (data) => {
-                uid = data.toString();
-            });
-
-            nfc.on('data', (data) => {
-                let credit;
-
-                try {
-                    credit = nfc.dataToCredit(data.toLowerCase ? data.toLowerCase() : data, config.signingKey);
-                    console.log('nfc-data', credit);
-                } catch (err) {
-                    if (err.message === 'Signature does not match') {
-                        console.log('signature does not match');
-                    }
-
-                    console.log(err);
-                }
-
-                // set input value to previous uid
-                this.inputValue = uid;
-                // adds data/credit to validate
-                this.validate(credit);
-            });
-        } else {
-            nfc.on('uid', (data) => {
-                this.inputValue = data;
-                this.validate();
-            });
-        }
-
-        nfc.on('error', (err) => {
-            console.error(err);
-        });
     }
 };
 </script>

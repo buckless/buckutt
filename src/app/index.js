@@ -1,11 +1,13 @@
 import Vue             from 'vue'
 
 import App             from './App'
+import Nfc             from './components/Nfc.vue'
 import store           from './store'
 import { getPlatform } from '../lib/platform'
 
 function init() {
   Vue.config.productionTip = false
+  Vue.component('nfc', Nfc)
 
   /* eslint-disable no-new */
   window.app = new Vue({

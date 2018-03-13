@@ -3,6 +3,7 @@
         <div class="b-history__text" v-if="cardNumber.length === 0">
             Approchez la carte cashless
             <div>Pour visualiser les derniers achats sur cette borne</div>
+            <nfc mode="read" @read="onCard" />
         </div>
         <div v-else>
             <div class="b-history__text" v-if="entries.length === 0">
