@@ -13,8 +13,9 @@
   "private": true,
   "main": "src/main.js",
   "scripts": {
-    "postinstall": "cd cordova && cordova prepare && cd ..",
+    "postinstall": "cp config/profiles/development.json.example config/profiles/development.json && cp config/profiles/production.json.example config/profiles/production.json && cd cordova && cordova prepare",
     "buildnative": "electron-rebuild .",
+    "build:docker": "docker build -t buckless/client .",
     "build:android": "cross-env TARGET=cordova PLATFORM=android node build/build.js",
     "build:electron": "cross-env TARGET=electron node build/build.js",
     "build:browser": "cross-env TARGET=browser node build/build.js",

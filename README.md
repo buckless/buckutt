@@ -28,7 +28,7 @@
 `$ yarn buildnative`
 
 ## Build docker image
-`$ docker-build -t buckless/client .`
+`$ yarn && yarn build:docker`
 
 ## Development
 ### Browser
