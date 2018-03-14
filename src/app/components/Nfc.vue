@@ -43,10 +43,11 @@ export default {
 
     data() {
         return {
-            inputValue: '',
-            isCordova : process.env.TARGET === 'cordova',
-            rewrite   : false,
-            success   : false
+            inputValue : '',
+            isCordova  : process.env.TARGET === 'cordova',
+            rewrite    : false,
+            success    : false,
+            dataToWrite: null
         }
     },
 
@@ -56,7 +57,11 @@ export default {
         },
 
         onCard(credit = null) {
-            this.$emit('read', this.inputValue, credit);
+            if (this.rewrite) {
+                this.write();
+            } else {
+                this.$emit('read', this.inputValue, credit);
+            }
         },
 
         cancel() {
@@ -76,6 +81,10 @@ export default {
                 setTimeout(this.setListeners, 1000);
                 return;
             }
+
+            this.success     = false;
+            this.rewrite     = false;
+            this.dataToWrite = null;
 
             const nfc = window.nfc;
 
@@ -112,16 +121,30 @@ export default {
             });
 
             this.$root.$on('readyToWrite', (credit) => {
-                nfc
-                    .write(nfc.creditToData(credit, config.signingKey))
-                    .then(() => {
-                        this.success = true;
-                        this.$root.$emit('writeCompleted');
-                    })
-                    .catch(() => {
-                        this.rewrite = true;
-                    });
+                this.dataToWrite = credit;
+                this.write();
             });
+        },
+
+        write() {
+            let restartDataLoader = false;
+
+            nfc
+                .write(nfc.creditToData(this.dataToWrite, config.signingKey))
+                .then(() => {
+                    this.success = true;
+                    this.$root.$emit('writeCompleted');
+                    if (restartDataLoader) {
+                        this.$store.commit('SET_DATA_LOADED', false);
+                    }
+                })
+                .catch(() => {
+                    this.rewrite = true;
+                    if (this.dataLoaded) {
+                        restartDataLoader = true;
+                        this.$store.commit('SET_DATA_LOADED', true);
+                    }
+                });
         },
 
         destroyListeners() {
@@ -135,7 +158,8 @@ export default {
 
     computed: {
         ...mapState({
-            useCardData: state => state.auth.device.event.config.useCardData
+            useCardData: state => state.auth.device.event.config.useCardData,
+            dataLoaded : state => state.ui.dataLoaded
         })
     },
 

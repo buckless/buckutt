@@ -26,8 +26,8 @@ export default {
             buyer    : state => state.auth.buyer,
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state =>
-                state.basket.basketStatus === 'WAITING_FOR_BUYER' ||
-                state.basket.isWriting
+                (state.basket.basketStatus === 'WAITING_FOR_BUYER' && !state.basket.writing) ||
+                state.basket.writing
         })
     },
 

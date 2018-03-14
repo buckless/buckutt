@@ -87,7 +87,7 @@ module.exports = class NFC extends EventEmitter {
         const cards = JSON.parse(localStorage.getItem('mocked-cards'));
 
         if (!cards[mock.actualCard]) {
-            throw new Error('card not found');
+            return Promise.reject(new Error('card not found'));
         }
 
         // do not store cardValue as buffer because it can't be restored as a buffer

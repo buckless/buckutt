@@ -1,6 +1,6 @@
 const initialState = {
     basketStatus: 'WAITING',
-    isWriting   : false
+    writing     : false
 };
 
 const mutations = {
