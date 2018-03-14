@@ -4,8 +4,8 @@
             v-for="item in tabsItems"
             :item="item"
             :key="item.id"></item>
-        <nfc mode="read" @read="validate" v-if="isWaiting && !isWriting" />
-        <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" />
+        <nfc mode="read" @read="validate" v-if="isWaiting && !isWriting" key="read" />
+        <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
     </div>
 </template>
 
