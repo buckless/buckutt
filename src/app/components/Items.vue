@@ -54,6 +54,7 @@ export default {
         },
 
         cancelBuy() {
+            this.$store.commit('SET_WRITING', false);
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
         }
     }
