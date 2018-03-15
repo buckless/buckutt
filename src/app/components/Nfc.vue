@@ -13,7 +13,7 @@
                     <slot></slot>
                 </div>
                 <div class="b-writer__modal__text" v-else>
-                    {{ successText }}
+                    {{ successTextUpdated }}
                 </div>
             </div>
         </template>
@@ -128,6 +128,10 @@ export default {
 
         write() {
             let restartDataLoader = false;
+            if (!this.dataLoaded) {
+                restartDataLoader = true;
+                this.$store.commit('SET_DATA_LOADED', true);
+            }
 
             nfc
                 .write(nfc.creditToData(this.dataToWrite, config.signingKey))
@@ -140,10 +144,7 @@ export default {
                 })
                 .catch(() => {
                     this.rewrite = true;
-                    if (this.dataLoaded) {
-                        restartDataLoader = true;
-                        this.$store.commit('SET_DATA_LOADED', true);
-                    }
+                    this.$store.commit('SET_DATA_LOADED', true);
                 });
         },
 
@@ -160,7 +161,11 @@ export default {
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
             dataLoaded : state => state.ui.dataLoaded
-        })
+        }),
+
+        successTextUpdated() {
+            return this.successText || 'Transaction effectuée';
+        }
     },
 
     mounted() {
