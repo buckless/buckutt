@@ -85,7 +85,6 @@ export default {
         closeReload() {
             this.$refs.input.clear();
             this.closeReloadModal();
-            this.removeReloads();
         },
 
         reload() {
@@ -111,6 +110,7 @@ export default {
                 .then(() => {
                     this.writingMode = false;
                     this.closeReload();
+                    this.removeReloads();
                 });
         },
 
