@@ -135,6 +135,8 @@ export default {
     .b-upper-bar__buyer {
         font-size: 13px;
         padding-left: 10px;
+        justify-content: flex-end;
+        padding-bottom: 5px;
     }
 
     .b-upper-bar__date {

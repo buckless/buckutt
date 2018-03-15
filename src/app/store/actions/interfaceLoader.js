@@ -14,14 +14,14 @@ export const interfaceLoader = (store, credentials) => {
             data: {
                 ...store.state.online.offline.defaultItems,
                 buyer: {
-                    credit: credentials.credit
+                    credit: credentials ? credentials.credit : null
                 }
             }
         });
 
     return initialPromise
         .then((res) => {
-            if (credentials && res.data.buyer) {
+            if (credentials && res.data.buyer && res.data.buyer.credit) {
                 store.commit('ID_BUYER', {
                     id       : res.data.buyer.id || '',
                     credit   : res.data.buyer.credit,
