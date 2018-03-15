@@ -41,11 +41,13 @@ export default {
                 if (Number.isInteger(credit)) {
                     this.setBuyer({
                         cardNumber,
-                        credit
+                        credit,
+                        isOnlyAuth: this.isWaiting && !this.isWriting
                     });
                 } else {
                     this.setBuyer({
-                        cardNumber
+                        cardNumber,
+                        isOnlyAuth: this.isWaiting && !this.isWriting
                     });
                 }
             }

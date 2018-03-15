@@ -105,8 +105,9 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit }) => {
-    const token = store.getters.tokenHeaders;
+export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
+    const token    = store.getters.tokenHeaders;
+    const onlyAuth = isOnlyAuth || false;
 
     let cardCredit = credit;
 
@@ -128,7 +129,7 @@ export const buyer = (store, { cardNumber, credit }) => {
 
     if (!store.state.auth.device.config.doubleValidation) {
         // First time: sendBasket will active "WAITING_FOR_BUYER" and return
-        shouldSendBasket  = true;
+        shouldSendBasket  = !onlyAuth;
         shouldClearBasket = store.getters.isSellerMode;
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
