@@ -10,30 +10,36 @@ export const interfaceLoader = (store, credentials) => {
 
     const initialPromise = (!store.getters.isDegradedModeActive) ?
         axios.get(`${config.api}/services/items${params}`, token) :
-        Promise.resolve({ data: store.state.online.offline.defaultItems });
+        Promise.resolve({
+            data: {
+                ...store.state.online.offline.defaultItems,
+                buyer: {
+                    credit: credentials.credit
+                }
+            }
+        });
 
     return initialPromise
         .then((res) => {
-            if (res.data.buyer) {
+            if (credentials && res.data.buyer) {
                 store.commit('ID_BUYER', {
-                    id       : res.data.buyer.id,
+                    id       : res.data.buyer.id || '',
                     credit   : res.data.buyer.credit,
-                    firstname: res.data.buyer.firstname,
-                    lastname : res.data.buyer.lastname,
-                    groups   : res.data.buyer.groups,
-                    purchases: res.data.buyer.purchases
+                    firstname: res.data.buyer.firstname || '',
+                    lastname : res.data.buyer.lastname || '',
+                    groups   : res.data.buyer.groups || [],
+                    purchases: res.data.buyer.purchases || []
                 });
-            } else {
+                store.commit('SET_BUYER_MOL', credentials.mol.trim());
+            }
+
+            if (!res.data.buyer || !res.data.buyer.id) {
                 // This will be call at least once when seller logs in
                 // It will stores default items in case of disconnection
                 store.dispatch('setDefaultItems', {
                     articles: res.data.articles,
                     promotions: res.data.promotions
                 });
-            }
-
-            if (credentials) {
-                store.commit('SET_BUYER_MOL', credentials.mol.trim());
             }
 
             if (res.data.articles) {

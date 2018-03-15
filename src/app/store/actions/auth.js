@@ -137,7 +137,7 @@ export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
             shouldCheckPending = store.state.online.status;
             shouldWriteCredit  = store.state.auth.device.event.config.useCardData;
         } else {
-            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
+            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
         }
     } else {
         if (store.state.auth.buyer.isAuth) {
@@ -146,7 +146,7 @@ export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
             shouldChangeBuyer = true;
         } else {
             shouldCheckPending         = store.state.online.status;
-            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
+            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
         }
     }
 
