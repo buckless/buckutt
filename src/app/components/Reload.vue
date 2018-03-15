@@ -134,9 +134,7 @@ export default {
 
 .b-reload--reloadOnly {
     & .b-reload__modal {
-        transform: scale(1.2);
-        transform-origin: top;
-        transform: scale(1.2) translateX(-50%);
+        transform: translateX(-50%);
         transform-origin: top center;
         z-index: 4;
     }
