@@ -38,7 +38,7 @@
                 <button @click="cancelReloadModal">Paiement refusé</button>
             </div>
         </div>
-        <nfc mode="write" @read="writeReload" @cancel="writingMode = false" v-if="writingMode" />
+        <nfc mode="write" @read="proceedReload" @cancel="initReload" v-if="writingMode" />
     </div>
 </template>
 
@@ -70,7 +70,6 @@ export default {
     computed: {
         ...mapState({
             reloadState     : state => state.reload.reloadState,
-            buyer           : state => state.auth.buyer,
             doubleValidation: state => state.auth.device.config.doubleValidation
         }),
 
@@ -101,20 +100,30 @@ export default {
             }
         },
 
-        writeReload() {
-            this.sendBasket()
+        proceedReload(cardNumber, credit) {
+            this.buyer({ cardNumber, credit })
+                .then(() => this.sendBasket())
                 .then(() => new Promise(resolve => {
                     window.app.$root.$emit('readyToWrite', this.reloadAmount);
                     window.app.$root.$on('writeCompleted', () => resolve());
+
+                    if (this.doubleValidation) {
+                        return resolve();
+                    }
                 }))
                 .then(() => {
-                    this.writingMode = false;
+                    this.$store.commit('OPEN_TICKET');
                     this.closeReload();
-                    this.removeReloads();
+                    this.initReload();
                 });
         },
 
-        ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'removeReloads', 'cancelReloadModal', 'sendBasket'])
+        initReload() {
+            this.removeReloads();
+            this.writingMode = false;
+        },
+
+        ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'removeReloads', 'cancelReloadModal', 'sendBasket', 'buyer'])
     }
 };
 </script>

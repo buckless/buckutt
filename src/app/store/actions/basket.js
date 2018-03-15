@@ -115,7 +115,7 @@ export const sendBasket = (store, payload = {}) => {
     if (store.getters.isDegradedModeActive) {
         const transactionIds = uniqueId('offline-transaction-id');
 
-        transactionToSend.seller = store.state.auth.seller.id;
+        transactionToSend.seller               = store.state.auth.seller.id;
         transactionToSend.offlineTransactionId = transactionIds;
 
         store.dispatch('addPendingRequest', {

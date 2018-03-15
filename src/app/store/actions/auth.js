@@ -129,9 +129,9 @@ export const buyer = (store, { cardNumber, credit }) => {
     let shouldChangeBuyer  = false;
 
     if (!store.state.auth.device.config.doubleValidation) {
-        shouldClearBasket = true;
         // First time: sendBasket will active "WAITING_FOR_BUYER" and return
-        shouldSendBasket = true;
+        shouldSendBasket  = true;
+        shouldClearBasket = store.getters.isSellerMode;
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
             shouldChangeBuyer  = true;
@@ -167,8 +167,7 @@ export const buyer = (store, { cardNumber, credit }) => {
         }
 
         initialPromise = initialPromise
-            .then(() => store.dispatch('sendBasket', { cardNumber }))
-            .then(() => store.commit('SET_BASKET_STATUS', 'WAITING'))
+            .then(() => store.dispatch('sendBasket', { cardNumber }));
     } else {
         initialPromise = initialPromise
             .then(() => store.commit('SET_BUYER_MOL', cardNumber));
