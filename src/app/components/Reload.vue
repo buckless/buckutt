@@ -85,10 +85,11 @@ export default {
         closeReload() {
             this.$refs.input.clear();
             this.closeReloadModal();
+            this.removeReloads();
         },
 
         reload() {
-            this.$store.dispatch('addReload', {
+            this.addReload({
                 amount: this.reloadAmount,
                 type  : this.$store.state.reload.meanOfPayment,
                 trace : ''
@@ -113,7 +114,7 @@ export default {
                 });
         },
 
-        ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'cancelReloadModal', 'sendBasket'])
+        ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'removeReloads', 'cancelReloadModal', 'sendBasket'])
     }
 };
 </script>
