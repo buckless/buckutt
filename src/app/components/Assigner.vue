@@ -105,6 +105,7 @@ export default {
 
     methods: {
         assignCard(value) {
+            this.$store.commit('SET_DATA_LOADED', false);
             const mol = {
                 user_id: this.assignModalId,
                 type   : 'cardId',
@@ -150,7 +151,8 @@ export default {
                     })
                     : Promise.resolve())
                 .then(() => this.ok())
-                .catch(err => this.$store.commit('ERROR', err.response.data));
+                .catch(err => this.$store.commit('ERROR', err.response.data))
+                .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
         ticketScanned(value) {

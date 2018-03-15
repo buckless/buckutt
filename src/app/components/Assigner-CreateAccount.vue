@@ -65,6 +65,7 @@ export default {
     methods: {
         assignCard(cardId) {
             if (this.assignModalOpened) {
+                this.$store.commit('SET_DATA_LOADED', false);
                 let promise  = Promise.resolve();
                 const groups = this.activeGroups.map(group => group.id);
 
@@ -99,7 +100,8 @@ export default {
                         })
                         : Promise.resolve())
                     .then(() => this.ok())
-                    .catch(err => this.$store.commit('ERROR', err.response.data));
+                    .catch(err => this.$store.commit('ERROR', err.response.data))
+                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
             }
         },
 
