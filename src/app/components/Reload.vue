@@ -38,6 +38,7 @@
                 <button @click="cancelReloadModal">Paiement refusé</button>
             </div>
         </div>
+        <nfc mode="write" @read="writeReload" @cancel="writingMode = false" v-if="writingMode" />
     </div>
 </template>
 
@@ -61,7 +62,8 @@ export default {
 
     data() {
         return {
-            reloadAmount: 0
+            reloadAmount: 0,
+            writingMode : false
         };
     },
 
@@ -92,13 +94,23 @@ export default {
                 trace : ''
             });
 
-            let initialPromise = Promise.resolve();
-
             if (this.reloadOnly) {
-                initialPromise = this.sendBasket();
+                this.writingMode = true;
+            } else {
+                this.closeReload();
             }
+        },
 
-            initialPromise.then(() => this.closeReload());
+        writeReload() {
+            this.sendBasket()
+                .then(() => new Promise(resolve => {
+                    window.app.$root.$emit('readyToWrite', this.reloadAmount);
+                    window.app.$root.$on('writeCompleted', () => resolve());
+                }))
+                .then(() => {
+                    this.writingMode = false;
+                    this.closeReload();
+                });
         },
 
         ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'cancelReloadModal', 'sendBasket'])
@@ -111,8 +123,8 @@ export default {
 
 .b-reload--reloadOnly {
     & .b-reload__modal {
-        transform: scale(1.2) translateX(-50%);
-        transform-origin: top center;
+        transform: scale(1.2);
+        transform-origin: top;
         z-index: 4;
     }
 }
