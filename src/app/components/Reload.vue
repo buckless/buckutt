@@ -93,7 +93,10 @@ export default {
                 trace : ''
             });
 
-            if (this.reloadOnly) {
+            if (this.doubleValidation && this.reloadOnly) {
+                this.sendBasket()
+                    .then(() => this.reloadSuccess());
+            } else if (!this.doubleValidation && this.reloadOnly) {
                 this.writingMode = true;
             } else {
                 this.closeReload();
@@ -106,21 +109,19 @@ export default {
                 .then(() => new Promise(resolve => {
                     window.app.$root.$emit('readyToWrite', this.reloadAmount);
                     window.app.$root.$on('writeCompleted', () => resolve());
-
-                    if (this.doubleValidation) {
-                        return resolve();
-                    }
                 }))
-                .then(() => {
-                    this.$store.commit('OPEN_TICKET');
-                    this.closeReload();
-                    this.initReload();
-                });
+                .then(() => this.reloadSuccess());
         },
 
         initReload() {
             this.removeReloads();
             this.writingMode = false;
+        },
+
+        reloadSuccess() {
+            this.$store.commit('OPEN_TICKET');
+            this.closeReload();
+            this.initReload();
         },
 
         ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'removeReloads', 'cancelReloadModal', 'sendBasket', 'buyer'])

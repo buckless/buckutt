@@ -25,9 +25,7 @@ export default {
         ...mapState({
             buyer    : state => state.auth.buyer,
             isWaiting: state => state.basket.basketStatus === 'WAITING',
-            isWriting: state =>
-                (state.basket.basketStatus === 'WAITING_FOR_BUYER' && !state.basket.writing) ||
-                state.basket.writing
+            isWriting: state => state.basket.writing
         })
     },
 

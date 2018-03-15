@@ -15,14 +15,14 @@
             <div v-if="seller.meanOfLogin.length === 0">
                 <div class="b-login__card b-login__card--sellerId">
                     En attente d'un opérateur
-                    <nfc mode="read" @read="validate" />
+                    <nfc mode="read" @read="validate" key="seller" />
                 </div>
             </div>
         </div>
         <div v-if="seller.isAuth && doubleValidation" class="b-login__card b-login__card--buyerId">
             En attente d'un client
-            <nfc mode="read" @read="validate" />
             <ticket v-if="lastUser.name" :inline="true" :user="lastUser"></ticket>
+            <nfc mode="read" @read="validate" key="buyer" />
         </div>
     </div>
 </template>
@@ -71,6 +71,7 @@ export default {
         },
 
         validate(cardNumber, credit) {
+            console.log('validate');
             if (!this.seller.isAuth && this.seller.meanOfLogin.length === 0) {
                 this.sellerId(cardNumber);
             }

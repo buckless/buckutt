@@ -119,8 +119,6 @@ export const buyer = (store, { cardNumber, credit }) => {
         return;
     }
 
-    store.commit('SET_WRITING', true);
-
     let interfaceLoaderCredentials;
     let shouldSendBasket   = false;
     let shouldWriteCredit  = false;
@@ -194,7 +192,6 @@ export const buyer = (store, { cardNumber, credit }) => {
             if (shouldChangeBuyer) {
                 store.commit('OPEN_TICKET');
                 store.commit('LOGOUT_BUYER');
-                store.commit('SET_BASKET_STATUS', 'WAITING');
             }
         })
         .catch((err) => {

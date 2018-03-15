@@ -2,7 +2,7 @@
     <div id="app">
         <topbar />
         <main class="b-main">
-            <login v-show="loginState" ref="login" />
+            <login v-if="loginState" ref="login" />
             <history v-if="isSellerMode && history" ref="history" />
             <items v-if="isSellerMode && !history" />
             <sidebar v-if="isSellerMode && !history" />
@@ -20,7 +20,7 @@
         <error />
         <alert v-if="alert" />
         <offline />
-        <ticket v-if="lastUser.display && isCashMode && !doubleValidation" :user="lastUser" />
+        <ticket v-if="lastUser.display && isCashMode" :user="lastUser" />
     </div>
 </template>
 

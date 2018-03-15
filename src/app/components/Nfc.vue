@@ -169,10 +169,16 @@ export default {
     },
 
     mounted() {
+        console.log("mounted");
         this.setListeners();
     },
 
+    updated() {
+        console.log("update");
+    },
+
     beforeDestroy() {
+        console.log("beforeDestroy");
         this.destroyListeners();
     }
 }

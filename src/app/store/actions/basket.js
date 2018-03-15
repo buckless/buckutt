@@ -25,6 +25,7 @@ export const sendBasket = (store, payload = {}) => {
     // quick mode = wait for card for writing
     if (!store.state.auth.device.config.doubleValidation) {
         if (store.state.basket.basketStatus !== 'WAITING_FOR_BUYER') {
+            store.commit('SET_WRITING', true);
             store.commit('SET_BASKET_STATUS', 'WAITING_FOR_BUYER');
             if (payload.cardNumber) {
                 store.commit('SET_BUYER_MOL', payload.cardNumber);
@@ -151,8 +152,7 @@ export const sendBasket = (store, payload = {}) => {
                 firstname: lastBuyer.data.firstname,
                 lastname : lastBuyer.data.lastname
             });
-            store.commit('CLEAR_BASKET');
-            store.commit('REMOVE_RELOADS');
+            store.dispatch('clearBasket');
             store.commit('SET_BASKET_STATUS', 'WAITING');
             store.commit('SET_LAST_USER', {
                 display: false,
@@ -164,7 +164,9 @@ export const sendBasket = (store, payload = {}) => {
                 bought
             });
 
-            store.commit('LOGOUT_BUYER');
+            if (store.state.auth.device.config.doubleValidation) {
+                store.commit('LOGOUT_BUYER');
+            }
         })
         .catch((err) => {
             console.log(err);
