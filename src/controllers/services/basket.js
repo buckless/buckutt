@@ -174,7 +174,9 @@ router.post('/services/basket', (req, res, next) => {
                 promotion_id: item.promotion_id || null,
                 seller_id   : req.user.id,
                 alcohol     : item.alcohol,
-                vat         : vat(item)
+                vat         : vat(item),
+                created_at  : req.body.created_at || new Date(),
+                updated_at  : req.body.created_at || new Date()
             });
 
             const savePurchase = purchase
@@ -189,8 +191,8 @@ router.post('/services/basket', (req, res, next) => {
                             article_id : articleId,
                             purchase_id: purchase.id,
                             count,
-                            created_at : new Date(),
-                            updated_at : new Date(),
+                            created_at : req.body.created_at || new Date(),
+                            updated_at : req.body.created_at || new Date(),
                             deleted_at : null
                         });
                 })));
@@ -199,12 +201,14 @@ router.post('/services/basket', (req, res, next) => {
         } else if (typeof item.credit === 'number') {
             // Reloads
             const reload = new models.Reload({
-                credit   : item.credit,
-                type     : item.type,
-                trace    : item.trace || '',
-                point_id : req.point_id,
-                buyer_id : req.buyer.id,
-                seller_id: req.user.id
+                credit    : item.credit,
+                type      : item.type,
+                trace     : item.trace || '',
+                point_id  : req.point_id,
+                buyer_id  : req.buyer.id,
+                seller_id : req.user.id,
+                created_at: req.body.created_at || new Date(),
+                updated_at: req.body.created_at || new Date()
             });
 
             const saveReload = reload
@@ -215,7 +219,7 @@ router.post('/services/basket', (req, res, next) => {
         }
     });
 
-    const updatedAt = new Date();
+    const updatedAt = req.body.created_at || new Date();
 
     const updateCredit = bookshelf.knex('users')
         .where({ id: req.buyer.id })

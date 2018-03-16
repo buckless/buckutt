@@ -140,7 +140,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                 .knex('users')
                 .where({ id: user })
                 .update({
-                    updated_at: new Date(),
+                    updated_at: req.body.created_at || new Date(),
                     credit    : bookshelf.knex.raw(`credit + ${req.pendingCardUpdates[user]}`)
                 })
                 .returning('credit')
@@ -161,7 +161,11 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                 req.app.locals.modelChanges.emit('userCreditUpdate', result);
             });
 
-            return new Model({ id: req.transaction.data.id }).destroy();
+            return new Model({ id: req.transaction.data.id })
+                .update({
+                    active    : false,
+                    deleted_at: req.body.created_at
+                });
         })
         .then(() =>
             res
