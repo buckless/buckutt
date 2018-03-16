@@ -119,6 +119,10 @@ export default {
         },
 
         ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'removeReloads', 'cancelReloadModal', 'sendBasket', 'buyer'])
+    },
+
+    beforeDestroy() {
+        this.closeReload();
     }
 };
 </script>
