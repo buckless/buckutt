@@ -120,6 +120,7 @@ export default {
 
         reloadSuccess() {
             this.$store.commit('OPEN_TICKET');
+            this.$store.commit('LOGOUT_BUYER');
             this.closeReload();
             this.initReload();
         },
