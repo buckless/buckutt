@@ -58,7 +58,6 @@ export const reconnect = (store) => {
     }
 
     const storedRequests = store.state.online.pendingRequests;
-    const offlineDate    = store.state.online.dateToSend;
     const failedRequests = [];
 
     store.commit('SET_SYNCING', true);
@@ -96,9 +95,6 @@ export const reconnect = (store) => {
             .catch((err) => {
                 failedRequests.push(request);
                 console.error('Error while resending basket : ', err);
-            // })
-            // .then(() => {
-            //     store.commit('PUSH_REQUEST');
             });
     });
 
@@ -127,7 +123,11 @@ export const setDefaultItems = (store, payload) => {
 };
 
 export const addPendingRequest = (store, payload) => {
-    store.commit('ADD_PENDING_REQUEST', payload);
+    store.commit('ADD_PENDING_REQUEST', {
+        ...payload,
+        created_at: new Date()
+    });
+
     window.localStorage.setItem('pendingRequests', JSON.stringify(store.state.online.pendingRequests));
 };
 

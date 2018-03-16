@@ -1,8 +1,6 @@
 const initialState = {
     status         : false,
     syncing        : false,
-    syncProgress   : 0,
-    dateToSend     : null,
     pendingRequests: [],
     offline        : {
         sellers     : [],
@@ -19,8 +17,7 @@ const mutations = {
     },
 
     SET_OFFLINE(state) {
-        state.status     = false;
-        state.dateToSend = new Date();
+        state.status = false;
     },
 
     SET_SYNCING(state, payload) {
@@ -33,13 +30,6 @@ const mutations = {
 
     SET_DEFAULT_ITEMS(state, payload) {
         state.offline.defaultItems = payload;
-    },
-
-    PUSH_REQUEST(state) {
-        state.syncProgress += 1 / state.pendingRequests.length;
-
-        // round at 0.1
-        state.syncProgress = Math.round(state.syncProgress * 10) / 10;
     },
 
     ADD_PENDING_REQUEST(state, payload) {
