@@ -38,7 +38,8 @@
                 <button @click="cancelReloadModal">Paiement refusé</button>
             </div>
         </div>
-        <nfc mode="write" @read="proceedReload" @cancel="initReload" v-if="writingMode" />
+        <nfc mode="read" @read="validate" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
+        <nfc mode="write" @read="validate" @cancel="cancelReload" v-if="reloadOnly && isWriting" key="write"/>
     </div>
 </template>
 
@@ -62,15 +63,16 @@ export default {
 
     data() {
         return {
-            reloadAmount: 0,
-            writingMode : false
+            reloadAmount: 0
         };
     },
 
     computed: {
         ...mapState({
-            reloadState     : state => state.reload.reloadState,
-            doubleValidation: state => state.auth.device.config.doubleValidation
+            loggedBuyer: state => state.auth.buyer,
+            reloadState: state => state.reload.reloadState,
+            isWaiting  : state => state.basket.basketStatus === 'WAITING',
+            isWriting  : state => state.basket.writing
         }),
 
         ...mapGetters(['reloadSum'])
@@ -93,36 +95,27 @@ export default {
                 trace : ''
             });
 
-            if (this.doubleValidation && this.reloadOnly) {
-                this.sendBasket()
-                    .then(() => this.reloadSuccess());
-            } else if (!this.doubleValidation && this.reloadOnly) {
-                this.writingMode = true;
-            } else {
-                this.closeReload();
+            let initialPromise = Promise.resolve();
+
+            if (this.reloadOnly) {
+                initialPromise = this.sendBasket();
             }
+
+            initialPromise.then(() => this.closeReload());
         },
 
-        proceedReload(cardNumber, credit) {
-            this.buyer({ cardNumber, credit })
-                .then(() => this.sendBasket())
-                .then(() => new Promise(resolve => {
-                    window.app.$root.$emit('readyToWrite', this.reloadAmount);
-                    window.app.$root.$on('writeCompleted', () => resolve());
-                }))
-                .then(() => this.reloadSuccess());
+        validate(cardNumber, credit) {
+            console.log('reload-validate', cardNumber, credit);
+            this.buyer({
+                cardNumber,
+                credit    : Number.isInteger(credit) ? credit : null,
+                isOnlyAuth: this.isWaiting && !this.isWriting
+            });
         },
 
-        initReload() {
-            this.removeReloads();
-            this.writingMode = false;
-        },
-
-        reloadSuccess() {
-            this.$store.commit('OPEN_TICKET');
-            this.$store.commit('LOGOUT_BUYER');
-            this.closeReload();
-            this.initReload();
+        cancelReload() {
+            this.$store.commit('SET_WRITING', false);
+            this.$store.commit('SET_BASKET_STATUS', 'WAITING');
         },
 
         ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'removeReloads', 'cancelReloadModal', 'sendBasket', 'buyer'])

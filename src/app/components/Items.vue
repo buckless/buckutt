@@ -4,7 +4,7 @@
             v-for="item in tabsItems"
             :item="item"
             :key="item.id"></item>
-        <nfc mode="read" @read="validate" v-if="isWaiting && !isWriting" key="read" />
+        <nfc mode="read" @read="validate" v-if="!buyer.isAuth && isWaiting && !isWriting" key="read" />
         <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
     </div>
 </template>
@@ -36,21 +36,11 @@ export default {
 
         validate(cardNumber, credit) {
             console.log('items-validate', cardNumber, credit);
-
-            if (!this.buyer.isAuth || this.isWriting) {
-                if (Number.isInteger(credit)) {
-                    this.setBuyer({
-                        cardNumber,
-                        credit,
-                        isOnlyAuth: this.isWaiting && !this.isWriting
-                    });
-                } else {
-                    this.setBuyer({
-                        cardNumber,
-                        isOnlyAuth: this.isWaiting && !this.isWriting
-                    });
-                }
-            }
+            this.setBuyer({
+                cardNumber,
+                credit    : Number.isInteger(credit) ? credit : null,
+                isOnlyAuth: this.isWaiting && !this.isWriting
+            });
         },
 
         cancelBuy() {
