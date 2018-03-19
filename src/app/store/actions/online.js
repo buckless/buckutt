@@ -41,9 +41,12 @@ export const setupSocket = (store, token) => {
 
     socket.on('disconnect', () => {
         store.commit('SET_OFFLINE');
-        store.commit('ERROR', {
-            message: 'Server not reacheable'
-        });
+
+        if (!store.state.auth.device.event.config.useCardData) {
+            store.commit('ERROR', {
+                message: 'Server not reacheable'
+            });
+        }
     });
 };
 

@@ -40,11 +40,7 @@ export default (state, error) => {
     }
 
     if (error.message === 'Server not reacheable') {
-        if (state.auth.device.event.config.useCardData) {
-            return 'Serveur injoignable, mode dégradé actif';
-        }
-
-        return 'Serveur injoignable';
+        return 'Connexion au serveur perdue';
     }
 
     if (error.message.startsWith('Can not reload less than')) {
