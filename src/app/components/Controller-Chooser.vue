@@ -41,7 +41,7 @@ export default {
 
     computed: mapState({
         groups: state => app.$store.state.auth.groups
-            .filter(group => group.name !== 'Défaut' && group.name !== app.$store.state.auth.device.event.name)
+            .filter(group => group.name !== app.$store.state.auth.device.event.name)
     })
 }
 </script>
