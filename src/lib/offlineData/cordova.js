@@ -8,7 +8,7 @@ class OfflineData {
 
             this.db.transaction((tx) => {
                 tx.executeSql('create table if not exists users (uid, name, barcode, credit)');
-                tx.executeSql('create table if not exists accesses (cardId, groupId, start, end)');
+                tx.executeSql('create table if not exists accesses (uid, cardId, groupId, start, end)');
             }, reject, resolve);
         });
     }
@@ -107,8 +107,8 @@ class OfflineData {
 
         return new Promise((resolve, reject) => {
             this.db.transaction((tx) => {
-                for (let i = users.length - 1; i >= 0; i--) {
-                    tx.executeSql(`insert into ${table} values (${valuesMask})`, users[i]);
+                for (let i = data.length - 1; i >= 0; i--) {
+                    tx.executeSql(`insert into ${table} values (${valuesMask})`, data[i]);
                 }
             }, reject, resolve);
         });

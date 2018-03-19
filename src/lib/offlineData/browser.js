@@ -60,11 +60,11 @@ class OfflineData {
             }));
         } else if (table === 'accesses') {
             data = data.map(entry => ({
-                id    : entry[0],
-                cardId: entry[1],
-                group : entry[2],
-                start : entry[3],
-                end   : entry[4]
+                id     : entry[0],
+                cardId : entry[1],
+                groupId: entry[2],
+                start  : entry[3],
+                end    : entry[4]
             }));
         }
 

@@ -62,7 +62,7 @@ export default {
 
                     for (let i = accesses.length - 1; i >= 0; i--) {
                         // check if group matches one of currentGroups
-                        if (!this.currentGroups.find(group => group.id === accesses[i].group)) {
+                        if (!this.currentGroups.find(group => group.id === accesses[i].groupId)) {
                             continue;
                         }
 
