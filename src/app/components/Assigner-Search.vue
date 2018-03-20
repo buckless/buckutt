@@ -1,6 +1,6 @@
 <template>
     <div class="b-assigner-search">
-        <form>
+        <form @submit.prevent="closeSearch">
             <div class="b-assigner-search__type">
                 <a
                     :class="{ 'b--active': searchBy === 'ticketId' }"
@@ -20,6 +20,7 @@
                 @keyup="search"
                 class="b-assigner-search__input"
                 :placeholder="searchBy === 'name' ? 'Nom' : 'Numéro de ticket'"
+                ref="search"
                 v-model="searchInput">
 
             <h4>Résultats :</h4>
@@ -67,6 +68,10 @@ export default {
     },
 
     methods: {
+        closeSearch() {
+            this.$refs.search.blur();
+        },
+
         search: debounce(function () {
             if (this.searchInput.length <= 2) {
                 return;
