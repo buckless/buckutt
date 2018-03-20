@@ -11,7 +11,11 @@ export const removeFromHistory = ({ commit }, payload) => {
 };
 
 export const cancelEntry = (store, payload) => {
-    if (typeof payload.transactionIds === 'string') {
+    payload.transactionIds = store.state.history.history
+        .find(entry => entry.localId === payload.localId)
+        .transactionIds;
+
+    if (!payload.transactionIds) {
         store.commit('ADD_PENDING_CANCELLATION', payload);
     } else {
         // request made online
@@ -51,7 +55,7 @@ export const cancelEntry = (store, payload) => {
 
 export const sendValidCancellations = (store) => {
     const cancellations = store.state.history.pendingCancellations
-        .filter((pending) => typeof pending.transactionIds === 'object')
+        .filter(pending => pending.transactionIds)
         .map((pending) => {
             const cancelPurchases = pending.transactionIds.purchases.map((id) => ({
                 rawType: 'purchase',
@@ -65,15 +69,15 @@ export const sendValidCancellations = (store) => {
 
             return cancelPurchases.concat(cancelReloads);
         })
-        .map((bodys) => {
-            return Promise.all(bodys.map(body => axios.post(cancelUrl, body, store.getters.tokenHeaders)));
-        });
+        .map(bodys =>
+            Promise.all(bodys.map(body => axios.post(cancelUrl, body, store.getters.tokenHeaders)))
+        );
 
     return Promise
         .all(cancellations)
         .then(() => {
             store.state.history.pendingCancellations
-                .filter((pending) => typeof pending.transactionIds === 'object')
+                .filter(pending => pending.transactionIds)
                 .forEach((pending) => {
                     store.commit('REMOVE_PENDING_CANCELLATION', pending);
                 });

@@ -112,12 +112,11 @@ export const sendBasket = (store, payload = {}) => {
     };
 
     let initialPromise;
+    const localId = uniqueId(`transaction-id-${window.appId}`);
 
     if (store.getters.isDegradedModeActive) {
-        const transactionIds = uniqueId('offline-transaction-id');
-
-        transactionToSend.seller               = store.state.auth.seller.id;
-        transactionToSend.offlineTransactionId = transactionIds;
+        transactionToSend.seller  = store.state.auth.seller.id;
+        transactionToSend.localId = localId;
 
         store.dispatch('addPendingRequest', {
             url : `${config.api}/services/basket?offline=1`,
@@ -126,8 +125,8 @@ export const sendBasket = (store, payload = {}) => {
 
         initialPromise = Promise.resolve({
             data: {
-                transactionIds,
-                credit: store.getters.credit
+                transactionIds: null,
+                credit        : store.getters.credit
             }
         });
     } else {
@@ -140,8 +139,9 @@ export const sendBasket = (store, payload = {}) => {
             store.commit('ADD_HISTORY_TRANSACTION', {
                 cardNumber,
                 basketToSend,
-                date: new Date(),
-                transactionIds: lastBuyer.data.transactionIds
+                date          : new Date(),
+                transactionIds: lastBuyer.data.transactionIds,
+                localId
             });
 
             store.commit('ID_BUYER', {

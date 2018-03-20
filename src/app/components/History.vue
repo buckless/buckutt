@@ -177,7 +177,8 @@ export default {
                 firstItem,
                 more,
                 date,
-                transactionIds: entry.transactionIds
+                transactionIds: entry.transactionIds,
+                localId       : entry.localId
             };
         },
 

@@ -17,7 +17,7 @@ const mutations = {
     },
 
     REMOVE_FROM_HISTORY(state, payload) {
-        const index = state.history.findIndex(entry => entry.transactionIds === payload.transactionIds);
+        const index = state.history.findIndex(entry => entry.localId === payload.localId);
 
         state.history.splice(
             index,
@@ -26,54 +26,37 @@ const mutations = {
     },
 
     REMOVE_PENDING_CANCELLATION(state, payload) {
-        const index = state.pendingCancellations.findIndex(entry => entry.transactionIds === payload.transactionIds);
+        const index = state.pendingCancellations.findIndex(entry => entry.localId === payload.localId);
 
         state.pendingCancellations.splice(
             index,
             1
         );
+
+        window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
     },
 
     UPDATE_HISTORY_ENTRY(state, payload) {
-        // update history
-        let entry;
-        let index;
+        const historyIndex = state.history
+            .findIndex(entry => payload.localId === entry.localId);
+        const pendingIndex = state.pendingCancellations
+            .findIndex(entry => payload.localId === entry.localId);
 
-        for (let i = state.history.length - 1; i >= 0; i--) {
-            if (state.history[i].transactionIds === payload.transactionId) {
-                entry = state.history[i];
-                index = i;
-            }
-        }
-
-        if (entry && index) {
-            const newHistory = {
-                ...entry,
+        if (historyIndex > -1) {
+            state.history.splice(historyIndex, 1, {
+                ...state.history[historyIndex],
                 transactionIds: payload.basketData.transactionIds
-            };
-
-            state.history.splice(index, 1, newHistory);
+            });
         }
 
-        // update pendingCancellations
-        // entry = null;
-        // index = null;
+        if (pendingIndex > -1) {
+            state.pendingCancellations.splice(pendingIndex, 1, {
+                ...state.pendingCancellations[pendingIndex],
+                transactionIds: payload.basketData.transactionIds
+            });
 
-        for (let i = state.pendingCancellations.length - 1; i >= 0; i--) {
-            if (state.pendingCancellations[i].transactionIds === payload.transactionId) {
-                Vue.set(state.pendingCancellations[i], 'transactionIds', payload.basketData.transactionIds);
-                // entry = state.history[i];
-                // index = i;
-            }
+            window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
         }
-
-        // const newPendingCancellation = {
-        //    ...entry,
-        //    transactionIds: payload.basketData.transactionIds
-        // };
-
-        // state.pendingCancellations.splice(index, 1, newHistory);
-        window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
     },
 
     TOGGLE_HISTORY(state) {

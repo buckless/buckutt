@@ -78,11 +78,11 @@ export const reconnect = (store) => {
                 axios.post(request.url, request.body, store.getters.tokenHeaders)
             )
             .then((res) => {
-                if (request.body.offlineTransactionId) {
-                    const transactionId = request.body.offlineTransactionId;
+                if (request.body.localId) {
+                    const localId = request.body.localId;
 
                     store.commit('UPDATE_HISTORY_ENTRY', {
-                        transactionId,
+                        localId,
                         basketData: res.data
                     });
                 }

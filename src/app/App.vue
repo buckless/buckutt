@@ -149,7 +149,8 @@ export default {
             nfc = new NFC();
         }
 
-        window.nfc = nfc;
+        window.nfc   = nfc;
+        window.appId = Date.now();
     }
 };
 </script>
