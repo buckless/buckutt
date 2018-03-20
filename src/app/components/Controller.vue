@@ -55,8 +55,17 @@ export default {
         },
 
         onCard(cardId) {
-            this.db
-                .cardAccesses(cardId)
+            let initialPromise = Promise.resolve();
+
+            if (this.online) {
+                initialPromise = axios
+                  .get(`${config.api}/services/controller?user=${cardId}`, this.tokenHeaders)
+                  .then(res => res.data);
+            } else {
+                initialPromise = this.db.cardAccesses(cardId);
+            }
+
+            initialPromise
                 .then((accesses) => {
                     let match = false;
 
