@@ -229,7 +229,7 @@ router.post('/services/assigner/anon', (req, res, next) => {
                 }).save()
                 : Promise.resolve();
 
-            return Promise.all(memberships.concat([ reload, mol ]));
+            return Promise.all(memberships.concat([reload, mol]));
         })
         .then(() =>
             res
