@@ -12,10 +12,10 @@
       "phonegap-plugin-barcodescanner": {},
       "cordova-plugin-keyboard": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-mifare-ultralight": {},
       "cordova-android-support-gradle-release": {
         "ANDROID_SUPPORT_VERSION": "25.+"
-      }
+      },
+      "cordova-plugin-mifare-ultralight": {}
     }
   },
   "dependencies": {
