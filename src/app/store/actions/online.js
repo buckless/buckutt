@@ -61,7 +61,16 @@ export const reconnect = (store) => {
 
     store.commit('SET_SYNCING', true);
 
-    let promise = Promise.resolve();
+    const credentials = {
+        meanOfLogin: config.loginMeanOfLogin,
+        data       : store.state.auth.seller.meanOfLogin,
+        pin        : store.state.auth.seller.pin
+    };
+
+    let promise = store.getters.tokenHeaders.headers ?
+       Promise.resolve() :
+       axios.post(`${config.api}/services/login`, credentials)
+           .then(res => store.commit('UPDATE_TOKEN', res.data.token));
 
     storedRequests.forEach((request) => {
         promise = promise

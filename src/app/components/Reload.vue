@@ -84,7 +84,9 @@ export default {
         },
 
         closeReload() {
-            this.$refs.input.clear();
+            if (this.$refs.input) {
+                this.$refs.input.clear();
+            }
             this.closeReloadModal();
         },
 
