@@ -10,13 +10,19 @@ const config        = require('../../../config');
 const router = new express.Router();
 
 router.get('/services/controller', (req, res, next) => {
+    const userFilter = {
+        'user.meansOfLogin': (req.query.user)
+            ? q => q.where({ type: 'cardId', data: req.query.user, blocked: false })
+            : q => q.where({ type: 'cardId', blocked: false })
+    };
+
     req.app.locals.models.Membership
         .where('group_id', '!=', req.event.defaultGroup_id)
         .fetchAll({
             withRelated: [
                 'period',
                 'user',
-                { 'user.meansOfLogin': q => q.where({ type: 'cardId', blocked: false }) }
+                userFilter
             ]
         })
         .then((memberships) => memberships ? memberships.toJSON() : null)
@@ -35,10 +41,10 @@ router.get('/services/controller', (req, res, next) => {
                 }
 
                 accesses.push({
-                    cardId: memberships[i].user.meansOfLogin[0].data,
-                    group : memberships[i].group_id,
-                    start : memberships[i].period.start,
-                    end   : memberships[i].period.end
+                    cardId : memberships[i].user.meansOfLogin[0].data,
+                    groupId: memberships[i].group_id,
+                    start  : memberships[i].period.start,
+                    end    : memberships[i].period.end
                 });
             }
 
