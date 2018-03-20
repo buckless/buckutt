@@ -7,9 +7,9 @@ import { get, post, updateBearer } from '../../lib/fetch';
 export function setToken(_, token) {
     updateBearer(token);
     if (token) {
-        sessionStorage.setItem('token', token);
+        localStorage.setItem('token', token);
     } else {
-        sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
     }
 }
 
@@ -18,11 +18,11 @@ export function logoutUser({ dispatch }) {
     dispatch('setToken');
     dispatch('updateLoggedUser');
     dispatch('closeSocket');
-    sessionStorage.clear();
+    localStorage.clear();
 }
 
 export function updateLoggedUser({ commit }, loggedUser) {
-    sessionStorage.setItem('user', JSON.stringify(loggedUser));
+    localStorage.setItem('user', JSON.stringify(loggedUser));
     commit('UPDATELOGGEDUSER', loggedUser);
 }
 
@@ -33,9 +33,9 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 }
 
 export function autoLoginUser({ commit, dispatch }) {
-    if (sessionStorage.hasOwnProperty('token')) {
-        commit('UPDATELOGGEDUSER', JSON.parse(sessionStorage.getItem('user')));
-        dispatch('setToken', sessionStorage.getItem('token'));
+    if (localStorage.hasOwnProperty('token')) {
+        commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('user')));
+        dispatch('setToken', localStorage.getItem('token'));
         dispatch('loadUser');
     }
 }
@@ -59,7 +59,7 @@ export function clearHistory({ commit }) {
 }
 
 export function loadUser({ dispatch }) {
-    dispatch('initSocket', sessionStorage.getItem('token'));
+    dispatch('initSocket', localStorage.getItem('token'));
     dispatch('loadHistory');
 }
 
