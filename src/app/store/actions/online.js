@@ -51,30 +51,17 @@ export const setupSocket = (store, token) => {
 };
 
 export const reconnect = (store) => {
-    if (!store.state.auth.seller.isAuth || !store.state.auth.device.event.config.useCardData) {
-        return;
-    }
-
-    console.log('is-online', store.state.online.status);
-    if (!store.state.online.status) {
-        return;
-    }
-
     const storedRequests = store.state.online.pendingRequests;
     const failedRequests = [];
 
+    console.log('is-online', store.state.online.status);
+    if (storedRequests.length === 0 || !store.state.auth.seller.isAuth || !store.state.online.status) {
+        return;
+    }
+
     store.commit('SET_SYNCING', true);
 
-    const credentials = {
-        meanOfLogin: config.loginMeanOfLogin,
-        data       : store.state.auth.seller.meanOfLogin,
-        pin        : store.state.auth.seller.pin
-    };
-
-    let promise = (store.getters.tokenHeaders) ?
-        Promise.resolve() :
-        axios.post(`${config.api}/services/login`, credentials)
-            .then(res => store.commit('UPDATE_TOKEN', res.data.token));
+    let promise = Promise.resolve();
 
     storedRequests.forEach((request) => {
         promise = promise
@@ -108,7 +95,7 @@ export const reconnect = (store) => {
         store.dispatch('setPendingRequests', failedRequests);
 
         if (failedRequests.length > 0) {
-            setTimeout(() => store.dispatch('reconnect'), 3000);
+            setTimeout(() => store.dispatch('reconnect'), 300000);
         }
     });
 

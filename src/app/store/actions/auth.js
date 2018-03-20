@@ -48,6 +48,8 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
                 canControl : res.data.user.canControl
             });
 
+            dispatch('reconnect');
+
             if (!res.data.user.canAssign && !res.data.user.canControl) {
                 commit('SET_DATA_LOADED', false);
 

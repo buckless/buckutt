@@ -1,4 +1,4 @@
-export const tokenHeaders = state => {
+export const tokenHeaders = (state) => {
     if (!state.auth.seller.token || state.auth.seller.token.length === 0) {
         return {};
     }

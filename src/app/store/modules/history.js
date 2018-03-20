@@ -47,12 +47,12 @@ const mutations = {
         }
 
         if (entry && index) {
-          const newHistory = {
-              ...entry,
-              transactionIds: payload.basketData.transactionIds
-          };
+            const newHistory = {
+                ...entry,
+                transactionIds: payload.basketData.transactionIds
+            };
 
-          state.history.splice(index, 1, newHistory);
+            state.history.splice(index, 1, newHistory);
         }
 
         // update pendingCancellations
