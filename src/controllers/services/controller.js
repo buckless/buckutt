@@ -72,6 +72,7 @@ router.post('/services/controller', (req, res, next) => {
             const access = new req.app.locals.models.Access({
                 meanOfLogin_id: mol.id,
                 operator_id   : req.user.id,
+                wiket_id      : req.body.wiket_id,
                 created_at    : req.body.created_at || new Date(),
                 updated_at    : req.body.created_at || new Date()
             });

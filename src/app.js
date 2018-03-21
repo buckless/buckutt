@@ -35,7 +35,7 @@ app.locals.models = bookshelf.models;
 app.use(cors({
     allowedHeaders: ['content-type', 'Authorization'],
     credentials   : true,
-    exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName'],
+    exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
     origin        : true
 }));
 app.use(bodyParser.json({ limit: '5mb' }));

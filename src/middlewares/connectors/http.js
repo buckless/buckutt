@@ -53,6 +53,7 @@ module.exports.unmarshal = function unmarshal(req, res, next) {
     req.device      = req.connector.device;
     req.point       = req.connector.point;
     req.event       = req.connector.event;
+    req.wiket       = req.connector.wiket;
     req.user        = req.connector.user;
     req.details     = req.connector.details;
     req.connectType = req.connector.connectType;

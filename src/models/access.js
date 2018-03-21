@@ -12,6 +12,10 @@ module.exports = (bookshelf) => {
 
         operator() {
             return this.belongsTo('User');
+        },
+
+        wiket() {
+            return this.belongsTo('Wiket');
         }
     });
 
