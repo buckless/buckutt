@@ -57,13 +57,17 @@ export const sendValidCancellations = (store) => {
     const cancellations = store.state.history.pendingCancellations
         .filter(pending => pending.transactionIds)
         .map((pending) => {
+            const created_at = new Date();
+
             const cancelPurchases = pending.transactionIds.purchases.map((id) => ({
                 rawType: 'purchase',
+                created_at,
                 id
             }));
 
             const cancelReloads = pending.transactionIds.reloads.map((id) => ({
                 rawType: 'reload',
+                created_at,
                 id
             }));
 
