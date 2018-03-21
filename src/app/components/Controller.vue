@@ -43,6 +43,7 @@ export default {
     computed: {
         ...mapState({
             online: state => state.online.status,
+            wiket : state => state.auth.device.wiket,
             seller: state => state.auth.seller.id
         }),
         ...mapGetters(['tokenHeaders'])
@@ -79,6 +80,7 @@ export default {
                     if (match) {
                         const access = {
                             operator_id: this.seller,
+                            wiket_id   : this.wiket,
                             cardId
                         };
 
