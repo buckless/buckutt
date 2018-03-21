@@ -161,11 +161,13 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                 req.app.locals.modelChanges.emit('userCreditUpdate', result);
             });
 
+            const transaction = new Model({ id: req.transaction.data.id })
+
             return new Model({ id: req.transaction.data.id })
-                .update({
-                    active    : false,
-                    deleted_at: req.body.created_at
-                });
+               .save({
+                   active    : false,
+                   deleted_at: req.body.created_at
+               }, { patch: true });
         })
         .then(() =>
             res
