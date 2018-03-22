@@ -8,6 +8,7 @@ exports.up = function (knex) {
 
             t.uuid('meanOfLogin_id').references('meansoflogin.id');
             t.uuid('operator_id').references('users.id');
+            t.uuid('wiket_id').references('wikets.id');
         });
 };
 

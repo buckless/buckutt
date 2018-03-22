@@ -52,6 +52,7 @@ module.exports = connector => connector.models.Device
                     connector.device                 = device;
                     connector.point                  = point;
                     connector.event                  = period.event;
+                    connector.wiket                  = wiket;
                     connector.device.defaultGroup_id = wiket.defaultGroup_id;
 
                     connector.details = {
@@ -74,6 +75,7 @@ module.exports = connector => connector.models.Device
         connector.header('eventName', connector.event.name);
         connector.header('point', connector.point_id);
         connector.header('pointName', connector.point.name);
+        connector.header('wiket', connector.wiket.id);
         connector.header('device', device.id);
 
         return Promise.resolve();
