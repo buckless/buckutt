@@ -9,16 +9,16 @@ const router = new express.Router();
 
 const chooseDivider = (start, end) => {
     const diff        = moment.duration(moment(end).diff(moment(start))).asHours();
-    const intervals   = [ 5, 15, 30, 60 ];
+    const intervals   = [5, 15, 30, 60];
     let lessThan      = 6;
     let intervalIndex = 0;
     console.log(diff);
     while (diff > lessThan) {
-        lessThan      = lessThan * 2;
-        intervalIndex = intervalIndex + 1;
+        lessThan      *= 2;
+        intervalIndex += 1;
 
         if (intervals.length >= intervalIndex) {
-            intervals[intervals.length] = intervals[intervals.length - 1] * 2
+            intervals[intervals.length] = intervals[intervals.length - 1] * 2;
         }
     }
 
@@ -46,7 +46,7 @@ router.get('/services/stats/purchases', (req, res, next) => {
         return next(new APIError(module, 400, 'Filters are missing'));
     }
 
-    let filters   = JSON.parse(req.query.filters);
+    const filters   = JSON.parse(req.query.filters);
     let baseQuery = models.Purchase;
     let dateIn;
     let dateOut;
