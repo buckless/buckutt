@@ -74,7 +74,7 @@ export const updateEssentials = (store, force) => {
             const accesses = res.data.map((access, i) => [
                 i + 1,
                 access.cardId,
-                access.group,
+                access.groupId,
                 access.start,
                 access.end
             ]);
