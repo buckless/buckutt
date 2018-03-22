@@ -15,6 +15,7 @@ export const updateEssentials = (store, force) => {
             if (!store.state.auth.device.point.id || store.state.auth.seller.canAssign || force) {
                 store.dispatch('setPoint', {
                     id   : res.headers.device,
+                    wiket: res.headers.wiket,
                     point: {
                         id  : res.headers.point,
                         name: res.headers.pointname

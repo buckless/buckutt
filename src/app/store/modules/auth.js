@@ -6,6 +6,7 @@ const initialState = {
             id  : null,
             name: null
         },
+        wiket: null,
         event: {
             id    : null,
             name  : null,
@@ -49,6 +50,7 @@ const mutations = {
     SET_DEVICE(state, payload) {
         state.device.id         = payload.id;
         state.device.point      = payload.point;
+        state.device.wiket      = payload.wiket;
         state.device.event.id   = payload.event.id;
         state.device.event.name = payload.event.name;
     },

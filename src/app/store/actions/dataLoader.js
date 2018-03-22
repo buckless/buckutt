@@ -18,6 +18,7 @@ export const dataLoader = (store) => {
                     id  : res.headers.point,
                     name: res.headers.pointname
                 },
+                wiket : res.headers.wiket,
                 event : { name: res.headers.eventname, id: res.headers.event },
                 config: {}
             };
