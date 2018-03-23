@@ -22,6 +22,9 @@
             </div>
             <div class="b-reload__modal__currency">
                 <currency :value="reloadAmount"></currency>
+                <span class="b-reload__modal__currency__gift" v-if="reloadGiftAmount > 0">
+                    +<currency :value="reloadGiftAmount"></currency>
+                </span>
             </div>
             <div v-show="reloadState === 'opened' || reloadOnly">
                 <div class="b-reload__modal__numerical-input">
@@ -72,10 +75,21 @@ export default {
             loggedBuyer: state => state.auth.buyer,
             reloadState: state => state.reload.reloadState,
             isWaiting  : state => state.basket.basketStatus === 'WAITING',
-            isWriting  : state => state.basket.writing
+            isWriting  : state => state.basket.writing,
+            giftReloads: state => state.items.giftReloads
         }),
 
-        ...mapGetters(['reloadSum'])
+        ...mapGetters(['reloadSum']),
+
+        reloadGiftAmount() {
+            return this.giftReloads
+              .map(gr => {
+                  const timesEveryAmount = Math.floor(this.reloadAmount / gr.everyAmount);
+
+                  return timesEveryAmount * gr.amount;
+              })
+              .reduce((a, b) => a + b, 0);
+        }
     },
 
     methods: {
@@ -92,7 +106,7 @@ export default {
 
         reload() {
             this.addReload({
-                amount: this.reloadAmount,
+                amount: this.reloadAmount + this.reloadGiftAmount,
                 type  : this.$store.state.reload.meanOfPayment,
                 trace : ''
             });
@@ -107,7 +121,6 @@ export default {
         },
 
         validate(cardNumber, credit) {
-            console.log('reload-validate', cardNumber, credit);
             this.buyer({
                 cardNumber,
                 credit    : Number.isInteger(credit) ? credit : null,
@@ -139,7 +152,6 @@ export default {
         z-index: 4;
     }
 }
-
 
 .b-reload__drop {
     @add-mixin modal-drop;
@@ -182,6 +194,10 @@ export default {
     font-size: 25px;
     margin-bottom: 15px;
     text-align: center;
+}
+
+.b-reload__modal__currency__gift {
+    font-size: 75%;
 }
 
 .b-reload__modal__numerical-input {

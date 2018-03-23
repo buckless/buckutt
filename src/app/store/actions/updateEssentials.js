@@ -29,6 +29,21 @@ export const updateEssentials = (store, force) => {
 
             store.dispatch('setSellers', res.data);
 
+            if (store.state.auth.seller.canReload) {
+                return axios.get(`${config.api}/giftreloads`, store.getters.tokenHeaders)
+            }
+        })
+        .then((res) => {
+          if (!res) {
+              return;
+          }
+
+          store.dispatch('setGiftReloads', res.data.map(gr => ({
+              everyAmount: gr.everyAmount,
+              amount: gr.amount
+          })));
+        })
+        .then(() => {
             if (store.state.auth.seller.canAssign && !assignedUsers) {
                 assignedUsers = true;
 
