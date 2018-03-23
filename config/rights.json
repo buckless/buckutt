@@ -27,6 +27,7 @@
           "read": [
               "/events",
               "/devices",
+              "/giftreloads",
               "/meansoflogin",
               "/meansofpayment",
               "/meansofpayment/search",

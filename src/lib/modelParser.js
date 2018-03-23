@@ -8,6 +8,7 @@ const modelsNames = {
     events        : 'Event',
     fundations    : 'Fundation',
     groups        : 'Group',
+    giftreloads   : 'GiftReload',
     memberships   : 'Membership',
     meansoflogin  : 'MeanOfLogin',
     meansofpayment: 'MeanOfPayment',
