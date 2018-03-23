@@ -7,11 +7,11 @@ module.exports = (bookshelf) => {
         softDelete   : true,
 
         meanOfLogin() {
-            return this.belongsTo('MeanOfLogin');
+            return this.belongsTo('MeanOfLogin', 'meanOfLogin_id');
         },
 
         operator() {
-            return this.belongsTo('User');
+            return this.belongsTo('User', 'operator_id');
         },
 
         wiket() {
