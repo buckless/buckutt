@@ -4,7 +4,7 @@ module.exports = (bookshelf) => {
         tableName    : 'giftreloads',
         hasTimestamps: true,
         uuid         : true,
-        softDelete   : true,
+        softDelete   : true
     });
 
     return { Model, name };
