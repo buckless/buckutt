@@ -1,6 +1,6 @@
 exports.up = function (knex) {
     return knex.schema
-        .createTable('accessess', (t) => {
+        .createTable('accesses', (t) => {
             t.uuid('id').primary();
             t.timestamps(false, true);
             t.dateTime('deleted_at').nullable();
@@ -14,5 +14,5 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
     return knex.schema
-        .dropTable('accessess');
+        .dropTable('accesses');
 };

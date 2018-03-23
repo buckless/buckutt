@@ -1,7 +1,7 @@
 module.exports = (bookshelf) => {
     const name = 'Access';
     const Model = bookshelf.Model.extend({
-        tableName    : 'accessess',
+        tableName    : 'accesses',
         hasTimestamps: true,
         uuid         : true,
         softDelete   : true,
