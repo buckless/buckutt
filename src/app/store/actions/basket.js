@@ -39,9 +39,22 @@ export const sendBasket = (store, payload = {}) => {
         return;
     }
 
+    const bought   = store.getters.basketAmount;
+    const reloaded = store.getters.reloadAmount;
+
     // !useCardData = checked by the API
-    if (store.state.auth.device.event.config.useCardData && store.getters.credit < 0) {
-        return Promise.reject({ response: { data: { message: 'Not enough credit' } } });
+    if (store.state.auth.device.event.config.useCardData) {
+        const minReload     = store.state.auth.device.event.config.minReload;
+        const maxPerAccount = store.state.auth.device.event.config.maxPerAccount;
+        if (store.getters.credit < 0) {
+            return Promise.reject({ response: { data: { message: 'Not enough credit' } } });
+        } else if (store.getters.credit > maxPerAccount && reloaded > 0) {
+            const max = (maxPerAccount / 100).toFixed(2);
+            return Promise.reject({ response: { data: { message: `Maximum exceeded : ${max}€` } } });
+        } else if (reloaded > 0 && reloaded < minReload) {
+            const min = (minReload / 100).toFixed(2);
+            return Promise.reject({ response: { data: { message: `Can not reload less than : ${min}€` } } });
+        }
     }
 
     const now        = payload.now || new Date();
@@ -53,9 +66,6 @@ export const sendBasket = (store, payload = {}) => {
     const reloads = store.state.reload.reloads;
 
     const basketToSend = [];
-
-    let bought   = store.getters.basketAmount;
-    let reloaded = store.getters.reloadAmount;
 
     basket.items.forEach((article) => {
         basketToSend.push({
