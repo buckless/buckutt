@@ -1,4 +1,4 @@
-import axios          from 'axios';
+import axios          from '@/utils/axios';
 import merge          from 'lodash.merge';
 import io             from 'socket.io-client/dist/socket.io.js';
 import { sendBasket } from './basket';

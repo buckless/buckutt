@@ -1,4 +1,4 @@
-import axios         from 'axios';
+import axios         from '../../utils/axios';
 import hasEssentials from '../../utils/offline/hasEssentials';
 import OfflineData   from '../../../lib/offlineData';
 

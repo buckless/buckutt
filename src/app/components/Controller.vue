@@ -19,11 +19,11 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import axios                                from 'axios';
+import axios                                from '@/utils/axios';
 
 import Chooser     from './Controller-Chooser';
 import Ok          from './Ok';
-import OfflineData from '../../lib/offlineData';
+import OfflineData from '@/../lib/offlineData';
 
 export default {
     components: {

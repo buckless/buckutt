@@ -45,9 +45,9 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import debounce from 'lodash.debounce';
-import axios from 'axios';
+import axios from '@/utils/axios';
 
-import OfflineData from '../../lib/offlineData';
+import OfflineData from '@/../lib/offlineData';
 
 export default {
     data() {

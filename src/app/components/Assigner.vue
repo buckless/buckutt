@@ -37,11 +37,11 @@
 </template>
 
 <script>
-import axios                                from 'axios';
+import axios                                from '@/utils/axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
-import barcode       from '../../lib/barcode';
-import OfflineData   from '../../lib/offlineData';
+import barcode       from '@/../lib/barcode';
+import OfflineData   from '@/../lib/offlineData';
 import CreateAccount from './Assigner-CreateAccount';
 import Search        from './Assigner-Search';
 import Ok            from './Ok';

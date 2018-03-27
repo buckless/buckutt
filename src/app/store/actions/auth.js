@@ -1,4 +1,4 @@
-import axios        from 'axios';
+import axios        from '@/utils/axios';
 import cloneDeep    from 'lodash.clonedeep';
 import q            from '../../utils/q';
 import offlineLogin from '../../utils/offline/login';
