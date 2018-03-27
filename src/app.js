@@ -2,13 +2,14 @@ const fs                  = require('fs');
 const path                = require('path');
 const EventEmitter        = require('events');
 const cors                = require('cors');
-const bodyParser          = require('body-parser');
+const bodyParser          = require('body-parser-with-msgpack');
 const compression         = require('compression');
 const cookieParser        = require('cookie-parser');
 const express             = require('express');
 const http                = require('http');
 const https               = require('https');
 const randomstring        = require('randomstring');
+const msgpack             = require('msgpack-lite');
 const config              = require('../config');
 const reloadProvider      = require('./reloadProviders');
 const controllers         = require('./controllers');
@@ -38,6 +39,7 @@ app.use(cors({
     exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
     origin        : true
 }));
+app.use(bodyParser.msgpack({ limit: '5mb' }));
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(cookieParser());
 app.use(compression());
