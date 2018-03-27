@@ -3,6 +3,10 @@ image: node:alpine
 services:
   - postgres:latest
 
+stages:
+  - test
+  - deploy
+
 variables:
   POSTGRES_DB: buckless_test
   POSTGRES_USER: buckless
@@ -16,7 +20,18 @@ before_script:
   - apk add --no-cache openssh openssl python
   - yarn
 
-job:
+test:
+  stage: test
   script:
     - yarn lint
     - yarn test
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - docker build -t hub.buckless.com:5000/buckless/server .
+    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" hub.buckless.com:5000
+    - docker push hub.buckless.com:5000/buckless/server
+
