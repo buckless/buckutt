@@ -236,7 +236,6 @@ export default {
 
 .b-history__list__entry__top {
     display: flex;
-    align-items: center;
 }
 
 .b-history__list__entry__date {
@@ -261,6 +260,7 @@ export default {
 
 .b-history__list__entry__content {
     font-size: 13px;
+    margin-top: -13px;
 }
 
 .b-history__list__entry__button {
