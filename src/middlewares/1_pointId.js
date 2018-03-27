@@ -29,10 +29,15 @@ module.exports = connector => connector.models.Device
         let minPeriod = Infinity;
         let handled   = false;
 
-        connector.device = device;
-        connector.point  = {};
-        connector.event  = {};
-        connector.wiket  = {};
+        connector.device  = device;
+        connector.point   = {};
+        connector.event   = {};
+        connector.wiket   = {};
+        connector.details = {
+            device: connector.device.name,
+            path  : connector.path,
+            method: connector.method
+        };
 
         // Filters: allow an empty point but not a deleted point
         device.wikets
@@ -59,11 +64,9 @@ module.exports = connector => connector.models.Device
                     connector.device.defaultGroup_id = wiket.defaultGroup_id;
 
                     connector.details = {
-                        device: connector.device.name,
-                        event : connector.event.name,
-                        point : connector.point.name,
-                        path  : connector.path,
-                        method: connector.method
+                        ...connector.details,
+                        event: connector.event.name,
+                        point: connector.point.name
                     };
 
                     handled = true;
