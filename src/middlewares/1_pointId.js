@@ -67,15 +67,15 @@ module.exports = connector => connector.models.Device
                 }
             });
 
-        if (!handled) {
+        if (!handled && !device.isUser) {
             return Promise.reject(new APIError(module, 404, 'No assigned points'));
         }
 
         connector.header('event', connector.event_id);
-        connector.header('eventName', connector.event.name);
+        connector.header('eventName', (connector.event || {}).name);
         connector.header('point', connector.point_id);
-        connector.header('pointName', connector.point.name);
-        connector.header('wiket', connector.wiket.id);
+        connector.header('pointName', (connector.point || {}).name);
+        connector.header('wiket', (connector.wiket || {}).id);
         connector.header('device', device.id);
 
         return Promise.resolve();
