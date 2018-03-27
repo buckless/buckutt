@@ -22,6 +22,13 @@ export const sendBasket = (store, payload = {}) => {
         return;
     }
 
+    const bought   = store.getters.basketAmount;
+    const reloaded = store.getters.reloadAmount;
+
+    if (bought === 0 && reloaded === 0) {
+        return;
+    }
+
     // quick mode = wait for card for writing
     if (!store.state.auth.device.config.doubleValidation) {
         if (store.state.basket.basketStatus !== 'WAITING_FOR_BUYER') {
@@ -38,9 +45,6 @@ export const sendBasket = (store, payload = {}) => {
     if (!store.state.auth.buyer.isAuth && !payload.cardNumber) {
         return;
     }
-
-    const bought   = store.getters.basketAmount;
-    const reloaded = store.getters.reloadAmount;
 
     // !useCardData = checked by the API
     if (store.state.auth.device.event.config.useCardData) {
