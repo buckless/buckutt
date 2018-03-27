@@ -106,10 +106,18 @@ export default {
 
         reload() {
             this.addReload({
-                amount: this.reloadAmount + this.reloadGiftAmount,
+                amount: this.reloadAmount,
                 type  : this.$store.state.reload.meanOfPayment,
                 trace : ''
             });
+
+            if (this.reloadGiftAmount) {
+              this.addReload({
+                amount: this.reloadGiftAmount,
+                type: 'gift',
+                trace: `${this.$store.state.reload.meanOfPayment}-${this.reloadAmount}`
+              });
+            }
 
             let initialPromise = Promise.resolve();
 
