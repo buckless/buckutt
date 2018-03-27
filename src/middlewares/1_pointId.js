@@ -27,8 +27,12 @@ module.exports = connector => connector.models.Device
         }
 
         let minPeriod = Infinity;
+        let handled   = false;
 
-        let handled = false;
+        connector.device = device;
+        connector.point  = {};
+        connector.event  = {};
+        connector.wiket  = {};
 
         // Filters: allow an empty point but not a deleted point
         device.wikets
@@ -49,7 +53,6 @@ module.exports = connector => connector.models.Device
                     connector.event_id = period.event.id;
                     minPeriod          = diff;
 
-                    connector.device                 = device;
                     connector.point                  = point;
                     connector.event                  = period.event;
                     connector.wiket                  = wiket;
@@ -72,10 +75,10 @@ module.exports = connector => connector.models.Device
         }
 
         connector.header('event', connector.event_id);
-        connector.header('eventName', (connector.event || {}).name);
+        connector.header('eventName', connector.event.name);
         connector.header('point', connector.point_id);
-        connector.header('pointName', (connector.point || {}).name);
-        connector.header('wiket', (connector.wiket || {}).id);
+        connector.header('pointName', connector.point.name);
+        connector.header('wiket', connector.wiket.id);
         connector.header('device', device.id);
 
         return Promise.resolve();
