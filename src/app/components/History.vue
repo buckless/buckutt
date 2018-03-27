@@ -15,22 +15,27 @@
             </div>
             <div class="b-history__list" v-else>
                 <div class="b-history__list__entry" v-for="entry in entries">
-                    <span class="b-history__list__entry__date">
-                        {{ entry.date }}
-                    </span>
-                    <div>
+                    <div class="b-history__list__entry__top">
+                        <span class="b-history__list__entry__date">
+                            {{ entry.date }}
+                        </span>
                         <span class="b-history__list__entry__reload" v-if="entry.reload">
                             <currency :value="entry.reload" showPlus />
                         </span>
                         <span class="b-history__list__entry__cost" v-if="entry.cost">
                             -<currency :value="entry.cost" />
                         </span>
+                        <span style="flex: 1"></span>
+                        <button class="b-history__list__entry__button" @click.prevent="selectedEntry = entry">
+                            <i class="b-icon">delete</i>
+                        </button>
                     </div>
-                    <span class="b-history__list__entry__content">
-                        <span v-if="entry.firstItem">{{ entry.firstItem }}</span><span v-if="entry.more">, ...</span>
-                    </span>
-                    <div style="flex: 1;"></div>
-                    <button class="b-history__list__entry__button" @click.prevent="selectedEntry = entry">Annuler</button>
+                    <div class="b-history__list__entry__content">
+                        <template v-for="item in entry.items">
+                            {{ item.name }}<br />
+                        </template>
+                        <template v-if="entry.items.length === 0 && entry.reload > 0">Rechargement</template>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,13 +69,15 @@ export default {
         entries() {
             return this.history
                 .filter(e => e.cardNumber === this.cardNumber)
+                .sort((a, b) => b.date - a.date)
                 .map(e => this.resume(e));
         },
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
             buyer      : state => state.auth.buyer,
-            history    : state => state.history.history
+            history    : state => state.history.history,
+            items      : state => state.items
         })
     },
 
@@ -139,31 +146,21 @@ export default {
         },
 
         resume(entry) {
-            const cost   = entry.basketToSend.filter(e => e.cost).map(e => e.cost).reduce((a, b) => a + b, 0);
+            const items = entry.basketToSend
+                .filter(e => e.cost)
+                .map((e) => {
+                    const name = e.promotion_id
+                        ? this.items.promotions.find(p => p.id === e.promotion_id).name
+                        : this.items.items.find(i => i.id === e.articles[0].id).name;
+
+                    return {
+                        name,
+                        cost: e.cost
+                    };
+                });
+
+            const cost   = items.map(e => e.cost).reduce((a, b) => a + b, 0);
             const reload = entry.basketToSend.filter(e => e.credit).map(e => e.credit).reduce((a, b) => a + b, 0);
-            const more   = entry.basketToSend.filter(e => e.cost).length > 0;
-
-            let firstItem;
-
-            let firstItemBought = entry.basketToSend.find(e => e.cost)
-
-            if (firstItemBought) {
-                if (firstItemBought.promotion_id) {
-                    firstItemBought = this.$store.state.items.promotions
-                        .find(p => p.id === firstItemBought.promotion_id)
-                        .name;
-                } else {
-                    firstItemBought = this.$store.state.items.items
-                        .find(p => p.id === firstItemBought.articles[0].id)
-                        .name;
-                }
-
-                firstItem = firstItemBought;
-            } else {
-                if (reload > 0) {
-                    firstItem = 'Rechargement';
-                }
-            }
 
             const p = n => n < 10 ? `0${n}` : n.toString();
 
@@ -174,9 +171,8 @@ export default {
             return {
                 cost,
                 reload,
-                firstItem,
-                more,
                 date,
+                items,
                 transactionIds: entry.transactionIds,
                 localId       : entry.localId
             };
@@ -197,6 +193,11 @@ export default {
 .b-history {
     background-color: #f3f3f3;
     width: 100vw;
+
+    & > div {
+        max-width: 600px;
+        margin: auto;
+    }
 }
 
 .b-history__text {
@@ -226,14 +227,16 @@ export default {
 }
 
 .b-history__list__entry {
-    display: flex;
-    flex-wrap: wrap;
     padding: 20px 15px;
-    align-items: center;
 
     &:not(:last-child) {
         border-bottom: 1px solid rgba(0,0,0,.12);
     }
+}
+
+.b-history__list__entry__top {
+    display: flex;
+    align-items: center;
 }
 
 .b-history__list__entry__date {
@@ -254,6 +257,10 @@ export default {
 .b-history__list__entry__cost {
     font-weight: bold;
     color: $orange;
+}
+
+.b-history__list__entry__content {
+    font-size: 13px;
 }
 
 .b-history__list__entry__button {
