@@ -8,6 +8,11 @@ export const setPoint = ({ commit }, payload) => {
     commit('SET_DEVICE', payload);
 };
 
+export const setGiftReloads = ({ commit }, payload) => {
+    window.localStorage.setItem('giftReloads', JSON.stringify(payload));
+    commit('SET_GIFTRELOADS', payload);
+};
+
 export const setFullDevice = ({ commit }, payload) => {
     window.localStorage.setItem('fullDevice', JSON.stringify(payload));
     commit('SET_FULL_DEVICE', payload);

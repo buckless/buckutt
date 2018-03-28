@@ -9,8 +9,8 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            users   : 'uid,name,barcode,credit',
-            accesses: 'id,cardId,group,start,end'
+            users      : 'uid,name,barcode,credit',
+            accesses   : 'id,cardId,group,start,end'
         });
 
         return Promise.resolve();

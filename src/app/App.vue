@@ -95,6 +95,7 @@ export default {
             'setEvent',
             'setDefaultItems',
             'setPendingRequests',
+            'setGiftReloads',
             'updateEssentials'
         ])
     },
@@ -120,6 +121,10 @@ export default {
 
             if (window.localStorage.hasOwnProperty('defaultItems')) {
                 this.setDefaultItems(JSON.parse(window.localStorage.getItem('defaultItems')));
+            }
+
+            if (window.localStorage.hasOwnProperty('giftReloads')) {
+                this.setGiftReloads(JSON.parse(window.localStorage.getItem('giftReloads')));
             }
         }
 

@@ -11,12 +11,17 @@ const initialState = {
             items     : [],
             promotions: []
         }
-    }
+    },
+    giftReloads: []
 };
 
 const mutations = {
     SET_CATEGORIES(state, payload) {
         state.categories = payload;
+    },
+
+    SET_GIFTRELOADS(state, payload) {
+        state.giftReloads = payload;
     },
 
     SET_ITEMS(state, payload) {
