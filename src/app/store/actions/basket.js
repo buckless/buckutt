@@ -118,36 +118,57 @@ export const sendBasket = (store, payload = {}) => {
         });
     });
 
+    const localId           = uniqueId(`transaction-id-${window.appId}`);
     const transactionToSend = {
         buyer  : cardNumber,
         molType: config.buyerMeanOfLogin,
         date   : now,
-        basket : basketToSend
+        basket : basketToSend,
+        seller : store.state.auth.seller.id,
+        localId
     };
 
     let initialPromise;
-    const localId = uniqueId(`transaction-id-${window.appId}`);
+    const offlineBasketAnswer = {
+        data: {
+            transactionIds: null,
+            credit        : store.getters.credit
+        }
+    };
 
     if (store.getters.isDegradedModeActive) {
-        transactionToSend.seller  = store.state.auth.seller.id;
-        transactionToSend.localId = localId;
-
         store.dispatch('addPendingRequest', {
             url : `${config.api}/services/basket?offline=1`,
             body: transactionToSend
         });
 
-        initialPromise = Promise.resolve({
-            data: {
-                transactionIds: null,
-                credit        : store.getters.credit
-            }
-        });
+        initialPromise = Promise.resolve(offlineBasketAnswer);
     } else {
         initialPromise = axios.post(`${config.api}/services/basket`, transactionToSend, store.getters.tokenHeaders);
     }
 
     return initialPromise
+        .catch((err) => {
+            console.log(err);
+            // if useCardData: it has to work
+            if (store.state.auth.device.event.config.useCardData) {
+                store.dispatch('addPendingRequest', {
+                    url : `${config.api}/services/basket?offline=1`,
+                    body: transactionToSend
+                });
+                return Promise.resolve(offlineBasketAnswer);
+            }
+
+            store.commit('SET_BASKET_STATUS', 'ERROR');
+
+            if (err.message === 'Network Error') {
+                store.commit('ERROR', { message: 'Server not reacheable' });
+            } else {
+                store.commit('ERROR', err.response.data);
+            }
+
+            return Promise.reject(err);
+        })
         .then((lastBuyer) => {
             // store last lastBuyer + transactionIds
             store.commit('ADD_HISTORY_TRANSACTION', {
@@ -181,17 +202,5 @@ export const sendBasket = (store, payload = {}) => {
             if (store.state.auth.device.config.doubleValidation) {
                 store.commit('LOGOUT_BUYER');
             }
-        })
-        .catch((err) => {
-            console.log(err);
-            store.commit('SET_BASKET_STATUS', 'ERROR');
-
-            if (err.message === 'Network Error') {
-                store.commit('ERROR', { message: 'Server not reacheable' });
-            } else {
-                store.commit('ERROR', err.response.data);
-            }
-
-            return Promise.reject(err);
         });
 };

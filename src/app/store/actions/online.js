@@ -31,7 +31,6 @@ export const setupSocket = (store, token) => {
     socket.on('connect', () => {
         store.commit('SET_ONLINE');
         store.dispatch('updateEssentials');
-        store.dispatch('reconnect');
         socket.emit('alert');
     });
 
@@ -50,7 +49,14 @@ export const setupSocket = (store, token) => {
     });
 };
 
-export const reconnect = (store) => {
+export const periodicSync = ({ dispatch }) => {
+    dispatch('syncPendingRequests')
+        .then(() => {
+            setTimeout(() => dispatch('periodicSync'), 300000);
+        });
+};
+
+export const syncPendingRequests = (store) => {
     const storedRequests = store.state.online.pendingRequests;
     const failedRequests = [];
 
@@ -97,18 +103,12 @@ export const reconnect = (store) => {
             });
     });
 
-    promise = promise.then(() => store.dispatch('sendValidCancellations'));
-
-    promise = promise.then(() => {
-        store.commit('SET_SYNCING', false);
-        store.dispatch('setPendingRequests', failedRequests);
-
-        if (failedRequests.length > 0) {
-            setTimeout(() => store.dispatch('reconnect'), 300000);
-        }
-    });
-
-    return promise;
+    return promise
+        .then(() => store.dispatch('sendValidCancellations'))
+        .then(() => {
+            store.commit('SET_SYNCING', false);
+            store.dispatch('setPendingRequests', failedRequests);
+        });
 };
 
 export const setSellers = (store, payload) => {

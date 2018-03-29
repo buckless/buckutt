@@ -162,6 +162,7 @@ export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
 
         initialPromise = initialPromise
             .then(() => axios.get(pendingUrl, store.getters.tokenHeaders))
+            .catch(() => Promise.resolve({ data: { amount: 0 } } ))
             .then((res) => {
                 cardCredit += res.data.amount;
             });

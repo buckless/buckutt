@@ -96,7 +96,8 @@ export default {
             'setDefaultItems',
             'setPendingRequests',
             'setGiftReloads',
-            'updateEssentials'
+            'updateEssentials',
+            'periodicSync'
         ])
     },
 
@@ -129,6 +130,7 @@ export default {
         }
 
         this.updateEssentials();
+        this.periodicSync();
 
         setInterval(() => {
             if (!this.seller.isAuth) {
