@@ -21,7 +21,7 @@ export const interfaceLoader = (store, credentials) => {
 
     return initialPromise
         .then((res) => {
-            if (credentials && res.data.buyer && res.data.buyer.credit) {
+            if (credentials && res.data.buyer && typeof res.data.buyer.credit === 'number') {
                 store.commit('ID_BUYER', {
                     id       : res.data.buyer.id || '',
                     credit   : res.data.buyer.credit,
