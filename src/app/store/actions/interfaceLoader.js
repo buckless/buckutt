@@ -37,7 +37,7 @@ export const interfaceLoader = (store, credentials) => {
                 // This will be call at least once when seller logs in
                 // It will stores default items in case of disconnection
                 store.dispatch('setDefaultItems', {
-                    articles: res.data.articles,
+                    articles  : res.data.articles,
                     promotions: res.data.promotions
                 });
             }
@@ -56,6 +56,22 @@ export const interfaceLoader = (store, credentials) => {
         .catch((err) => {
             if (err.message === 'Network Error') {
                 store.commit('ERROR', { message: 'Server not reacheable' });
+                return;
+            }
+
+            if (err.response.data
+                && err.response.data.message === 'Buyer not found'
+                && store.state.auth.device.event.config.useCardData
+                && typeof credentials.credit === 'number') {
+                store.commit('ID_BUYER', {
+                    id       : '',
+                    credit   : credentials.credit,
+                    firstname: '',
+                    lastname : '',
+                    groups   : [],
+                    purchases: []
+                });
+                store.commit('SET_BUYER_MOL', credentials.mol.trim());
                 return;
             }
 

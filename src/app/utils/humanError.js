@@ -15,7 +15,7 @@ export default (state, error) => {
         return 'Ticket introuvable';
     }
 
-    if (error.message === 'Invalid buyer') {
+    if (error.message === 'Invalid buyer' || error.message === 'Buyer not found') {
         return 'Client introuvable';
     }
 
