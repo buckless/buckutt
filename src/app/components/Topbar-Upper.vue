@@ -109,10 +109,12 @@ export default {
     display: flex;
     line-height: 65px;
 
-    & > div .b-icon {
-        font-size: 28px;
-        line-height: 65px;
-        margin-right: 20px;
+    & > div {
+        padding: 0 10px;
+        & > .b-icon {
+            font-size: 28px;
+            line-height: 65px;
+        }
     }
 }
 
@@ -149,10 +151,6 @@ export default {
 
         & > div .b-icon {
             line-height: 45px;
-        }
-
-        & > :last-child > .b-icon {
-            margin-right: 10px;
         }
     }
 
