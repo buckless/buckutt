@@ -60,6 +60,7 @@ export default {
     flex-wrap: wrap;
     overflow-y: auto;
     padding: 10px;
+    margin-bottom: 55px;
 }
 
 @media (max-width: 768px) {
