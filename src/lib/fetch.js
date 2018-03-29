@@ -25,7 +25,9 @@ export function get(url, opts_) {
     }, opts_);
 
     return fetch(`api/${url}`, opts)
-        .then(res => res.json())
+        .then(res => ((res.status === 200)
+            ? res.json()
+            : Promise.reject(res)))
         .then((results) => {
             if (Array.isArray(results)) {
                 return results.filter(r => !r.isRemoved);
@@ -49,7 +51,9 @@ export function post(url, data, opts_) {
     }, opts_);
 
     return fetch(`api/${url}`, opts)
-        .then(res => res.json());
+        .then(res => ((res.status === 200)
+            ? res.json()
+            : Promise.reject(res)));
 }
 
 /**
@@ -66,7 +70,9 @@ export function put(url, data, opts_) {
     }, opts_);
 
     return fetch(`api/${url}`, opts)
-        .then(res => res.json());
+        .then(res => ((res.status === 200)
+            ? res.json()
+            : Promise.reject(res)));
 }
 
 /**
@@ -81,5 +87,7 @@ export function del(url, opts_) {
     }, opts_);
 
     return fetch(`api/${url}`, opts)
-        .then(res => res.json());
+        .then(res => ((res.status === 200)
+            ? res.json()
+            : Promise.reject(res)));
 }

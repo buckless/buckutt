@@ -7,6 +7,7 @@ import GeneratePin from '@/components/GeneratePin';
 const History      = () => import(/* webpackChunkName: "dashboard" */'@/components/History');
 const Reload       = () => import(/* webpackChunkName: "dashboard" */'@/components/Reload');
 const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */'@/components/ReloadStatus');
+const AssignStatus = () => import(/* webpackChunkName: "dashboard" */'@/components/AssignStatus');
 const ChangePin    = () => import(/* webpackChunkName: "dashboard" */'@/components/ChangePin');
 const Transfer     = () => import(/* webpackChunkName: "dashboard" */'@/components/Transfer');
 const Logout       = () => import(/* webpackChunkName: "dashboard" */'@/components/Logout');
@@ -42,6 +43,20 @@ const routes = [
         }
     },
     {
+        path     : '/assign/success',
+        component: AssignStatus,
+        props    : {
+            status: 'success'
+        }
+    },
+    {
+        path     : '/assign/failed',
+        component: AssignStatus,
+        props    : {
+            status: 'failed'
+        }
+    },
+    {
         path     : '/pin',
         component: ChangePin
     },
@@ -67,7 +82,9 @@ const router = new Router({
 router.beforeEach((route, from, next) => {
     const logged = !!router.app.$store.state.app.loggedUser;
 
-    if ((route.path !== '/' && route.path !== '/forgot-pin') && !logged) {
+    const unloggedUrls = ['/', '/forgot-pin', '/assign/success', '/assign/failed'];
+
+    if (unloggedUrls.indexOf(route.path) === -1 && !logged) {
         next('/');
     } else if (route.path === '/' && logged) {
         next('/history');

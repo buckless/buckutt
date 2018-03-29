@@ -3,3 +3,4 @@ export * from './changes';
 export * from './notifications';
 export * from './pin';
 export * from './transfer';
+export * from './register';

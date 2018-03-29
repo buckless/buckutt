@@ -64,6 +64,12 @@ main > div:first-child {
     color: #fff !important;
 }
 
+.b-checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
 label.mdc-text-field {
     width: 100%;
 }

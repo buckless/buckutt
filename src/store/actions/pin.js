@@ -4,7 +4,6 @@
 
 import { get, put } from '../../lib/fetch';
 
-
 export function changePin({ dispatch }, pins) {
     return new Promise((resolve, reject) => {
         let message = null;
