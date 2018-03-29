@@ -3,7 +3,9 @@ import isMobile from '../../utils/isMobile';
 export const tabsItems = (state) => {
     if (isMobile()) {
         // flatten all tabs on mobile
-        return [].concat(...state.items.tabsItems);
+        return []
+            .concat(...state.items.tabsItems)
+            .sort((a, b) => a.name.localeCompare(b.name));
     }
 
     let items = state.items.tabsItems[state.ui.currentTab];
