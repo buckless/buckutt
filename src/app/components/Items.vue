@@ -60,13 +60,13 @@ export default {
     flex-wrap: wrap;
     overflow-y: auto;
     padding: 10px;
-    margin-bottom: 55px;
 }
 
 @media (max-width: 768px) {
     .b-items {
         background-color: #f3f3f3;
         padding-top: 15px;
+        margin-bottom: 55px;
     }
 }
 </style>
