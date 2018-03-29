@@ -101,15 +101,11 @@ export default {
                     try {
                         credit = nfc.dataToCredit(data.toLowerCase ? data.toLowerCase() : data, config.signingKey);
                         console.log('nfc-data', credit);
+                        this.onCard(credit);
                     } catch (err) {
-                        if (err.message === 'Signature does not match') {
-                            console.log('signature does not match');
-                        }
-
                         console.log(err);
+                        this.$store.commit('ERROR', { message: 'Invalid card' });
                     }
-
-                    this.onCard(credit);
                 });
             } else {
                 nfc.on('uid', (data) => {

@@ -99,6 +99,12 @@ export default {
 }
 
 .b-item__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
     & > img {
         &:before {
             background-image: url('../assets/placeholder.jpg');
