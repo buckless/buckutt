@@ -91,6 +91,7 @@ export default {
     margin: 10px;
     position: relative;
     width: 150px;
+    display: inline-block;
 
     &--selected {
         border: 4px solid $lightblue;
@@ -168,13 +169,9 @@ export default {
 @media (max-width: 768px) {
     .b-item {
         height: 90px;
-        margin: 0;
+        margin: 2.5%;
         margin-bottom: 10px;
         width: 90px;
-
-        &:not(:nth-child(3n + 1)) {
-            margin-left: calc(10px + 10px / 3);
-        }
     }
 
     .b-item__price {

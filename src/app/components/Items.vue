@@ -53,20 +53,17 @@ export default {
 
 <style scoped>
 .b-items {
-    align-content: flex-start;
-    box-sizing: border-box;
-    display: flex;
-    flex: 1;
-    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    padding: 10px 10px;
     overflow-y: auto;
-    padding: 10px;
 }
 
 @media (max-width: 768px) {
     .b-items {
         background-color: #f3f3f3;
-        padding-top: 15px;
-        margin-bottom: 55px;
+        text-align: center;
+        padding: 10px 0px 60px 0px;
     }
 }
 </style>
