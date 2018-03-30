@@ -18,7 +18,7 @@
         </div>
         <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
         <search v-show="subpage === 'search'" @assign="assignModal"/>
-        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened">
+        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck>
             <strong>{{ assignModalName }}</strong><br />
             Nouveau crédit: <strong><currency :value="assignModalCredit" /></strong>
 

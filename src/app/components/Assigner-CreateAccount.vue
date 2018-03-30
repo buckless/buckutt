@@ -20,7 +20,7 @@
             </div>
             <button @click.prevent="assignModalOpened = true">Valider</button>
         </form>
-        <nfc mode="write" @read="assignCard" @cancel="assignModalOpened = false" v-if="assignModalOpened">
+        <nfc mode="write" @read="assignCard" @cancel="assignModalOpened = false" v-if="assignModalOpened" disableSignCheck>
             <strong>Compte anonyme</strong><br />
             Nouveau crédit: <strong><currency :value="numberCredit" /></strong>
         </nfc>

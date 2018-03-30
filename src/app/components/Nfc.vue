@@ -37,8 +37,9 @@ import { mapState } from 'vuex';
 
 export default {
     props: {
-        mode       : String,
-        successText: String
+        mode            : String,
+        successText     : String,
+        disableSignCheck: Boolean
     },
 
     data() {
@@ -104,7 +105,11 @@ export default {
                         this.onCard(credit);
                     } catch (err) {
                         console.log(err);
-                        this.$store.commit('ERROR', { message: 'Invalid card' });
+                        if (!this.disableSignCheck) {
+                            this.$store.commit('ERROR', { message: 'Invalid card' });
+                        } else {
+                            this.onCard(0);
+                        }
                     }
                 });
             } else {
