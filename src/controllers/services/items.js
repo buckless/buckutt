@@ -52,7 +52,6 @@ router.get('/services/items', (req, res, next) => {
         })
         .then(mol => ((mol) ? mol.toJSON() : null))
         .then((mol) => {
-            console.log(mol);
             if (!mol || !mol.user.id) {
                 return next(new APIError(module, 404, 'Buyer not found'));
             }
