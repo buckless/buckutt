@@ -33,6 +33,6 @@ module.exports = () => {
                     'promotion'
                 ]
             })
-            .then(purchase => purchase ? pushToWebservices(purchase) : null);
+            .then(purchase => (purchase ? pushToWebservices(purchase) : null));
     });
 };

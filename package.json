@@ -51,7 +51,6 @@
     "moment": "^2.20.1",
     "moment-round": "^1.0.1",
     "morgan": "^1.8.2",
-    "msgpack-lite": "^0.1.26",
     "nconf": "^0.10.0",
     "node-etupay": "ungdev/node-etupay",
     "nodemailer": "^4.4.2",

@@ -9,7 +9,6 @@ const express             = require('express');
 const http                = require('http');
 const https               = require('https');
 const randomstring        = require('randomstring');
-const msgpack             = require('msgpack-lite');
 const config              = require('../config');
 const reloadProvider      = require('./reloadProviders');
 const controllers         = require('./controllers');
