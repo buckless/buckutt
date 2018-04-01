@@ -122,9 +122,10 @@ export const setDefaultItems = (store, payload) => {
 };
 
 export const addPendingRequest = (store, payload) => {
+    payload.body.created_at = new Date();
+
     store.commit('ADD_PENDING_REQUEST', {
-        ...payload,
-        created_at: new Date()
+        payload
     });
 
     window.localStorage.setItem('pendingRequests', JSON.stringify(store.state.online.pendingRequests));
