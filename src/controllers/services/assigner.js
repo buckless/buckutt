@@ -65,7 +65,7 @@ router.get('/services/assigner', (req, res, next) => {
 
                     return MeanOfLogin
                         .where('type', 'in', ['ticketId', 'mail'])
-                        .where('data', 'in', [ ticketId, userData.mail ])
+                        .where('data', 'in', [ticketId, userData.mail])
                         .where({ blocked: false })
                         .fetchAll();
                 })

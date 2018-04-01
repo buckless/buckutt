@@ -21,7 +21,7 @@ router.post('/services/manager/register', (req, res, next) => {
 
     return MeanOfLogin
         .where('type', 'in', ['mail'])
-        .where('data', 'in', [ req.body.mail ])
+        .where('data', 'in', [req.body.mail])
         .where({ blocked: false })
         .fetchAll()
         .then((mols) => {
@@ -43,7 +43,7 @@ router.post('/services/manager/register', (req, res, next) => {
                 isTemporary: false
             });
 
-            return user.save()
+            return user.save();
         })
         .then(() => {
             const mol = new MeanOfLogin({
@@ -68,12 +68,10 @@ router.post('/services/manager/register', (req, res, next) => {
                 from, to, subject, html, text
             });
         })
-        .then(() => {
-            return res
-                .status(200)
-                .json({})
-                .end();
-        })
+        .then(() => res
+            .status(200)
+            .json({})
+            .end())
         .catch(err => dbCatch(module, err, next));
 });
 

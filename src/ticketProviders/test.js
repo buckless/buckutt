@@ -11,13 +11,12 @@ module.exports = (ticketOrMail) => {
             credit   : 500,
             ticketId : '123123123'
         });
-    } else {
-        return Promise.resolve({
-            firstname: 'Foo',
-            lastname : 'Bar',
-            mail     : 'foo@bar.com',
-            credit   : 500,
-            ticketId : ticketOrMail
-        });
     }
+    return Promise.resolve({
+        firstname: 'Foo',
+        lastname : 'Bar',
+        mail     : 'foo@bar.com',
+        credit   : 500,
+        ticketId : ticketOrMail
+    });
 };
