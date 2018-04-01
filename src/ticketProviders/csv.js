@@ -10,7 +10,6 @@ module.exports = (ticketOrMail) => {
         throw new Error('Missing config.assigner.csv.url or config.assigner.csv.file');
     }
 
-    let initialPromise;
     const parser = parse({ columns: true });
     let result = null;
 
@@ -24,10 +23,14 @@ module.exports = (ticketOrMail) => {
     }
 
     parser.on('readable', () => {
-        while (record = parser.read()) {
+        let record = parser.read();
+
+        while (record) {
             if (record.ticket === ticketOrMail || record.mail === ticketOrMail) {
                 result = record;
             }
+
+            record = parser.read();
         }
     });
 
