@@ -54,6 +54,10 @@ router.get('/services/assigner', (req, res, next) => {
 
             return fetchFromAPI(req.query.ticketOrMail)
                 .then((userData_) => {
+                    if (!userData_) {
+                        return Promise.reject(new APIError(module, 404, 'Not found', req.query.ticketOrMail));
+                    }
+
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
 
                     ticketId = userData_.ticketId;
@@ -104,7 +108,7 @@ router.get('/services/assigner', (req, res, next) => {
                     const initialReload = new Reload({
                         credit   : user.get('credit'),
                         type     : 'initial',
-                        trace    : req.query.ticketId,
+                        trace    : req.query.ticketOrMail,
                         point_id : req.point_id,
                         buyer_id : user.id,
                         seller_id: user.id

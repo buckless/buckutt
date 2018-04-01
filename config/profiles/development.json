@@ -55,6 +55,14 @@
     },
     "assigner": {
         "ticketProvider": "test",
+        "csv": {
+            "url": {
+                "method":"get",
+                "url": "https://gist.githubusercontent.com/gjuchault/851ddaafba402cbd8d154fb165b149e4/raw/3083ccccb2e577fa0a20391c2502e2c39b18e8ed/ticketdb.csv",
+                "headers": {}
+            },
+            "file": null
+        },
         "sendPINMail": false,
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",

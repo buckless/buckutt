@@ -5,6 +5,7 @@ let provider;
 try {
     provider = require(`./${name}`);
 } catch (err) {
+    console.error(err);
     provider = require('./test');
 }
 
