@@ -30,7 +30,8 @@ router.get('/services/manager/searchuser', (req, res) => {
                     bookshelf.knex.raw('concat(lower(firstname), \' \', lower(lastname))'),
                     'like',
                     `%${name.toLowerCase()}%`
-                );
+                )
+                .orderByRaw('LOWER(name) asc');
 
             if (max > 0) {
                 filter = filter.limit(max);
