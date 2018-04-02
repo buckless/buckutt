@@ -1,12 +1,12 @@
-const express            = require('express');
-const bcrypt             = require('bcryptjs');
-const { padStart, pick } = require('lodash');
-const mailer             = require('../../lib/mailer');
-const dbCatch            = require('../../lib/dbCatch');
-const fetchFromAPI       = require('../../ticketProviders');
-const APIError           = require('../../errors/APIError');
-const template           = require('../../mailTemplates');
-const config             = require('../../../config');
+const express      = require('express');
+const bcrypt       = require('bcryptjs');
+const { padStart } = require('lodash');
+const mailer       = require('../../lib/mailer');
+const dbCatch      = require('../../lib/dbCatch');
+const fetchFromAPI = require('../../ticketProviders');
+const APIError     = require('../../errors/APIError');
+const template     = require('../../mailTemplates');
+const config       = require('../../../config');
 
 /**
  * Assigner controller. Handles cards assignment
