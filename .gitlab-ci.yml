@@ -31,7 +31,7 @@ deploy:
   only:
     - master
   script:
-    - docker build -t hub.buckless.com:5000/buckless/server .
-    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" hub.buckless.com:5000
-    - docker push hub.buckless.com:5000/buckless/server
+    - docker build -t lab.buckless.com/core/server .
+    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com
+    - docker push lab.buckless.com/core/server
 
