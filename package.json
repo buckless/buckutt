@@ -28,7 +28,6 @@
     "axios": "^0.17.1",
     "bcryptjs": "^2.3.0",
     "bluebird": "^3.4.6",
-    "body-parser": "^1.17.2",
     "body-parser-with-msgpack": "^1.17.0",
     "bookshelf": "^0.12.1",
     "bookshelf-manager": "^0.3.0",
