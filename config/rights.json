@@ -89,6 +89,7 @@
           "/services/manager/searchuser",
           "/services/manager/transfer",
           "/services/manager/reload",
+          "/services/manager/giftReloads",
           "userCredit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
