@@ -120,7 +120,7 @@ router.get('/services/assigner', (req, res, next) => {
                     const initialReload = new Reload({
                         credit   : user.get('credit'),
                         type     : 'initial',
-                        trace    : req.query.ticketOrMail,
+                        trace    : ticketOrMail,
                         point_id : req.point_id,
                         buyer_id : user.id,
                         seller_id: user.id
