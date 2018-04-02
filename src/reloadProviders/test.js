@@ -3,7 +3,7 @@ const config = require('../../config');
 
 module.exports = (app) => {
     const Transaction       = app.locals.models.Transaction;
-    const GiftReload            = app.locals.models.GiftReload;
+    const GiftReload        = app.locals.models.GiftReload;
     const Reload            = app.locals.models.Reload;
     const PendingCardUpdate = app.locals.models.PendingCardUpdate;
 
