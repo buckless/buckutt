@@ -79,6 +79,7 @@
           "/services/login",
           "/services/manager/askpin",
           "/services/manager/generatepin",
+          "/services/manager/register",
           "/services/deviceEssentials",
           "/provider/callback",
           "/services/assigner"

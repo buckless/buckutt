@@ -23,6 +23,7 @@ router.get('/services/assigner', (req, res, next) => {
     const { MeanOfLogin, User, Reload } = req.app.locals.models;
 
     let user;
+    let userData;
     let pin;
     let ticketId;
 
@@ -49,16 +50,31 @@ router.get('/services/assigner', (req, res, next) => {
                         .end();
                 }
 
-                return res.status(404).end();
+                return res.status(404).json({}).end();
             }
 
-            return fetchFromAPI(req.query.ticketOrMail)
+            return fetchFromAPI(ticketOrMail)
                 .then((userData_) => {
-                    pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
+                    if (!userData_) {
+                        return Promise.reject(new APIError(module, 400, 'ticketOrMail not found', { ticketOrMail }));
+                    }
+
+                    userData = pick(userData_, ['firstname', 'lastname', 'nickname', 'mail', 'credit']);
 
                     ticketId = userData_.ticketId;
 
-                    const userData = pick(userData_, ['firstname', 'lastname', 'nickname', 'mail', 'credit']);
+                    return MeanOfLogin
+                        .where('type', 'in', ['ticketId', 'mail'])
+                        .where('data', 'in', [ticketId, userData.mail])
+                        .where({ blocked: false })
+                        .fetchAll();
+                })
+                .then((mols) => {
+                    if (mols.length > 0) {
+                        return Promise.reject(new APIError(module, 404, 'Already assigned', { userData }));
+                    }
+
+                    pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
 
                     userData.password = 'none';
                     userData.pin      = bcrypt.hashSync(pin);
@@ -104,7 +120,7 @@ router.get('/services/assigner', (req, res, next) => {
                     const initialReload = new Reload({
                         credit   : user.get('credit'),
                         type     : 'initial',
-                        trace    : req.query.ticketId,
+                        trace    : ticketOrMail,
                         point_id : req.point_id,
                         buyer_id : user.id,
                         seller_id: user.id
@@ -124,7 +140,7 @@ router.get('/services/assigner', (req, res, next) => {
                             .end();
                     }
 
-                    return res.status(200).end();
+                    return res.status(200).json({}).end();
                 });
         })
         .catch(err => dbCatch(module, err, next));
