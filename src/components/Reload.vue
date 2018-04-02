@@ -8,6 +8,13 @@
                 <section class="mdc-card__supporting-text">
                     Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br />
                     Les opérations en ligne ne sont validées qu'à la suite une transaction sur site.
+                    <div class="b-reload-gifts" v-if="giftReloads.length > 0">
+
+                        <div class="b-reload-gifts__gift" v-for="giftReload in giftReloads">
+                            Tous les <span>{{ giftReload.everyAmount | price(true) }}</span>, recevez
+                            <strong>{{ giftReload.amount | price(true) }}</strong> supplémentaire<template v-if="giftReload.amount > 100">s</template>.
+                        </div>
+                    </div>
                     <div class="b-reload__boxes">
                         <button class="mdc-button"
                             @click.prevent="chooseBox(10)"
@@ -51,9 +58,9 @@
 </template>
 
 <script>
-import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
-import { mapActions }   from 'vuex';
-import { post }         from '../lib/fetch';
+import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { mapState, mapActions } from 'vuex';
+import { post }                 from '../lib/fetch';
 
 export default {
     data() {
@@ -62,6 +69,12 @@ export default {
             amount   : null,
             chosenBox: null
         };
+    },
+
+    computed: {
+        ...mapState({
+            giftReloads: state => state.app.giftReloads
+        })
     },
 
     methods: {

@@ -61,6 +61,14 @@ export function clearHistory({ commit }) {
 export function loadUser({ dispatch }) {
     dispatch('initSocket', localStorage.getItem('token'));
     dispatch('loadHistory');
+    dispatch('loadGiftReloads');
+}
+
+export function loadGiftReloads({ commit }) {
+    get('giftReloads')
+        .then((result) => {
+            commit('SET_GIFT_RELOADS', result);
+        });
 }
 
 export function login({ dispatch }, credentials) {

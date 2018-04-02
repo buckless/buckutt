@@ -1,8 +1,9 @@
 const state = {
-    loggedUser: null,
-    history   : [],
-    users     : [],
-    pending   : 0
+    loggedUser : null,
+    history    : [],
+    users      : [],
+    giftReloads: [],
+    pending    : 0
 };
 
 const mutations = {
@@ -31,6 +32,10 @@ const mutations = {
 
     SET_PENDING_AMOUNT(state_, pending) {
         state_.pending = pending;
+    },
+
+    SET_GIFT_RELOADS(state_, giftReloads) {
+        state_.giftReloads = giftReloads;
     }
 };
 
