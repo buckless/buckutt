@@ -29,6 +29,7 @@ const dateFormat = 'DD/MM/YYYY HH:mm';
 module.exports = (app) => {
     const payline           = new Payline(providerConfig.id, providerConfig.password, providerConfig.url);
     const Transaction       = app.locals.models.Transaction;
+    const GiftReload        = app.locals.models.GiftReload;
     const Reload            = app.locals.models.Reload;
     const PendingCardUpdate = app.locals.models.PendingCardUpdate;
 
@@ -94,11 +95,18 @@ module.exports = (app) => {
         }
 
         let paymentDetails;
+        let giftReloads;
 
-        payline
-            .runAction('getWebPaymentDetailsRequest', {
-                version: 18,
-                token
+        GiftReload
+            .fetchAll()
+            .then(giftReloads_ => ((giftReloads_ && giftReloads_.length) ? giftReloads_.toJSON() : []))
+            .then((giftReloads_) => {
+                giftReloads = giftReloads_;
+
+                return payline.runAction('getWebPaymentDetailsRequest', {
+                    version: 18,
+                    token
+                });
             })
             .then((result) => {
                 paymentDetails = result;
@@ -109,9 +117,11 @@ module.exports = (app) => {
                 transaction.set('state', paymentDetails.result.shortMessage);
                 transaction.set('longState', paymentDetails.result.longMessage);
 
+                const amount = transaction.get('amount');
+
                 if (transaction.get('state') === 'ACCEPTED') {
                     const newReload = new Reload({
-                        credit   : transaction.get('amount'),
+                        credit   : amount,
                         type     : 'card',
                         trace    : transaction.get('id'),
                         point_id : req.point_id,
@@ -119,17 +129,34 @@ module.exports = (app) => {
                         seller_id: transaction.get('user_id')
                     });
 
+                    const reloadGiftAmount = giftReloads
+                        .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
+                        .reduce((a, b) => a + b, 0);
+
+                    const reloadGift = new Reload({
+                        credit   : reloadGiftAmount,
+                        type     : 'gift',
+                        trace    : `card-${amount}`,
+                        point_id : req.point_id,
+                        buyer_id : transaction.get('user_id'),
+                        seller_id: transaction.get('user_id')
+                    });
+
+                    const reloadGiftSave = reloadGiftAmount
+                        ? reloadGift.save()
+                        : Promise.resolve();
+
                     const pendingCardUpdate = new PendingCardUpdate({
                         user_id: transaction.get('user_id'),
-                        amount : transaction.get('amount')
+                        amount
                     });
 
                     return Promise
-                        .all([newReload.save(), transaction.save(), pendingCardUpdate.save()])
+                        .all([newReload.save(), transaction.save(), pendingCardUpdate.save(), reloadGiftSave])
                         .then(() => {
                             req.app.locals.modelChanges.emit('userCreditUpdate', {
                                 id     : transaction.get('user_id'),
-                                pending: transaction.get('amount')
+                                pending: amount
                             });
                         });
                 }
