@@ -31,7 +31,7 @@ router.get('/services/manager/searchuser', (req, res) => {
                     'like',
                     `%${name.toLowerCase()}%`
                 )
-                .orderByRaw('LOWER(name) asc');
+                .orderByRaw('LOWER(firstname) asc');
 
             if (max > 0) {
                 filter = filter.limit(max);
