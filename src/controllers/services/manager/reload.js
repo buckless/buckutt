@@ -38,9 +38,11 @@ router.get('/services/manager/giftReloads', (req, res, next) => {
     req.app.locals.models.GiftReload
         .fetchAll()
         .then(giftReloads => ((giftReloads) ? giftReloads.toJSON() : null))
-        .then((giftReloads) => {
-            return res.status(200).json(giftReloads.map(gr => ({ everyAmount: gr.everyAmount, amount: gr.amount }))).end();
-        });
+        .then(giftReloads => res
+            .status(200)
+            .json(giftReloads.map(gr => ({ everyAmount: gr.everyAmount, amount: gr.amount })))
+            .end())
+        .catch(err => dbCatch(module, err, next));
 });
 
 module.exports = router;
