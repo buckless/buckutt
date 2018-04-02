@@ -15,25 +15,25 @@
         </router-link>
 
         <nav class="b-header__navigation" v-if="loggedUser">
-                <router-link to="/reload" :class="reloadClass">
-                    <i class="material-icons">attach_money</i>
-                    <div>Recharger</div>
-                </router-link>
-                <div class="b-header__navigation__separator"></div>
-                <router-link to="/history" :class="historyClass">
-                    <i class="material-icons">history</i>
-                    <div>Historique</div>
-                </router-link>
-                <div class="b-header__navigation__separator"></div>
-                <router-link to="/transfer" :class="transferClass">
-                    <i class="material-icons">swap_horiz</i>
-                    <div>Virement</div>
-                </router-link>
-                <div class="b-header__navigation__separator"></div>
-                <router-link to="/account" :class="accountClass">
-                    <i class="material-icons">person</i>
-                    <div>Mon compte</div>
-                </router-link>
+            <router-link to="/reload" :class="reloadClass">
+                <i class="material-icons">attach_money</i>
+                <div>Recharger</div>
+            </router-link>
+            <div class="b-header__navigation__separator"></div>
+            <router-link to="/history" :class="historyClass">
+                <i class="material-icons">history</i>
+                <div>Historique</div>
+            </router-link>
+            <div class="b-header__navigation__separator"></div>
+            <router-link to="/transfer" :class="transferClass">
+                <i class="material-icons">swap_horiz</i>
+                <div>Virement</div>
+            </router-link>
+            <div class="b-header__navigation__separator"></div>
+            <router-link to="/account" :class="accountClass">
+                <i class="material-icons">person</i>
+                <div>Mon compte</div>
+            </router-link>
         </nav>
     </header>
 </template>

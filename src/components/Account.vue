@@ -35,6 +35,7 @@
             </section>
             <transition name="slide">
                 <div class="b-qrcode" @submit.prevent="change(currentPin, pin, confirmedPin)" v-show="qrPage">
+                    Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer votre support cashless.
                     <img :src="qrcode" alt="qr code" />
                 </div>
             </transition>
@@ -104,5 +105,11 @@ export default {
 
 .b-account img {
     max-width: 100%;
+    margin: 0 auto;
+    display: block;
+}
+
+.b-account .b-qrcode {
+    padding: 0 16px;
 }
 </style>
