@@ -12,7 +12,7 @@
 
                         <div class="b-reload-gifts__gift" v-for="giftReload in giftReloads">
                             Tous les <span>{{ giftReload.everyAmount | price(true) }}</span>, recevez
-                            <strong>{{ giftReload.amount | price(true) }}</strong> supplémentaires
+                            <strong>{{ giftReload.amount | price(true) }}</strong> supplémentaire(s).
                         </div>
                     </div>
                     <div class="b-reload__boxes">
