@@ -235,6 +235,8 @@ export default {
 
         this.updateEssentials();
         this.db.init();
+
+        window.mock.barcode = (b) => this.onBarcode(b, true);
     }
 }
 </script>
