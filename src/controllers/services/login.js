@@ -57,6 +57,7 @@ router.post('/services/login', (req, res, next) => {
         .fetch({
             withRelated: [
                 'user',
+                'user.meansOfLogin',
                 'user.rights',
                 'user.rights.period'
             ]
