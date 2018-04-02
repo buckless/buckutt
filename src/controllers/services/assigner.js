@@ -55,7 +55,8 @@ router.get('/services/assigner', (req, res, next) => {
             return fetchFromAPI(req.query.ticketOrMail)
                 .then((userData_) => {
                     if (!userData_) {
-                        return Promise.reject(new APIError(module, 404, 'Not found', req.query.ticketOrMail));
+                        const err = new APIError(module, 404, 'Couldn\'t find ticket', req.query.ticketOrMail);
+                        return Promise.reject(err);
                     }
 
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');

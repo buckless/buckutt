@@ -54,14 +54,10 @@
         "template": "Hi !\n You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !"
     },
     "assigner": {
-        "ticketProvider": "test",
+        "ticketProvider": "csv",
         "csv": {
-            "url": {
-                "method":"get",
-                "url": "https://gist.githubusercontent.com/gjuchault/851ddaafba402cbd8d154fb165b149e4/raw/3083ccccb2e577fa0a20391c2502e2c39b18e8ed/ticketdb.csv",
-                "headers": {}
-            },
-            "file": null
+            "url": null,
+            "file": "/Users/gjuchault/Downloads/ticketdb.csv"
         },
         "sendPINMail": false,
         "from": "noreply@buckless.com",
