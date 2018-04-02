@@ -66,6 +66,7 @@
     "winston-tcp-graylog": "^1.0.10"
   },
   "devDependencies": {
+    "connect-sdk-nodejs": "^2.15.0",
     "coveralls": "^3.0.0",
     "eslint": "^4.16.0",
     "eslint-config-airbnb": "^16.1.0",
