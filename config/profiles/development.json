@@ -56,8 +56,12 @@
     "assigner": {
         "ticketProvider": "csv",
         "csv": {
-            "url": null,
-            "file": "/Users/gjuchault/Downloads/ticketdb.csv"
+            "url": {
+                "url": "",
+                "method": "get",
+                "headers": {}
+            },
+            "file": null
         },
         "sendPINMail": false,
         "from": "noreply@buckless.com",
