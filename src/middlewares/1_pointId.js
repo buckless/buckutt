@@ -27,8 +27,17 @@ module.exports = connector => connector.models.Device
         }
 
         let minPeriod = Infinity;
+        let handled   = false;
 
-        let handled = false;
+        connector.device  = device;
+        connector.point   = {};
+        connector.event   = {};
+        connector.wiket   = {};
+        connector.details = {
+            device: connector.device.name,
+            path  : connector.path,
+            method: connector.method
+        };
 
         // Filters: allow an empty point but not a deleted point
         device.wikets
@@ -49,25 +58,22 @@ module.exports = connector => connector.models.Device
                     connector.event_id = period.event.id;
                     minPeriod          = diff;
 
-                    connector.device                 = device;
                     connector.point                  = point;
                     connector.event                  = period.event;
                     connector.wiket                  = wiket;
                     connector.device.defaultGroup_id = wiket.defaultGroup_id;
 
                     connector.details = {
-                        device: connector.device.name,
-                        event : connector.event.name,
-                        point : connector.point.name,
-                        path  : connector.path,
-                        method: connector.method
+                        ...connector.details,
+                        event: connector.event.name,
+                        point: connector.point.name
                     };
 
                     handled = true;
                 }
             });
 
-        if (!handled) {
+        if (!handled && !device.isUser) {
             return Promise.reject(new APIError(module, 404, 'No assigned points'));
         }
 

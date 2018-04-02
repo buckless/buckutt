@@ -163,7 +163,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 
             return new Model({ id: req.transaction.data.id })
                 .save({
-                    active    : false,
+                    active    : null,
                     deleted_at: req.body.created_at || new Date()
                 }, { patch: true });
         })

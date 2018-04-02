@@ -44,7 +44,7 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
 
     return bookshelf
         .knex('pendingCardUpdates')
-        .update({ active: false, deleted_at: new Date() })
+        .update({ active: null, deleted_at: new Date() })
         .where({ user_id: req.buyer.id, active: true })
         .returning('amount')
         .then(amounts => (amounts || []).reduce((a, b) => a + b, 0))

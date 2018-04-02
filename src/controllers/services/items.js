@@ -50,11 +50,13 @@ router.get('/services/items', (req, res, next) => {
                 'user.memberships.period.event'
             ]
         })
-        .then(mol => ((mol) ? mol.related('user').toJSON() : null))
-        .then((buyer) => {
-            if (!buyer) {
+        .then(mol => ((mol) ? mol.toJSON() : null))
+        .then((mol) => {
+            if (!mol || !mol.user.id) {
                 return next(new APIError(module, 404, 'Buyer not found'));
             }
+
+            const buyer = mol.user;
 
             req.buyer          = buyer;
             req.buyer.pin      = '';
