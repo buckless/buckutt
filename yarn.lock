@@ -940,6 +940,29 @@ crypto-random-string@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
 
+csv-generate@^2.0.0:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/csv-generate/-/csv-generate-2.0.2.tgz#1c26c52be318f1f0b6435f8df3d1249fb1503f4b"
+
+csv-parse@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-2.1.0.tgz#75293aa334e7f8dd1ef956c5551adf0db6a79c81"
+
+csv-stringify@^2.0.0:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-2.0.4.tgz#9ace220df98ffa7ca91314ac77ff8cba0a08c863"
+  dependencies:
+    lodash.get "~4.4.2"
+
+csv@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/csv/-/csv-2.0.0.tgz#0d51d8fa3ece278b5409f795717fcfcd5ace9b3e"
+  dependencies:
+    csv-generate "^2.0.0"
+    csv-parse "^2.0.0"
+    csv-stringify "^2.0.0"
+    stream-transform "^1.0.0"
+
 cycle@1.0.x:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/cycle/-/cycle-1.0.3.tgz#21e80b2be8580f98b468f379430662b046c34ad2"
@@ -2660,6 +2683,10 @@ lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
 
+lodash.get@~4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+
 lodash.includes@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.includes/-/lodash.includes-4.3.0.tgz#60bb98a87cb923c68ca1e51325483314849f553f"
@@ -4153,6 +4180,10 @@ stream-combiner@~0.0.4:
   resolved "https://registry.yarnpkg.com/stream-combiner/-/stream-combiner-0.0.4.tgz#4d5e433c185261dde623ca3f44c586bcf5c4ad14"
   dependencies:
     duplexer "~0.1.1"
+
+stream-transform@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/stream-transform/-/stream-transform-1.0.2.tgz#47de4d15fbc29b7e2a7e54d25e99538876f114c1"
 
 string-width@^1.0.1, string-width@^1.0.2:
   version "1.0.2"

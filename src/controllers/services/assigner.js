@@ -1,12 +1,12 @@
-const express            = require('express');
-const bcrypt             = require('bcryptjs');
-const { padStart, pick } = require('lodash');
-const mailer             = require('../../lib/mailer');
-const dbCatch            = require('../../lib/dbCatch');
-const fetchFromAPI       = require('../../ticketProviders');
-const APIError           = require('../../errors/APIError');
-const template           = require('../../mailTemplates');
-const config             = require('../../../config');
+const express      = require('express');
+const bcrypt       = require('bcryptjs');
+const { padStart } = require('lodash');
+const mailer       = require('../../lib/mailer');
+const dbCatch      = require('../../lib/dbCatch');
+const fetchFromAPI = require('../../ticketProviders');
+const APIError     = require('../../errors/APIError');
+const template     = require('../../mailTemplates');
+const config       = require('../../../config');
 
 /**
  * Assigner controller. Handles cards assignment
@@ -56,10 +56,11 @@ router.get('/services/assigner', (req, res, next) => {
             return fetchFromAPI(ticketOrMail)
                 .then((userData_) => {
                     if (!userData_) {
-                        return Promise.reject(new APIError(module, 400, 'ticketOrMail not found', { ticketOrMail }));
+                        const err = new APIError(module, 404, 'Couldn\'t find ticket', req.query.ticketOrMail);
+                        return Promise.reject(err);
                     }
 
-                    userData = pick(userData_, ['firstname', 'lastname', 'nickname', 'mail', 'credit']);
+                    pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
 
                     ticketId = userData_.ticketId;
 
