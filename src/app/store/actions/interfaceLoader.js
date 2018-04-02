@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '@/utils/axios';
 
 export const interfaceLoader = (store, credentials) => {
     const token = store.getters.tokenHeaders;

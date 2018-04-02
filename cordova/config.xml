@@ -12,6 +12,7 @@
     <allow-navigation href="*" />
     <access origin="*" />
     <allow-intent href="*" />
+    <preference name="OverrideUserAgent" value="c" />
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="Fullscreen" value="true" />

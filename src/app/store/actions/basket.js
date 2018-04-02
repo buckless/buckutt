@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import axios    from 'axios';
+import axios    from '@/utils/axios';
 import uniqueId from 'lodash.uniqueid';
 
 export const addItemToBasket = ({ commit }, item) => {

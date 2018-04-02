@@ -24,7 +24,7 @@
 <script>
 import { mapActions } from 'vuex';
 
-import textSize from '../utils/textSize';
+import textSize from '@/utils/textSize';
 
 import Currency from './Currency';
 

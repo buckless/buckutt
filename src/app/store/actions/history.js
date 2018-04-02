@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '@/utils/axios';
 
 const cancelUrl = `${config.api}/services/cancelTransaction`;
 

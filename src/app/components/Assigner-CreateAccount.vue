@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '@/utils/axios';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 import Currency from './Currency';
