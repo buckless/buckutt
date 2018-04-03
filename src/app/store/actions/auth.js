@@ -23,7 +23,13 @@ export const setEvent = ({ commit }, payload) => {
     commit('SET_EVENT', payload);
 };
 
+export const setGroups = ({ commit }, payload) => {
+    window.localStorage.setItem('groups', JSON.stringify(payload));
+    commit('SET_GROUPS', payload);
+};
+
 export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, password }) => {
+    commit('SET_DATA_LOADED', false);
     const credentials = {
         meanOfLogin: config.loginMeanOfLogin,
         data       : meanOfLogin,
@@ -53,18 +59,11 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
                 canControl : res.data.user.canControl
             });
 
-            if (!res.data.user.canAssign && !res.data.user.canControl) {
-                commit('SET_DATA_LOADED', false);
-
-                return dispatch('dataLoader')
-                    .then(() => dispatch('interfaceLoader'))
-                    .then(() => commit('SET_DATA_LOADED', true));
-            } else {
-                return dispatch('loadGroups')
-                    .then(() => dispatch('loadEvent'))
-            }
+            return dispatch('updateEssentials', true)
+                .then(() => dispatch('interfaceLoader'));
         })
         .then(() => dispatch('setupSocket', state.auth.seller.token))
+        .then(() => commit('SET_DATA_LOADED', true))
         .catch((err) => {
             console.error(err);
 

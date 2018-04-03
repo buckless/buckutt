@@ -232,8 +232,6 @@ export default {
 
     mounted() {
         this.db = new OfflineData();
-
-        this.updateEssentials();
         this.db.init();
 
         window.mock.barcode = (b) => this.onBarcode(b, true);

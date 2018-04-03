@@ -1,5 +1,4 @@
 export * from './basket';
-export * from './dataLoader';
 export * from './interfaceLoader';
 export * from './getImage';
 export * from './tabs';

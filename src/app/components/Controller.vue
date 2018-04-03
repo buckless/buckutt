@@ -113,8 +113,6 @@ export default {
 
     mounted() {
         this.db = new OfflineData();
-
-        this.updateEssentials();
         this.db.init();
     }
 }

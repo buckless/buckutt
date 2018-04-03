@@ -5,6 +5,7 @@ import { sendBasket } from './basket';
 import q              from '../../utils/q';
 
 let socket = null;
+let lock   = false;
 
 export const setupSocket = (store, token) => {
     if (socket) {
@@ -57,6 +58,11 @@ export const periodicSync = ({ dispatch }) => {
 };
 
 export const syncPendingRequests = (store) => {
+    if (lock) {
+        return Promise.resolve();
+    }
+
+    lock                 = true;
     const storedRequests = store.state.online.pendingRequests;
     const failedRequests = [];
 
@@ -108,6 +114,7 @@ export const syncPendingRequests = (store) => {
         .then(() => {
             store.commit('SET_SYNCING', false);
             store.dispatch('setPendingRequests', failedRequests);
+            lock = false;
         });
 };
 
