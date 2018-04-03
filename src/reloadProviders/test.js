@@ -24,6 +24,11 @@ module.exports = {
     },
 
     callback(app, id, data) {
+        if (!app || !id || !data) {
+            // disable callback as a router (called from controllers)
+            return () => {};
+        }
+
         const Transaction       = app.locals.models.Transaction;
         const GiftReload        = app.locals.models.GiftReload;
         const Reload            = app.locals.models.Reload;

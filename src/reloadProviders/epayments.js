@@ -20,8 +20,8 @@ connectSdk.init({
     enableLogging: true,
     logger       : log,
     apiKeyId     : providerConfig.apiKeyId,
-    secretApiKey : providerConfig.secretApiKey
-    // integrator: 'Studio Async'
+    secretApiKey : providerConfig.secretApiKey,
+    integrator   : 'Studio Async'
 });
 
 module.exports = {
@@ -136,10 +136,23 @@ module.exports = {
                         .fetch();
                 })
                 .then((transaction) => {
+                    if (!transaction) {
+                        if (isNotification) {
+                            res.status(404).json({}).end();
+                        } else {
+                            res.redirectTo(`${config.urls.managerUrl}/reload/failed`);
+                        }
+
+                        return;
+                    }
+
                     transaction.set('state', paymentDetails.createdPaymentOutput.paymentStatusCategory);
                     transaction.set('longState', paymentDetails.createdPaymentOutput.payment.status);
 
                     if (transaction.get('state') === 'SUCCESSFUL') {
+                        transaction.set('active', null);
+                        transaction.set('deleted_at', new Date());
+
                         const newReload = new Reload({
                             credit   : transaction.get('amount'),
                             type     : 'card',
