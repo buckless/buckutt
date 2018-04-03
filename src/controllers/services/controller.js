@@ -1,7 +1,8 @@
-const express       = require('express');
-const { bookshelf } = require('../../lib/bookshelf');
-const dbCatch       = require('../../lib/dbCatch');
-const APIError      = require('../../errors/APIError');
+const express                      = require('express');
+const { bookshelf }                = require('../../lib/bookshelf');
+const dbCatch                      = require('../../lib/dbCatch');
+const { embedParser, embedFilter } = require('../../lib/embedParser');
+const APIError                     = require('../../errors/APIError');
 
 /**
  * Assigner controller. Handles cards assignment
@@ -9,40 +10,45 @@ const APIError      = require('../../errors/APIError');
 const router = new express.Router();
 
 router.get('/services/controller', (req, res, next) => {
-    const userFilter = {
-        'user.meansOfLogin': (req.query.user)
-            ? q => q.where({ type: 'cardId', data: req.query.user, blocked: false })
-            : q => q.where({ type: 'cardId', blocked: false })
-    };
+    if (!req.query.user) {
+        return next(new APIError(module, 400, 'Invalid user'));
+    }
+
+    const embedMemberships = [
+        {
+            embed   : 'user',
+            required: true
+        },
+        {
+            embed   : 'user.meansOfLogin',
+            filters : [['blocked', '=', false], ['type', '=', 'cardId'], ['data', '=', req.query.user]],
+            required: true
+        },
+        {
+            embed   : 'period',
+            filters : [['end', '>', now]],
+            required: true
+        }
+    ];
+
+    const embedMembershipsFilters = embedMemberships.filter(rel => rel.required).map(rel => rel.embed);
 
     req.app.locals.models.Membership
         .where('group_id', '!=', req.event.defaultGroup_id)
         .fetchAll({
-            withRelated: [
-                'period',
-                'user',
-                userFilter
-            ]
+            withRelated: embedParser(embedMemberships)
         })
-        .then(memberships => (memberships ? memberships.toJSON() : null))
+        .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()))
         .then((memberships) => {
-            if (!memberships) {
-                return [];
-            }
-
             const accesses = [];
 
             for (let i = memberships.length - 1; i >= 0; i -= 1) {
-                if (memberships[i].user &&
-                    memberships[i].user.meansOfLogin &&
-                    memberships[i].user.meansOfLogin.length) {
-                    accesses.push({
-                        cardId : memberships[i].user.meansOfLogin[0].data,
-                        groupId: memberships[i].group_id,
-                        start  : memberships[i].period.start,
-                        end    : memberships[i].period.end
-                    });
-                }
+                accesses.push({
+                    cardId : memberships[i].user.meansOfLogin[0].data,
+                    groupId: memberships[i].group_id,
+                    start  : memberships[i].period.start,
+                    end    : memberships[i].period.end
+                });
             }
 
             return res
