@@ -1,15 +1,11 @@
 const name = require('../../config').provider.name;
 
-module.exports = (app) => {
-    let provider;
+let provider;
 
-    try {
-        provider = require(`./${name}`);
-    } catch (err) {
-        return Promise.reject(err);
-    }
+try {
+    provider = require(`./${name}`);
+} catch (err) {
+    provider = require('./test');
+}
 
-    provider(app);
-
-    return Promise.resolve();
-};
+module.exports = provider;

@@ -47,11 +47,6 @@ app.use(compression());
  * Routes
  */
 app.use(controllers);
-reloadProvider(app)
-    .catch(() => {
-        console.error('No reload provider provided');
-        process.exit(1);
-    });
 
 /**
  * Error handling

@@ -1,13 +1,34 @@
 const uuid   = require('uuid');
 const config = require('../../config');
 
-module.exports = (app) => {
-    const Transaction       = app.locals.models.Transaction;
-    const GiftReload        = app.locals.models.GiftReload;
-    const Reload            = app.locals.models.Reload;
-    const PendingCardUpdate = app.locals.models.PendingCardUpdate;
+module.exports = {
+    makePayment(app, data) {
+        const Transaction = app.locals.models.Transaction;
 
-    const validatePayment = (id, data) => {
+        const transaction = new Transaction({
+            state  : 'pending',
+            amount : data.amount,
+            user_id: data.buyer.id
+        });
+
+        return transaction
+            .save()
+            .then(() => {
+                setTimeout(() => module.exports.callback(transaction.get('id'), data), 1000);
+
+                return {
+                    type: 'url',
+                    res : `${config.urls.managerUrl}/#/reload/success`
+                };
+            });
+    },
+
+    callback(id, data) {
+        const Transaction       = req.app.locals.models.Transaction;
+        const GiftReload        = req.app.locals.models.GiftReload;
+        const Reload            = req.app.locals.models.Reload;
+        const PendingCardUpdate = req.app.locals.models.PendingCardUpdate;
+
         let giftReloads;
 
         return GiftReload
@@ -68,24 +89,5 @@ module.exports = (app) => {
 
                 return transaction.save();
             });
-    };
-
-    app.locals.makePayment = (data) => {
-        const transaction = new Transaction({
-            state  : 'pending',
-            amount : data.amount,
-            user_id: data.buyer.id
-        });
-
-        return transaction
-            .save()
-            .then(() => {
-                setTimeout(() => validatePayment(transaction.get('id'), data), 1000);
-
-                return {
-                    type: 'url',
-                    res : `${config.urls.managerUrl}/#/reload/success`
-                };
-            });
-    };
+    }
 };
