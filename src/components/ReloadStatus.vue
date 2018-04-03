@@ -33,8 +33,7 @@ export default {
             const hCI = `hostedCheckoutId=${this.$route.query.hostedCheckoutId}`;
             const RM = `RETURNMAC=${this.$route.query.RETURNMAC}`;
 
-            get(`callback?${hCI}&${RM}&isNotification=1`)
-                .then(console.log, console.log);
+            get(`callback?${hCI}&${RM}&isNotification=1`);
         }
     }
 };
