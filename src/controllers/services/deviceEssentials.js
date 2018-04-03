@@ -6,7 +6,6 @@ const { embedParser, embedFilter } = require('../../lib/embedParser');
 const router = new express.Router();
 
 router.get('/services/deviceEssentials', (req, res, next) => {
-    console.log(req);
     if (!req.user) {
         return res.status(200).json({}).end();
     }
@@ -105,7 +104,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             // Step 2: fetch giftReloads
             return models.GiftReload
                 .fetchAll()
-                .then(giftReloads => giftReloads.toJSON());
+                .then(giftReloads_ => giftReloads_.toJSON());
         })
         .then((giftReloads_) => {
             for (let i = giftReloads_.length - 1; i >= 0; i -= 1) {
@@ -123,8 +122,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 })
                 .then(meansOfLogin => meansOfLogin
                     .toJSON()
-                    .filter(meanOfLogin => meanOfLogin.user.id)
-                );
+                    .filter(meanOfLogin => meanOfLogin.user.id));
         })
         .then((meansOfLogin) => {
             for (let i = meansOfLogin.length - 1; i >= 0; i -= 1) {
@@ -157,7 +155,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             // Step 5: fetch groups
             return models.Group
                 .fetchAll()
-                .then(groups => groups.toJSON());
+                .then(groups_ => groups_.toJSON());
         })
         .then((groups_) => {
             for (let i = groups_.length - 1; i >= 0; i -= 1) {
@@ -166,8 +164,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
 
             return models.MeanOfPayment
                 .fetchAll()
-                .then(meansOfPayment => meansOfPayment.toJSON());
-
+                .then(meansOfPayment_ => meansOfPayment_.toJSON());
         })
         .then((meansOfPayment_) => {
             for (let i = meansOfPayment_.length - 1; i >= 0; i -= 1) {
@@ -192,8 +189,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 device,
                 event: req.event
             })
-            .end()
-        )
+            .end())
         .catch(err => dbCatch(module, err, next));
 });
 

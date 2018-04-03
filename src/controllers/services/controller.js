@@ -14,6 +14,8 @@ router.get('/services/controller', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid user'));
     }
 
+    const now = new Date();
+
     const embedMemberships = [
         {
             embed   : 'user',
