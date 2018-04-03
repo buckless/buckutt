@@ -2,8 +2,7 @@ import axios         from '@/utils/axios';
 import hasEssentials from '@/utils/offline/hasEssentials';
 import OfflineData   from '@/../lib/offlineData';
 
-let assignedUsers = false;
-let lock          = false;
+let lock = false;
 
 export const updateEssentials = (store, force) => {
     if (lock || store.getters.isDegradedModeActive) {
