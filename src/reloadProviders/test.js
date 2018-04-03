@@ -14,7 +14,7 @@ module.exports = {
         return transaction
             .save()
             .then(() => {
-                setTimeout(() => module.exports.callback(transaction.get('id'), data), 1000);
+                setTimeout(() => module.exports.callback(app, transaction.get('id'), data), 1000);
 
                 return {
                     type: 'url',
@@ -23,11 +23,11 @@ module.exports = {
             });
     },
 
-    callback(id, data) {
-        const Transaction       = req.app.locals.models.Transaction;
-        const GiftReload        = req.app.locals.models.GiftReload;
-        const Reload            = req.app.locals.models.Reload;
-        const PendingCardUpdate = req.app.locals.models.PendingCardUpdate;
+    callback(app, id, data) {
+        const Transaction       = app.locals.models.Transaction;
+        const GiftReload        = app.locals.models.GiftReload;
+        const Reload            = app.locals.models.Reload;
+        const PendingCardUpdate = app.locals.models.PendingCardUpdate;
 
         let giftReloads;
 

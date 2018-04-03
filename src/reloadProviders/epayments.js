@@ -1,12 +1,9 @@
 const express       = require('express');
 const connectSdk    = require('connect-sdk-nodejs');
-const moment        = require('moment');
 const { promisify } = require('util');
 const APIError      = require('../errors/APIError');
 const logger        = require('../lib/log');
 const dbCatch       = require('../lib/dbCatch');
-const { knex }      = require('../lib/bookshelf');
-const ns            = require('../lib/ns');
 const config        = require('../../config');
 
 const log = logger(module);
@@ -17,13 +14,13 @@ connectSdk.hostedcheckouts.get    = promisify(connectSdk.hostedcheckouts.get);
 const providerConfig = config.provider.config;
 
 connectSdk.init({
-    host: 'eu.sandbox.api-ingenico.com',
-    scheme: 'https',
-    port: 443,
+    host         : 'eu.sandbox.api-ingenico.com',
+    scheme       : 'https',
+    port         : 443,
     enableLogging: true,
-    logger: log,
-    apiKeyId: providerConfig.apiKeyId,
-    secretApiKey: providerConfig.secretApiKey
+    logger       : log,
+    apiKeyId     : providerConfig.apiKeyId,
+    secretApiKey : providerConfig.secretApiKey
     // integrator: 'Studio Async'
 });
 
@@ -60,10 +57,10 @@ module.exports = {
                             personalInformation: {
                                 name: {
                                     firstName: data.buyer.firstname,
-                                    surname : data.buyer.lastname
+                                    surname  : data.buyer.lastname
                                 }
                             },
-                            merchantCustomerId: data.buyer.id.slice(0,3) + data.buyer.id.slice(24)
+                            merchantCustomerId: data.buyer.id.slice(0, 3) + data.buyer.id.slice(24)
                         },
                         shoppingCart: {
                             items: [
@@ -92,7 +89,9 @@ module.exports = {
             ))
             .then((result) => {
                 if (result.body.errors) {
-                    return Promise.reject(new APIError(module, 500, 'epayments failed', JSON.stringify(result.body.errors)));
+                    const errs = JSON.stringify(result.body.errors);
+
+                    return Promise.reject(new APIError(module, 500, 'epayments failed', errs));
                 }
 
                 transaction.set('transactionId', `${result.body.hostedCheckoutId}_${result.body.RETURNMAC}`);
@@ -132,7 +131,9 @@ module.exports = {
                 .then((result) => {
                     paymentDetails = result.body;
 
-                    return Transaction.where({ transactionId: `${req.query.hostedCheckoutId}_${req.query.RETURNMAC}` }).fetch();
+                    return Transaction
+                        .where({ transactionId: `${req.query.hostedCheckoutId}_${req.query.RETURNMAC}` })
+                        .fetch();
                 })
                 .then((transaction) => {
                     transaction.set('state', paymentDetails.createdPaymentOutput.paymentStatusCategory);
@@ -155,7 +156,7 @@ module.exports = {
 
                         return Promise
                             .all([newReload.save(), transaction.save(), pendingCardUpdate.save()])
-                            .then((results) => {
+                            .then(() => {
                                 req.app.locals.modelChanges.emit('userCreditUpdate', {
                                     id     : transaction.get('user_id'),
                                     pending: transaction.get('amount')

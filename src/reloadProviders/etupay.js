@@ -38,6 +38,8 @@ module.exports = {
     },
 
     callback() {
+        const etupay = require('node-etupay')(providerConfig);
+
         const router = new express.Router();
 
         router.use(etupay.router);
@@ -47,8 +49,6 @@ module.exports = {
             const Reload            = req.app.locals.models.Reload;
             const GiftReload        = req.app.locals.models.GiftReload;
             const PendingCardUpdate = req.app.locals.models.PendingCardUpdate;
-            const etupay            = require('node-etupay')(providerConfig);
-            const Basket            = etupay.Basket;
 
             let giftReloads;
 

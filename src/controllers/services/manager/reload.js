@@ -25,13 +25,13 @@ router.post('/services/manager/reload', (req, res, next) => {
         // Used by test reloadProvider
         point : req.point_id
     })
-    .then((result) => {
-        res
-            .status(200)
-            .json(result)
-            .end();
-    })
-    .catch(err => dbCatch(module, err, next));
+        .then((result) => {
+            res
+                .status(200)
+                .json(result)
+                .end();
+        })
+        .catch(err => dbCatch(module, err, next));
 });
 
 router.get('/services/manager/giftReloads', (req, res, next) => {
