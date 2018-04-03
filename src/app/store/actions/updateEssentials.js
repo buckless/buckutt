@@ -95,18 +95,7 @@ export const updateEssentials = (store, force) => {
             window.db = offlineData;
             console.log('Offline data updated');
         })
-        .catch((err) => {
-            console.log(err);
-
-            if (err.message === 'Network Error') {
-                if (!hasEssentials()) {
-                    store.commit('ERROR', { message: 'This device doesn\'t meet the minimal requirements to run offline.' });
-                    return;
-                }
-
-                return;
-            }
-        })
+        .catch(err => console.log(err))
         .then(() => {
             lock = false;
         });

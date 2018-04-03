@@ -1,4 +1,5 @@
-import { credit } from '../store/getters/items';
+import { credit }    from '../store/getters/items';
+import hasEssentials from '@/utils/offline/hasEssentials';
 
 export default (state, error) => {
     if (!error) {
@@ -27,10 +28,6 @@ export default (state, error) => {
         return 'Une carte différente de la carte initiale a été utilisée.';
     }
 
-    if (error.message === 'This device doesn\'t meet the minimal requirements to run offline.') {
-        return 'Cet équippement ne possède pas les données minimum pour fonctionner hors-ligne.';
-    }
-
     if (error.message === 'Duplicate Entry') {
         return state.auth.seller.canAssign ? 'Cette carte est déjà assignée' : 'Entrée déjà existante';
     }
@@ -44,6 +41,10 @@ export default (state, error) => {
     }
 
     if (error.message === 'Server not reacheable') {
+        if (!hasEssentials()) {
+            return 'Cet équipement ne possède pas les données minimum pour fonctionner hors-ligne.';
+        }
+
         return 'Connexion au serveur perdue';
     }
 
