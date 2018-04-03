@@ -1,0 +1,190 @@
+<template>
+    <div class="b-menu-wrapper" v-if="hasActions">
+        <div class="b-menu__drop" v-if="showMenu && !history && !onlyLogout" @click="showMenu = false"></div>
+        <div class="b-menu" v-if="!history && !onlyLogout">
+            <div class="b-menu__icon" @click="showMenu = !showMenu">
+                <i class="b-icon">menu</i>
+                <span>Menu</span>
+            </div>
+            <div class="b-menu__actions" v-if="showMenu">
+                <div
+                    v-if="isSellerMode && !history"
+                    class="b-menu__actions__action"
+                    @click="toggleHistory">
+                    <i class="b-icon">history</i>
+                    Historique
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
+                    v-if="isReloaderMode && isSellerMode && !history"
+                    class="b-menu__actions__action"
+                    @click="openReloadModal">
+                    <i class="b-icon">attach_money</i>
+                    Rechargement
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
+                    v-if="displayLogout"
+                    class="b-menu__actions__action"
+                    @click="routeLogout">
+                    <i class="b-icon">eject</i>
+                    Déconnexion
+                </div>
+            </div>
+        </div>
+        <div class="b-menu" @click="toggleHistory" v-else-if="history && !onlyLogout">
+            <div class="b-menu__icon">
+                <i class="b-icon">close</i>
+                <span>Fermer</span>
+            </div>
+        </div>
+        <div class="b-menu" @click="routeLogout" v-else="!history && onlyLogout">
+            <div class="b-menu__icon">
+                <i class="b-icon">close</i>
+                <span>Fermer</span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    props: {
+        isSellerMode: Boolean,
+        isReloaderMode: Boolean,
+        displayLogout: Boolean,
+        onlyLogout: Boolean,
+        history: Boolean
+    },
+
+    data() {
+        return {
+            showMenu: false
+        };
+    },
+
+    computed: {
+      hasActions() {
+        return this.isSellerMode || this.isReloaderMode || this.displayLogout
+      }
+    },
+
+    methods: {
+        toggleHistory() {
+            this.showMenu = false;
+            this.$emit('toggleHistory');
+        },
+
+        openReloadModal() {
+            this.showMenu = false;
+            this.$emit('openReloadModal');
+        },
+
+        routeLogout() {
+            this.showMenu = false;
+            this.$emit('routeLogout');
+        }
+    }
+}
+</script>
+
+<style>
+.b-menu {
+    position: relative;
+}
+
+.b-menu__drop {
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 3;
+}
+
+.b-menu__icon {
+    align-items: center;
+    background-color: #fff;
+    border-radius: 28px;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    height: 28px;
+    padding: 6px 8px;
+    position: relative;
+
+    & > span {
+        display: block;
+        height: 12px;
+        line-height: 14px;
+    }
+
+    & > .b-icon {
+        margin-right: 4px;
+    }
+}
+
+.b-menu__actions {
+    position: absolute;
+    background: #fff;
+    color: #444;
+    cursor: pointer;
+    right: 0;
+    bottom: -16px;
+    transform: translateY(100%);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.4);
+    z-index: 4;
+}
+
+.b-menu__actions:before {
+    bottom: 100%;
+    right: 22px;
+    border: solid transparent;
+    content: '';
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0);
+    border-bottom-color: #ffffff;
+    border-width: 8px;
+    margin-left: -8px;
+}
+
+.b-menu__actions__action {
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+
+    &:first-child {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+
+    &:hover {
+        background-color: #f4f4f4;
+    }
+
+    & > i {
+        margin-right: 6px;
+    }
+}
+
+.b-menu__actions__separator {
+    height: 1px;
+    margin: 0 auto;
+    background-color: #f4f4f4;
+    width: 80%;
+}
+
+.b-menu__actions__separator + .b-menu__actions__separator {
+    display: none;
+}
+</style>

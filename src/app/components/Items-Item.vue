@@ -165,7 +165,7 @@ export default {
 .b-item__price {
     background: $green;
     border-bottom-right-radius: 2px;
-    color: #000;
+    color: #fff;
     left: 0;
     padding: 5px;
     position: absolute;

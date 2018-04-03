@@ -1,39 +1,29 @@
 <template>
     <div class="b-upper-bar">
-        <div class="b-upper-bar__buyer" v-if="buyer.isAuth">
-            <div class="b-upper-bar__buyer__name">
-                <span class="b--capitalized">{{ buyer.firstname }}</span>
-                <span class="b--capitalized">{{ buyer.lastname }}</span>
-            </div>
-            <div class="b-upper-bar__buyer__credit">
-                crédit:
-                <span :class="{ 'b-upper-bar__buyer__credit--negative': credit < 0 }">
-                    <currency :value="credit"></currency>
-                </span>
-            </div>
+        <offline />
+        <div class="b-upper-bar__buyer-name" v-if="buyer.isAuth">
+            <span class="b--capitalized">{{ buyer.firstname }}</span>&nbsp;
+            <span class="b--capitalized">{{ buyer.lastname }}</span>
         </div>
+        <div class="b-upper-bar__buyer-credit" v-if="buyer.isAuth">
+            <span :class="{ 'b-upper-bar__buyer__credit--negative': credit < 0 }">
+                <currency :value="credit"></currency>
+            </span>
+        </div>
+        <div class="b-space"></div>
         <div class="b-upper-bar__date">
             <live-time></live-time>
         </div>
-        <div class="b-upper-bar__actions">
-            <div
-                v-if="isSellerMode && !history"
-                class="b-upper-bar__actions__action-cancel"
-                @click="toggleHistory">
-                <i class="b-icon">history</i>
-            </div>
-            <div
-                v-if="isReloaderMode && isSellerMode && !history"
-                class="b-upper-bar__actions__action-reload"
-                @click="openReloadModal">
-                <i class="b-icon">attach_money</i>
-            </div>
-            <div
-                v-if="displayLogout"
-                class="b-upper-bar__actions__action-eject"
-                @click="routeLogout">
-                <i class="b-icon">eject</i>
-            </div>
+        <div class="b-upper-bar__menu">
+          <b-menu
+              :isSellerMode="isSellerMode"
+              :isReloaderMode="isReloaderMode"
+              :displayLogout="displayLogout"
+              :onlyLogout="onlyLogout"
+              :history="history"
+              @toggleHistory="toggleHistory"
+              @openReloadModal="openReloadModal"
+              @routeLogout="routeLogout"/>
         </div>
     </div>
 </template>
@@ -43,11 +33,15 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 
 import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
+import Offline from './Offline';
+import Menu from './Topbar-Upper-Menu'
 
 export default {
     components: {
         Currency,
-        LiveTime
+        LiveTime,
+        Offline,
+        'b-menu': Menu
     },
 
     computed: {
@@ -55,9 +49,14 @@ export default {
 
         ...mapState({
             history      : state => state.history.opened,
+            seller       : state => state.auth.seller,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
             buyer        : state => state.auth.buyer
-        })
+        }),
+
+        onlyLogout() {
+            return this.displayLogout && this.seller.isAuth === false;
+        }
     },
 
     methods: {
@@ -77,34 +76,50 @@ export default {
 <style scoped>
 @import '../main.css';
 
-.b-upper-bar__buyer {
+.b-upper-bar {
+  padding: 0 6px;
+}
+
+.b-upper-bar__buyer-name,
+.b-upper-bar__buyer-credit {
     align-items: center;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     font-size: 18px;
     justify-content: center;
-    padding-left: 20px;
-    position: absolute;
-    height: 100%;
+}
+
+.b-upper-bar .b-offline,
+.b-upper-bar__buyer-name,
+.b-upper-bar__date,
+.b-upper-bar__menu {
+  margin: 0 6px;
+}
+
+.b-upper-bar__buyer-name {
+  font-size: 14px;
+}
+
+.b-upper-bar__buyer-credit {
+  position: absolute;
+  top: 50%;
+  left : 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
 }
 
 .b-upper-bar {
     display: flex;
     height: 65px;
     position: relative;
+    align-items: center;
 }
 
 .b-upper-bar__date {
-    flex: 1;
-    font-size: 32px;
-    font-weight: bold;
-    line-height: 65px;
     text-align: center;
 }
 
 .b-upper-bar__actions {
-    right: 0;
-    position: absolute;
     height: 100%;
     display: flex;
     line-height: 65px;
@@ -142,7 +157,7 @@ export default {
     }
 
     .b-upper-bar__date {
-        font-size: 22px;
+        font-size: 18px;
         line-height: 45px;
     }
 
