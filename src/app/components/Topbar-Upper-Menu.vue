@@ -10,7 +10,15 @@
                 <div
                     v-if="isSellerMode && !history"
                     class="b-menu__actions__action"
-                    @click="toggleHistory">
+                    @click="close(clearBasket)">
+                    <i class="b-icon">delete_forever</i>
+                    Vider le panier
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
+                    v-if="isSellerMode && !history"
+                    class="b-menu__actions__action"
+                    @click="close(toggleHistory)">
                     <i class="b-icon">history</i>
                     Historique
                 </div>
@@ -18,7 +26,7 @@
                 <div
                     v-if="isReloaderMode && isSellerMode && !history"
                     class="b-menu__actions__action"
-                    @click="openReloadModal">
+                    @click="close(openReloadModal)">
                     <i class="b-icon">attach_money</i>
                     Rechargement
                 </div>
@@ -26,19 +34,19 @@
                 <div
                     v-if="displayLogout"
                     class="b-menu__actions__action"
-                    @click="routeLogout">
+                    @click="close(routeLogout)">
                     <i class="b-icon">eject</i>
                     Déconnexion
                 </div>
             </div>
         </div>
-        <div class="b-menu" @click="toggleHistory" v-else-if="history && !onlyLogout">
+        <div class="b-menu" @click="close(toggleHistory)" v-else-if="history && !onlyLogout">
             <div class="b-menu__icon">
                 <i class="b-icon">close</i>
                 <span>Fermer</span>
             </div>
         </div>
-        <div class="b-menu" @click="routeLogout" v-else="!history && onlyLogout">
+        <div class="b-menu" @click="close(logout)" v-else="!history && onlyLogout">
             <div class="b-menu__icon">
                 <i class="b-icon">close</i>
                 <span>Fermer</span>
@@ -48,6 +56,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
     props: {
         isSellerMode: Boolean,
@@ -70,20 +80,12 @@ export default {
     },
 
     methods: {
-        toggleHistory() {
+        close(action) {
             this.showMenu = false;
-            this.$emit('toggleHistory');
+            action();
         },
 
-        openReloadModal() {
-            this.showMenu = false;
-            this.$emit('openReloadModal');
-        },
-
-        routeLogout() {
-            this.showMenu = false;
-            this.$emit('routeLogout');
-        }
+        ...mapActions(['openReloadModal', 'toggleHistory', 'clearBasket', 'logout'])
     }
 }
 </script>
@@ -135,6 +137,7 @@ export default {
     transform: translateY(100%);
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,.4);
+    width: 165px;
     z-index: 4;
 }
 
