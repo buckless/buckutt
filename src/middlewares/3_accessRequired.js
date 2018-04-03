@@ -10,7 +10,7 @@ module.exports = (connector) => {
 
     const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1 || config.disableAuth);
 
-    if (!needToken && !connector.user) {
+    if (!needToken) {
         return Promise.resolve();
     }
 

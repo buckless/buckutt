@@ -6,6 +6,11 @@ const { embedParser, embedFilter } = require('../../lib/embedParser');
 const router = new express.Router();
 
 router.get('/services/deviceEssentials', (req, res, next) => {
+    console.log(req);
+    if (!req.user) {
+        return res.status(200).json({}).end();
+    }
+
     const models  = req.app.locals.models;
     const pointId = req.point.id;
     const now     = new Date();
@@ -47,10 +52,13 @@ router.get('/services/deviceEssentials', (req, res, next) => {
     const embedRightsFilters      = embedRights.filter(rel => rel.required).map(rel => rel.embed);
     const embedMembershipsFilters = embedMemberships.filter(rel => rel.required).map(rel => rel.embed);
 
-    const operators   = [];
-    const giftReloads = [];
-    const userTickets = [];
-    const accesses    = [];
+    const operators      = [];
+    const giftReloads    = [];
+    const userTickets    = [];
+    const accesses       = [];
+    const groups         = [];
+    const meansOfPayment = [];
+    let device           = [];
 
     // Step 1: get operators
     models.Right
@@ -146,6 +154,30 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 });
             }
 
+            // Step 5: fetch groups
+            return models.Group
+                .fetchAll()
+                .then(groups => groups.toJSON());
+        })
+        .then((groups_) => {
+            for (let i = groups_.length - 1; i >= 0; i -= 1) {
+                groups.push(pick(groups_[i], ['id', 'name']));
+            }
+
+            return models.MeanOfPayment
+                .fetchAll()
+                .then(meansOfPayment => meansOfPayment.toJSON());
+
+        })
+        .then((meansOfPayment_) => {
+            for (let i = meansOfPayment_.length - 1; i >= 0; i -= 1) {
+                meansOfPayment.push(pick(meansOfPayment_[i], ['name', 'slug']));
+            }
+
+            // Step 7: prepare device
+            device = req.device;
+            delete device.wikets;
+
             return Promise.resolve();
         })
         .then(() => res
@@ -154,7 +186,11 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 operators,
                 giftReloads,
                 userTickets,
-                accesses
+                accesses,
+                groups,
+                meansOfPayment,
+                device,
+                event: req.event
             })
             .end()
         )
