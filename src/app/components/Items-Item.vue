@@ -68,6 +68,10 @@ export default {
             $name.style.fontSize = `${initialFontSize * (maxSize / size)}px`;
         }
 
+        if (initialFontSize * (maxSize / size) < 9) {
+            $name.style.fontSize = '9px';
+        }
+
         this.getImage(this.item.id)
             .then(image => {
                 this.$el.querySelector('img').src = image;
@@ -160,6 +164,7 @@ export default {
     position: absolute;
     white-space: nowrap;
     width: 100%;
+    text-overflow: ellipsis;
 }
 
 .b-item__price {
