@@ -5,6 +5,7 @@ import { sendBasket } from './basket';
 import q              from '../../utils/q';
 
 let socket = null;
+let lock   = false;
 
 export const setupSocket = (store, token) => {
     if (socket) {
@@ -30,7 +31,11 @@ export const setupSocket = (store, token) => {
 
     socket.on('connect', () => {
         store.commit('SET_ONLINE');
-        store.dispatch('updateEssentials');
+        store.dispatch('logOperator')
+            .then(() => {
+                store.dispatch('updateEssentials');
+                store.dispatch('syncPendingRequests');
+            });
         socket.emit('alert');
     });
 
@@ -56,16 +61,10 @@ export const periodicSync = ({ dispatch }) => {
         });
 };
 
-export const syncPendingRequests = (store) => {
-    const storedRequests = store.state.online.pendingRequests;
-    const failedRequests = [];
-
-    console.log('is-online', store.state.online.status);
-    if (storedRequests.length === 0 || !store.state.auth.seller.isAuth || !store.state.online.status) {
-        return;
+export const logOperator = (store) => {
+    if (store.getters.tokenHeaders.headers || !store.state.auth.seller.isAuth) {
+        return Promise.resolve();
     }
-
-    store.commit('SET_SYNCING', true);
 
     const credentials = {
         meanOfLogin: config.loginMeanOfLogin,
@@ -73,10 +72,24 @@ export const syncPendingRequests = (store) => {
         pin        : store.state.auth.seller.pin
     };
 
-    let promise = store.getters.tokenHeaders.headers ?
-       Promise.resolve() :
-       axios.post(`${config.api}/services/login`, credentials)
-           .then(res => store.commit('UPDATE_TOKEN', res.data.token));
+    return axios.post(`${config.api}/services/login`, credentials)
+        .then(res => store.commit('UPDATE_TOKEN', res.data.token));
+};
+
+export const syncPendingRequests = (store) => {
+    const storedRequests = store.state.online.pendingRequests;
+    const failedRequests = [];
+
+    console.log('is-online', store.state.online.status);
+    // Continue if the operator is logged (locally or not)
+    if (!store.state.auth.seller.isAuth || !store.state.online.status || lock) {
+        return Promise.resolve();
+    }
+
+    lock = true;
+    store.commit('SET_SYNCING', true);
+
+    let promise = Promise.resolve();
 
     storedRequests.forEach((request) => {
         promise = promise
@@ -108,6 +121,7 @@ export const syncPendingRequests = (store) => {
         .then(() => {
             store.commit('SET_SYNCING', false);
             store.dispatch('setPendingRequests', failedRequests);
+            lock = false;
         });
 };
 
@@ -124,9 +138,7 @@ export const setDefaultItems = (store, payload) => {
 export const addPendingRequest = (store, payload) => {
     payload.body.created_at = new Date();
 
-    store.commit('ADD_PENDING_REQUEST', {
-        payload
-    });
+    store.commit('ADD_PENDING_REQUEST', payload);
 
     window.localStorage.setItem('pendingRequests', JSON.stringify(store.state.online.pendingRequests));
 };

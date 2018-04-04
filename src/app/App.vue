@@ -90,6 +90,7 @@ export default {
             'setupSocket',
             'setSellers',
             'setPoint',
+            'setGroups',
             'setMeansOfPayment',
             'setFullDevice',
             'setEvent',
@@ -107,6 +108,10 @@ export default {
         if (hasEssentials()) {
             this.setPoint(JSON.parse(window.localStorage.getItem('headers')));
             this.setSellers(JSON.parse(window.localStorage.getItem('sellers')));
+
+            if (window.localStorage.hasOwnProperty('groups')) {
+                this.setGroups(JSON.parse(window.localStorage.getItem('groups')));
+            }
 
             if (window.localStorage.hasOwnProperty('meansOfPayment')) {
                 this.setMeansOfPayment(JSON.parse(window.localStorage.getItem('meansOfPayment')));
@@ -132,13 +137,7 @@ export default {
         this.updateEssentials();
         this.periodicSync();
 
-        setInterval(() => {
-            if (!this.seller.isAuth) {
-                this.updateEssentials(true);
-            } else {
-                this.updateEssentials();
-            }
-        }, (this.seller.canAssign || this.seller.canControl) ? 3 * 60 * 1000 : 60 * 1000);
+        setInterval(() => this.updateEssentials(!this.seller.isAuth), 60000);
 
         if (window.localStorage.getItem('pendingRequests')) {
             this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));

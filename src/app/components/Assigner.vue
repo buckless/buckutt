@@ -156,6 +156,7 @@ export default {
         },
 
         ticketScanned(value) {
+            this.$store.commit('SET_DATA_LOADED', false);
             if (this.online) {
                 axios.get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
                     .then((res) => {
@@ -164,12 +165,13 @@ export default {
                             return;
                         }
 
-                        this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
+                        return this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
                     })
                     .catch((err) => {
                         console.error(err);
                         this.$store.commit('ERROR', err.response.data);
-                    });
+                    })
+                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
             } else  {
                 this.db.findByBarcode(value)
                     .then((users) => {
@@ -178,8 +180,9 @@ export default {
                             return;
                         }
 
-                        this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
-                    });
+                        return this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
+                    })
+                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
             }
         },
 
@@ -232,8 +235,6 @@ export default {
 
     mounted() {
         this.db = new OfflineData();
-
-        this.updateEssentials();
         this.db.init();
 
         window.mock.barcode = (b) => this.onBarcode(b, true);
