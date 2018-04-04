@@ -34,6 +34,7 @@ export default (deviceSellers, credentials) => new Promise((resolve, reject) => 
                 lastname : seller.lastname,
                 canSell,
                 canReload,
+                canAssign,
                 canControl
             }
         }

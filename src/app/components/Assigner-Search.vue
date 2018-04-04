@@ -101,7 +101,11 @@ export default {
                         });
                 }
             } else {
-                this.db.findUser(this.searchInput)
+                const searchMethod = (this.searchBy === 'name')
+                    ? this.db.findByName
+                    : this.db.findByBarcode;
+
+                searchMethod(this.searchInput)
                     .then((users) => {
                         this.matches = users;
                     });
@@ -119,7 +123,6 @@ export default {
 
     mounted() {
         this.db = new OfflineData();
-
         this.db.init();
     }
 }

@@ -33,7 +33,7 @@ export default (state, error) => {
     }
 
     if (error.message === 'Not enough rights') {
-        return 'Pas de droit de vente / recharge';
+        return 'Pas de droit opérateur';
     }
 
     if (error.message === 'Device not found') {
