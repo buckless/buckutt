@@ -144,7 +144,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
         })
         .then((memberships) => {
             for (let i = memberships.length - 1; i >= 0; i -= 1) {
-                if (memberships[i].user.meansOfLogin.length > 1) {
+                if (memberships[i].user.meansOfLogin.length > 0) {
                     accesses.push({
                         cardId : memberships[i].user.meansOfLogin[0].data,
                         groupId: memberships[i].group_id,

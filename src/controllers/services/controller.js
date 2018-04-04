@@ -43,9 +43,10 @@ router.get('/services/controller', (req, res, next) => {
         .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()))
         .then((memberships) => {
             const accesses = [];
+            console.log(memberships);
 
             for (let i = memberships.length - 1; i >= 0; i -= 1) {
-                if (memberships[i].user.meansOfLogin.length > 1) {
+                if (memberships[i].user.meansOfLogin.length > 0) {
                     accesses.push({
                         cardId : memberships[i].user.meansOfLogin[0].data,
                         groupId: memberships[i].group_id,
