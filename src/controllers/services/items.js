@@ -8,12 +8,12 @@ const router = new express.Router();
 router.get('/services/items', (req, res, next) => {
     const userRights = rightsDetails(req.user, req.point.id);
 
-    if (!userRights.sell && !userRights.reload) {
-        return next(new APIError(module, 401, 'No right to reload or sell'));
+    if (!userRights.operator) {
+        return next(new APIError(module, 401, 'No operator right'));
     }
 
     if (!req.query.buyer || !req.query.molType) {
-        if (!userRights.sell || !req.device.defaultGroup_id) {
+        if (!req.device.defaultGroup_id) {
             return res
                 .status(200)
                 .json({
@@ -67,7 +67,7 @@ router.get('/services/items', (req, res, next) => {
                 .map(membership => membership.group_id);
 
 
-            if (!userRights.sell || req.groups.length === 0) {
+            if (req.groups.length === 0) {
                 return res
                     .status(200)
                     .json({
