@@ -58,19 +58,16 @@ export const periodicSync = ({ dispatch }) => {
 };
 
 export const syncPendingRequests = (store) => {
-    if (lock) {
-        return Promise.resolve();
-    }
-
-    lock                 = true;
     const storedRequests = store.state.online.pendingRequests;
     const failedRequests = [];
 
     console.log('is-online', store.state.online.status);
-    if (storedRequests.length === 0 || !store.state.auth.seller.isAuth || !store.state.online.status) {
-        return;
+    // Continue if the operator is logged (locally or not)
+    if (!store.state.auth.seller.isAuth || !store.state.online.status || lock) {
+        return Promise.resolve();
     }
 
+    lock = true;
     store.commit('SET_SYNCING', true);
 
     const credentials = {
@@ -79,6 +76,7 @@ export const syncPendingRequests = (store) => {
         pin        : store.state.auth.seller.pin
     };
 
+    // Log the operator if locally logged only
     let promise = store.getters.tokenHeaders.headers ?
        Promise.resolve() :
        axios.post(`${config.api}/services/login`, credentials)
