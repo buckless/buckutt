@@ -33,6 +33,7 @@
           "canReload": false,
           "canAssign": true,
           "read": [
+              "/users",
               "/services/items",
               "/services/assigner",
               "/services/pendingCardUpdate"
