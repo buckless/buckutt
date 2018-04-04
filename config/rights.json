@@ -39,7 +39,8 @@
               "/users",
               "/services/items",
               "/services/assigner",
-              "/services/pendingCardUpdate"
+              "/services/pendingCardUpdate",
+              "alert"
           ],
           "write": [
               "/meansoflogin",
@@ -54,7 +55,8 @@
           "canControl": true,
           "read": [
               "/services/items",
-              "/services/controller"
+              "/services/controller",
+              "alert"
           ],
           "write": [
               "/services/controller"
