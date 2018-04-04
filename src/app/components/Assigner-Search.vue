@@ -102,8 +102,8 @@ export default {
                 }
             } else {
                 const searchMethod = (this.searchBy === 'name')
-                    ? this.db.findByName
-                    : this.db.findByBarcode;
+                    ? this.db.findByName.bind(this.db)
+                    : this.db.findByBarcode.bind(this.db);
 
                 searchMethod(this.searchInput)
                     .then((users) => {
