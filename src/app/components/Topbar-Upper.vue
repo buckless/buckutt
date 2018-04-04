@@ -20,10 +20,7 @@
               :isReloaderMode="isReloaderMode"
               :displayLogout="displayLogout"
               :onlyLogout="onlyLogout"
-              :history="history"
-              @toggleHistory="toggleHistory"
-              @openReloadModal="openReloadModal"
-              @routeLogout="routeLogout"/>
+              :history="history"/>
         </div>
     </div>
 </template>
@@ -56,18 +53,6 @@ export default {
 
         onlyLogout() {
             return this.displayLogout && this.seller.isAuth === false;
-        }
-    },
-
-    methods: {
-        ...mapActions(['openReloadModal', 'toggleHistory', 'logout']),
-
-        routeLogout() {
-            if (this.history) {
-                return this.toggleHistory();
-            }
-
-            this.logout();
         }
     }
 };
