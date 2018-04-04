@@ -6,11 +6,6 @@
           "canReload": false,
           "canAssign": false,
           "read": [
-              "/events",
-              "/meansoflogin",
-              "/meansofpayment",
-              "/devices",
-              "/devices/search",
               "/services/items",
               "/services/pendingCardUpdate",
               "alert"
@@ -25,12 +20,6 @@
           "canReload": true,
           "canAssign": false,
           "read": [
-              "/events",
-              "/devices",
-              "/giftreloads",
-              "/meansoflogin",
-              "/meansofpayment",
-              "/meansofpayment/search",
               "/services/items",
               "/services/pendingCardUpdate",
               "alert"
@@ -44,15 +33,11 @@
           "canReload": false,
           "canAssign": true,
           "read": [
-              "/users",
-              "/events",
-              "/groups",
-              "/meansoflogin",
+              "/services/items",
               "/services/assigner",
               "/services/pendingCardUpdate"
           ],
           "write": [
-              "/users",
               "/meansoflogin",
               "/services/assigner/groups",
               "/services/assigner/anon"
@@ -64,13 +49,10 @@
           "canAssign": false,
           "canControl": true,
           "read": [
-              "/users",
-              "/groups",
-              "/events",
+              "/services/items",
               "/services/controller"
           ],
           "write": [
-              "/accesses",
               "/services/controller"
           ]
       },
