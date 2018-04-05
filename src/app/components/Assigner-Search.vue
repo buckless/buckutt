@@ -17,14 +17,14 @@
             <input
                 type="text"
                 name="search"
-                @keyup="search"
+                @input="search"
                 class="b-assigner-search__input"
                 :placeholder="searchBy === 'name' ? 'Nom' : 'Numéro de ticket'"
                 ref="search"
                 v-model="searchInput">
 
             <h4>Résultats :</h4>
-            <div class="b-assigner-search__results" v-show="matches.length > 0">
+            <div class="b-assigner-search__results" v-if="matches.length > 0 && searchInput.length > 2">
                 <div
                     class="b-assigner-search__results__result"
                     v-for="match in matches"
@@ -36,8 +36,8 @@
                     v-if="matches[0].name"
                     @click="selectUser(match)">{{ match.name }}</div>
             </div>
-            <p v-show="matches.length === 0 && searchInput.length === 0">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
-            <p v-show="matches.length === 0 && searchInput.length > 2">Aucun résultat.</p>
+            <p v-else-if="searchInput.length <= 2">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
+            <p v-else>Aucun résultat.</p>
         </form>
     </div>
 </template>
