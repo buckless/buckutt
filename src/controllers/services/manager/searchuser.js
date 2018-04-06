@@ -1,8 +1,8 @@
-const express       = require('express');
-const leven         = require('leven');
+const express = require('express');
+const leven = require('leven');
 const { bookshelf } = require('../../../lib/bookshelf');
 const rightsDetails = require('../../../lib/rightsDetails');
-const logger        = require('../../../lib/log');
+const logger = require('../../../lib/log');
 
 const log = logger(module);
 
@@ -14,39 +14,39 @@ const router = new express.Router();
 router.get('/services/manager/searchuser', (req, res) => {
     log.info(`Search user ${req.query.name}`, req.details);
 
-    const models     = req.app.locals.models;
-    const name       = req.query.name;
+    const models = req.app.locals.models;
+    const name = req.query.name;
     const userRights = rightsDetails(req.user, req.point.id);
-    let max          = req.query.limit;
+    let max = req.query.limit;
 
     if (!userRights.admin) {
         max = Number.isNaN(parseInt(max, 10)) ? 15 : Math.min(max, 15);
     }
 
-    models.User
-        .query((user) => {
-            let filter = user
-                .where(
-                    bookshelf.knex.raw('concat(lower(firstname), \' \', lower(lastname))'),
-                    'like',
-                    `%${name.toLowerCase()}%`
-                )
-                .orderByRaw('LOWER(firstname) asc');
+    models.User.query(user => {
+        let filter = user
+            .where(
+                bookshelf.knex.raw("concat(lower(firstname), ' ', lower(lastname))"),
+                'like',
+                `%${name.toLowerCase()}%`
+            )
+            .orderByRaw('LOWER(firstname) asc');
 
-            if (max > 0) {
-                filter = filter.limit(max);
-            }
+        if (max > 0) {
+            filter = filter.limit(max);
+        }
 
-            return filter;
-        })
+        return filter;
+    })
         .fetchAll()
-        .then((users) => {
-            const cleanedUsers = users.toJSON()
+        .then(users => {
+            const cleanedUsers = users
+                .toJSON()
                 .map(user => ({
-                    id       : user.id,
+                    id: user.id,
                     firstname: user.firstname,
-                    lastname : user.lastname,
-                    credit   : userRights.assign ? user.credit : undefined
+                    lastname: user.lastname,
+                    credit: userRights.assign ? user.credit : undefined
                 }))
                 .sort((a, b) => {
                     const aName = `${a.firstname} ${a.lastname}`;

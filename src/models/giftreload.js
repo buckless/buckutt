@@ -1,10 +1,10 @@
-module.exports = (bookshelf) => {
+module.exports = bookshelf => {
     const name = 'GiftReload';
     const Model = bookshelf.Model.extend({
-        tableName    : 'giftreloads',
+        tableName: 'giftreloads',
         hasTimestamps: true,
-        uuid         : true,
-        softDelete   : true
+        uuid: true,
+        softDelete: true
     });
 
     return { Model, name };

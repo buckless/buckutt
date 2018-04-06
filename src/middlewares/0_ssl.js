@@ -4,7 +4,7 @@ const APIError = require('../errors/APIError');
  * Enforce client SSL certificate
  * @param {Object} connector HTTP/Socket.IO connector
  */
-module.exports = (connector) => {
+module.exports = connector => {
     /* istanbul ignore next */
     if (connector.headers['x-certificate-fingerprint']) {
         connector.fingerprint = connector.headers['x-certificate-fingerprint'].toUpperCase();
@@ -12,12 +12,11 @@ module.exports = (connector) => {
     }
 
     if (!connector.authorized) {
-        return Promise.reject(new APIError(
-            module,
-            401,
-            'Unauthorized : missing client HTTPS certificate',
-            { ip: connector.ip }
-        ));
+        return Promise.reject(
+            new APIError(module, 401, 'Unauthorized : missing client HTTPS certificate', {
+                ip: connector.ip
+            })
+        );
     }
 
     connector.fingerprint = connector.getClientFingerprint();

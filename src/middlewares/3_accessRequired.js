@@ -1,11 +1,11 @@
 const APIError = require('../errors/APIError');
-const config   = require('../../config');
+const config = require('../../config');
 
 /**
  * Check for the current user wether he can do what he wants
  * @param {Object} connector HTTP/Socket.IO connector
  */
-module.exports = (connector) => {
+module.exports = connector => {
     const authorize = config.rights;
 
     const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1 || config.disableAuth);
@@ -14,12 +14,15 @@ module.exports = (connector) => {
         return Promise.resolve();
     }
 
-    if ((connector.user && config.rights.loggedUrls.indexOf(connector.path) > -1) || config.disableAuth) {
+    if (
+        (connector.user && config.rights.loggedUrls.indexOf(connector.path) > -1) ||
+        config.disableAuth
+    ) {
         return Promise.resolve();
     }
 
     const rights = connector.user.rights || [];
-    let url      = connector.path;
+    let url = connector.path;
     const method = connector.method;
 
     let handled = false;

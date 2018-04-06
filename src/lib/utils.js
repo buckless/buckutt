@@ -17,7 +17,7 @@ function isInt(n) {
 function pad2(n) {
     const str = String(n);
 
-    return (str.length === 1) ? `0${str}` : str;
+    return str.length === 1 ? `0${str}` : str;
 }
 
 /**
@@ -28,8 +28,8 @@ function pad2(n) {
 function pp(obj) {
     return util.inspect(obj, {
         showHidden: true,
-        colors    : true,
-        depth     : 4
+        colors: true,
+        depth: 4
     });
 }
 
@@ -46,7 +46,7 @@ function clone(obj, deep = true) {
 
     // Copy constructor
     const result = obj.constructor();
-    Object.keys(obj).forEach((key) => {
+    Object.keys(obj).forEach(key => {
         result[key] = deep ? clone(obj[key]) : obj[key];
     });
 
@@ -54,5 +54,8 @@ function clone(obj, deep = true) {
 }
 
 module.exports = {
-    isInt, pad2, pp, clone
+    isInt,
+    pad2,
+    pp,
+    clone
 };

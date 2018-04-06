@@ -1,6 +1,6 @@
-const fs          = require('fs');
-const path        = require('path');
-const logger      = require('./lib/log');
+const fs = require('fs');
+const path = require('path');
+const logger = require('./lib/log');
 const middlewares = require('./middlewares');
 const { marshal } = require('./middlewares/connectors/socket');
 
@@ -18,11 +18,11 @@ const log = logger(module);
  */
 module.exports.ioServer = (httpServer, app) => {
     const io = require('socket.io')(httpServer, {
-        serveClient           : false,
-        engine                : 'uws',
+        serveClient: false,
+        engine: 'uws',
         handlePreflightRequest: false,
-        pingInterval          : 10000,
-        pingTimeout           : 5000
+        pingInterval: 10000,
+        pingTimeout: 5000
     });
 
     app.locals.io = io;
@@ -32,22 +32,22 @@ module.exports.ioServer = (httpServer, app) => {
     // Setup all controllers
     controllers.forEach(controller => controller.setup(app, clients));
 
-    io.on('connection', (client) => {
+    io.on('connection', client => {
         const socket = client;
         client.emit('connected');
 
         if (process.env.SERVER_PROTOCOL === 'http') {
             client.fingerprint = socket.client.request.headers['x-certificate-fingerprint'];
         } else if (socket.client.request.connection.getPeerCertificate().fingerprint) {
-            client.fingerprint = socket.client.request.connection.getPeerCertificate()
-                .fingerprint
-                .replace(/:/g, '')
+            client.fingerprint = socket.client.request.connection
+                .getPeerCertificate()
+                .fingerprint.replace(/:/g, '')
                 .trim();
         } else {
             return;
         }
 
-        controllers.forEach((controller) => {
+        controllers.forEach(controller => {
             client.on(controller.route, (...args) => {
                 let initialPromise = Promise.resolve();
 
@@ -55,7 +55,7 @@ module.exports.ioServer = (httpServer, app) => {
                 for (const key of Object.keys(middlewares)) {
                     initialPromise = initialPromise
                         .then(() => marshal(middlewares[key])(controller.route, client, app))
-                        .then((result) => {
+                        .then(result => {
                             if (result.err) {
                                 return Promise.reject(result.err);
                             }
@@ -65,7 +65,7 @@ module.exports.ioServer = (httpServer, app) => {
                 }
 
                 initialPromise = initialPromise
-                    .then((user) => {
+                    .then(user => {
                         clients[client.id] = { client, user };
 
                         // Make controllers aware of clients
@@ -75,7 +75,7 @@ module.exports.ioServer = (httpServer, app) => {
                             delete clients[client.id];
                         });
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         client.emit('APIError', err.message);
                         log.warn('socket error:', err.message);
                     });
@@ -83,7 +83,7 @@ module.exports.ioServer = (httpServer, app) => {
         });
     });
 
-    io.on('error', (err) => {
+    io.on('error', err => {
         /* istanbul ignore next */
         log.error(err);
     });

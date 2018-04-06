@@ -1,9 +1,9 @@
-const bcrypt_  = require('bcryptjs');
-const express  = require('express');
-const Promise  = require('bluebird');
+const bcrypt_ = require('bcryptjs');
+const express = require('express');
+const Promise = require('bluebird');
 const APIError = require('../../../errors/APIError');
-const dbCatch  = require('../../../lib/dbCatch');
-const logger   = require('../../../lib/log');
+const dbCatch = require('../../../lib/dbCatch');
+const logger = require('../../../lib/log');
 
 const log = logger(module);
 
@@ -12,7 +12,6 @@ const log = logger(module);
  */
 const bcrypt = Promise.promisifyAll(bcrypt_);
 const router = new express.Router();
-
 
 router.put('/services/manager/generatepin', (req, res, next) => {
     log.info(`Generate pin with key ${req.body.key}`, req.details);
@@ -29,15 +28,14 @@ router.put('/services/manager/generatepin', (req, res, next) => {
         return next(new APIError(module, 401, 'Key is missing'));
     }
 
-    const models     = req.app.locals.models;
+    const models = req.app.locals.models;
     const recoverKey = req.body.key;
 
     let user;
 
-    models.User
-        .where({ recoverKey })
+    models.User.where({ recoverKey })
         .fetch()
-        .then((user_) => {
+        .then(user_ => {
             user = user_;
 
             if (!user) {
@@ -46,14 +44,19 @@ router.put('/services/manager/generatepin', (req, res, next) => {
 
             return bcrypt.hash(req.body.pin, 10);
         })
-        .then((hash) => {
+        .then(hash => {
             user.set('pin', hash);
             user.set('recoverKey', '');
             user.set('updated_at', new Date());
 
             return user.save();
         })
-        .then(() => res.status(200).json({ success: true }).end())
+        .then(() =>
+            res
+                .status(200)
+                .json({ success: true })
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 

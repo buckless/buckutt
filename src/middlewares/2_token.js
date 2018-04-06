@@ -1,7 +1,7 @@
-const jwt      = require('jsonwebtoken');
-const Promise  = require('bluebird');
+const jwt = require('jsonwebtoken');
+const Promise = require('bluebird');
 const APIError = require('../errors/APIError');
-const config   = require('../../config');
+const config = require('../../config');
 
 Promise.promisifyAll(jwt);
 
@@ -66,28 +66,22 @@ module.exports = function token(connector) {
     let event;
 
     const pinLoggingAllowed = config.rights.pinLoggingAllowed;
-    const now               = connector.date;
+    const now = connector.date;
 
     return jwt
         .verifyAsync(bearer, secret)
-        .then((decoded) => {
+        .then(decoded => {
             const userId = decoded.id;
-            point        = decoded.point;
-            event        = decoded.event;
-            connectType  = decoded.connectType;
+            point = decoded.point;
+            event = decoded.event;
+            connectType = decoded.connectType;
 
-            return connector.models.User
-                .where({ id: userId })
-                .fetch({
-                    withRelated: [
-                        'rights',
-                        'rights.period',
-                        'rights.point'
-                    ]
-                });
+            return connector.models.User.where({ id: userId }).fetch({
+                withRelated: ['rights', 'rights.period', 'rights.point']
+            });
         })
-        .then(res => ((res) ? res.toJSON() : null))
-        .then((user) => {
+        .then(res => (res ? res.toJSON() : null))
+        .then(user => {
             if (!user) {
                 return Promise.reject(new APIError(module, 500, 'User has been deleted'));
             }
@@ -96,39 +90,42 @@ module.exports = function token(connector) {
 
             connector.point_id = point.id;
             connector.event_id = event.id;
-            connector.point    = point;
-            connector.event    = event;
+            connector.point = point;
+            connector.event = event;
 
             connector.connectType = connectType;
 
-            connector.user.rights = connector.user.rights
-                .filter((right) => {
-                    // If pin is not allowed with this right, pass
-                    if (connectType === 'pin' && pinLoggingAllowed.indexOf(right.name) === -1) {
-                        return false;
-                    }
-
-                    if (right.period.start <= now && right.period.end > now) {
-                        if (right.name !== 'admin' && right.point) {
-                            return (!right.point.isRemoved && right.point.id === connector.point_id);
-                        }
-
-                        return true;
-                    }
-
-                    // This right should not be added as it is over
+            connector.user.rights = connector.user.rights.filter(right => {
+                // If pin is not allowed with this right, pass
+                if (connectType === 'pin' && pinLoggingAllowed.indexOf(right.name) === -1) {
                     return false;
-                });
+                }
+
+                if (right.period.start <= now && right.period.end > now) {
+                    if (right.name !== 'admin' && right.point) {
+                        return !right.point.isRemoved && right.point.id === connector.point_id;
+                    }
+
+                    return true;
+                }
+
+                // This right should not be added as it is over
+                return false;
+            });
 
             connector.details.userId = user.id;
-            connector.details.user    = `${user.firstname} ${user.lastname}`;
-            connector.details.rights  = connector.user.rights.map(right =>
-                ({ name: right.name, end: right.period.end }));
+            connector.details.user = `${user.firstname} ${user.lastname}`;
+            connector.details.rights = connector.user.rights.map(right => ({
+                name: right.name,
+                end: right.period.end
+            }));
 
             return Promise.resolve();
         })
         .catch(jwt.TokenExpiredError, () =>
-            Promise.reject(new APIError(module, 401, 'Token expired')))
+            Promise.reject(new APIError(module, 401, 'Token expired'))
+        )
         .catch(jwt.JsonWebTokenError, () =>
-            Promise.reject(new APIError(module, 401, 'Invalid token', { bearer })));
+            Promise.reject(new APIError(module, 401, 'Invalid token', { bearer }))
+        );
 };

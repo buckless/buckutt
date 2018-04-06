@@ -22,7 +22,7 @@ module.exports.marshal = function marshal(mw) {
             get date() {
                 const headerDate = moment(req.headers.date);
 
-                return (headerDate.isValid()) ? headerDate.toDate() : new Date();
+                return headerDate.isValid() ? headerDate.toDate() : new Date();
             },
 
             header(name, value) {
@@ -30,7 +30,10 @@ module.exports.marshal = function marshal(mw) {
             },
 
             getClientFingerprint() {
-                return req.connection.getPeerCertificate().fingerprint.replace(/:/g, '').trim();
+                return req.connection
+                    .getPeerCertificate()
+                    .fingerprint.replace(/:/g, '')
+                    .trim();
             }
         };
 
@@ -39,7 +42,7 @@ module.exports.marshal = function marshal(mw) {
                 next();
                 return null;
             })
-            .catch((err) => {
+            .catch(err => {
                 next(err);
                 return null;
             });
@@ -48,14 +51,14 @@ module.exports.marshal = function marshal(mw) {
 
 module.exports.unmarshal = function unmarshal(req, res, next) {
     req.fingerprint = req.connector.fingerprint;
-    req.point_id    = req.connector.point_id;
-    req.event_id    = req.connector.event_id;
-    req.device      = req.connector.device;
-    req.point       = req.connector.point;
-    req.event       = req.connector.event;
-    req.wiket       = req.connector.wiket;
-    req.user        = req.connector.user;
-    req.details     = req.connector.details;
+    req.point_id = req.connector.point_id;
+    req.event_id = req.connector.event_id;
+    req.device = req.connector.device;
+    req.point = req.connector.point;
+    req.event = req.connector.event;
+    req.wiket = req.connector.wiket;
+    req.user = req.connector.user;
+    req.details = req.connector.details;
     req.connectType = req.connector.connectType;
 
     next();

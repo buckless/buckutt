@@ -1,20 +1,20 @@
-const express  = require('express');
-const moment   = require('moment');
+const express = require('express');
+const moment = require('moment');
 const APIError = require('../../../errors/APIError');
-const dbCatch  = require('../../../lib/dbCatch');
+const dbCatch = require('../../../lib/dbCatch');
 
 require('moment-round');
 
 const router = new express.Router();
 
 const chooseDivider = (start, end) => {
-    const diff        = moment.duration(moment(end).diff(moment(start))).asHours();
-    const intervals   = [5, 15, 30, 60];
-    let lessThan      = 6;
+    const diff = moment.duration(moment(end).diff(moment(start))).asHours();
+    const intervals = [5, 15, 30, 60];
+    let lessThan = 6;
     let intervalIndex = 0;
     console.log(diff);
     while (diff > lessThan) {
-        lessThan      *= 2;
+        lessThan *= 2;
         intervalIndex += 1;
 
         if (intervals.length >= intervalIndex) {
@@ -29,8 +29,8 @@ const chooseDivider = (start, end) => {
 
 const buildXAxis = (start, end, divider) => {
     const startBoundary = moment(start).ceil(divider, 'minutes');
-    const endBoundary   = moment(end).ceil(divider, 'minutes');
-    const xAxis         = [];
+    const endBoundary = moment(end).ceil(divider, 'minutes');
+    const xAxis = [];
 
     for (let t = moment(startBoundary); t <= endBoundary; t.add(divider, 'minutes')) {
         xAxis.push(t.toISOString());
@@ -46,13 +46,13 @@ router.get('/services/stats/purchases', (req, res, next) => {
         return next(new APIError(module, 400, 'Filters are missing'));
     }
 
-    const filters   = JSON.parse(req.query.filters);
+    const filters = JSON.parse(req.query.filters);
     let baseQuery = models.Purchase;
     let dateIn;
     let dateOut;
 
     if (req.query.dateIn && req.query.dateOut) {
-        dateIn  = new Date(req.query.dateIn);
+        dateIn = new Date(req.query.dateIn);
         dateOut = new Date(req.query.dateOut);
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
@@ -66,13 +66,13 @@ router.get('/services/stats/purchases', (req, res, next) => {
         return next(new APIError(module, 400, 'Dates are missing'));
     }
 
-    const divider       = chooseDivider(dateIn, dateOut);
-    const xAxis         = buildXAxis(dateIn, dateOut, divider);
+    const divider = chooseDivider(dateIn, dateOut);
+    const xAxis = buildXAxis(dateIn, dateOut, divider);
     const filterQueries = [];
 
-    filters.forEach((filter) => {
+    filters.forEach(filter => {
         let filterQuery = baseQuery;
-        let price       = 'price';
+        let price = 'price';
         let pricePeriod = 'price.period';
 
         if (filter.event) {
@@ -117,45 +117,41 @@ router.get('/services/stats/purchases', (req, res, next) => {
             }
         }
 
-        filterQuery = filterQuery
-            .fetchAll({
-                withRelated: [
-                    'articles',
-                    price,
-                    pricePeriod,
-                    'price.article',
-                    'price.promotion'
-                ],
-                withDeleted: true
-            });
+        filterQuery = filterQuery.fetchAll({
+            withRelated: ['articles', price, pricePeriod, 'price.article', 'price.promotion'],
+            withDeleted: true
+        });
 
         filterQueries.push(filterQuery);
     });
 
     Promise.all(filterQueries)
-        .then((results) => {
+        .then(results => {
             const curves = {
                 xAxis,
                 yAxis: []
             };
             const startBoundary = moment(dateIn).ceil(divider, 'minutes');
 
-            results.forEach((purchases) => {
+            results.forEach(purchases => {
                 const filteredPurchases = purchases
                     .toJSON()
-                    .filter(p => !p.deleted_at && p.price.id && p.price.period && p.price.period.id);
+                    .filter(
+                        p => !p.deleted_at && p.price.id && p.price.period && p.price.period.id
+                    );
 
                 const yAxis = Array(xAxis.length)
                     .fill({ count: 0, amount: 0 })
                     .map((_, index) => {
                         const start = moment(startBoundary).add(divider * (index - 1), 'minutes');
-                        const end   = moment(startBoundary).add(divider * index, 'minutes');
+                        const end = moment(startBoundary).add(divider * index, 'minutes');
 
-                        const dividedPurchases = filteredPurchases
-                            .filter(purchase => moment(purchase.created_at).isBetween(start, end, null, '[)'));
+                        const dividedPurchases = filteredPurchases.filter(purchase =>
+                            moment(purchase.created_at).isBetween(start, end, null, '[)')
+                        );
 
                         return {
-                            count : dividedPurchases.length,
+                            count: dividedPurchases.length,
                             amount: dividedPurchases.reduce((a, b) => a.amount + b.amount, 0)
                         };
                     });
@@ -163,8 +159,10 @@ router.get('/services/stats/purchases', (req, res, next) => {
                 curves.yAxis.push(yAxis);
             });
 
-
-            res.status(200).json(curves).end();
+            res
+                .status(200)
+                .json(curves)
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });

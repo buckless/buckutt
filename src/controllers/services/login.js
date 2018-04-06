@@ -1,13 +1,13 @@
-const bcrypt_       = require('bcryptjs');
-const express       = require('express');
-const jwt           = require('jsonwebtoken');
-const Promise       = require('bluebird');
-const config        = require('../../../config');
-const logger        = require('../../lib/log');
+const bcrypt_ = require('bcryptjs');
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const Promise = require('bluebird');
+const config = require('../../../config');
+const logger = require('../../lib/log');
 const rightsDetails = require('../../lib/rightsDetails');
-const dbCatch       = require('../../lib/dbCatch');
+const dbCatch = require('../../lib/dbCatch');
 const { bookshelf } = require('../../lib/bookshelf');
-const APIError      = require('../../errors/APIError');
+const APIError = require('../../errors/APIError');
 
 const log = logger(module);
 
@@ -42,30 +42,27 @@ router.post('/services/login', (req, res, next) => {
         return next(new APIError(module, 401, 'Password and pin provided'));
     }
 
-    const connectType = (req.body.hasOwnProperty('pin')) ? 'pin' : 'password';
+    const connectType = req.body.hasOwnProperty('pin') ? 'pin' : 'password';
     let user;
 
     const infos = { type: req.body.meanOfLogin.toString(), data: req.body.data.toString() };
     log.info(`Login with mol ${infos.type}(${infos.data})`, infos);
 
-    models.MeanOfLogin
-        .query(q => q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim()))
+    models.MeanOfLogin.query(q =>
+        q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
+    )
         .where({
-            type   : infos.type,
+            type: infos.type,
             blocked: false
         })
         .fetch({
-            withRelated: [
-                'user',
-                'user.rights',
-                'user.rights.period'
-            ]
+            withRelated: ['user', 'user.rights', 'user.rights.period']
         })
-        .then(mol => ((mol) ? mol.toJSON() : null))
-        .then((mol) => {
+        .then(mol => (mol ? mol.toJSON() : null))
+        .then(mol => {
             if (!mol || !mol.user.id) {
                 const errDetails = {
-                    mol  : infos.type,
+                    mol: infos.type,
                     point: req.Point_id
                 };
 
@@ -80,41 +77,47 @@ router.post('/services/login', (req, res, next) => {
 
             return bcrypt.compareAsync(req.body.password, user.password);
         })
-        .then(match =>
-            new Promise((resolve, reject) => {
-                if (match) {
-                    return resolve();
-                }
+        .then(
+            match =>
+                new Promise((resolve, reject) => {
+                    if (match) {
+                        return resolve();
+                    }
 
-                const errDetails = {
-                    mol  : infos.type,
-                    point: req.Point_id
-                };
+                    const errDetails = {
+                        mol: infos.type,
+                        point: req.Point_id
+                    };
 
-                reject(new APIError(module, 401, 'User not found', errDetails));
-            }))
+                    reject(new APIError(module, 401, 'User not found', errDetails));
+                })
+        )
         .then(() => {
-            user.pin      = '';
+            user.pin = '';
             user.password = '';
 
             const userRights = rightsDetails(user, req.point_id);
 
-            user.canSell    = userRights.sell;
-            user.canReload  = userRights.reload;
-            user.canAssign  = userRights.assign;
+            user.canSell = userRights.sell;
+            user.canReload = userRights.reload;
+            user.canAssign = userRights.assign;
             user.canControl = userRights.control;
 
             return res
                 .status(200)
                 .json({
                     user,
-                    token: jwt.sign({
-                        id   : user.id,
-                        point: req.point,
-                        event: req.event,
-                        // Will be used by middleware (else how could middleware know if pin or password ?)
-                        connectType
-                    }, secret, tokenOptions)
+                    token: jwt.sign(
+                        {
+                            id: user.id,
+                            point: req.point,
+                            event: req.event,
+                            // Will be used by middleware (else how could middleware know if pin or password ?)
+                            connectType
+                        },
+                        secret,
+                        tokenOptions
+                    )
                 })
                 .end();
         })

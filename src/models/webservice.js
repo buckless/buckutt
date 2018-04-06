@@ -1,10 +1,10 @@
-module.exports = (bookshelf) => {
+module.exports = bookshelf => {
     const name = 'Webservice';
     const Model = bookshelf.Model.extend({
-        tableName    : 'webservices',
+        tableName: 'webservices',
         hasTimestamps: true,
-        uuid         : true,
-        softDelete   : true
+        uuid: true,
+        softDelete: true
     });
 
     return { Model, name };

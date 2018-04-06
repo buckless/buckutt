@@ -1,10 +1,10 @@
-module.exports = (bookshelf) => {
+module.exports = bookshelf => {
     const name = 'User';
     const Model = bookshelf.Model.extend({
-        tableName    : 'users',
+        tableName: 'users',
         hasTimestamps: true,
-        uuid         : true,
-        softDelete   : true,
+        uuid: true,
+        softDelete: true,
 
         meansOfLogin() {
             return this.hasMany('MeanOfLogin');

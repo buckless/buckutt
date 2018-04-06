@@ -1,13 +1,13 @@
-const express                      = require('express');
-const qs                           = require('qs');
-const url                          = require('url');
-const idParser                     = require('../lib/idParser');
-const logger                       = require('../lib/log');
-const modelParser                  = require('../lib/modelParser');
+const express = require('express');
+const qs = require('qs');
+const url = require('url');
+const idParser = require('../lib/idParser');
+const logger = require('../lib/log');
+const modelParser = require('../lib/modelParser');
 const { embedParser, embedFilter } = require('../lib/embedParser');
-const queryFilterer                = require('../lib/queryFilterer');
-const dbCatch                      = require('../lib/dbCatch');
-const APIError                     = require('../errors/APIError');
+const queryFilterer = require('../lib/queryFilterer');
+const dbCatch = require('../lib/dbCatch');
+const APIError = require('../errors/APIError');
 
 const log = logger(module);
 
@@ -44,7 +44,7 @@ router.get('/:model', (req, res, next) => {
 
     if (q) {
         try {
-            filters = (Array.isArray(q)) ? q.map(subQ => JSON.parse(subQ)) : JSON.parse(q);
+            filters = Array.isArray(q) ? q.map(subQ => JSON.parse(subQ)) : JSON.parse(q);
         } catch (e) {
             /* istanbul ignore next */
             return next(new APIError(module, 400, 'Invalid search object', e));
@@ -54,10 +54,10 @@ router.get('/:model', (req, res, next) => {
     }
 
     // Embed multiple relatives
-    const withRelated  = (req.query.embed) ? embedParser(req.query.embed) : [];
-    const embedFilters = (req.query.embed) ?
-        req.query.embed.filter(rel => rel.required).map(rel => rel.embed) :
-        [];
+    const withRelated = req.query.embed ? embedParser(req.query.embed) : [];
+    const embedFilters = req.query.embed
+        ? req.query.embed.filter(rel => rel.required).map(rel => rel.embed)
+        : [];
 
     request
         .fetchAll({ withRelated })
@@ -65,7 +65,8 @@ router.get('/:model', (req, res, next) => {
             res
                 .status(200)
                 .json(embedFilter(embedFilters, results.toJSON()))
-                .end())
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 
@@ -78,7 +79,7 @@ router.get('/:model/:id?', (req, res, next) => {
 
     if (q) {
         try {
-            filters = (Array.isArray(q)) ? q.map(subQ => JSON.parse(subQ)) : JSON.parse(q);
+            filters = Array.isArray(q) ? q.map(subQ => JSON.parse(subQ)) : JSON.parse(q);
         } catch (e) {
             /* istanbul ignore next */
             return next(new APIError(module, 400, 'Invalid search object', e));
@@ -88,15 +89,15 @@ router.get('/:model/:id?', (req, res, next) => {
     }
 
     // Embed multiple relatives
-    const withRelated  = (req.query.embed) ? embedParser(req.query.embed) : [];
-    const embedFilters = (req.query.embed) ?
-        req.query.embed.filter(rel => rel.required).map(rel => rel.embed) :
-        [];
+    const withRelated = req.query.embed ? embedParser(req.query.embed) : [];
+    const embedFilters = req.query.embed
+        ? req.query.embed.filter(rel => rel.required).map(rel => rel.embed)
+        : [];
 
     request
         .fetch({ withRelated })
         .then(result => (result ? embedFilter(embedFilters, [result.toJSON()])[0] : null))
-        .then((instance) => {
+        .then(instance => {
             if (!instance) {
                 return next(new APIError(module, 404, 'Document not found'));
             }
