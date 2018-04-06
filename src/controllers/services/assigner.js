@@ -80,6 +80,7 @@ router.get('/services/assigner', (req, res, next) => {
                     userData.password = 'none';
                     userData.pin      = bcrypt.hashSync(pin);
                     userData.credit   = userData.credit || 0;
+                    delete userData.ticketId;
 
                     user = new User(userData);
 
