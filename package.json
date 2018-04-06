@@ -26,7 +26,8 @@
     "browser": "static dist/browser --port 8081",
     "dev:android": "cross-env TARGET=cordova NODE_ENV=development PLATFORM=android webpack --config build/webpack.dev.conf.js --progress --hide-modules --watch",
     "dev:browser": "cross-env TARGET=browser NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js",
-    "dev:electron": "cross-env TARGET=electron NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js"
+    "dev:electron": "cross-env TARGET=electron NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js",
+    "lint": ""
   },
   "dependencies": {
     "@buckless/signed-number": "^1.2.1",
