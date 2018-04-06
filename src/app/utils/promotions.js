@@ -1,5 +1,5 @@
 export default (basket, promotions) => {
-    const basketPromotions = []
+    const basketPromotions = [];
 
     let promotionsMatching;
 
@@ -7,12 +7,11 @@ export default (basket, promotions) => {
     do {
         promotionsMatching = 0;
 
-        promotions.forEach((promotion) => {
+        promotions.forEach(promotion => {
             const container = new Container(basket);
 
             // Get sets that have one item in basket
-            const matchSets = promotion.sets
-                .map(set => container.pickSet(set.articles));
+            const matchSets = promotion.sets.map(set => container.pickSet(set.articles));
 
             // If promotion match
             if (allMatch(matchSets)) {
@@ -28,19 +27,18 @@ export default (basket, promotions) => {
                 promotionsMatching = promotionsMatching + 1;
             }
         });
-
     } while (promotionsMatching > 0);
 
     return {
         items: basket,
         promotions: basketPromotions
     };
-}
+};
 
 class Container {
     constructor(database) {
         this.database = database.slice();
-        this.content  = [];
+        this.content = [];
     }
 
     pickSet(set) {
@@ -66,9 +64,7 @@ function hasArticle(basket, article) {
 function hasSet(basket, set) {
     // if basket has one item from set, returns article
     // else return null
-    return set.find(
-        article => !!hasArticle(basket, article)
-    )
+    return set.find(article => !!hasArticle(basket, article));
 }
 
 /**
@@ -79,9 +75,9 @@ function hasSet(basket, set) {
  * > [ { id: 'a' }, { id: 'b' }, { id: 'd' }, { id: 'c' } ]
  */
 function removeFromBasket(basket, articleToRemove) {
-    let removed = false
+    let removed = false;
 
-    return basket.filter((article) => {
+    return basket.filter(article => {
         // remove if in articles and if not already removed
         if (article.id === articleToRemove.id && !removed) {
             removed = true;

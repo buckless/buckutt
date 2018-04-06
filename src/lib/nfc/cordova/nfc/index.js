@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const Promise      = require('bluebird');
+const Promise = require('bluebird');
 
 const UltralightC = require('./ultralight-c');
 
@@ -19,4 +19,4 @@ module.exports = class NFCReader extends EventEmitter {
         console.timeEnd('NFC Write');
         return this.ultralightC.write(data);
     }
-}
+};

@@ -54,9 +54,9 @@ export default {
         ...mapGetters(['credit', 'isSellerMode', 'isReloaderMode']),
 
         ...mapState({
-            history      : state => state.history.opened,
+            history: state => state.history.opened,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
-            buyer        : state => state.auth.buyer
+            buyer: state => state.auth.buyer
         })
     },
 

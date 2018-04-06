@@ -37,11 +37,11 @@ import Tab from './Topbar-Lower-Tab';
 export default {
     computed: {
         ...mapState({
-            point  : state => state.auth.device.point.name,
-            event  : state => state.auth.device.event.name,
+            point: state => state.auth.device.point.name,
+            event: state => state.auth.device.event.name,
             history: state => state.history.opened,
-            seller : state => state.auth.seller,
-            buyer  : state => state.auth.buyer
+            seller: state => state.auth.seller,
+            buyer: state => state.auth.buyer
         }),
 
         ...mapGetters(['tabs', 'loginState', 'isSellerMode'])

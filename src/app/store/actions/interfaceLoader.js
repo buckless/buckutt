@@ -2,32 +2,32 @@ import axios from '@/utils/axios';
 
 export const interfaceLoader = (store, credentials) => {
     const token = store.getters.tokenHeaders;
-    let params  = '';
+    let params = '';
 
     if (credentials) {
         params = `?buyer=${credentials.mol.trim()}&molType=${credentials.type}`;
     }
 
-    const initialPromise = (!store.getters.isDegradedModeActive) ?
-        axios.get(`${config.api}/services/items${params}`, token) :
-        Promise.resolve({
-            data: {
-                ...store.state.online.offline.defaultItems,
-                buyer: {
-                    credit: credentials ? credentials.credit : null
-                }
-            }
-        });
+    const initialPromise = !store.getters.isDegradedModeActive
+        ? axios.get(`${config.api}/services/items${params}`, token)
+        : Promise.resolve({
+              data: {
+                  ...store.state.online.offline.defaultItems,
+                  buyer: {
+                      credit: credentials ? credentials.credit : null
+                  }
+              }
+          });
 
     return initialPromise
-        .then((res) => {
+        .then(res => {
             if (credentials && res.data.buyer && typeof res.data.buyer.credit === 'number') {
                 store.commit('ID_BUYER', {
-                    id       : res.data.buyer.id || '',
-                    credit   : res.data.buyer.credit,
+                    id: res.data.buyer.id || '',
+                    credit: res.data.buyer.credit,
                     firstname: res.data.buyer.firstname || '',
-                    lastname : res.data.buyer.lastname || '',
-                    groups   : res.data.buyer.groups || [],
+                    lastname: res.data.buyer.lastname || '',
+                    groups: res.data.buyer.groups || [],
                     purchases: res.data.buyer.purchases || []
                 });
                 store.commit('SET_BUYER_MOL', credentials.mol.trim());
@@ -37,7 +37,7 @@ export const interfaceLoader = (store, credentials) => {
                 // This will be call at least once when seller logs in
                 // It will stores default items in case of disconnection
                 store.dispatch('setDefaultItems', {
-                    articles  : res.data.articles,
+                    articles: res.data.articles,
                     promotions: res.data.promotions
                 });
             }
@@ -53,22 +53,24 @@ export const interfaceLoader = (store, credentials) => {
             return store.dispatch('createTabs');
         })
         .then(() => store.dispatch('createTabsItems'))
-        .catch((err) => {
+        .catch(err => {
             if (err.message === 'Network Error') {
                 store.commit('ERROR', { message: 'Server not reacheable' });
                 return;
             }
 
-            if (err.response.data
-                && err.response.data.message === 'Buyer not found'
-                && store.state.auth.device.event.config.useCardData
-                && typeof credentials.credit === 'number') {
+            if (
+                err.response.data &&
+                err.response.data.message === 'Buyer not found' &&
+                store.state.auth.device.event.config.useCardData &&
+                typeof credentials.credit === 'number'
+            ) {
                 store.commit('ID_BUYER', {
-                    id       : '',
-                    credit   : credentials.credit,
+                    id: '',
+                    credit: credentials.credit,
                     firstname: '',
-                    lastname : '',
-                    groups   : [],
+                    lastname: '',
+                    groups: [],
                     purchases: []
                 });
                 store.commit('SET_BUYER_MOL', credentials.mol.trim());
@@ -79,7 +81,7 @@ export const interfaceLoader = (store, credentials) => {
         });
 };
 
-export const clearInterface = (store) => {
+export const clearInterface = store => {
     store.commit('CLEAR_ITEMS');
     store.commit('CLEAR_TABSITEMS');
     store.commit('CLEAR_CATEGORIES');

@@ -1,5 +1,5 @@
-const { EventEmitter }   = require('events');
-const rusha              = require('rusha');
+const { EventEmitter } = require('events');
+const rusha = require('rusha');
 const { encode, decode } = require('@buckless/signed-number');
 
 module.exports = class NFC extends EventEmitter {
@@ -41,7 +41,7 @@ module.exports = class NFC extends EventEmitter {
             localStorage.setItem('mocked-cards', JSON.stringify(cards));
         };
 
-        window.mock.scan = (name) => {
+        window.mock.scan = name => {
             if (!localStorage.hasOwnProperty('mocked-cards')) {
                 throw new Error('You need to use mock.addCard to create a mocked card first');
             }
@@ -108,4 +108,4 @@ module.exports = class NFC extends EventEmitter {
     creditToData(credit, signingKey) {
         return encode(credit, signingKey, 7, rusha.createHash);
     }
-}
+};

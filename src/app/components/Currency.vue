@@ -6,7 +6,7 @@
 export default {
     props: {
         value: {
-            type   : Number,
+            type: Number,
             default: 0
         },
         input: Array,

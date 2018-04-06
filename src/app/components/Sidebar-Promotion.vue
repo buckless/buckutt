@@ -28,9 +28,9 @@ import { mapActions } from 'vuex';
 
 export default {
     props: {
-        name   : { type: String, required: true },
+        name: { type: String, required: true },
         content: { type: Array, required: true },
-        id     : { type: String, required: true }
+        id: { type: String, required: true }
     },
 
     data() {
@@ -43,11 +43,10 @@ export default {
         },
 
         remove() {
-            this.content.forEach((content) => {
+            this.content.forEach(content => {
                 this.removeItemFromBasket(content.id);
             });
         },
-
 
         ...mapActions(['removeItemFromBasket'])
     }

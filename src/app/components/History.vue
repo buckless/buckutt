@@ -45,7 +45,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Currency                 from './Currency';
+import Currency from './Currency';
 
 export default {
     components: {
@@ -54,16 +54,14 @@ export default {
 
     data() {
         return {
-            selectedEntry  : null,
+            selectedEntry: null,
             localCardNumber: ''
-        }
+        };
     },
 
     computed: {
         cardNumber() {
-            return this.buyer.isAuth
-                ? this.buyer.meanOfLogin
-                : this.localCardNumber;
+            return this.buyer.isAuth ? this.buyer.meanOfLogin : this.localCardNumber;
         },
 
         entries() {
@@ -75,9 +73,9 @@ export default {
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            buyer      : state => state.auth.buyer,
-            history    : state => state.history.history,
-            items      : state => state.items
+            buyer: state => state.auth.buyer,
+            history: state => state.history.history,
+            items: state => state.items
         })
     },
 
@@ -85,15 +83,15 @@ export default {
         onCard(value, credit) {
             if (this.cardNumber.length === 0) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                return this
-                    .interfaceLoader({ type: config.buyerMeanOfLogin, mol: value })
-                    .then(() => {
+                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value }).then(
+                    () => {
                         if (typeof credit === 'number') {
                             this.$store.commit('OVERRIDE_BUYER_CREDIT', credit);
                         }
                         this.$store.commit('SET_DATA_LOADED', true);
                         this.localCardNumber = value;
-                    });
+                    }
+                );
             } else if (this.cardNumber !== value) {
                 this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
@@ -118,8 +116,7 @@ export default {
             }
 
             this.$store.commit('SET_DATA_LOADED', false);
-            this
-                .cancelEntry(this.selectedEntry)
+            this.cancelEntry(this.selectedEntry)
                 .then(() => {
                     this.removeFromHistory(this.selectedEntry);
 
@@ -146,23 +143,24 @@ export default {
         },
 
         resume(entry) {
-            const items = entry.basketToSend
-                .filter(e => e.cost)
-                .map((e) => {
-                    const name = e.promotion_id
-                        ? this.items.promotions.find(p => p.id === e.promotion_id).name
-                        : this.items.items.find(i => i.id === e.articles[0].id).name;
+            const items = entry.basketToSend.filter(e => e.cost).map(e => {
+                const name = e.promotion_id
+                    ? this.items.promotions.find(p => p.id === e.promotion_id).name
+                    : this.items.items.find(i => i.id === e.articles[0].id).name;
 
-                    return {
-                        name,
-                        cost: e.cost
-                    };
-                });
+                return {
+                    name,
+                    cost: e.cost
+                };
+            });
 
-            const cost   = items.map(e => e.cost).reduce((a, b) => a + b, 0);
-            const reload = entry.basketToSend.filter(e => e.credit).map(e => e.credit).reduce((a, b) => a + b, 0);
+            const cost = items.map(e => e.cost).reduce((a, b) => a + b, 0);
+            const reload = entry.basketToSend
+                .filter(e => e.credit)
+                .map(e => e.credit)
+                .reduce((a, b) => a + b, 0);
 
-            const p = n => n < 10 ? `0${n}` : n.toString();
+            const p = n => (n < 10 ? `0${n}` : n.toString());
 
             let date = `${p(entry.date.getDate())}/${p(entry.date.getMonth() + 1)}`;
             date += '-';
@@ -174,7 +172,7 @@ export default {
                 date,
                 items,
                 transactionIds: entry.transactionIds,
-                localId       : entry.localId
+                localId: entry.localId
             };
         },
 
@@ -223,14 +221,14 @@ export default {
     margin: 15px;
     background-color: #fff;
     border-radius: 3px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 }
 
 .b-history__list__entry {
     padding: 20px 15px;
 
     &:not(:last-child) {
-        border-bottom: 1px solid rgba(0,0,0,.12);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     }
 }
 

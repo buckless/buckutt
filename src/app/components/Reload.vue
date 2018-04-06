@@ -49,8 +49,8 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 
-import Currency       from './Currency';
-import Methods        from './Reload-Methods';
+import Currency from './Currency';
+import Methods from './Reload-Methods';
 import NumericalInput from './NumericalInput';
 
 export default {
@@ -74,8 +74,8 @@ export default {
         ...mapState({
             loggedBuyer: state => state.auth.buyer,
             reloadState: state => state.reload.reloadState,
-            isWaiting  : state => state.basket.basketStatus === 'WAITING',
-            isWriting  : state => state.basket.writing,
+            isWaiting: state => state.basket.basketStatus === 'WAITING',
+            isWriting: state => state.basket.writing,
             giftReloads: state => state.items.giftReloads
         }),
 
@@ -83,12 +83,12 @@ export default {
 
         reloadGiftAmount() {
             return this.giftReloads
-              .map(gr => {
-                  const timesEveryAmount = Math.floor(this.reloadAmount / gr.everyAmount);
+                .map(gr => {
+                    const timesEveryAmount = Math.floor(this.reloadAmount / gr.everyAmount);
 
-                  return timesEveryAmount * gr.amount;
-              })
-              .reduce((a, b) => a + b, 0);
+                    return timesEveryAmount * gr.amount;
+                })
+                .reduce((a, b) => a + b, 0);
         }
     },
 
@@ -107,16 +107,16 @@ export default {
         reload() {
             this.addReload({
                 amount: this.reloadAmount,
-                type  : this.$store.state.reload.meanOfPayment,
-                trace : ''
+                type: this.$store.state.reload.meanOfPayment,
+                trace: ''
             });
 
             if (this.reloadGiftAmount) {
-              this.addReload({
-                amount: this.reloadGiftAmount,
-                type: 'gift',
-                trace: `${this.$store.state.reload.meanOfPayment}-${this.reloadAmount}`
-              });
+                this.addReload({
+                    amount: this.reloadGiftAmount,
+                    type: 'gift',
+                    trace: `${this.$store.state.reload.meanOfPayment}-${this.reloadAmount}`
+                });
             }
 
             let initialPromise = Promise.resolve();
@@ -131,7 +131,7 @@ export default {
         validate(cardNumber, credit) {
             this.buyer({
                 cardNumber,
-                credit    : Number.isInteger(credit) ? credit : null,
+                credit: Number.isInteger(credit) ? credit : null,
                 isOnlyAuth: this.isWaiting && !this.isWriting
             });
         },
@@ -141,7 +141,15 @@ export default {
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
         },
 
-        ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'removeReloads', 'cancelReloadModal', 'sendBasket', 'buyer'])
+        ...mapActions([
+            'confirmReloadModal',
+            'closeReloadModal',
+            'addReload',
+            'removeReloads',
+            'cancelReloadModal',
+            'sendBasket',
+            'buyer'
+        ])
     },
 
     beforeDestroy() {

@@ -1,11 +1,11 @@
 const initialState = {
-    status         : false,
-    syncing        : false,
+    status: false,
+    syncing: false,
     pendingRequests: [],
-    offline        : {
-        sellers     : [],
+    offline: {
+        sellers: [],
         defaultItems: {
-            articles  : [],
+            articles: [],
             promotions: []
         }
     }

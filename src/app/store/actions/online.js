@@ -1,16 +1,16 @@
-import axios          from '@/utils/axios';
-import merge          from 'lodash.merge';
-import io             from 'socket.io-client/dist/socket.io.js';
+import axios from '@/utils/axios';
+import merge from 'lodash.merge';
+import io from 'socket.io-client/dist/socket.io.js';
 import { sendBasket } from './basket';
-import q              from '../../utils/q';
+import q from '../../utils/q';
 
 let socket = null;
-let lock   = false;
+let lock = false;
 
 export const setupSocket = (store, token) => {
     if (socket) {
-       socket.off('disconnect');
-       socket.close();
+        socket.off('disconnect');
+        socket.close();
     }
 
     let opts = {};
@@ -31,15 +31,14 @@ export const setupSocket = (store, token) => {
 
     socket.on('connect', () => {
         store.commit('SET_ONLINE');
-        store.dispatch('logOperator')
-            .then(() => {
-                store.dispatch('updateEssentials');
-                store.dispatch('syncPendingRequests');
-            });
+        store.dispatch('logOperator').then(() => {
+            store.dispatch('updateEssentials');
+            store.dispatch('syncPendingRequests');
+        });
         socket.emit('alert');
     });
 
-    socket.on('alert', (alert) => {
+    socket.on('alert', alert => {
         store.commit('SET_ALERT', alert);
     });
 
@@ -55,28 +54,28 @@ export const setupSocket = (store, token) => {
 };
 
 export const periodicSync = ({ dispatch }) => {
-    dispatch('syncPendingRequests')
-        .then(() => {
-            setTimeout(() => dispatch('periodicSync'), 300000);
-        });
+    dispatch('syncPendingRequests').then(() => {
+        setTimeout(() => dispatch('periodicSync'), 300000);
+    });
 };
 
-export const logOperator = (store) => {
+export const logOperator = store => {
     if (store.getters.tokenHeaders.headers || !store.state.auth.seller.isAuth) {
         return Promise.resolve();
     }
 
     const credentials = {
         meanOfLogin: config.loginMeanOfLogin,
-        data       : store.state.auth.seller.meanOfLogin,
-        pin        : store.state.auth.seller.pin
+        data: store.state.auth.seller.meanOfLogin,
+        pin: store.state.auth.seller.pin
     };
 
-    return axios.post(`${config.api}/services/login`, credentials)
+    return axios
+        .post(`${config.api}/services/login`, credentials)
         .then(res => store.commit('UPDATE_TOKEN', res.data.token));
 };
 
-export const syncPendingRequests = (store) => {
+export const syncPendingRequests = store => {
     const storedRequests = store.state.online.pendingRequests;
     const failedRequests = [];
 
@@ -91,12 +90,10 @@ export const syncPendingRequests = (store) => {
 
     let promise = Promise.resolve();
 
-    storedRequests.forEach((request) => {
+    storedRequests.forEach(request => {
         promise = promise
-            .then(() =>
-                axios.post(request.url, request.body, store.getters.tokenHeaders)
-            )
-            .then((res) => {
+            .then(() => axios.post(request.url, request.body, store.getters.tokenHeaders))
+            .then(res => {
                 if (request.body.localId) {
                     const localId = request.body.localId;
 
@@ -106,23 +103,23 @@ export const syncPendingRequests = (store) => {
                     });
                 }
             })
-            .then(() => new Promise((resolve) => {
-                    setTimeout(() => resolve(), 150);
-                })
+            .then(
+                () =>
+                    new Promise(resolve => {
+                        setTimeout(() => resolve(), 150);
+                    })
             )
-            .catch((err) => {
+            .catch(err => {
                 failedRequests.push(request);
                 console.error('Error while resending basket : ', err);
             });
     });
 
-    return promise
-        .then(() => store.dispatch('sendValidCancellations'))
-        .then(() => {
-            store.commit('SET_SYNCING', false);
-            store.dispatch('setPendingRequests', failedRequests);
-            lock = false;
-        });
+    return promise.then(() => store.dispatch('sendValidCancellations')).then(() => {
+        store.commit('SET_SYNCING', false);
+        store.dispatch('setPendingRequests', failedRequests);
+        lock = false;
+    });
 };
 
 export const setSellers = (store, payload) => {
@@ -140,7 +137,10 @@ export const addPendingRequest = (store, payload) => {
 
     store.commit('ADD_PENDING_REQUEST', payload);
 
-    window.localStorage.setItem('pendingRequests', JSON.stringify(store.state.online.pendingRequests));
+    window.localStorage.setItem(
+        'pendingRequests',
+        JSON.stringify(store.state.online.pendingRequests)
+    );
 };
 
 export const setPendingRequests = (store, payload) => {
@@ -150,5 +150,8 @@ export const setPendingRequests = (store, payload) => {
         store.commit('CLEAR_PENDING_REQUESTS');
     }
 
-    window.localStorage.setItem('pendingRequests', JSON.stringify(store.state.online.pendingRequests));
+    window.localStorage.setItem(
+        'pendingRequests',
+        JSON.stringify(store.state.online.pendingRequests)
+    );
 };

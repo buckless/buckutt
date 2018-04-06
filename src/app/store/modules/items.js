@@ -2,13 +2,13 @@ import promotions from '../../utils/promotions';
 
 const initialState = {
     categories: [],
-    items     : [],
-    tabsItems : [],
+    items: [],
+    tabsItems: [],
     promotions: [],
-    basket    : {
+    basket: {
         itemList: [],
-        sidebar : {
-            items     : [],
+        sidebar: {
+            items: [],
             promotions: []
         }
     },

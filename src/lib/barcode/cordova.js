@@ -1,7 +1,7 @@
 module.exports = () => {
     return new Promise((resolve, reject) => {
         cordova.plugins.barcodeScanner.scan(
-            (result) => {
+            result => {
                 if (!result.cancelled) {
                     console.log('barcode', result);
                     return resolve(result.text);
@@ -11,9 +11,9 @@ module.exports = () => {
             },
             error => reject(error),
             {
-                preferFrontCamera    : false,
-                showFlipCameraButton : false,
-                prompt               : 'Scanner le billet',
+                preferFrontCamera: false,
+                showFlipCameraButton: false,
+                prompt: 'Scanner le billet',
                 resultDisplayDuration: 0
             }
         );
