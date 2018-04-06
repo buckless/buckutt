@@ -1,7 +1,4 @@
-# Buckless Client
-
-[![dependencies Status](https://david-dm.org/buckless-team/client/status.png)](https://david-dm.org/buckless-team/client)
-[![Build Status](https://travis-ci.org/buckless-team/client.svg?branch=master)](https://travis-ci.org/buckless-team/client)
+# client
 
 ## Prerequisites
 - Python 2.7
@@ -10,7 +7,6 @@
 - node-gyp >= 3.6.2
 - cordova
 - Android requirements (https://cordova.apache.org/docs/fr/latest/guide/platforms/android/)
-
 
 ## Install
 ### Set Python npm version
