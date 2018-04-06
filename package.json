@@ -1,14 +1,14 @@
 {
   "name": "buckless-server",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "buckless-server",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
-    "Gabriel Juchault <gabriel.juchault@gmail.com>",
-    "Axel Mousset <axel@mousset.me>",
-    "Lucas Soulier <lucas.soulier.utt@gmail.com>"
+    "Gabriel Juchault <gabriel@buckless.com>",
+    "Axel Mousset <axel@buckless.com>",
+    "Lucas Soulier <lucas@buckless.com>"
   ],
-  "repository": "https://github.com/buckless/server.git",
+  "repository": "https://lab.buckless.com/core/server.git",
   "homepage": "https://buckless.com",
   "private": true,
   "license": "MIT",
