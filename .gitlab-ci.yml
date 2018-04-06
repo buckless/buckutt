@@ -8,14 +8,10 @@ cache:
   paths:
     - node_modules/
 
-before_script:
-  - apk add --no-cache git openssh make gcc g++ python
-  - yarn
-
 test:
   stage: test
   script:
-    - docker build -t lab.buckless.com/core/server .
+    - docker build -t lab.buckless.com/core/client .
     - yarn lint
 
 deploy:
@@ -24,5 +20,5 @@ deploy:
     - master
   script:
     - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com
-    - docker push lab.buckless.com/core/server
+    - docker push lab.buckless.com/core/client
 
