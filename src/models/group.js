@@ -1,10 +1,10 @@
-module.exports = (bookshelf) => {
+module.exports = bookshelf => {
     const name = 'Group';
     const Model = bookshelf.Model.extend({
-        tableName    : 'groups',
+        tableName: 'groups',
         hasTimestamps: true,
-        uuid         : true,
-        softDelete   : true,
+        uuid: true,
+        softDelete: true,
 
         prices() {
             return this.hasMany('Price');

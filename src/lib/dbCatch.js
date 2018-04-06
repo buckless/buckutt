@@ -1,4 +1,4 @@
-const APIError      = require('../errors/APIError');
+const APIError = require('../errors/APIError');
 const { bookshelf } = require('./bookshelf');
 
 module.exports = function dbCatch(module_, err, next) {

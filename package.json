@@ -19,7 +19,7 @@
     "watch": "nodemon src/app.js",
     "dev": "cross-env NODE_ENV=development npm run watch",
     "seed": "cross-env NODE_ENV=development node scripts/seed",
-    "lint": "eslint .",
+    "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.js\"",
     "sslConfig": "node scripts/sslConfig",
     "addDevice": "node scripts/addDevice",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
@@ -67,12 +67,10 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "eslint": "^4.16.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.6.0",
     "inquirer": "^5.0.1",
     "mocha": "^5.0.0",
-    "nodemon": "^1.14.11"
+    "nodemon": "^1.14.11",
+    "prettier": "1.11.1"
   },
   "resolutions": {
     "uws": "0.14.5"

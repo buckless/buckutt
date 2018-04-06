@@ -1,8 +1,8 @@
-const express            = require('express');
+const express = require('express');
 const { groupBy, sumBy } = require('lodash');
-const APIError           = require('../../errors/APIError');
-const { isUUID }         = require('../../lib/idParser');
-const dbCatch            = require('../../lib/dbCatch');
+const APIError = require('../../errors/APIError');
+const { isUUID } = require('../../lib/idParser');
+const dbCatch = require('../../lib/dbCatch');
 
 const router = new express.Router();
 
@@ -10,11 +10,11 @@ router.get('/services/treasury/purchases', (req, res, next) => {
     const models = req.app.locals.models;
 
     let initialQuery = models.Purchase;
-    let price        = 'price';
-    let pricePeriod  = 'price.period';
+    let price = 'price';
+    let pricePeriod = 'price.period';
 
     if (req.query.dateIn && req.query.dateOut) {
-        const dateIn  = new Date(req.query.dateIn);
+        const dateIn = new Date(req.query.dateIn);
         const dateOut = new Date(req.query.dateOut);
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
@@ -42,19 +42,13 @@ router.get('/services/treasury/purchases', (req, res, next) => {
         };
     }
 
-    initialQuery = initialQuery
-        .fetchAll({
-            withRelated: [
-                price,
-                pricePeriod,
-                'price.article',
-                'price.promotion'
-            ],
-            withDeleted: true
-        });
+    initialQuery = initialQuery.fetchAll({
+        withRelated: [price, pricePeriod, 'price.article', 'price.promotion'],
+        withDeleted: true
+    });
 
     initialQuery
-        .then((results) => {
+        .then(results => {
             // Remove deleted purchases, transform price relation to an outer join
             const purchases = results
                 .toJSON()
@@ -64,16 +58,19 @@ router.get('/services/treasury/purchases', (req, res, next) => {
 
             const mappedPurchases = Object.values(groupedPurchases)
                 .map(p => ({
-                    price   : p[0].price.amount,
-                    id      : p[0].price.id,
-                    totalTI : sumBy(p, 'price.amount'),
+                    price: p[0].price.amount,
+                    id: p[0].price.id,
+                    totalTI: sumBy(p, 'price.amount'),
                     totalVAT: sumBy(p, 'vat'),
-                    count   : p.length,
-                    name    : (p[0].price.article) ? p[0].price.article.name : p[0].price.promotion.name
+                    count: p.length,
+                    name: p[0].price.article ? p[0].price.article.name : p[0].price.promotion.name
                 }))
                 .sort((a, b) => a.name.localeCompare(b.name));
 
-            res.status(200).json(mappedPurchases).end();
+            res
+                .status(200)
+                .json(mappedPurchases)
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });
@@ -103,14 +100,16 @@ router.get('/services/treasury/reloads', (req, res, next) => {
     }
 
     initialQuery = initialQuery
-        .query(q => q
-            .select('type')
-            .sum('credit as credit')
-            .groupBy('type'))
+        .query(q =>
+            q
+                .select('type')
+                .sum('credit as credit')
+                .groupBy('type')
+        )
         .fetchAll();
 
     initialQuery
-        .then((credits) => {
+        .then(credits => {
             res
                 .status(200)
                 .json(credits.toJSON())
@@ -138,14 +137,16 @@ router.get('/services/treasury/refunds', (req, res, next) => {
     }
 
     initialQuery = initialQuery
-        .query(q => q
-            .select('type')
-            .sum('amount as amount')
-            .groupBy('type'))
+        .query(q =>
+            q
+                .select('type')
+                .sum('amount as amount')
+                .groupBy('type')
+        )
         .fetchAll();
 
     initialQuery
-        .then((amounts) => {
+        .then(amounts => {
             res
                 .status(200)
                 .json(amounts.toJSON())

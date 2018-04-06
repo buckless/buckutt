@@ -1,4 +1,4 @@
-module.exports = (item) => {
+module.exports = item => {
     if (item.cost === 0) {
         return 0;
     }
@@ -11,9 +11,7 @@ module.exports = (item) => {
 
     const sumWithoutTax = withoutTax.reduce((a, b) => a + b, 0);
 
-    const relatives = item
-        .articles
-        .map(article => article.cost / sumWithoutTax);
+    const relatives = item.articles.map(article => article.cost / sumWithoutTax);
 
     let reconsituedWithoutTax = item.articles
         .map((article, i) => (1 + article.vat) * relatives[i])
@@ -23,9 +21,7 @@ module.exports = (item) => {
 
     const menuPart = relatives.map(percent => percent * reconsituedWithoutTax);
 
-    const VAT = menuPart
-        .map((part, i) => part * item.articles[i].vat)
-        .reduce((a, b) => a + b, 0);
+    const VAT = menuPart.map((part, i) => part * item.articles[i].vat).reduce((a, b) => a + b, 0);
 
     return VAT;
 };

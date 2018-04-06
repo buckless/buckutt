@@ -1,9 +1,9 @@
-const fs       = require('fs');
-const axios    = require('axios');
-const parse    = require('csv').parse;
+const fs = require('fs');
+const axios = require('axios');
+const parse = require('csv').parse;
 const { pick } = require('lodash');
 
-module.exports = (ticketOrMail) => {
+module.exports = ticketOrMail => {
     const config = require('../../config').assigner.csv;
 
     if (!config.url && !config.file) {
@@ -14,7 +14,7 @@ module.exports = (ticketOrMail) => {
     let result = null;
 
     if (config.url) {
-        axios[config.url.method](config.url.url, { headers: config.url.headers }).then((res) => {
+        axios[config.url.method](config.url.url, { headers: config.url.headers }).then(res => {
             parser.write(res.data);
             parser.end();
         });
@@ -34,7 +34,7 @@ module.exports = (ticketOrMail) => {
         }
     });
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         parser.on('finish', () => {
             if (!result) {
                 return resolve(null);
@@ -43,7 +43,9 @@ module.exports = (ticketOrMail) => {
             result.ticketId = result.ticket;
             result.credit = parseInt(result.preload, 10);
 
-            resolve(pick(result, ['firstname', 'lastname', 'nickname', 'mail', 'credit', 'ticketId']));
+            resolve(
+                pick(result, ['firstname', 'lastname', 'nickname', 'mail', 'credit', 'ticketId'])
+            );
         });
     });
 };

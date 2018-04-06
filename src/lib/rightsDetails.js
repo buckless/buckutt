@@ -1,13 +1,13 @@
 const config = require('../../config');
 
 module.exports = (user, pointId) => {
-    const now    = new Date();
+    const now = new Date();
     const result = {
-        sell    : false,
-        reload  : false,
-        assign  : false,
-        control : false,
-        admin   : false,
+        sell: false,
+        reload: false,
+        assign: false,
+        control: false,
+        admin: false,
         operator: false
     };
 
