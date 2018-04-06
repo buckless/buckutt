@@ -60,8 +60,8 @@ router.get('/services/assigner', (req, res, next) => {
                         return Promise.reject(err);
                     }
 
-                    pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
-
+                    userData = userData_;
+                    pin      = padStart(Math.floor(Math.random() * 10000), 4, '0');
                     ticketId = userData_.ticketId;
 
                     return MeanOfLogin
