@@ -25,8 +25,8 @@ export default {
     computed: {
         statusClasses() {
             return {
-                'b-sidebar-validate--doing': this.basketStatus === 'DOING' ||
-                    this.basketStatus === 'WAITING_FOR_BUYER',
+                'b-sidebar-validate--doing':
+                    this.basketStatus === 'DOING' || this.basketStatus === 'WAITING_FOR_BUYER',
                 'b-sidebar-validate--error': this.basketStatus === 'ERROR'
             };
         },

@@ -33,8 +33,8 @@ export default {
 
         ...mapState({
             showPicture: state => state.auth.device.config.showPicture,
-            seller     : state => state.auth.seller,
-            buyer      : state => state.auth.buyer
+            seller: state => state.auth.seller,
+            buyer: state => state.auth.buyer
         })
     }
 };
@@ -59,7 +59,7 @@ export default {
 .b-header__separator {
     background-color: #fff;
     height: 1px;
-    opacity: .1;
+    opacity: 0.1;
 }
 
 @media (max-width: 768px) {

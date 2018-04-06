@@ -1,6 +1,6 @@
-import axios         from '@/utils/axios';
+import axios from '@/utils/axios';
 import hasEssentials from '@/utils/offline/hasEssentials';
-import OfflineData   from '@/../lib/offlineData';
+import OfflineData from '@/../lib/offlineData';
 
 let lock = false;
 
@@ -9,31 +9,35 @@ export const updateEssentials = (store, force) => {
         return Promise.resolve();
     }
 
-    lock              = true;
+    lock = true;
     const offlineData = new OfflineData();
 
-    return offlineData.init()
-        .then(() => axios.get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders))
-        .then((res) => {
+    return offlineData
+        .init()
+        .then(() =>
+            axios.get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders)
+        )
+        .then(res => {
             if (!store.state.auth.device.point.id || store.state.auth.seller.canAssign || force) {
-                return store.dispatch('setPoint', {
-                    id   : res.headers.device,
-                    wiket: res.headers.wiket,
-                    point: {
-                        id  : res.headers.point,
-                        name: res.headers.pointname
-                    },
-                    event: {
-                        id  : res.headers.event,
-                        name: res.headers.eventname
-                    }
-                })
-                .then(() => res);
+                return store
+                    .dispatch('setPoint', {
+                        id: res.headers.device,
+                        wiket: res.headers.wiket,
+                        point: {
+                            id: res.headers.point,
+                            name: res.headers.pointname
+                        },
+                        event: {
+                            id: res.headers.event,
+                            name: res.headers.eventname
+                        }
+                    })
+                    .then(() => res);
             }
 
             return Promise.resolve(res);
         })
-        .then((res) => {
+        .then(res => {
             const promises = [];
 
             if (res.data.operators) {
@@ -69,8 +73,7 @@ export const updateEssentials = (store, force) => {
                 ]);
 
                 promises.push(
-                    offlineData.empty('users')
-                        .then(() => offlineData.insert('users', users))
+                    offlineData.empty('users').then(() => offlineData.insert('users', users))
                 );
             }
 
@@ -84,7 +87,8 @@ export const updateEssentials = (store, force) => {
                 ]);
 
                 promises.push(
-                    offlineData.empty('accesses')
+                    offlineData
+                        .empty('accesses')
                         .then(() => offlineData.insert('accesses', accesses))
                 );
             }

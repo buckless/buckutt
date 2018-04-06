@@ -24,11 +24,11 @@ import { mapState, mapActions } from 'vuex';
 export default {
     computed: mapState({
         disconnectWarning: state => state.auth.seller.disconnectWarning,
-        seller           : state => state.auth.seller
+        seller: state => state.auth.seller
     }),
 
-    methods: mapActions([ 'pursueLogout', 'cancelLogout' ])
-}
+    methods: mapActions(['pursueLogout', 'cancelLogout'])
+};
 </script>
 
 <style scoped>
@@ -71,7 +71,9 @@ export default {
         color: $red;
     }
 
-    &:active, &:focus, &:hover {
+    &:active,
+    &:focus,
+    &:hover {
         background-color: color($black a(0.075));
     }
 }

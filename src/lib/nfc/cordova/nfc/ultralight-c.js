@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const Promise      = require('bluebird');
+const Promise = require('bluebird');
 
 let config = require('../../../../../config');
 
@@ -7,41 +7,48 @@ module.exports = class UltralightC extends EventEmitter {
     constructor() {
         super();
 
-        document.addEventListener('mifareTagDiscovered', (tag) => {
+        document.addEventListener('mifareTagDiscovered', tag => {
             console.log(tag);
-            this.emit('uid', tag.tag.map((dec) => dec.toString(16)).join(''));
-            this.emit('log', tag.tag.map((dec) => dec.toString(16)).join(''));
+            this.emit('uid', tag.tag.map(dec => dec.toString(16)).join(''));
+            this.emit('log', tag.tag.map(dec => dec.toString(16)).join(''));
             this.emit('atr', module.exports.ATR);
             this.emit('cardType', 'ultralightC');
 
             console.time('NFC Write');
 
-            this
-                .connect()
+            this.connect()
                 .then(() => this.read())
-                .then((data) => {
+                .then(data => {
                     this.emit('data', data.slice(0, config.ultralight.creditSize));
                 })
-                .catch((err) => {
+                .catch(err => {
                     console.log(err);
                 });
         });
     }
 
     disconnect() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             window.mifare.disconnect(
-                () => { resolve(); },
-                err => { reject(err); }
+                () => {
+                    resolve();
+                },
+                err => {
+                    reject(err);
+                }
             );
         });
     }
 
     connect() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             window.mifare.connect(
-                () => { resolve(); },
-                err => { reject(err); }
+                () => {
+                    resolve();
+                },
+                err => {
+                    reject(err);
+                }
             );
         });
     }
@@ -61,14 +68,15 @@ module.exports = class UltralightC extends EventEmitter {
                 return new Promise((resolve, reject) => {
                     window.mifare.read(
                         page,
-                        (res) => {
+                        res => {
                             bufs.push(res.data);
                             resolve();
                         },
-                        (err) => {
+                        err => {
                             console.log('err', err);
                             reject(err);
-                        });
+                        }
+                    );
                 });
             });
         }
@@ -79,9 +87,9 @@ module.exports = class UltralightC extends EventEmitter {
     write(data) {
         const dataLength = config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
 
-        const buf    = Buffer.from(data);
+        const buf = Buffer.from(data);
         const newBuf = Buffer.alloc(dataLength, 0);
-        const subs   = [];
+        const subs = [];
 
         // Copy data inside our fixed-length buffer (length must be divisible by 4)
         for (let i = 0; i < dataLength; ++i) {
@@ -91,7 +99,7 @@ module.exports = class UltralightC extends EventEmitter {
         /**
          * Generate buffers, 4 bytes length, to fill ultralight pages
          */
-        let i = 0
+        let i = 0;
         do {
             const subBuf = Buffer.alloc(4, 0);
 
@@ -117,24 +125,44 @@ module.exports = class UltralightC extends EventEmitter {
                         window.mifare.write(
                             i + config.ultralight.firstWritablePage,
                             Array.from(page).map(int => int.toString(16)),
-                            (res) => resolve(res),
-                            (err) => {
+                            res => resolve(res),
+                            err => {
                                 console.log('error from write', err);
                                 reject(err);
-                            });
+                            }
+                        );
                     });
                 })
-                .then((res) => {
+                .then(res => {
                     i = i + 1;
                 });
         }
 
-        return sequence
-            .then(() => newBuf)
-            .catch((err) => {
-                throw new Error(`Write failed : ${err}`);
-            });
+        return sequence.then(() => newBuf).catch(err => {
+            throw new Error(`Write failed : ${err}`);
+        });
     }
-}
+};
 
-module.exports.ATR = Buffer.from([ 0x3B, 0x8F, 0x80, 0x01, 0x80, 0x4F, 0x0C, 0xA0, 0x00, 0x00, 0x03, 0x06, 0x03, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x68 ]);
+module.exports.ATR = Buffer.from([
+    0x3b,
+    0x8f,
+    0x80,
+    0x01,
+    0x80,
+    0x4f,
+    0x0c,
+    0xa0,
+    0x00,
+    0x00,
+    0x03,
+    0x06,
+    0x03,
+    0x00,
+    0x03,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x68
+]);

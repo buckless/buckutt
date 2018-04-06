@@ -31,21 +31,21 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 
 import hasEssentials from './utils/offline/hasEssentials';
 
-import Items             from './components/Items';
-import Topbar            from './components/Topbar';
-import Sidebar           from './components/Sidebar';
-import Reload            from './components/Reload';
-import Login             from './components/Login';
-import Loading           from './components/Loading';
-import Error             from './components/Error';
-import Alert             from './components/Alert';
-import Offline           from './components/Offline';
-import Assigner          from './components/Assigner';
-import Controller        from './components/Controller';
-import AlcoholWarning    from './components/AlcoholWarning';
+import Items from './components/Items';
+import Topbar from './components/Topbar';
+import Sidebar from './components/Sidebar';
+import Reload from './components/Reload';
+import Login from './components/Login';
+import Loading from './components/Loading';
+import Error from './components/Error';
+import Alert from './components/Alert';
+import Offline from './components/Offline';
+import Assigner from './components/Assigner';
+import Controller from './components/Controller';
+import AlcoholWarning from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
-import Ticket            from './components/Ticket';
-import History           from './components/History';
+import Ticket from './components/Ticket';
+import History from './components/History';
 
 export default {
     name: 'App',
@@ -70,19 +70,26 @@ export default {
 
     computed: {
         ...mapState({
-            buyer           : state => state.auth.buyer,
-            seller          : state => state.auth.seller,
-            basketStatus    : state => state.basket.basketStatus,
-            loaded          : state => state.ui.dataLoaded,
-            lastUser        : state => state.ui.lastUser,
+            buyer: state => state.auth.buyer,
+            seller: state => state.auth.seller,
+            basketStatus: state => state.basket.basketStatus,
+            loaded: state => state.ui.dataLoaded,
+            lastUser: state => state.ui.lastUser,
             doubleValidation: state => state.auth.device.config.doubleValidation,
-            useCardData     : state => state.auth.device.event.config.useCardData,
-            online          : state => state.online.status,
-            history         : state => state.history.opened,
-            alert           : state => state.auth.alert
+            useCardData: state => state.auth.device.event.config.useCardData,
+            online: state => state.online.status,
+            history: state => state.history.opened,
+            alert: state => state.auth.alert
         }),
 
-        ...mapGetters(['loginState', 'isAssignerMode', 'isSellerMode', 'isReloaderMode', 'isControllerMode', 'isCashMode'])
+        ...mapGetters([
+            'loginState',
+            'isAssignerMode',
+            'isSellerMode',
+            'isReloaderMode',
+            'isControllerMode',
+            'isCashMode'
+        ])
     },
 
     methods: {
@@ -155,7 +162,7 @@ export default {
             nfc = new NFC();
         }
 
-        window.nfc   = nfc;
+        window.nfc = nfc;
         window.appId = Date.now();
     }
 };
@@ -214,9 +221,9 @@ export default {
 }
 
 @font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./assets/icons/MaterialIcons-Regular.woff2) format('woff2');
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./assets/icons/MaterialIcons-Regular.woff2) format('woff2');
 }
 </style>

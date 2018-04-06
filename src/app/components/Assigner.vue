@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import axios                                from '@/utils/axios';
+import axios from '@/utils/axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
-import barcode       from '@/../lib/barcode';
-import OfflineData   from '@/../lib/offlineData';
+import barcode from '@/../lib/barcode';
+import OfflineData from '@/../lib/offlineData';
 import CreateAccount from './Assigner-CreateAccount';
-import Search        from './Assigner-Search';
-import Ok            from './Ok';
-import Currency      from './Currency';
+import Search from './Assigner-Search';
+import Ok from './Ok';
+import Currency from './Currency';
 
 export default {
     components: {
@@ -65,39 +65,31 @@ export default {
             assignModalOpened: false,
             subpage: 'search',
             activeGroups: []
-        }
+        };
     },
 
     computed: {
         scanClasses() {
-            return (this.subpage === 'scan')
-                ? 'b-assigner__home__button--active'
-                : '';
+            return this.subpage === 'scan' ? 'b-assigner__home__button--active' : '';
         },
 
         searchClasses() {
-            return (this.subpage === 'search')
-                ? 'b-assigner__home__button--active'
-                : '';
+            return this.subpage === 'search' ? 'b-assigner__home__button--active' : '';
         },
 
         createClasses() {
-            return (this.subpage === 'create')
-                ? 'b-assigner__home__button--active'
-                : '';
+            return this.subpage === 'create' ? 'b-assigner__home__button--active' : '';
         },
 
         barcodeClasses() {
-            return (this.subpage === 'barcode')
-                ? 'b-assigner__home__button--active'
-                : '';
+            return this.subpage === 'barcode' ? 'b-assigner__home__button--active' : '';
         },
 
         ...mapState({
-            online     : state => state.online.status,
+            online: state => state.online.status,
             useCardData: state => state.auth.device.event.config.useCardData,
-            groups     : state => state.auth.groups
-                .filter(group => group.name !== state.auth.device.event.name)
+            groups: state =>
+                state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
         }),
 
         ...mapGetters(['tokenHeaders'])
@@ -108,8 +100,8 @@ export default {
             this.$store.commit('SET_DATA_LOADED', false);
             const mol = {
                 user_id: this.assignModalId,
-                type   : 'cardId',
-                data   : value,
+                type: 'cardId',
+                data: value,
                 blocked: false
             };
 
@@ -119,37 +111,51 @@ export default {
                 initialPromise = initialPromise
                     .then(() => axios.post(`${config.api}/meansoflogin`, mol, this.tokenHeaders))
                     .then(() =>
-                        axios.post(`${config.api}/services/assigner/groups`, {
-                            user: this.assignModalId,
-                            groups: this.activeGroups.map(g => g.id)
-                        }, this.tokenHeaders)
+                        axios.post(
+                            `${config.api}/services/assigner/groups`,
+                            {
+                                user: this.assignModalId,
+                                groups: this.activeGroups.map(g => g.id)
+                            },
+                            this.tokenHeaders
+                        )
                     );
             } else {
                 initialPromise = initialPromise
-                    .then(() => this.addPendingRequest({
-                        url : `${config.api}/meansoflogin`,
-                        body: mol
-                    }))
-                    .then(() => this.addPendingRequest({
-                        url: `${config.api}/services/assigner/groups`,
-                        body: {
-                            user: this.assignModalId,
-                            groups: this.activeGroups.map(g => g.id)
-                        }
-                    }));
+                    .then(() =>
+                        this.addPendingRequest({
+                            url: `${config.api}/meansoflogin`,
+                            body: mol
+                        })
+                    )
+                    .then(() =>
+                        this.addPendingRequest({
+                            url: `${config.api}/services/assigner/groups`,
+                            body: {
+                                user: this.assignModalId,
+                                groups: this.activeGroups.map(g => g.id)
+                            }
+                        })
+                    );
             }
 
             initialPromise
                 .then(() => Promise.resolve(true))
-                .catch(err => err.response.data.message === 'Duplicate Entry'
-                    ? Promise.resolve(true)
-                    : Promise.reject(err))
-                .then(write => write && this.useCardData
-                    ? new Promise(resolve => {
-                        window.app.$root.$emit('readyToWrite', this.assignModalCredit);
-                        window.app.$root.$on('writeCompleted', () => resolve());
-                    })
-                    : Promise.resolve())
+                .catch(
+                    err =>
+                        err.response.data.message === 'Duplicate Entry'
+                            ? Promise.resolve(true)
+                            : Promise.reject(err)
+                )
+                .then(
+                    write =>
+                        write && this.useCardData
+                            ? new Promise(resolve => {
+                                  window.app.$root.$emit('readyToWrite', this.assignModalCredit);
+                                  window.app.$root.$on('writeCompleted', () => resolve());
+                              })
+                            : Promise.resolve()
+                )
                 .then(() => this.ok())
                 .catch(err => this.$store.commit('ERROR', err.response.data))
                 .then(() => this.$store.commit('SET_DATA_LOADED', true));
@@ -158,40 +164,42 @@ export default {
         ticketScanned(value) {
             this.$store.commit('SET_DATA_LOADED', false);
             if (this.online) {
-                axios.get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
-                    .then((res) => {
+                axios
+                    .get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
+                    .then(res => {
                         if (typeof res.data.credit === 'number') {
                             this.assignModal(res.data.credit, res.data.name, res.data.id);
                             return;
                         }
 
-                        return this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
+                        return this.$store.commit('ERROR', { message: "Couldn't find ticket" });
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         console.error(err);
                         this.$store.commit('ERROR', err.response.data);
                     })
                     .then(() => this.$store.commit('SET_DATA_LOADED', true));
-            } else  {
-                this.db.findByBarcode(value)
-                    .then((users) => {
+            } else {
+                this.db
+                    .findByBarcode(value)
+                    .then(users => {
                         if (users.length === 1) {
                             this.assignModal(users[0].credit, users[0].name, users[0].id);
                             return;
                         }
 
-                        return this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
+                        return this.$store.commit('ERROR', { message: "Couldn't find ticket" });
                     })
                     .then(() => this.$store.commit('SET_DATA_LOADED', true));
             }
         },
 
         closeModal() {
-            this.activeGroups      = [];
+            this.activeGroups = [];
             this.assignModalOpened = false;
             this.assignModalCredit = 0;
-            this.assignModalName   = '';
-            this.assignModalId     = '';
+            this.assignModalName = '';
+            this.assignModalId = '';
         },
 
         onBarcode(value, isFromBarcode) {
@@ -217,8 +225,8 @@ export default {
         assignModal(credit, name, id) {
             this.assignModalOpened = true;
             this.assignModalCredit = credit;
-            this.assignModalName   = name;
-            this.assignModalId     = id;
+            this.assignModalName = name;
+            this.assignModalId = id;
         },
 
         barcode() {
@@ -237,9 +245,9 @@ export default {
         this.db = new OfflineData();
         this.db.init();
 
-        window.mock.barcode = (b) => this.onBarcode(b, true);
+        window.mock.barcode = b => this.onBarcode(b, true);
     }
-}
+};
 </script>
 
 <style scoped>
@@ -272,7 +280,7 @@ export default {
     padding: 5px;
 
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     text-align: center;
 
@@ -288,7 +296,7 @@ export default {
     & > h3 {
         margin: 10px 0 0 0;
         text-transform: uppercase;
-        color: rgba(0,0,0,0.6);
+        color: rgba(0, 0, 0, 0.6);
     }
 }
 
@@ -312,7 +320,7 @@ export default {
     }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     .b-assigner__home {
         min-height: 140px;
     }

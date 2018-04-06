@@ -22,7 +22,7 @@ export default {
     data() {
         return {
             timer: 0
-        }
+        };
     },
 
     computed: mapState({
@@ -42,7 +42,7 @@ export default {
     },
 
     mounted() {
-        this.timer = this.alert.minimumViewTime || 5;
+        this.timer = this.alert.minimumViewTime || 5;
 
         setTimeout(() => this.tickTimer(), 1000);
     }
@@ -95,7 +95,9 @@ export default {
         background-color: #e74c3c;
     }
 
-    &:active, &:focus, &:hover {
+    &:active,
+    &:focus,
+    &:hover {
         background-color: color(#e74c3c a(0.9));
     }
 }

@@ -1,4 +1,4 @@
-import { credit }    from '../store/getters/items';
+import { credit } from '../store/getters/items';
 import hasEssentials from '@/utils/offline/hasEssentials';
 
 export default (state, error) => {
@@ -16,7 +16,7 @@ export default (state, error) => {
         return 'Carte invalide';
     }
 
-    if (error.message === 'Couldn\'t find ticket') {
+    if (error.message === "Couldn't find ticket") {
         return 'Ticket introuvable';
     }
 
@@ -29,7 +29,9 @@ export default (state, error) => {
     }
 
     if (error.message === 'Duplicate Entry') {
-        return state.auth.seller.canAssign ? 'Cette carte est déjà assignée' : 'Entrée déjà existante';
+        return state.auth.seller.canAssign
+            ? 'Cette carte est déjà assignée'
+            : 'Entrée déjà existante';
     }
 
     if (error.message === 'Not enough rights') {

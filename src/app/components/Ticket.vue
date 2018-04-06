@@ -45,14 +45,14 @@ export default {
         close() {
             this.$store.commit('SET_LAST_USER', {
                 display: false,
-                name   : null,
-                bought : 0,
-                reload : 0,
-                credit : 0
+                name: null,
+                bought: 0,
+                reload: 0,
+                credit: 0
             });
         }
     }
-}
+};
 </script>
 
 <style scoped>

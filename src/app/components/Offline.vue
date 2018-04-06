@@ -13,20 +13,20 @@ export default {
         width() {
             return {
                 width: `${this.syncProgress * 100}%`
-            }
+            };
         },
 
         syncingClass() {
-            return this.syncing ? { 'b-offline-syncing': true } : {}
+            return this.syncing ? { 'b-offline-syncing': true } : {};
         },
 
         ...mapState({
             online: state => state.online.status,
             syncing: state => state.online.syncing,
-            syncProgress: state => state.online.syncProgress,
+            syncProgress: state => state.online.syncProgress
         })
     }
-}
+};
 </script>
 
 <style scoped>

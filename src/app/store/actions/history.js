@@ -11,21 +11,21 @@ export const removeFromHistory = ({ commit }, payload) => {
 };
 
 export const cancelEntry = (store, payload) => {
-    payload.transactionIds = store.state.history.history
-        .find(entry => entry.localId === payload.localId)
-        .transactionIds;
+    payload.transactionIds = store.state.history.history.find(
+        entry => entry.localId === payload.localId
+    ).transactionIds;
 
     if (!payload.transactionIds) {
         store.commit('ADD_PENDING_CANCELLATION', payload);
     } else {
         // request made online
 
-        const cancelPurchases = payload.transactionIds.purchases.map((id) => ({
+        const cancelPurchases = payload.transactionIds.purchases.map(id => ({
             rawType: 'purchase',
             id
         }));
 
-        const cancelReloads = payload.transactionIds.reloads.map((id) => ({
+        const cancelReloads = payload.transactionIds.reloads.map(id => ({
             rawType: 'reload',
             id
         }));
@@ -41,31 +41,31 @@ export const cancelEntry = (store, payload) => {
         } else {
             // we're offline
 
-            cancelPurchases
-                .concat(cancelReloads)
-                .map(body => store.dispatch('addPendingRequest', {
+            cancelPurchases.concat(cancelReloads).map(body =>
+                store.dispatch('addPendingRequest', {
                     url: cancelUrl,
                     body
-                }));
+                })
+            );
 
             return Promise.resolve();
         }
     }
 };
 
-export const sendValidCancellations = (store) => {
+export const sendValidCancellations = store => {
     const cancellations = store.state.history.pendingCancellations
         .filter(pending => pending.transactionIds)
-        .map((pending) => {
+        .map(pending => {
             const created_at = new Date();
 
-            const cancelPurchases = pending.transactionIds.purchases.map((id) => ({
+            const cancelPurchases = pending.transactionIds.purchases.map(id => ({
                 rawType: 'purchase',
                 created_at,
                 id
             }));
 
-            const cancelReloads = pending.transactionIds.reloads.map((id) => ({
+            const cancelReloads = pending.transactionIds.reloads.map(id => ({
                 rawType: 'reload',
                 created_at,
                 id
@@ -77,13 +77,11 @@ export const sendValidCancellations = (store) => {
             Promise.all(bodys.map(body => axios.post(cancelUrl, body, store.getters.tokenHeaders)))
         );
 
-    return Promise
-        .all(cancellations)
-        .then(() => {
-            store.state.history.pendingCancellations
-                .filter(pending => pending.transactionIds)
-                .forEach((pending) => {
-                    store.commit('REMOVE_PENDING_CANCELLATION', pending);
-                });
-        });
+    return Promise.all(cancellations).then(() => {
+        store.state.history.pendingCancellations
+            .filter(pending => pending.transactionIds)
+            .forEach(pending => {
+                store.commit('REMOVE_PENDING_CANCELLATION', pending);
+            });
+    });
 };

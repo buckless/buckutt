@@ -30,7 +30,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 
-import Ticket         from './Ticket';
+import Ticket from './Ticket';
 import NumericalInput from './NumericalInput';
 
 export default {
@@ -42,16 +42,16 @@ export default {
     data() {
         return {
             authingSeller: false,
-            passwordMask : ''
+            passwordMask: ''
         };
     },
 
     computed: mapState({
-        buyer           : state => state.auth.buyer,
-        seller          : state => state.auth.seller,
-        lastUser        : state => state.ui.lastUser,
+        buyer: state => state.auth.buyer,
+        seller: state => state.auth.seller,
+        lastUser: state => state.ui.lastUser,
         doubleValidation: state => state.auth.device.config.doubleValidation,
-        point           : state => state.auth.device.point.name
+        point: state => state.auth.device.point.name
     }),
 
     methods: {
@@ -97,22 +97,20 @@ export default {
             }
 
             this.authingSeller = true;
-            this.passwordMask  = '';
+            this.passwordMask = '';
 
-            this
-                .login({
-                    meanOfLogin: this.seller.meanOfLogin,
-                    password
-                })
-                .then(() => {
-                    this.authingSeller = false;
-                });
+            this.login({
+                meanOfLogin: this.seller.meanOfLogin,
+                password
+            }).then(() => {
+                this.authingSeller = false;
+            });
         },
 
         ...mapActions({
             sellerId: 'sellerId',
             setBuyer: 'buyer',
-            login   : 'login'
+            login: 'login'
         })
     },
 
@@ -150,7 +148,8 @@ export default {
         padding: 30px;
     }
 
-    &--sellerId, &--buyerId {
+    &--sellerId,
+    &--buyerId {
         line-height: 100px;
     }
 }
@@ -173,7 +172,8 @@ export default {
         min-height: 80px;
         padding: 15px;
 
-        &--sellerId, &--buyerId {
+        &--sellerId,
+        &--buyerId {
             line-height: 80px;
         }
     }

@@ -26,7 +26,7 @@ export default {
     computed: mapGetters(['reloadAmount']),
 
     methods: mapActions(['removeReloads'])
-}
+};
 </script>
 
 <style scoped>
@@ -57,7 +57,7 @@ export default {
     height: 26px;
 }
 
-@media(min-width: 769px) {
+@media (min-width: 769px) {
     .b-lower-bar__reload {
         display: none;
     }

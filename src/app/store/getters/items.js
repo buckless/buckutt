@@ -1,11 +1,9 @@
 import isMobile from '../../utils/isMobile';
 
-export const tabsItems = (state) => {
+export const tabsItems = state => {
     if (isMobile()) {
         // flatten all tabs on mobile
-        return []
-            .concat(...state.items.tabsItems)
-            .sort((a, b) => a.name.localeCompare(b.name));
+        return [].concat(...state.items.tabsItems).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     let items = state.items.tabsItems[state.ui.currentTab];
@@ -17,16 +15,14 @@ export const tabsItems = (state) => {
     return items;
 };
 
-export const basketAmount = (state) => {
+export const basketAmount = state => {
     const basket = state.items.basket.sidebar;
 
     if (!basket.items && !basket.promotions) {
         return 0;
     }
 
-    const items = (basket.items || [])
-        .map(item => item.price.amount)
-        .reduce((a, b) => a + b, 0);
+    const items = (basket.items || []).map(item => item.price.amount).reduce((a, b) => a + b, 0);
 
     const promotions = (basket.promotions || [])
         .map(promotion => promotion.price.amount)
@@ -35,16 +31,14 @@ export const basketAmount = (state) => {
     return items + promotions;
 };
 
-export const reloadAmount = (state) => {
-    return state.reload.reloads
-        .map(reload => reload.amount)
-        .reduce((a, b) => a + b, 0);
+export const reloadAmount = state => {
+    return state.reload.reloads.map(reload => reload.amount).reduce((a, b) => a + b, 0);
 };
 
-export const credit = (state) => {
+export const credit = state => {
     const initialCredit = state.auth.buyer.credit;
-    const reloads       = reloadAmount(state);
-    const basketCost    = basketAmount(state);
+    const reloads = reloadAmount(state);
+    const basketCost = basketAmount(state);
 
-    return (initialCredit + reloads) - basketCost;
+    return initialCredit + reloads - basketCost;
 };
