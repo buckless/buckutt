@@ -14,10 +14,10 @@
   "license": "MIT",
   "main": "src/main.js",
   "scripts": {
-    "postinstall": "cp config/profiles/development.json.example config/profiles/development.json && cp config/profiles/production.json.example config/profiles/production.json && cd cordova && cordova prepare",
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\"",
+    "buildmobile": "cd cordova && cordova prepare",
     "buildnative": "electron-rebuild .",
-    "build:docker": "docker build -t buckless/client .",
+    "build:docker": "docker build -t lab.buckless.com:4567/core/client .",
     "build:android": "cross-env TARGET=cordova PLATFORM=android node build/build.js",
     "build:electron": "cross-env TARGET=electron node build/build.js",
     "build:browser": "cross-env TARGET=browser node build/build.js",
@@ -27,8 +27,7 @@
     "browser": "static dist/browser --port 8081",
     "dev:android": "cross-env TARGET=cordova NODE_ENV=development PLATFORM=android webpack --config build/webpack.dev.conf.js --progress --hide-modules --watch",
     "dev:browser": "cross-env TARGET=browser NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js",
-    "dev:electron": "cross-env TARGET=electron NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js",
-    "lint": ""
+    "dev:electron": "cross-env TARGET=electron NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js"
   },
   "dependencies": {
     "@buckless/signed-number": "^1.2.1",

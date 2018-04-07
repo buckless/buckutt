@@ -1,24 +1,31 @@
-image: node:alpine
+image: lab.buckless.com:4567/core/docker-node-alpine
+
+# When using dind, it's wise to use the overlayfs driver for
+# improved performance.
+variables:
+  DOCKER_DRIVER: overlay2
+
+services:
+  - docker:dind
 
 stages:
-  - test
-  - deploy
+  - build
+  - push
 
 cache:
   paths:
     - node_modules/
 
-test:
-  stage: test
+build:
+  stage: build
   script:
-    - docker build -t lab.buckless.com/core/client .
-    - yarn lint
+    - yarn build:docker
+    - docker run -it lab.buckless.com:4567/core/client yarn lint
 
-deploy:
-  stage: deploy
+push:
+  stage: push
   only:
     - master
   script:
-    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com
-    - docker push lab.buckless.com/core/client
-
+    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com:4567
+    - docker push lab.buckless.com:4567/core/client
