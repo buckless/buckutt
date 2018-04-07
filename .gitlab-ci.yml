@@ -20,7 +20,7 @@ build:
   stage: build
   script:
     - yarn build:docker
-    - docker run lab.buckless.com:4567/core/client yarn lint
+    - docker run -t lab.buckless.com:4567/core/client yarn lint
 
 push:
   stage: push
