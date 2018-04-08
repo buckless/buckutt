@@ -75,12 +75,6 @@ router.get('/services/stats/purchases', (req, res, next) => {
         let price = 'price';
         let pricePeriod = 'price.period';
 
-        if (filter.event) {
-            pricePeriod = {
-                'price.period': q => q.where({ event_id: filter.event })
-            };
-        }
-
         if (filter.point) {
             filterQuery = filterQuery.where({ point_id: filter.point });
         }
