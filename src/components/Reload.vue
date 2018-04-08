@@ -99,6 +99,9 @@ export default {
                     if (data.type === 'url') {
                         window.location.href = data.res;
                     }
+                })
+                .catch((err) => {
+                    // todo: NaN credit / too much / too small
                 });
         },
 
