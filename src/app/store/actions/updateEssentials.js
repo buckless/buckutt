@@ -26,6 +26,10 @@ export const updateEssentials = (store, force) => {
                         point: {
                             id: res.headers.point,
                             name: res.headers.pointname
+                        },
+                        event: {
+                            id: res.headers.event,
+                            name: res.headers.eventname
                         }
                     })
                     .then(() => res);
