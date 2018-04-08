@@ -36,7 +36,7 @@ app.use(
     cors({
         allowedHeaders: ['content-type', 'Authorization'],
         credentials: true,
-        exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
+        exposedHeaders: ['device', 'point', 'pointName', 'wiket'],
         origin: true
     })
 );
