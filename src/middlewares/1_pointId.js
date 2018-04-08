@@ -35,7 +35,6 @@ module.exports = connector => {
             connector.device = device;
             connector.point = {};
             connector.event = event;
-            console.log(connector.event.name)
             connector.wiket = {};
             connector.details = {
                 device: connector.device.name,
@@ -81,6 +80,8 @@ module.exports = connector => {
 
             connector.header('point', connector.point_id);
             connector.header('pointName', connector.point.name);
+            connector.header('event', connector.event_id);
+            connector.header('eventName', connector.event.name);
             connector.header('wiket', connector.wiket.id);
             connector.header('device', device.id);
 
