@@ -7,42 +7,52 @@
             </div>
             <div class="b-assigner__home__spacing"></div>
             <div class="b-assigner__home__button" :class="searchClasses" @click="subpage = 'search'">
-                <i class="b-icon">person</i>
-                <h3>Rentrer un nom</h3>
+                <i class="b-icon">create</i>
+                <h3>Recherche manuelle</h3>
             </div>
             <div class="b-assigner__home__spacing"></div>
-            <div class="b-assigner__home__button" :class="barcodeClasses" @click="subpage = 'barcode'">
-                <i class="b-icon">create</i>
-                <h3>Rentrer un code-barre</h3>
+            <div class="b-assigner__home__button" :class="createClasses" @click="subpage = 'create'">
+                <i class="b-icon">person_add</i>
+                <h3>Compte anonyme</h3>
             </div>
         </div>
-        <!-- <create-account v-show="subpage === 'create'"/> -->
+        <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
         <search v-show="subpage === 'search'" @assign="assignModal"/>
-        <barcode v-show="subpage === 'barcode'" @assign="assignModal"/>
-        <modal v-show="assignModalOpened" :credit="assignModalCredit" :name="assignModalName" ref="modal" @close="closeModal"/>
-        <modal-ok v-if="showOkModal"/>
+        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck>
+            <strong>{{ assignModalName }}</strong><br />
+            Nouveau crédit: <strong><currency :value="assignModalCredit" /></strong>
+
+            <h4 v-if="groups.length > 0">Groupes :</h4>
+            <div class="b-assigner-modal__modal__text__groups" v-if="groups.length > 0">
+                <div class="b-assigner-modal__modal__text__groups__group" v-for="group in groups">
+                    <input type="checkbox" name="group" class="b--out-of-screen" :id="`chk_${group.id}`" v-model="activeGroups" :value="group">
+                    <label :for="`chk_${group.id}`">
+                        {{ group.name }}
+                    </label>
+                </div>
+            </div>
+        </nfc>
+        <ok v-if="showOkModal" @click.native="showOkModal = false"/>
     </div>
 </template>
 
 <script>
-import axios                                from 'axios';
+import axios from '@/utils/axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
-import barcode             from '../../lib/barcode';
-import AssignerOfflineData from '../../lib/assignerOfflineData';
-// import CreateAccount    from './Assigner-CreateAccount';
-import Barcode             from './Assigner-Barcode';
-import Search              from './Assigner-Search';
-import Modal               from './Assigner-Modal';
-import Ok                  from './Assigner-Ok';
+import barcode from '@/../lib/barcode';
+import OfflineData from '@/../lib/offlineData';
+import CreateAccount from './Assigner-CreateAccount';
+import Search from './Assigner-Search';
+import Ok from './Ok';
+import Currency from './Currency';
 
 export default {
     components: {
-        // CreateAccount,
+        CreateAccount,
+        Currency,
         Search,
-        Modal,
-        Barcode,
-        'modal-ok': Ok
+        Ok
     },
 
     data() {
@@ -53,38 +63,33 @@ export default {
             assignModalName: '',
             assignModalId: '',
             assignModalOpened: false,
-            subpage: 'search'
-        }
+            subpage: 'search',
+            activeGroups: []
+        };
     },
 
     computed: {
         scanClasses() {
-            return (this.subpage === 'scan')
-                ? 'b-assigner__home__button--active'
-                : '';
+            return this.subpage === 'scan' ? 'b-assigner__home__button--active' : '';
         },
 
         searchClasses() {
-            return (this.subpage === 'search')
-                ? 'b-assigner__home__button--active'
-                : '';
+            return this.subpage === 'search' ? 'b-assigner__home__button--active' : '';
         },
 
-        // createClasses() {
-        //     return (this.subpage === 'create')
-        //         ? 'b-assigner__home__button--active'
-        //         : '';
-        // },
+        createClasses() {
+            return this.subpage === 'create' ? 'b-assigner__home__button--active' : '';
+        },
 
         barcodeClasses() {
-            return (this.subpage === 'barcode')
-                ? 'b-assigner__home__button--active'
-                : '';
+            return this.subpage === 'barcode' ? 'b-assigner__home__button--active' : '';
         },
 
         ...mapState({
-            online     : state => state.online.status,
-            useCardData: state => state.auth.device.event.config.useCardData
+            online: state => state.online.status,
+            useCardData: state => state.auth.device.event.config.useCardData,
+            groups: state =>
+                state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
         }),
 
         ...mapGetters(['tokenHeaders'])
@@ -92,99 +97,121 @@ export default {
 
     methods: {
         assignCard(value) {
+            this.$store.commit('SET_DATA_LOADED', false);
             const mol = {
                 user_id: this.assignModalId,
-                type   : 'cardId',
-                data   : value,
+                type: 'cardId',
+                data: value,
                 blocked: false
             };
 
+            let initialPromise = Promise.resolve();
+
             if (this.online) {
-                axios
-                    .post(`${config.api}/meansoflogin`, mol, this.tokenHeaders)
+                initialPromise = initialPromise
+                    .then(() => axios.post(`${config.api}/meansoflogin`, mol, this.tokenHeaders))
                     .then(() =>
-                        axios.post(`${config.api}/services/assigner/groups`, {
-                            user: this.assignModalId,
-                            groups: this.$refs.modal.activeGroups.map(g => g.id)
-                        }, this.tokenHeaders)
-                    )
-                    .then(() => {
-                        this.useCardData && window.nfc.write(
-                            window.nfc.creditToData(this.assignModalCredit, config.signingKey)
-                        );
-
-                        this.ok();
-                    })
-                    .catch((err) => {
-                        if (err.response.data.message === 'Duplicate Entry') {
-                            // ignore duplicate entry, write to card anyway
-                            this.useCardData && window.nfc.write(
-                                window.nfc.creditToData(this.assignModalCredit, config.signingKey)
-                            );
-
-                            this.ok();
-                        }
-
-                        this.$store.commit('ERROR', err.response.data);
-                    });
+                        axios.post(
+                            `${config.api}/services/assigner/groups`,
+                            {
+                                user: this.assignModalId,
+                                groups: this.activeGroups.map(g => g.id)
+                            },
+                            this.tokenHeaders
+                        )
+                    );
             } else {
-                this.addPendingRequest({
-                    url : `${config.api}/meansoflogin`,
-                    body: mol
-                });
-
-                this.addPendingRequest({
-                    url: `${config.api}/services/assigner/groups`,
-                    body: {
-                        user: this.assignModalId,
-                        groups: this.$refs.modal.activeGroups.map(g => g.id)
-                    }
-                });
-
-                this.useCardData && window.nfc.write(
-                    window.nfc.creditToData(this.assignModalCredit, config.signingKey)
-                );
-
-                this.ok();
+                initialPromise = initialPromise
+                    .then(() =>
+                        this.addPendingRequest({
+                            url: `${config.api}/meansoflogin`,
+                            body: mol
+                        })
+                    )
+                    .then(() =>
+                        this.addPendingRequest({
+                            url: `${config.api}/services/assigner/groups`,
+                            body: {
+                                user: this.assignModalId,
+                                groups: this.activeGroups.map(g => g.id)
+                            }
+                        })
+                    );
             }
+
+            initialPromise
+                .then(() => Promise.resolve(true))
+                .catch(
+                    err =>
+                        err.response.data.message === 'Duplicate Entry'
+                            ? Promise.resolve(true)
+                            : Promise.reject(err)
+                )
+                .then(
+                    write =>
+                        write && this.useCardData
+                            ? new Promise(resolve => {
+                                  window.app.$root.$emit('readyToWrite', this.assignModalCredit);
+                                  window.app.$root.$on('writeCompleted', () => resolve());
+                              })
+                            : Promise.resolve()
+                )
+                .then(() => this.ok())
+                .catch(err => this.$store.commit('ERROR', err.response.data))
+                .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
         ticketScanned(value) {
+            this.$store.commit('SET_DATA_LOADED', false);
             if (this.online) {
-                axios.get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
-                    .then((res) => {
+                axios
+                    .get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
+                    .then(res => {
                         if (typeof res.data.credit === 'number') {
                             this.assignModal(res.data.credit, res.data.name, res.data.id);
                             return;
                         }
 
-                        this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
+                        return this.$store.commit('ERROR', { message: "Couldn't find ticket" });
                     })
-                    .catch((err) => {
+                    .catch(err => {
                         console.error(err);
                         this.$store.commit('ERROR', err.response.data);
-                    });
-            } else  {
-                this.db.findByBarcode(value)
-                    .then((users) => {
+                    })
+                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
+            } else {
+                this.db
+                    .findByBarcode(value)
+                    .then(users => {
                         if (users.length === 1) {
                             this.assignModal(users[0].credit, users[0].name, users[0].id);
                             return;
                         }
 
-                        this.$store.commit('ERROR', { message: 'Couldn\'t find ticket' });
-                    });
+                        return this.$store.commit('ERROR', { message: "Couldn't find ticket" });
+                    })
+                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
             }
         },
 
         closeModal() {
+            this.activeGroups = [];
             this.assignModalOpened = false;
             this.assignModalCredit = 0;
-            this.assignModalName   = '';
-            this.assignModalId     = '';
+            this.assignModalName = '';
+            this.assignModalId = '';
         },
 
         onBarcode(value, isFromBarcode) {
+            if (!value) {
+                return;
+            }
+
+            if (this.subpage === 'create') {
+                this.$refs.create.assignCard(value);
+                return;
+            }
+
             if (this.assignModalOpened) {
                 this.assignCard(value);
                 return;
@@ -198,8 +225,8 @@ export default {
         assignModal(credit, name, id) {
             this.assignModalOpened = true;
             this.assignModalCredit = credit;
-            this.assignModalName   = name;
-            this.assignModalId     = id;
+            this.assignModalName = name;
+            this.assignModalId = id;
         },
 
         barcode() {
@@ -209,22 +236,18 @@ export default {
         ok() {
             this.showOkModal = true;
             this.closeModal();
-
-            setTimeout(() => {
-                this.showOkModal = false;
-            }, 1500);
         },
 
         ...mapActions(['addPendingRequest', 'updateEssentials'])
     },
 
     mounted() {
-        this.db = new AssignerOfflineData();
-
-        this.updateEssentials();
+        this.db = new OfflineData();
         this.db.init();
+
+        window.mock.barcode = b => this.onBarcode(b, true);
     }
-}
+};
 </script>
 
 <style scoped>
@@ -236,7 +259,7 @@ export default {
 
 .b-assigner__home {
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
     min-height: 170px;
     padding: 10px;
 
@@ -257,7 +280,7 @@ export default {
     padding: 5px;
 
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     text-align: center;
 
@@ -273,11 +296,31 @@ export default {
     & > h3 {
         margin: 10px 0 0 0;
         text-transform: uppercase;
-        color: rgba(0,0,0,0.6);
+        color: rgba(0, 0, 0, 0.6);
     }
 }
 
-@media(max-width: 768px) {
+.b-assigner-modal__modal__text__groups {
+    margin-top: -15px;
+    background: #fff;
+    border-radius: 3px;
+}
+
+.b-assigner-modal__modal__text__groups__group {
+    & > label {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-weight: 500;
+    }
+
+    & > input:checked + label {
+        background-color: #2980b9;
+        color: #fff;
+    }
+}
+
+@media (max-width: 768px) {
     .b-assigner__home {
         min-height: 140px;
     }

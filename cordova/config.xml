@@ -1,17 +1,18 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.buckless.client" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Cashless Gala</name>
+    <name>Cashless</name>
     <description>
-        Application vendeur Cashless — Gala UTT 2018
+        Application opérateur Cashless
     </description>
     <icon src="../static/icon.png" />
     <author email="contact@buckless.com" href="http://buckless.com">
-        Buckless
+        Studio Async
     </author>
     <content src="index.html" />
     <allow-navigation href="*" />
     <access origin="*" />
     <allow-intent href="*" />
+    <preference name="OverrideUserAgent" value="c" />
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="Fullscreen" value="true" />
@@ -26,6 +27,9 @@
     <plugin name="phonegap-plugin-barcodescanner" spec="^7.0.2" />
     <plugin name="cordova-plugin-keyboard" spec="^1.2.0" />
     <plugin name="cordova-sqlite-storage" spec="^2.2.0" />
-    <plugin name="cordova-plugin-mifare-ultralight" spec="^1.0.1" />
-    <engine name="android" spec="^6.2.3" />
+    <plugin name="cordova-android-support-gradle-release" spec="^1.2.0">
+        <variable name="ANDROID_SUPPORT_VERSION" value="25.+" />
+    </plugin>
+    <plugin name="cordova-plugin-mifare-ultralight" spec="^1.0.2" />
+    <engine name="android" spec="^6.4.0" />
 </widget>

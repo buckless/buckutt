@@ -1,23 +1,23 @@
 process.env.TARGET = 'electron';
 
 const { app, BrowserWindow } = require('electron');
-const path     = require('path');
-const url      = require('url');
-const config   = require('../config');
-const NFC      = require('./lib/nfc');
-const io       = require('./lib/socket');
+const path = require('path');
+const url = require('url');
+const config = require('../config');
+const NFC = require('./lib/nfc');
+const io = require('./lib/socket');
 // const updater = require('./lib/updater') TODO: updater
 
 function createWindow() {
-    const isDev = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development');
+    const isDev = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 
     window = new BrowserWindow({
         fullscreen: !isDev,
-        kiosk     : !isDev
+        kiosk: !isDev
     });
 
     if (isDev) {
-        uri = process.env.URI || 'http://localhost:8081';
+        uri = process.env.URI || 'http://localhost:8081';
     } else {
         uri = url.format({
             pathname: path.join(__dirname, '..', 'dist', 'electron', 'index.html'),
@@ -39,15 +39,18 @@ function createWindow() {
     });
 
     window.nfc = new NFC();
-    window.io  = io;
+    window.io = io;
     // window.updater = updater(); TODO: updater
 
     const opts = {
         certificate: JSON.parse(config.certificate.path),
-        password   : JSON.parse(config.certificate.password)
+        password: JSON.parse(config.certificate.password)
     };
 
-    app.importCertificate(opts, result => console.log(result));
+    // On macOS, use `$ security import buckless-certificate.p12 -P password`
+    if (process.platform !== 'darwin') {
+        app.importCertificate(opts, result => console.log(result));
+    }
 }
 
 app.on('ready', createWindow);

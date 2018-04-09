@@ -3,9 +3,9 @@
         <div class="b-header__user-image" v-if="buyer.isAuth && showPicture">
             <img src="../assets/placeholder.jpg" height="112" width="112" />
         </div>
-        <upper :buyer="buyer" :seller="seller" />
+        <upper />
         <div class="b-header__separator"></div>
-        <lower :buyer="buyer" :seller="seller" />
+        <lower />
         <reload />
     </header>
 </template>
@@ -13,18 +13,13 @@
 <script>
 import { mapState } from 'vuex';
 
-import isMobile from '../utils/isMobile';
+import isMobile from '@/utils/isMobile';
 
 import Lower from './Topbar-Lower';
 import Upper from './Topbar-Upper';
 import Reload from './Topbar-Reload';
 
 export default {
-    props: {
-        buyer : { type: Object, required: true },
-        seller: { type: Object, required: true }
-    },
-
     components: {
         Lower,
         Upper,
@@ -37,7 +32,9 @@ export default {
         },
 
         ...mapState({
-            showPicture: state => state.auth.device.config.showPicture
+            showPicture: state => state.auth.device.config.showPicture,
+            seller: state => state.auth.seller,
+            buyer: state => state.auth.buyer
         })
     }
 };
@@ -47,7 +44,7 @@ export default {
 @import '../main.css';
 
 .b-header {
-    background-color: var(--blue);
+    background-color: $blue;
     color: #fff;
     height: 112px;
     width: 100%;
@@ -62,7 +59,7 @@ export default {
 .b-header__separator {
     background-color: #fff;
     height: 1px;
-    opacity: .1;
+    opacity: 0.1;
 }
 
 @media (max-width: 768px) {

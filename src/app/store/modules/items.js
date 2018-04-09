@@ -2,21 +2,26 @@ import promotions from '../../utils/promotions';
 
 const initialState = {
     categories: [],
-    items     : [],
-    tabsItems : [],
+    items: [],
+    tabsItems: [],
     promotions: [],
-    basket    : {
+    basket: {
         itemList: [],
-        sidebar : {
-            items     : [],
+        sidebar: {
+            items: [],
             promotions: []
         }
-    }
+    },
+    giftReloads: []
 };
 
 const mutations = {
     SET_CATEGORIES(state, payload) {
         state.categories = payload;
+    },
+
+    SET_GIFTRELOADS(state, payload) {
+        state.giftReloads = payload;
     },
 
     SET_ITEMS(state, payload) {

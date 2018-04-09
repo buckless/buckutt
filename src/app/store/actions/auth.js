@@ -1,11 +1,16 @@
-import axios        from 'axios';
-import cloneDeep    from 'lodash.clonedeep';
-import q            from '../../utils/q';
+import axios from '@/utils/axios';
+import cloneDeep from 'lodash.clonedeep';
+import q from '../../utils/q';
 import offlineLogin from '../../utils/offline/login';
 
 export const setPoint = ({ commit }, payload) => {
     window.localStorage.setItem('headers', JSON.stringify(payload));
     commit('SET_DEVICE', payload);
+};
+
+export const setGiftReloads = ({ commit }, payload) => {
+    window.localStorage.setItem('giftReloads', JSON.stringify(payload));
+    commit('SET_GIFTRELOADS', payload);
 };
 
 export const setFullDevice = ({ commit }, payload) => {
@@ -18,48 +23,52 @@ export const setEvent = ({ commit }, payload) => {
     commit('SET_EVENT', payload);
 };
 
+export const setGroups = ({ commit }, payload) => {
+    window.localStorage.setItem('groups', JSON.stringify(payload));
+    commit('SET_GROUPS', payload);
+};
+
 export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, password }) => {
+    commit('SET_DATA_LOADED', false);
     const credentials = {
         meanOfLogin: config.loginMeanOfLogin,
-        data       : meanOfLogin,
-        pin        : password
+        data: meanOfLogin,
+        pin: password
     };
 
-    const initialPromise = (!getters.isDegradedModeActive) ?
-        axios.post(`${config.api}/services/login`, credentials) :
-        offlineLogin(state.online.offline.sellers, credentials);
+    const initialPromise = !getters.isDegradedModeActive
+        ? axios.post(`${config.api}/services/login`, credentials)
+        : offlineLogin(state.online.offline.sellers, credentials);
 
     return initialPromise
-        .then((res) => {
-            if (!res.data.user.canSell && !res.data.user.canReload && !res.data.user.canAssign) {
+        .then(res => {
+            if (
+                !res.data.user.canSell &&
+                !res.data.user.canReload &&
+                !res.data.user.canAssign &&
+                !res.data.user.canControl
+            ) {
                 return Promise.reject({ response: { data: { message: 'Not enough rights' } } });
             }
 
             commit('AUTH_SELLER', {
-                id         : res.data.user.id,
+                id: res.data.user.id,
                 meanOfLogin,
-                pin        : password,
-                token      : res.data.token,
-                firstname  : res.data.user.firstname,
-                lastname   : res.data.user.lastname,
-                canSell    : res.data.user.canSell,
-                canReload  : res.data.user.canReload,
-                canAssign  : res.data.user.canAssign
+                pin: password,
+                token: res.data.token,
+                firstname: res.data.user.firstname,
+                lastname: res.data.user.lastname,
+                canSell: res.data.user.canSell,
+                canReload: res.data.user.canReload,
+                canAssign: res.data.user.canAssign,
+                canControl: res.data.user.canControl
             });
 
-            if (!res.data.user.canAssign) {
-                commit('SET_DATA_LOADED', false);
-
-                return dispatch('dataLoader')
-                    .then(() => dispatch('interfaceLoader'))
-                    .then(() => commit('SET_DATA_LOADED', true));
-            } else {
-                return dispatch('loadGroups')
-                    .then(() => dispatch('loadEvent'))
-            }
+            return dispatch('updateEssentials', true).then(() => dispatch('interfaceLoader'));
         })
         .then(() => dispatch('setupSocket', state.auth.seller.token))
-        .catch((err) => {
+        .then(() => commit('SET_DATA_LOADED', true))
+        .catch(err => {
             console.error(err);
 
             commit('ID_SELLER', '');
@@ -74,12 +83,11 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         });
 };
 
-export const logout = (store) => {
+export const logout = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
         store.dispatch('setupSocket');
-        return store.dispatch('clearBasket')
-            .then(() => store.dispatch('interfaceLoader'));
+        return store.dispatch('clearBasket').then(() => store.dispatch('interfaceLoader'));
     } else if (store.state.auth.seller.isAuth) {
         store.commit('FIRST_LOGOUT_SELLER');
     } else {
@@ -104,10 +112,11 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit_ }) => {
+export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
     const token = store.getters.tokenHeaders;
+    const onlyAuth = isOnlyAuth || false;
 
-    let credit = credit_;
+    let cardCredit = credit;
 
     store.commit('SET_DATA_LOADED', false);
 
@@ -119,59 +128,66 @@ export const buyer = (store, { cardNumber, credit_ }) => {
     }
 
     let interfaceLoaderCredentials;
-    let shouldSendBasket   = false;
-    let shouldWriteCredit  = false;
-    let shouldClearBasket  = false;
-    let shouldCheckPending = store.state.online.status;
+    let shouldSendBasket = false;
+    let shouldWriteCredit = false;
+    let shouldClearBasket = false;
+    let shouldCheckPending = false;
+    let shouldChangeBuyer = false;
 
     if (!store.state.auth.device.config.doubleValidation) {
-        shouldClearBasket = true;
         // First time: sendBasket will active "WAITING_FOR_BUYER" and return
-        shouldSendBasket = true;
+        shouldSendBasket = !onlyAuth;
+        shouldClearBasket = store.getters.isSellerMode;
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
-            shouldWriteCredit = true;
+            shouldChangeBuyer = true;
+            shouldCheckPending = store.state.online.status;
+            shouldWriteCredit = store.state.auth.device.event.config.useCardData;
         } else {
-            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
+            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
         }
     } else {
         if (store.state.auth.buyer.isAuth) {
-            shouldSendBasket   = true;
-            shouldClearBasket  = true;
+            shouldSendBasket = true;
+            shouldClearBasket = true;
+            shouldChangeBuyer = true;
         } else {
-            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber };
+            shouldCheckPending = store.state.online.status;
+            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
         }
     }
 
     if (shouldCheckPending) {
-        const pendingUrl = `${config.api}/services/pendingCardUpdate?molType=${config.buyerMeanOfLogin}&buyer=${cardNumber}`;
+        const pendingUrl = `${config.api}/services/pendingCardUpdate?molType=${
+            config.buyerMeanOfLogin
+        }&buyer=${cardNumber}`;
 
         initialPromise = initialPromise
             .then(() => axios.get(pendingUrl, store.getters.tokenHeaders))
-            .then((res) => {
-                credit += res.data.amount;
+            .catch(() => Promise.resolve({ data: { amount: 0 } }))
+            .then(res => {
+                cardCredit += res.data.amount;
             });
     }
 
     if (shouldSendBasket) {
-        if (typeof credit === 'number') {
-            store.commit('OVERRIDE_BUYER_CREDIT', credit);
+        if (typeof cardCredit === 'number') {
+            store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
         }
 
-        initialPromise = initialPromise
-            .then(() => store.dispatch('sendBasket', { cardNumber }))
-            .then(() => store.commit('SET_BASKET_STATUS', 'WAITING'));
+        initialPromise = initialPromise.then(() => store.dispatch('sendBasket', { cardNumber }));
     } else {
-        initialPromise = initialPromise
-            .then(() => store.commit('SET_BUYER_MOL', cardNumber));
+        initialPromise = initialPromise.then(() => store.commit('SET_BUYER_MOL', cardNumber));
     }
 
-    if (shouldWriteCredit && store.state.auth.device.event.config.useCardData) {
-        initialPromise = initialPromise.then(() => {
-            window.nfc.write(
-                window.nfc.creditToData(store.state.ui.lastUser.credit, config.signingKey)
-            );
-        });
+    if (shouldWriteCredit) {
+        initialPromise = initialPromise.then(
+            () =>
+                new Promise(resolve => {
+                    window.app.$root.$emit('readyToWrite', store.state.ui.lastUser.credit);
+                    window.app.$root.$on('writeCompleted', () => resolve());
+                })
+        );
     }
 
     if (shouldClearBasket) {
@@ -181,15 +197,19 @@ export const buyer = (store, { cardNumber, credit_ }) => {
     initialPromise = initialPromise
         .then(() => store.dispatch('interfaceLoader', interfaceLoaderCredentials))
         .then(() => {
-            if (typeof credit === 'number' && store.state.auth.device.event.config.useCardData) {
-                store.commit('OVERRIDE_BUYER_CREDIT', credit);
+            if (
+                typeof cardCredit === 'number' &&
+                store.state.auth.device.event.config.useCardData
+            ) {
+                store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
             }
 
-            if (shouldSendBasket && shouldWriteCredit && store.state.auth.device.event.config.useCardData) {
+            if (shouldChangeBuyer) {
+                store.commit('OPEN_TICKET');
                 store.commit('LOGOUT_BUYER');
             }
         })
-        .catch((err) => {
+        .catch(err => {
             console.log(err);
 
             if (err.message === 'Network Error') {
@@ -199,7 +219,10 @@ export const buyer = (store, { cardNumber, credit_ }) => {
 
             store.commit('ERROR', err.response.data);
         })
-        .then(() => store.commit('SET_DATA_LOADED', true));
+        .then(() => {
+            store.commit('SET_DATA_LOADED', true);
+            store.commit('SET_WRITING', false);
+        });
 
     return initialPromise;
 };

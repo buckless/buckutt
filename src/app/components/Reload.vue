@@ -22,6 +22,9 @@
             </div>
             <div class="b-reload__modal__currency">
                 <currency :value="reloadAmount"></currency>
+                <span class="b-reload__modal__currency__gift" v-if="reloadGiftAmount > 0">
+                    +<currency :value="reloadGiftAmount"></currency>
+                </span>
             </div>
             <div v-show="reloadState === 'opened' || reloadOnly">
                 <div class="b-reload__modal__numerical-input">
@@ -38,14 +41,16 @@
                 <button @click="cancelReloadModal">Paiement refusé</button>
             </div>
         </div>
+        <nfc mode="read" @read="validate" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
+        <nfc mode="write" @read="validate" @cancel="cancelReload" v-if="reloadOnly && isWriting" key="write"/>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 
-import Currency       from './Currency';
-import Methods        from './Reload-Methods';
+import Currency from './Currency';
+import Methods from './Reload-Methods';
 import NumericalInput from './NumericalInput';
 
 export default {
@@ -67,12 +72,24 @@ export default {
 
     computed: {
         ...mapState({
-            reloadState     : state => state.reload.reloadState,
-            buyer           : state => state.auth.buyer,
-            doubleValidation: state => state.auth.device.config.doubleValidation
+            loggedBuyer: state => state.auth.buyer,
+            reloadState: state => state.reload.reloadState,
+            isWaiting: state => state.basket.basketStatus === 'WAITING',
+            isWriting: state => state.basket.writing,
+            giftReloads: state => state.items.giftReloads
         }),
 
-        ...mapGetters(['reloadSum'])
+        ...mapGetters(['reloadSum']),
+
+        reloadGiftAmount() {
+            return this.giftReloads
+                .map(gr => {
+                    const timesEveryAmount = Math.floor(this.reloadAmount / gr.everyAmount);
+
+                    return timesEveryAmount * gr.amount;
+                })
+                .reduce((a, b) => a + b, 0);
+        }
     },
 
     methods: {
@@ -81,16 +98,26 @@ export default {
         },
 
         closeReload() {
-            this.$refs.input.clear();
+            if (this.$refs.input) {
+                this.$refs.input.clear();
+            }
             this.closeReloadModal();
         },
 
         reload() {
-            this.$store.dispatch('addReload', {
+            this.addReload({
                 amount: this.reloadAmount,
-                type  : this.$store.state.reload.meanOfPayment,
-                trace : ''
+                type: this.$store.state.reload.meanOfPayment,
+                trace: ''
             });
+
+            if (this.reloadGiftAmount) {
+                this.addReload({
+                    amount: this.reloadGiftAmount,
+                    type: 'gift',
+                    trace: `${this.$store.state.reload.meanOfPayment}-${this.reloadAmount}`
+                });
+            }
 
             let initialPromise = Promise.resolve();
 
@@ -101,7 +128,32 @@ export default {
             initialPromise.then(() => this.closeReload());
         },
 
-        ...mapActions(['confirmReloadModal', 'closeReloadModal', 'addReload', 'cancelReloadModal', 'sendBasket'])
+        validate(cardNumber, credit) {
+            this.buyer({
+                cardNumber,
+                credit: Number.isInteger(credit) ? credit : null,
+                isOnlyAuth: this.isWaiting && !this.isWriting
+            });
+        },
+
+        cancelReload() {
+            this.$store.commit('SET_WRITING', false);
+            this.$store.commit('SET_BASKET_STATUS', 'WAITING');
+        },
+
+        ...mapActions([
+            'confirmReloadModal',
+            'closeReloadModal',
+            'addReload',
+            'removeReloads',
+            'cancelReloadModal',
+            'sendBasket',
+            'buyer'
+        ])
+    },
+
+    beforeDestroy() {
+        this.closeReload();
     }
 };
 </script>
@@ -111,8 +163,8 @@ export default {
 
 .b-reload--reloadOnly {
     & .b-reload__modal {
-        transform: scale(1.2);
-        transform-origin: top;
+        transform: translateX(-50%);
+        transform-origin: top center;
         z-index: 4;
     }
 }
@@ -139,7 +191,7 @@ export default {
 }
 
 .b-reload__modal__topbar__cancel {
-    color: var(--lightblue);
+    color: $lightblue;
     cursor: pointer;
     flex: 0;
     font-size: 14px;
@@ -154,10 +206,14 @@ export default {
 }
 
 .b-reload__modal__currency {
-    color: color(var(--black) a(0.65));
+    color: color($black a(0.65));
     font-size: 25px;
     margin-bottom: 15px;
     text-align: center;
+}
+
+.b-reload__modal__currency__gift {
+    font-size: 75%;
 }
 
 .b-reload__modal__numerical-input {
@@ -172,9 +228,9 @@ export default {
 
     & > button {
         border: 0;
-        background-color: var(--green);
+        background-color: $green;
         border-radius: 2px;
-        box-shadow: 0 2px 4px color(var(--black) a(0.25));
+        box-shadow: 0 2px 4px color($black a(0.25));
         color: #fff;
         cursor: pointer;
         height: 45px;
@@ -182,7 +238,7 @@ export default {
     }
 
     & > button:last-child {
-        background-color: var(--lightorange);
+        background-color: $lightorange;
         margin: 10px 0;
     }
 }

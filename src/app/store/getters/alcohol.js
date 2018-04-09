@@ -1,4 +1,4 @@
-export const warnAlcohol = (state) => {
+export const warnAlcohol = state => {
     if (!state.auth.buyer.id || !state.auth.seller.id) {
         return false;
     }
@@ -21,7 +21,7 @@ export const warnAlcohol = (state) => {
     return fromPurchases + fromBasket > maxAlcohol;
 };
 
-export const alcoholAmount = (state) => {
+export const alcoholAmount = state => {
     return 0;
 
     if (!state.auth.buyer.id || !state.auth.seller.id) {

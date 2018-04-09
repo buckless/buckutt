@@ -25,7 +25,8 @@ export default {
     computed: {
         statusClasses() {
             return {
-                'b-sidebar-validate--doing': this.basketStatus === 'DOING' || this.basketStatus === 'WAITING_FOR_BUYER',
+                'b-sidebar-validate--doing':
+                    this.basketStatus === 'DOING' || this.basketStatus === 'WAITING_FOR_BUYER',
                 'b-sidebar-validate--error': this.basketStatus === 'ERROR'
             };
         },
@@ -54,7 +55,7 @@ export default {
 
 .b-sidebar-validate {
     align-items: center;
-    background-color: var(--green);
+    background-color: $green;
     border: 0;
     color: #000;
     cursor: pointer;
@@ -68,11 +69,11 @@ export default {
     }
 
     &--doing {
-        background-color: var(--lightorange);
+        background-color: $lightorange;
     }
 
     &--error {
-        background-color: var(--red);
+        background-color: $red;
     }
 }
 

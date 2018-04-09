@@ -1,105 +1,126 @@
 <template>
     <div class="b-assigner-create-account">
-        <form @submit.prevent="createAccount">
-            <h4>Informations personnelles :</h4>
+        <form @submit.prevent="assignModalOpened = true">
             <input
-                type="text"
-                name="Prénom"
-                @focus="keepFocus"
-                @blur="giveFocusBack"
+                type="Number"
+                name="credit"
                 class="b-assigner-create-account__input"
-                placeholder="Prénom"
+                step="0.1"
+                placeholder="Crédit (euros)"
                 autocomplete="off"
-                v-model="firstname">
-            <input
-                type="text"
-                name="Nom"
-                @focus="keepFocus"
-                @blur="giveFocusBack"
-                class="b-assigner-create-account__input"
-                placeholder="Nom"
-                autocomplete="off"
-                v-model="lastname">
+                v-model="credit">
             <h4>Groupes :</h4>
-            <div class="b-assigner-create-account__groups">
+            <div class="b-assigner-create-account__groups" v-if="groups.length > 0">
                 <div class="b-assigner-create-account__groups__group" v-for="group in groups">
-                    <input type="checkbox" name="group" class="b--out-of-screen" :id="group.id" v-model="groups" :value="activeGroups">
-                    <label :for="group.id" @click.prevent.stop="select($event)">
+                    <input type="checkbox" name="group" class="b--out-of-screen" :id="group.id" v-model="activeGroups" :value="group">
+                    <label :for="group.id">
                         {{ group.name }}
                     </label>
                 </div>
             </div>
-            <button @click.prevent="createAccount">Valider</button>
+            <button @click.prevent="assignModalOpened = true">Valider</button>
         </form>
+        <nfc mode="write" @read="assignCard" @cancel="assignModalOpened = false" v-if="assignModalOpened" disableSignCheck>
+            <strong>Compte anonyme</strong><br />
+            Nouveau crédit: <strong><currency :value="numberCredit" /></strong>
+        </nfc>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
-import bcrypt from 'bcryptjs';
-import pad from 'lodash.padstart';
-import { mapState, mapGetters } from 'vuex';
+import axios from '@/utils/axios';
+import { mapState, mapGetters, mapActions } from 'vuex';
+
+import Currency from './Currency';
 
 export default {
+    components: {
+        Currency
+    },
+
     data() {
         return {
-            firstname: '',
-            lastname: '',
+            assignModalOpened: false,
+            credit: null,
             activeGroups: []
-        }
+        };
     },
 
     computed: {
+        numberCredit() {
+            return Math.round(this.credit * 100);
+        },
+
         ...mapState({
-            groups: state => state.auth.groups.filter(group => group.name !== 'Défaut')
+            online: state => state.online.status,
+            point: state => state.auth.device.point.id,
+            seller: state => state.auth.seller.id,
+            groups: state => state.auth.groups.filter(group => group.name !== 'Défaut'),
+            useCardData: state => state.auth.device.event.config.useCardData
         }),
 
         ...mapGetters(['tokenHeaders'])
     },
 
     methods: {
-        createAccount()  {
-            const pin = pad(Math.floor(Math.random() * 10000), 4, '0');
-            const hash = bcrypt.hashSync(pin, 10);
+        assignCard(cardId) {
+            if (this.assignModalOpened) {
+                this.$store.commit('SET_DATA_LOADED', false);
+                let promise = Promise.resolve();
+                const groups = this.activeGroups.map(group => group.id);
 
-            alert(`Code PIN de l'utilisateur : ${pin}`)
+                const anon = {
+                    credit: this.numberCredit ? this.numberCredit : 0,
+                    cardId,
+                    groups
+                };
 
-            if (this.firstname.length < 2 || this.lastname.length < 2) {
-                return;
+                if (this.online) {
+                    promise = promise.then(() =>
+                        axios.post(`${config.api}/services/assigner/anon`, anon, this.tokenHeaders)
+                    );
+                } else {
+                    promise = promise.then(() =>
+                        this.addPendingRequest({
+                            url: `${config.api}/services/assigner/anon`,
+                            body: anon
+                        })
+                    );
+                }
+
+                promise = promise
+                    .then(() => Promise.resolve(true))
+                    .catch(
+                        err =>
+                            err.response.data.message === 'Duplicate Entry'
+                                ? Promise.resolve(true)
+                                : Promise.reject(err)
+                    )
+                    .then(
+                        write =>
+                            write && this.useCardData
+                                ? new Promise(resolve => {
+                                      window.app.$root.$emit('readyToWrite', this.numberCredit);
+                                      window.app.$root.$on('writeCompleted', () => resolve());
+                                  })
+                                : Promise.resolve()
+                    )
+                    .then(() => this.ok())
+                    .catch(err => this.$store.commit('ERROR', err.response.data))
+                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
             }
-
-            let user;
-
-            axios
-                .post(`${config.api}/users`, {
-                    firstname: this.firstname,
-                    lastname : this.lastname,
-                    pin      : hash,
-                    password : 'none'
-                }, this.tokenHeaders)
-                .then((res) => {
-                    user = res.data;
-
-                    return Promise.all(this.activeGroups.map((group) => {
-                        return axios.post(`${config.api}/users/${user.id}/groups/${group.id}`, {}, this.tokenHeaders);
-                    }));
-                });
         },
 
-        select(e) {
-            // avoid scrolling top
-            e.currentTarget.previousElementSibling.checked = !e.currentTarget.previousElementSibling.checked;
+        ok() {
+            this.$emit('ok');
+            this.assignModalOpened = false;
+            this.credit = null;
+            this.activeGroups = [];
         },
 
-        keepFocus() {
-            document.querySelector('#app > input').disabled = true;
-        },
-
-        giveFocusBack() {
-            document.querySelector('#app > input').disabled = false;
-        }
+        ...mapActions(['addPendingRequest'])
     }
-}
+};
 </script>
 
 <style scoped>
@@ -118,7 +139,7 @@ export default {
 
 .b-assigner-create-account h4 {
     text-transform: uppercase;
-    color: rgba(0,0,0,.7);
+    color: rgba(0, 0, 0, 0.7);
 }
 
 .b-assigner-create-account__input {
@@ -126,7 +147,7 @@ export default {
     width: 100%;
     padding: 10px;
     border-radius: 42px;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
 
     &:not(:first-child) {
         margin-top: 16px;
@@ -141,7 +162,7 @@ export default {
 .b-assigner-create-account__groups {
     margin-top: 16px;
     background: #fff;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 3px;
 }
 
@@ -161,7 +182,7 @@ export default {
 
 .b-assigner-create-account button {
     margin: 32px 0;
-    background-color: var(--green);
+    background-color: $green;
     color: #fff;
     cursor: pointer;
     border: 0;
@@ -172,7 +193,7 @@ export default {
     border-radius: 25px;
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     .b-assigner-create-account > form {
         width: calc(100% - 20px);
         margin: 10px auto;

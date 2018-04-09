@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import axios    from 'axios';
+import axios from '@/utils/axios';
 import uniqueId from 'lodash.uniqueid';
 
 export const addItemToBasket = ({ commit }, item) => {
@@ -22,10 +22,21 @@ export const sendBasket = (store, payload = {}) => {
         return;
     }
 
+    const bought = store.getters.basketAmount;
+    const reloaded = store.getters.reloadAmount;
+
+    if (bought === 0 && reloaded === 0) {
+        return;
+    }
+
     // quick mode = wait for card for writing
     if (!store.state.auth.device.config.doubleValidation) {
         if (store.state.basket.basketStatus !== 'WAITING_FOR_BUYER') {
+            store.commit('SET_WRITING', true);
             store.commit('SET_BASKET_STATUS', 'WAITING_FOR_BUYER');
+            if (payload.cardNumber) {
+                store.commit('SET_BUYER_MOL', payload.cardNumber);
+            }
             return;
         }
     }
@@ -36,46 +47,59 @@ export const sendBasket = (store, payload = {}) => {
     }
 
     // !useCardData = checked by the API
-    if (store.state.auth.device.event.config.useCardData && store.getters.credit < 0) {
-        return Promise.reject({ response: { data: { message: 'Not enough credit' } } });
+    if (store.state.auth.device.event.config.useCardData) {
+        const minReload = store.state.auth.device.event.config.minReload;
+        const maxPerAccount = store.state.auth.device.event.config.maxPerAccount;
+        if (store.getters.credit < 0) {
+            return Promise.reject({ response: { data: { message: 'Not enough credit' } } });
+        } else if (store.getters.credit > maxPerAccount && reloaded > 0) {
+            const max = (maxPerAccount / 100).toFixed(2);
+            return Promise.reject({
+                response: { data: { message: `Maximum exceeded : ${max}€` } }
+            });
+        } else if (reloaded > 0 && reloaded < minReload) {
+            const min = (minReload / 100).toFixed(2);
+            return Promise.reject({
+                response: { data: { message: `Can not reload less than : ${min}€` } }
+            });
+        }
     }
 
-    const now        = payload.now || new Date();
+    const now = payload.now || new Date();
     const cardNumber = payload.cardNumber || store.state.auth.buyer.meanOfLogin;
 
     store.commit('SET_BASKET_STATUS', 'DOING');
 
-    const basket  = store.state.items.basket.sidebar;
+    const basket = store.state.items.basket.sidebar;
     const reloads = store.state.reload.reloads;
 
     const basketToSend = [];
 
-    let bought   = store.getters.basketAmount;
-    let reloaded = store.getters.reloadAmount;
-
-    basket.items.forEach((article) => {
+    basket.items.forEach(article => {
         basketToSend.push({
-            price_id    : article.price.id,
+            price_id: article.price.id,
             promotion_id: null,
-            articles    : [{
-                id   : article.id,
-                vat  : article.vat,
-                price: article.price.id
-            }],
+            articles: [
+                {
+                    id: article.id,
+                    vat: article.vat,
+                    price: article.price.id
+                }
+            ],
             alcohol: article.alcohol,
-            cost   : article.price.amount,
-            type   : 'purchase'
+            cost: article.price.amount,
+            type: 'purchase'
         });
     });
 
-    basket.promotions.forEach((promotion) => {
+    basket.promotions.forEach(promotion => {
         const articlesInside = [];
-        let alcohol          = 0;
+        let alcohol = 0;
 
-        promotion.content.forEach((articleInside) => {
+        promotion.content.forEach(articleInside => {
             articlesInside.push({
-                id   : articleInside.id,
-                vat  : articleInside.vat,
+                id: articleInside.id,
+                vat: articleInside.vat,
                 price: articleInside.price.id
             });
 
@@ -83,88 +107,68 @@ export const sendBasket = (store, payload = {}) => {
         });
 
         basketToSend.push({
-            price_id    : promotion.price.id,
+            price_id: promotion.price.id,
             promotion_id: promotion.id,
-            articles    : articlesInside,
-            cost        : promotion.price.amount,
-            type        : 'purchase',
+            articles: articlesInside,
+            cost: promotion.price.amount,
+            type: 'purchase',
             alcohol
         });
     });
 
-    reloads.forEach((reload) => {
+    reloads.forEach(reload => {
         basketToSend.push({
-            credit   : reload.amount,
-            trace    : reload.trace,
-            type     : reload.type
+            credit: reload.amount,
+            trace: reload.trace,
+            type: reload.type
         });
     });
 
+    const localId = uniqueId(`transaction-id-${window.appId}`);
     const transactionToSend = {
-        buyer  : cardNumber,
+        buyer: cardNumber,
         molType: config.buyerMeanOfLogin,
-        date   : now,
-        basket : basketToSend
+        date: now,
+        basket: basketToSend,
+        seller: store.state.auth.seller.id,
+        localId
     };
 
     let initialPromise;
+    const offlineBasketAnswer = {
+        data: {
+            transactionIds: null,
+            credit: store.getters.credit
+        }
+    };
 
     if (store.getters.isDegradedModeActive) {
-        const transactionIds = uniqueId('offline-transaction-id');
-
-        transactionToSend.seller = store.state.auth.seller.id;
-        transactionToSend.offlineTransactionId = transactionIds;
-
         store.dispatch('addPendingRequest', {
-            url : `${config.api}/services/basket?offline=1`,
+            url: `${config.api}/services/basket?offline=1`,
             body: transactionToSend
         });
 
-        initialPromise = Promise.resolve({
-            data: {
-                transactionIds,
-                pendingCardUpdates: 0,
-                credit: store.getters.credit
-            }
-        });
+        initialPromise = Promise.resolve(offlineBasketAnswer);
     } else {
-        initialPromise = axios.post(`${config.api}/services/basket`, transactionToSend, store.getters.tokenHeaders);
+        initialPromise = axios.post(
+            `${config.api}/services/basket`,
+            transactionToSend,
+            store.getters.tokenHeaders
+        );
     }
 
     return initialPromise
-        .then((lastBuyer) => {
-            // store last lastBuyer + transactionIds
-            store.commit('ADD_HISTORY_TRANSACTION', {
-                cardNumber,
-                basketToSend,
-                date: new Date(),
-                transactionIds: lastBuyer.data.transactionIds
-            });
-
-            store.commit('ID_BUYER', {
-                id    : lastBuyer.data.id,
-                credit: store.state.auth.device.event.config.useCardData
-                    ? store.getters.credit + lastBuyer.data.pendingCardUpdates
-                    : lastBuyer.data.credit,
-                firstname: lastBuyer.data.firstname,
-                lastname : lastBuyer.data.lastname
-            });
-            store.commit('CLEAR_BASKET');
-            store.commit('REMOVE_RELOADS');
-            store.commit('SET_BASKET_STATUS', 'WAITING');
-            store.commit('SET_LAST_USER', {
-                name  : (store.state.auth.buyer.firstname) ?
-                    `${store.state.auth.buyer.firstname} ${store.state.auth.buyer.lastname}` :
-                    null,
-                credit: store.state.auth.buyer.credit,
-                reload: reloaded,
-                bought
-            });
-
-            store.commit('LOGOUT_BUYER');
-        })
-        .catch((err) => {
+        .catch(err => {
             console.log(err);
+            // if useCardData: it has to work
+            if (store.state.auth.device.event.config.useCardData) {
+                store.dispatch('addPendingRequest', {
+                    url: `${config.api}/services/basket?offline=1`,
+                    body: transactionToSend
+                });
+                return Promise.resolve(offlineBasketAnswer);
+            }
+
             store.commit('SET_BASKET_STATUS', 'ERROR');
 
             if (err.message === 'Network Error') {
@@ -174,5 +178,39 @@ export const sendBasket = (store, payload = {}) => {
             }
 
             return Promise.reject(err);
+        })
+        .then(lastBuyer => {
+            // store last lastBuyer + transactionIds
+            store.commit('ADD_HISTORY_TRANSACTION', {
+                cardNumber,
+                basketToSend,
+                date: new Date(),
+                transactionIds: lastBuyer.data.transactionIds,
+                localId
+            });
+
+            store.commit('ID_BUYER', {
+                id: lastBuyer.data.id,
+                credit: store.state.auth.device.event.config.useCardData
+                    ? store.getters.credit
+                    : lastBuyer.data.credit,
+                firstname: lastBuyer.data.firstname,
+                lastname: lastBuyer.data.lastname
+            });
+            store.dispatch('clearBasket');
+            store.commit('SET_BASKET_STATUS', 'WAITING');
+            store.commit('SET_LAST_USER', {
+                display: false,
+                name: store.state.auth.buyer.firstname
+                    ? `${store.state.auth.buyer.firstname} ${store.state.auth.buyer.lastname}`
+                    : null,
+                credit: store.state.auth.buyer.credit,
+                reload: reloaded,
+                bought
+            });
+
+            if (store.state.auth.device.config.doubleValidation) {
+                store.commit('LOGOUT_BUYER');
+            }
         });
 };

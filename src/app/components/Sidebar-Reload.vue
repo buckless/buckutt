@@ -34,7 +34,7 @@ export default {
 .b-sidebar-reload {
     background: #fff;
     border-radius: 2px;
-    box-shadow: 0 3px 2px color(var(--black) a(0.25));
+    box-shadow: 0 3px 2px color($black a(0.25));
     display: flex;
     font-size: 18px;
     margin: 10px;
@@ -52,7 +52,7 @@ export default {
 }
 
 .b-sidebar-reload__remove {
-    background-color: var(--orange);
+    background-color: $orange;
     cursor: pointer;
     height: 30px;
     line-height: 30px;

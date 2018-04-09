@@ -20,73 +20,74 @@ function wrap(code, data) {
 }
 
 module.exports.read = (transmit, log, callback) => {
-    const appId  = JSON.parse(config.desfire.appId);
+    const appId = JSON.parse(config.desfire.appId);
     const fileId = JSON.parse(config.desfire.fileId);
-    const keyId  = JSON.parse(config.desfire.keyId);
-    const dkey   = JSON.parse(config.desfire.key);
+    const keyId = JSON.parse(config.desfire.keyId);
+    const dkey = JSON.parse(config.desfire.key);
 
-    log(`out: ${wrap(0x5A, appId).toString('hex')}`);
-    return transmit(wrap(0x5A, appId), 40)
-        .then((data) => {
+    log(`out: ${wrap(0x5a, appId).toString('hex')}`);
+    return transmit(wrap(0x5a, appId), 40)
+        .then(data => {
             log(`res: ${data.toString('hex')}`);
             if (data[0] !== 0x91) {
                 return false;
             }
 
-            log(`out: ${wrap(0x1A, keyId).toString('hex')}`);
-            return transmit(wrap(0x1A, keyId), 40);
+            log(`out: ${wrap(0x1a, keyId).toString('hex')}`);
+            return transmit(wrap(0x1a, keyId), 40);
         })
-        .then((data) => {
+        .then(data => {
             log(`res: ${data.toString('hex')}`);
             if (data.length !== 10 || data[data.length - 2] !== 0x91) {
                 throw new Error(`Error code: ${data.toString('hex')} in step keyId`);
             }
 
             const ekRndB = data.slice(0, -2);
-            const key    = Buffer.from(dkey, 'hex');
-            const RndB   = decrypt(key, ekRndB);
-            const RndBp  = Buffer.concat([RndB.slice(1, 8), RndB.slice(0, 1)]);
-            const RndA   = crypto.randomBytes(8);
-            const msg    = encrypt(key, Buffer.concat([RndA, RndBp]), ekRndB);
+            const key = Buffer.from(dkey, 'hex');
+            const RndB = decrypt(key, ekRndB);
+            const RndBp = Buffer.concat([RndB.slice(1, 8), RndB.slice(0, 1)]);
+            const RndA = crypto.randomBytes(8);
+            const msg = encrypt(key, Buffer.concat([RndA, RndBp]), ekRndB);
 
-            log(`out: ${wrap(0xAF, msg).toString('hex')}`);
-            return Promise.all([
-                transmit(wrap(0xAF, msg), 40),
-                RndA,
-                msg
-            ]);
+            log(`out: ${wrap(0xaf, msg).toString('hex')}`);
+            return Promise.all([transmit(wrap(0xaf, msg), 40), RndA, msg]);
         })
         .then(([data, RndA, msg]) => {
             log(`res: ${data.toString('hex')}`);
             if (data.length !== 10 || data[data.length - 2] !== 0x91) {
-                throw new Error(`Error code: ${data.toString('hex')} in step random key transmission`);
+                throw new Error(
+                    `Error code: ${data.toString('hex')} in step random key transmission`
+                );
             }
 
             const ekRndAp = data.slice(0, -2);
-            const key     = Buffer.from(dkey, 'hex');
-            const RndAp   = decrypt(key, ekRndAp, msg.slice(8, 16));
-            const RndA2   = Buffer.concat([RndAp.slice(7, 8), RndAp.slice(0, 7)]);
+            const key = Buffer.from(dkey, 'hex');
+            const RndAp = decrypt(key, ekRndAp, msg.slice(8, 16));
+            const RndA2 = Buffer.concat([RndAp.slice(7, 8), RndAp.slice(0, 7)]);
 
             if (!RndA.equals(RndA2)) {
-                throw new Error('Error: can\'t match random bytes');
+                throw new Error("Error: can't match random bytes");
             }
 
-            log(`out: ${wrap(0xBD, fileId).toString('hex')}`);
-            return transmit(wrap(0xBD, fileId), 255);
+            log(`out: ${wrap(0xbd, fileId).toString('hex')}`);
+            return transmit(wrap(0xbd, fileId), 255);
         })
-        .then((data) => {
+        .then(data => {
             log(`res: ${data.toString('hex')}`);
             if (data[data.length - 1] !== 0x00 && data[data.length - 2] !== 0x91) {
                 throw new Error(`Error code: ${data.toString('hex')} in step fileI`);
             }
 
-            callback(data.slice(0, 15).toString().replace(/\D+/g, ''));
+            callback(
+                data
+                    .slice(0, 15)
+                    .toString()
+                    .replace(/\D+/g, '')
+            );
             return true;
         });
 };
 
-module.exports.write = (data) => {
+module.exports.write = data => {};
 
-};
-
-module.exports.ATR = Buffer.from([ 0x3B, 0x81, 0x80, 0x01, 0x80, 0x80 ]);
+module.exports.ATR = Buffer.from([0x3b, 0x81, 0x80, 0x01, 0x80, 0x80]);

@@ -1,6 +1,5 @@
 <template>
-    <div
-        class="b-login">
+    <div class="b-login">
         <div v-if="!seller.isAuth">
             <div v-if="seller.meanOfLogin.length > 0" class="b-login__card b-login__card--sellerPassword">
                 <div class="b-login__card__title">
@@ -15,13 +14,15 @@
             </div>
             <div v-if="seller.meanOfLogin.length === 0">
                 <div class="b-login__card b-login__card--sellerId">
-                    En attente d'un vendeur<br/>
+                    En attente d'un opérateur
+                    <nfc mode="read" @read="validate" key="seller" disableSignCheck />
                 </div>
             </div>
         </div>
         <div v-if="seller.isAuth && doubleValidation" class="b-login__card b-login__card--buyerId">
             En attente d'un client
-            <Ticket v-if="lastUser.name" :inline="true" :user="lastUser"></Ticket>
+            <ticket v-if="lastUser.name" :inline="true" :user="lastUser"></ticket>
+            <nfc mode="read" @read="validate" key="buyer" />
         </div>
     </div>
 </template>
@@ -29,7 +30,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 
-import Ticket         from './Ticket';
+import Ticket from './Ticket';
 import NumericalInput from './NumericalInput';
 
 export default {
@@ -41,16 +42,16 @@ export default {
     data() {
         return {
             authingSeller: false,
-            passwordMask : ''
+            passwordMask: ''
         };
     },
 
     computed: mapState({
-        buyer           : state => state.auth.buyer,
-        seller          : state => state.auth.seller,
-        lastUser        : state => state.ui.lastUser,
+        buyer: state => state.auth.buyer,
+        seller: state => state.auth.seller,
+        lastUser: state => state.ui.lastUser,
         doubleValidation: state => state.auth.device.config.doubleValidation,
-        point           : state => state.auth.device.point.name
+        point: state => state.auth.device.point.name
     }),
 
     methods: {
@@ -70,11 +71,12 @@ export default {
         },
 
         validate(cardNumber, credit) {
+            console.log('validate');
             if (!this.seller.isAuth && this.seller.meanOfLogin.length === 0) {
                 this.sellerId(cardNumber);
             }
 
-            console.log('login-validate', cardNumber, credit)
+            console.log('login-validate', cardNumber, credit);
             if (this.seller.isAuth) {
                 if (Number.isInteger(credit)) {
                     this.setBuyer({
@@ -95,22 +97,20 @@ export default {
             }
 
             this.authingSeller = true;
-            this.passwordMask  = '';
+            this.passwordMask = '';
 
-            this
-                .login({
-                    meanOfLogin: this.seller.meanOfLogin,
-                    password
-                })
-                .then(() => {
-                    this.authingSeller = false;
-                });
+            this.login({
+                meanOfLogin: this.seller.meanOfLogin,
+                password
+            }).then(() => {
+                this.authingSeller = false;
+            });
         },
 
         ...mapActions({
-            sellerId        : 'sellerId',
-            setBuyer        : 'buyer',
-            login           : 'login'
+            sellerId: 'sellerId',
+            setBuyer: 'buyer',
+            login: 'login'
         })
     },
 
@@ -139,7 +139,7 @@ export default {
 
 .b-login__card {
     background-color: #fff;
-    box-shadow: 0 2px 4px color(var(--black) a(0.3));
+    box-shadow: 0 2px 4px color($black a(0.3));
     margin: 40px auto;
     max-width: 500px;
     min-height: 100px;
@@ -148,13 +148,14 @@ export default {
         padding: 30px;
     }
 
-    &--sellerId, &--buyerId {
+    &--sellerId,
+    &--buyerId {
         line-height: 100px;
     }
 }
 
 .b-login__card__password {
-    border: 1px solid color(var(--black) a(0.2));
+    border: 1px solid color($black a(0.2));
     height: 45px;
     line-height: 45px;
     margin: 20px 0;
@@ -171,7 +172,8 @@ export default {
         min-height: 80px;
         padding: 15px;
 
-        &--sellerId, &--buyerId {
+        &--sellerId,
+        &--buyerId {
             line-height: 80px;
         }
     }

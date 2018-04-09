@@ -3,6 +3,7 @@
         <div class="b-history__text" v-if="cardNumber.length === 0">
             Approchez la carte cashless
             <div>Pour visualiser les derniers achats sur cette borne</div>
+            <nfc mode="read" @read="onCard" />
         </div>
         <div v-else>
             <div class="b-history__text" v-if="entries.length === 0">
@@ -14,63 +15,85 @@
             </div>
             <div class="b-history__list" v-else>
                 <div class="b-history__list__entry" v-for="entry in entries">
-                    <span class="b-history__list__entry__date">
-                        {{ entry.date }}
-                    </span>
-                    <div>
+                    <div class="b-history__list__entry__top">
+                        <span class="b-history__list__entry__date">
+                            {{ entry.date }}
+                        </span>
                         <span class="b-history__list__entry__reload" v-if="entry.reload">
                             <currency :value="entry.reload" showPlus />
                         </span>
-                        <span class="b-history__list__entry__cost">
+                        <span class="b-history__list__entry__cost" v-if="entry.cost">
                             -<currency :value="entry.cost" />
                         </span>
+                        <span style="flex: 1"></span>
+                        <button class="b-history__list__entry__button" @click.prevent="selectedEntry = entry">
+                            <i class="b-icon">delete</i>
+                        </button>
                     </div>
-                    <span class="b-history__list__entry__content">
-                        <span v-if="entry.firstItem">{{ entry.firstItem }}</span><span v-if="entry.more">, ...</span>
-                    </span>
-                    <div style="flex: 1;"></div>
-                    <button class="b-history__list__entry__button" @click.prevent="selectedEntry = entry">Annuler</button>
+                    <div class="b-history__list__entry__content">
+                        <template v-for="item in entry.items">
+                            {{ item.name }}<br />
+                        </template>
+                        <template v-if="entry.items.length === 0 && entry.reload > 0">Rechargement</template>
+                    </div>
                 </div>
             </div>
         </div>
-        <modal v-if="selectedEntry" ref="modal" @cancel="selectedEntry = null"/>
+        <nfc mode="write" successText="Transaction annulée !" @read="onCard" @cancel="selectedEntry = null" v-if="selectedEntry" />
     </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Modal                    from './History-Modal';
-import Currency                 from './Currency';
+import Currency from './Currency';
 
 export default {
     components: {
-        Modal,
         Currency
     },
 
     data() {
         return {
             selectedEntry: null,
-            cardNumber: ''
-        }
+            localCardNumber: ''
+        };
     },
 
     computed: {
+        cardNumber() {
+            return this.buyer.isAuth ? this.buyer.meanOfLogin : this.localCardNumber;
+        },
+
         entries() {
-            return this.$store.state.history.history
+            return this.history
                 .filter(e => e.cardNumber === this.cardNumber)
+                .sort((a, b) => b.date - a.date)
                 .map(e => this.resume(e));
         },
 
         ...mapState({
-            useCardData: state => state.auth.device.event.config.useCardData
+            useCardData: state => state.auth.device.event.config.useCardData,
+            buyer: state => state.auth.buyer,
+            history: state => state.history.history,
+            items: state => state.items
         })
     },
 
     methods: {
         onCard(value, credit) {
             if (this.cardNumber.length === 0) {
-                this.cardNumber = value;
+                this.$store.commit('SET_DATA_LOADED', false);
+                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value }).then(
+                    () => {
+                        if (typeof credit === 'number') {
+                            this.$store.commit('OVERRIDE_BUYER_CREDIT', credit);
+                        }
+                        this.$store.commit('SET_DATA_LOADED', true);
+                        this.localCardNumber = value;
+                    }
+                );
+            } else if (this.cardNumber !== value) {
+                this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
             }
 
@@ -78,33 +101,40 @@ export default {
                 return;
             }
 
-            if (!Number.isInteger(credit)) {
-                credit = 0;
+            let selectedCredit = credit || this.buyer.credit;
+
+            if (!Number.isInteger(selectedCredit)) {
+                selectedCredit = 0;
             }
 
-            this
-                .cancelEntry(this.selectedEntry)
+            const newCredit = selectedCredit + this.creditDifference(this.selectedEntry);
+
+            if (newCredit < 0 && this.useCardData) {
+                this.selectedEntry = null;
+                this.$store.commit('ERROR', { message: 'Not enough credit' });
+                return;
+            }
+
+            this.$store.commit('SET_DATA_LOADED', false);
+            this.cancelEntry(this.selectedEntry)
                 .then(() => {
-                    if (!credit) {
-                        return;
-                    }
-
-                    const newCredit = credit + this.creditDifference(this.selectedEntry);
-
-                    if (newCredit < 0) {
-                        this.$store.commit('ERROR', { message: 'Not enough credit' });
-                        return;
-                    }
-
                     this.removeFromHistory(this.selectedEntry);
 
                     if (this.useCardData) {
-                        window.nfc.write(
-                            window.nfc.creditToData(newCredit, config.signingKey)
-                        );
+                        return new Promise(resolve => {
+                            window.app.$root.$emit('readyToWrite', newCredit);
+                            window.app.$root.$on('writeCompleted', () => resolve());
+                        });
                     }
 
-                    this.$refs.modal.ok();
+                    return Promise.resolve();
+                })
+                .then(() => {
+                    if (this.buyer.isAuth) {
+                        this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
+                    }
+
+                    this.$store.commit('SET_DATA_LOADED', true);
 
                     setTimeout(() => {
                         this.selectedEntry = null;
@@ -113,33 +143,24 @@ export default {
         },
 
         resume(entry) {
-            const cost   = entry.basketToSend.filter(e => e.cost).map(e => e.cost).reduce((a, b) => a + b, 0);
-            const reload = entry.basketToSend.filter(e => e.credit).map(e => e.credit).reduce((a, b) => a + b, 0);
-            const more   = entry.basketToSend.filter(e => e.cost).length > 0;
+            const items = entry.basketToSend.filter(e => e.cost).map(e => {
+                const name = e.promotion_id
+                    ? this.items.promotions.find(p => p.id === e.promotion_id).name
+                    : this.items.items.find(i => i.id === e.articles[0].id).name;
 
-            let firstItem;
+                return {
+                    name,
+                    cost: e.cost
+                };
+            });
 
-            let firstItemBought = entry.basketToSend.find(e => e.cost)
+            const cost = items.map(e => e.cost).reduce((a, b) => a + b, 0);
+            const reload = entry.basketToSend
+                .filter(e => e.credit)
+                .map(e => e.credit)
+                .reduce((a, b) => a + b, 0);
 
-            if (firstItemBought) {
-                if (firstItemBought.promotion_id) {
-                    firstItemBought = this.$store.state.items.promotions
-                        .find(p => p.id === firstItemBought.promotion_id)
-                        .name;
-                } else {
-                    firstItemBought = this.$store.state.items.items
-                        .find(p => p.id === firstItemBought.articles[0].id)
-                        .name;
-                }
-
-                firstItem = firstItemBought;
-            } else {
-                if (reload > 0) {
-                    firstItem = 'Rechargement';
-                }
-            }
-
-            const p = n => n < 10 ? `0${n}` : n.toString();
+            const p = n => (n < 10 ? `0${n}` : n.toString());
 
             let date = `${p(entry.date.getDate())}/${p(entry.date.getMonth() + 1)}`;
             date += '-';
@@ -148,10 +169,10 @@ export default {
             return {
                 cost,
                 reload,
-                firstItem,
-                more,
                 date,
-                transactionIds: entry.transactionIds
+                items,
+                transactionIds: entry.transactionIds,
+                localId: entry.localId
             };
         },
 
@@ -159,7 +180,7 @@ export default {
             return -1 * (entry.reload - entry.cost);
         },
 
-        ...mapActions(['toggleHistory', 'cancelEntry', 'removeFromHistory'])
+        ...mapActions(['toggleHistory', 'cancelEntry', 'removeFromHistory', 'interfaceLoader'])
     }
 };
 </script>
@@ -170,6 +191,11 @@ export default {
 .b-history {
     background-color: #f3f3f3;
     width: 100vw;
+
+    & > div {
+        max-width: 600px;
+        margin: auto;
+    }
 }
 
 .b-history__text {
@@ -186,7 +212,7 @@ export default {
 
 .b-history__text a {
     display: inline-block;
-    color: var(--red);
+    color: $red;
     margin-top: 16px;
     text-decoration: none;
 }
@@ -195,18 +221,19 @@ export default {
     margin: 15px;
     background-color: #fff;
     border-radius: 3px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 }
 
 .b-history__list__entry {
-    display: flex;
-    flex-wrap: wrap;
     padding: 20px 15px;
-    align-items: center;
 
     &:not(:last-child) {
-        border-bottom: 1px solid rgba(0,0,0,.12);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     }
+}
+
+.b-history__list__entry__top {
+    display: flex;
 }
 
 .b-history__list__entry__date {
@@ -221,16 +248,21 @@ export default {
 
 .b-history__list__entry__reload {
     font-weight: bold;
-    color: var(--green);
+    color: $green;
 }
 
 .b-history__list__entry__cost {
     font-weight: bold;
-    color: var(--orange);
+    color: $orange;
+}
+
+.b-history__list__entry__content {
+    font-size: 13px;
+    margin-top: -13px;
 }
 
 .b-history__list__entry__button {
-    background: var(--red);
+    background: $red;
     color: #fff;
     cursor: pointer;
     padding: 5px 10px;

@@ -7,9 +7,7 @@
 <style scoped>
 @import '../main.css';
 
-:root {
-    --loadingSize: 50px;
-}
+$loadingSize: 50px;
 
 .b-loading {
     position: absolute;
@@ -17,7 +15,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: color(var(--black) a(0.75));
+    background-color: color($black a(0.75));
     z-index: 100;
 }
 
@@ -27,8 +25,8 @@
     border: 4px solid rgba(255, 255, 255, 0.2);
     border-top-color: #fff;
     margin: 150px auto 0;
-    height: var(--loadingSize);
-    width: var(--loadingSize);
+    height: $loadingSize;
+    width: $loadingSize;
 }
 
 @keyframes spin {
@@ -37,7 +35,7 @@
     }
 
     100% {
-       transform: rotate(360deg);
+        transform: rotate(360deg);
     }
 }
 </style>

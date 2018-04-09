@@ -13,27 +13,27 @@ export default {
         width() {
             return {
                 width: `${this.syncProgress * 100}%`
-            }
+            };
         },
 
         syncingClass() {
-            return this.syncing ? { 'b-offline-syncing': true } : {}
+            return this.syncing ? { 'b-offline-syncing': true } : {};
         },
 
         ...mapState({
             online: state => state.online.status,
             syncing: state => state.online.syncing,
-            syncProgress: state => state.online.syncProgress,
+            syncProgress: state => state.online.syncProgress
         })
     }
-}
+};
 </script>
 
 <style scoped>
 @import '../main.css';
 
 .b-offline {
-    background-color: color(var(--red) a(0.9));
+    background-color: color($red a(0.9));
     border-radius: 3px;
     height: 20px;
     left: 3px;
@@ -44,7 +44,7 @@ export default {
 }
 
 .b-offline-syncing {
-    background-color: color(var(--orange) a(0.9));
+    background-color: color($orange a(0.9));
 }
 
 .b-offline__icon {

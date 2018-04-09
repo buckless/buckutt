@@ -1,11 +1,12 @@
 const initialState = {
-    dataLoaded  : null,
-    inputStream : [],
-    tabs        : [],
-    currentTab  : 0,
+    dataLoaded: null,
+    inputStream: [],
+    tabs: [],
+    currentTab: 0,
     currentTabId: null,
-    lastUser    : {
-        name  : null,
+    lastUser: {
+        display: false,
+        name: null,
         bought: 0,
         reload: 0,
         credit: 0
@@ -31,8 +32,12 @@ const mutations = {
     },
 
     CHANGE_TAB(state, { tab, index }) {
-        state.currentTab   = index;
+        state.currentTab = index;
         state.currentTabId = tab;
+    },
+
+    OPEN_TICKET(state) {
+        state.lastUser.display = true;
     },
 
     SET_LAST_USER(state, payload) {

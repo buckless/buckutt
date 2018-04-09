@@ -24,7 +24,7 @@
 <script>
 import { mapActions } from 'vuex';
 
-import textSize from '../utils/textSize';
+import textSize from '@/utils/textSize';
 
 import Currency from './Currency';
 
@@ -39,18 +39,16 @@ export default {
 
     computed: {
         selectedItem() {
-            return this.$store.state.items
-                .basket
-                .itemList
-                .filter(article => article.id === this.item.id)
-                .length;
+            return this.$store.state.items.basket.itemList.filter(
+                article => article.id === this.item.id
+            ).length;
         }
     },
 
     methods: {
         ...mapActions({
-            add     : 'addItemToBasket',
-            remove  : 'removeItemFromBasket',
+            add: 'addItemToBasket',
+            remove: 'removeItemFromBasket',
             getImage: 'getImage'
         })
     },
@@ -62,10 +60,17 @@ export default {
         const size = textSize(this.item.name);
 
         // width - padding - padding - blue border
-        const maxSize = this.$refs.name.getBoundingClientRect().width - parseInt(getComputedStyle(this.$refs.name).paddingLeft, 10) * 2 - 4 * 2;
+        const maxSize =
+            this.$refs.name.getBoundingClientRect().width -
+            parseInt(getComputedStyle(this.$refs.name).paddingLeft, 10) * 2 -
+            4 * 2;
 
         if (size > maxSize) {
             $name.style.fontSize = `${initialFontSize * (maxSize / size)}px`;
+        }
+
+        if (initialFontSize * (maxSize / size) < 9) {
+            $name.style.fontSize = '9px';
         }
 
         this.getImage(this.item.id)
@@ -83,21 +88,27 @@ export default {
 @import '../main.css';
 
 .b-item {
-    box-shadow: 0 0 2px color(var(--black) a(0.25)),
-                0 2px 3px color(var(--black) a(0.25));
+    box-shadow: 0 0 2px color($black a(0.25)), 0 2px 3px color($black a(0.25));
     border-radius: 2px;
     cursor: pointer;
     height: 150px;
     margin: 10px;
     position: relative;
     width: 150px;
+    display: inline-block;
 
     &--selected {
-        border: 4px solid var(--lightblue);
+        border: 4px solid $lightblue;
     }
 }
 
 .b-item__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
     & > img {
         &:before {
             background-image: url('../assets/placeholder.jpg');
@@ -112,8 +123,9 @@ export default {
     }
 }
 
-.b-item__count, .b-item__minus {
-    background-color: var(--red);
+.b-item__count,
+.b-item__minus {
+    background-color: $red;
     border-radius: 50%;
     color: #fff;
     font-weight: bold;
@@ -127,7 +139,7 @@ export default {
 }
 
 .b-item__minus {
-    background-color: var(--orange);
+    background-color: $orange;
     top: calc(50% - 15px);
     z-index: 2;
 
@@ -153,10 +165,11 @@ export default {
     position: absolute;
     white-space: nowrap;
     width: 100%;
+    text-overflow: ellipsis;
 }
 
 .b-item__price {
-    background: var(--green);
+    background: $green;
     border-bottom-right-radius: 2px;
     color: #000;
     left: 0;
@@ -168,13 +181,9 @@ export default {
 @media (max-width: 768px) {
     .b-item {
         height: 90px;
-        margin: 0;
+        margin: 2.5%;
         margin-bottom: 10px;
         width: 90px;
-
-        &:not(:nth-child(3n + 1)) {
-            margin-left: calc(10px + 10px / 3);
-        }
     }
 
     .b-item__price {

@@ -17,23 +17,22 @@
         </div>
         <div class="b-upper-bar__actions">
             <div
-                v-if="!loginState && seller.canSell"
+                v-if="isSellerMode && !history"
                 class="b-upper-bar__actions__action-cancel"
-                :class="historyClass"
                 @click="toggleHistory">
                 <i class="b-icon">history</i>
             </div>
             <div
-                v-if="displayLogout"
-                class="b-upper-bar__actions__action-eject"
-                @click="logout">
-                <i class="b-icon">eject</i>
-            </div>
-            <div
-                v-if="!loginState && seller.canReload && seller.canSell"
+                v-if="isReloaderMode && isSellerMode && !history"
                 class="b-upper-bar__actions__action-reload"
                 @click="openReloadModal">
                 <i class="b-icon">attach_money</i>
+            </div>
+            <div
+                v-if="displayLogout"
+                class="b-upper-bar__actions__action-eject"
+                @click="routeLogout">
+                <i class="b-icon">eject</i>
             </div>
         </div>
     </div>
@@ -46,30 +45,32 @@ import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
 
 export default {
-    props: {
-        buyer : { type: Object, required: true },
-        seller: { type: Object, required: true }
-    },
-
     components: {
         Currency,
         LiveTime
     },
 
     computed: {
-        ...mapGetters(['loginState', 'credit']),
+        ...mapGetters(['credit', 'isSellerMode', 'isReloaderMode']),
 
         ...mapState({
-            history      : state => state.history.opened,
-            displayLogout: state => state.auth.seller.meanOfLogin.length > 0
-        }),
-
-        historyClass() {
-            return this.history ? 'b-upper-bar__actions__action-cancel--active' : '';
-        }
+            history: state => state.history.opened,
+            displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
+            buyer: state => state.auth.buyer
+        })
     },
 
-    methods: mapActions(['openReloadModal', 'toggleHistory', 'logout'])
+    methods: {
+        ...mapActions(['openReloadModal', 'toggleHistory', 'logout']),
+
+        routeLogout() {
+            if (this.history) {
+                return this.toggleHistory();
+            }
+
+            this.logout();
+        }
+    }
 };
 </script>
 
@@ -108,10 +109,12 @@ export default {
     display: flex;
     line-height: 65px;
 
-    & > div .b-icon {
-        font-size: 28px;
-        line-height: 65px;
-        margin-right: 20px;
+    & > div {
+        padding: 0 10px;
+        & > .b-icon {
+            font-size: 28px;
+            line-height: 65px;
+        }
     }
 }
 
@@ -122,7 +125,7 @@ export default {
 }
 
 .b-upper-bar__buyer__credit--negative {
-    color: var(--red);
+    color: $red;
     font-weight: bold;
 }
 
@@ -134,6 +137,8 @@ export default {
     .b-upper-bar__buyer {
         font-size: 13px;
         padding-left: 10px;
+        justify-content: flex-end;
+        padding-bottom: 5px;
     }
 
     .b-upper-bar__date {
@@ -147,14 +152,10 @@ export default {
         & > div .b-icon {
             line-height: 45px;
         }
-
-        & > :last-child > .b-icon {
-            margin-right: 10px;
-        }
     }
 
     .b-upper-bar__actions__action-cancel--active > .b-icon {
-        color: var(--red);
+        color: $red;
     }
 }
 </style>

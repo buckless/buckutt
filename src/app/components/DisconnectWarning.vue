@@ -3,7 +3,7 @@
         <div class="b-disconnect-warning__modal">
             <h1>Déconnexion</h1>
             <p>
-                Êtes-vous sûr de vouloir déconnecter le vendeur
+                Êtes-vous sûr de vouloir déconnecter l'opérateur
                 <span class="b--capitalized">{{ seller.firstname }}</span>
                 <span class="b--capitalized">{{ seller.lastname }}</span>
                 ?
@@ -22,16 +22,13 @@
 import { mapState, mapActions } from 'vuex';
 
 export default {
-    props: {
-        seller: { type: Object, required: true }
-    },
-
     computed: mapState({
-        disconnectWarning: state => state.auth.seller.disconnectWarning
+        disconnectWarning: state => state.auth.seller.disconnectWarning,
+        seller: state => state.auth.seller
     }),
 
-    methods: mapActions([ 'pursueLogout', 'cancelLogout' ])
-}
+    methods: mapActions(['pursueLogout', 'cancelLogout'])
+};
 </script>
 
 <style scoped>
@@ -62,7 +59,7 @@ export default {
 .b-disconnect-warning__modal__buttons > button {
     background-color: #fff;
     border: 0;
-    color: var(--lightblue);
+    color: $lightblue;
     cursor: pointer;
     height: 36px;
     padding: 0 16px;
@@ -71,11 +68,13 @@ export default {
     text-transform: uppercase;
 
     &:last-child {
-        color: var(--red);
+        color: $red;
     }
 
-    &:active, &:focus, &:hover {
-        background-color: color(var(--black) a(0.075));
+    &:active,
+    &:focus,
+    &:hover {
+        background-color: color($black a(0.075));
     }
 }
 

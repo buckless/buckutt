@@ -28,9 +28,9 @@ import { mapActions } from 'vuex';
 
 export default {
     props: {
-        name   : { type: String, required: true },
+        name: { type: String, required: true },
         content: { type: Array, required: true },
-        id     : { type: String, required: true }
+        id: { type: String, required: true }
     },
 
     data() {
@@ -43,11 +43,10 @@ export default {
         },
 
         remove() {
-            this.content.forEach((content) => {
+            this.content.forEach(content => {
                 this.removeItemFromBasket(content.id);
             });
         },
-
 
         ...mapActions(['removeItemFromBasket'])
     }
@@ -60,7 +59,7 @@ export default {
 .b-sidebar-promotion {
     background-color: #fff;
     border-radius: 2px;
-    box-shadow: 0 3px 2px color(var(--black) a(0.25));
+    box-shadow: 0 3px 2px color($black a(0.25));
     font-size: 18px;
     margin: 10px;
     padding: 10px;
@@ -81,7 +80,7 @@ export default {
 
 .b-sidebar-promotion__row__show-details {
     align-items: center;
-    background-color: color(var(--orange) a(0.75));
+    background-color: color($orange a(0.75));
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -93,7 +92,7 @@ export default {
 }
 
 .b-sidebar-promotion__minus {
-    background-color: var(--orange);
+    background-color: $orange;
     cursor: pointer;
     height: 30px;
     line-height: 30px;
@@ -115,6 +114,6 @@ export default {
 
 .b-sidebar-promotion__row__details__item {
     padding-top: 10px;
-    color: color(var(--black) a(0.8));
+    color: color($black a(0.8));
 }
 </style>

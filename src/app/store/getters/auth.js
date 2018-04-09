@@ -10,7 +10,7 @@ export const tokenHeaders = state => {
     };
 };
 
-export const loginState = (state) => {
+export const loginState = state => {
     if (state.auth.device.config.doubleValidation) {
         return !state.auth.buyer.isAuth;
     } else if (!state.auth.seller.isAuth) {

@@ -44,14 +44,15 @@ export default {
     methods: {
         close() {
             this.$store.commit('SET_LAST_USER', {
-                name: '',
-                credit: 0,
+                display: false,
+                name: null,
+                bought: 0,
                 reload: 0,
-                bought: 0
+                credit: 0
             });
         }
     }
-}
+};
 </script>
 
 <style scoped>
@@ -65,7 +66,7 @@ export default {
 
     & > hr {
         border: 0;
-        border-top: 1px solid color(var(--black) a(0.2));
+        border-top: 1px solid color($black a(0.2));
         position: relative;
         top: -35px;
         width: 50px;

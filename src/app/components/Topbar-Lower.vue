@@ -3,7 +3,7 @@
         <div class="b-lower-bar__tabs">
             <tab
                 v-for="(tab, i) in tabs"
-                v-if="!loginState && seller.canSell"
+                v-if="!loginState && isSellerMode && !history"
                 :name="tab.name"
                 :id="tab.id"
                 :key="tab.id"
@@ -13,7 +13,7 @@
             <div
                 v-if="seller.isAuth"
                 class="b-lower-bar__device__seller">
-                <strong>Vendeur: </strong>
+                <strong>Opérateur: </strong>
                 <span class="b--capitalized">{{ seller.firstname }}</span>
                 <span class="b--capitalized">{{ seller.lastname }}</span>
             </div>
@@ -35,18 +35,16 @@ import { mapState, mapGetters } from 'vuex';
 import Tab from './Topbar-Lower-Tab';
 
 export default {
-    props: {
-        buyer : { type: Object, required: true },
-        seller: { type: Object, required: true }
-    },
-
     computed: {
         ...mapState({
             point: state => state.auth.device.point.name,
-            event: state => state.auth.device.event.name
+            event: state => state.auth.device.event.name,
+            history: state => state.history.opened,
+            seller: state => state.auth.seller,
+            buyer: state => state.auth.buyer
         }),
 
-        ...mapGetters(['tabs', 'loginState'])
+        ...mapGetters(['tabs', 'loginState', 'isSellerMode'])
     },
 
     components: {

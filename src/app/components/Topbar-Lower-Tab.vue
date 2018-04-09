@@ -13,8 +13,8 @@ import { mapActions, mapState } from 'vuex';
 export default {
     props: {
         index: { type: Number, required: true },
-        name : { type: String, required: true },
-        id   : { type: String, required: true }
+        name: { type: String, required: true },
+        id: { type: String, required: true }
     },
 
     computed: {
@@ -42,7 +42,7 @@ export default {
     padding: 0 20px;
     position: relative;
     text-transform: uppercase;
-    transition: color .2s ease;
+    transition: color 0.2s ease;
 
     &:after {
         background-color: transparent;
@@ -51,7 +51,7 @@ export default {
         height: 3px;
         left: 0;
         position: absolute;
-        transition: background-color .2s ease;
+        transition: background-color 0.2s ease;
         width: 100%;
     }
 
@@ -63,7 +63,7 @@ export default {
         color: #fff;
 
         &:after {
-            background-color: var(--red);
+            background-color: $red;
         }
     }
 }

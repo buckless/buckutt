@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head lang="fr">
+  <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Buckless Client</title>
   </head>
   <body>
     <div id="app"></div>
-    <script type="text/javascript" src="cordova.js"></script>
+    <%= (process.env.TARGET === 'cordova') ? '<script type="text/javascript" src="cordova.js"></script>' : '' %>
     <!-- built files will be auto injected -->
   </body>
 </html>

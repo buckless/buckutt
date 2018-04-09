@@ -26,7 +26,7 @@ export default {
     computed: mapGetters(['reloadAmount']),
 
     methods: mapActions(['removeReloads'])
-}
+};
 </script>
 
 <style scoped>
@@ -43,9 +43,9 @@ export default {
 
 .b-lower-bar__reload__chip {
     align-items: center;
-    background-color: var(--green);
+    background-color: $green;
     border-radius: 2px;
-    box-shadow: 0 3px 2px color(var(--black) a(0.25));
+    box-shadow: 0 3px 2px color($black a(0.25));
     color: #000;
     display: flex;
     height: 30px;
@@ -57,7 +57,7 @@ export default {
     height: 26px;
 }
 
-@media(min-width: 769px) {
+@media (min-width: 769px) {
     .b-lower-bar__reload {
         display: none;
     }
