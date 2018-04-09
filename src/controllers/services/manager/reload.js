@@ -1,6 +1,6 @@
-const express  = require('express');
-const logger   = require('../../../lib/log');
-const dbCatch  = require('../../../lib/dbCatch');
+const express = require('express');
+const logger = require('../../../lib/log');
+const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
 
 const log = logger(module);
@@ -20,17 +20,29 @@ router.post('/services/manager/reload', (req, res, next) => {
 
     req.app.locals
         .makePayment({
-            buyer : req.user,
+            buyer: req.user,
             amount: parseInt(req.body.amount, 10),
             // Used by test reloadProvider
-            point : req.point_id
+            point: req.point_id
         })
-        .then((result) => {
+        .then(result => {
             res
                 .status(200)
                 .json(result)
                 .end();
         })
+        .catch(err => dbCatch(module, err, next));
+});
+
+router.get('/services/manager/giftReloads', (req, res, next) => {
+    req.app.locals.models.GiftReload.fetchAll()
+        .then(giftReloads => (giftReloads ? giftReloads.toJSON() : null))
+        .then(giftReloads =>
+            res
+                .status(200)
+                .json(giftReloads.map(gr => ({ everyAmount: gr.everyAmount, amount: gr.amount })))
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 

@@ -10,7 +10,7 @@ const opToSql = {
 module.exports = (query, filters) => {
     let filteredQuery = query;
 
-    filters.forEach((filter) => {
+    filters.forEach(filter => {
         const f = filter;
 
         for (const op of ['gt', 'ne', 'lt', 'ge', 'le', 'eq']) {

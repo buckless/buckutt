@@ -1,7 +1,8 @@
-const express       = require('express');
+const express = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
-const logger        = require('../../lib/log');
-const dbCatch       = require('../../lib/dbCatch');
+const logger = require('../../lib/log');
+const dbCatch = require('../../lib/dbCatch');
+const APIError = require('../../errors/APIError');
 
 const log = logger(module);
 
@@ -16,17 +17,16 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
         return next(new APIError(module, 401, 'Invalid parameters'));
     }
 
-    req.app.locals.models.MeanOfLogin
-        .where({
-            type   : req.query.molType,
-            data   : req.query.buyer,
-            blocked: false
-        })
+    req.app.locals.models.MeanOfLogin.where({
+        type: req.query.molType,
+        data: req.query.buyer,
+        blocked: false
+    })
         .fetch({
             withRelated: ['user']
         })
-        .then(mol => ((mol) ? mol.toJSON() : null))
-        .then((mol) => {
+        .then(mol => (mol ? mol.toJSON() : null))
+        .then(mol => {
             if (!mol || !mol.user.id) {
                 return next(new APIError(module, 400, 'Invalid buyer'));
             }
@@ -43,11 +43,11 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
 
     return bookshelf
         .knex('pendingCardUpdates')
-        .update({ active: false, deleted_at: new Date() })
+        .update({ active: null, deleted_at: new Date() })
         .where({ user_id: req.buyer.id, active: true })
         .returning('amount')
         .then(amounts => (amounts || []).reduce((a, b) => a + b, 0))
-        .then((amount_) => {
+        .then(amount_ => {
             amount = amount_;
 
             return bookshelf
@@ -55,23 +55,23 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
                 .where({ id: req.buyer.id })
                 .update({
                     updated_at: new Date(),
-                    credit    : bookshelf.knex.raw(`credit + ${amount}`)
+                    credit: bookshelf.knex.raw(`credit + ${amount}`)
                 })
                 .returning('credit');
         })
-        .then((credit) => {
+        .then(credit => {
             req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id     : req.buyer.id,
+                id: req.buyer.id,
                 pending: 0,
                 credit
             });
 
             return res
-            .status(200)
-            .json({ amount })
-            .end();
+                .status(200)
+                .json({ amount })
+                .end();
         })
-        .catch(err => dbCatch(module, err, next))
+        .catch(err => dbCatch(module, err, next));
 });
 
 module.exports = router;

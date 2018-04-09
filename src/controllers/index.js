@@ -1,6 +1,6 @@
-const path        = require('path');
-const fs          = require('fs');
-const express     = require('express');
+const path = require('path');
+const fs = require('fs');
+const express = require('express');
 const middlewares = require('../middlewares');
 
 const { marshal, unmarshal } = require('../middlewares/connectors/http');
@@ -16,7 +16,12 @@ for (const key of Object.keys(middlewares)) {
 
 router.use(unmarshal);
 
-router.get('/', (_, res) => res.status(200).json({}).end());
+router.get('/', (_, res) =>
+    res
+        .status(200)
+        .json({})
+        .end()
+);
 
 /**
  * Recursively use every subrouters, manager's services first, then app services

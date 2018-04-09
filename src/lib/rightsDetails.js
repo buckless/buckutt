@@ -1,12 +1,14 @@
 const config = require('../../config');
 
 module.exports = (user, pointId) => {
-    const now    = new Date();
+    const now = new Date();
     const result = {
-        sell  : false,
+        sell: false,
         reload: false,
         assign: false,
-        admin : false
+        control: false,
+        admin: false,
+        operator: false
     };
 
     /* istanbul ignore if */
@@ -34,8 +36,16 @@ module.exports = (user, pointId) => {
                 if (configRight && configRight.canAssign) {
                     result.assign = true;
                 }
+
+                if (configRight && configRight.canControl) {
+                    result.control = true;
+                }
             }
         }
+    }
+
+    if (result.sell || result.reload || result.assign || result.control) {
+        result.operator = true;
     }
 
     return result;

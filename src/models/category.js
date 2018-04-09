@@ -1,13 +1,18 @@
-module.exports = (bookshelf) => {
+module.exports = bookshelf => {
     const name = 'Category';
     const Model = bookshelf.Model.extend({
-        tableName    : 'categories',
+        tableName: 'categories',
         hasTimestamps: true,
-        uuid         : true,
-        softDelete   : true,
+        uuid: true,
+        softDelete: true,
 
         articles() {
-            return this.belongsToMany('Article', 'articles_categories', 'category_id', 'article_id');
+            return this.belongsToMany(
+                'Article',
+                'articles_categories',
+                'category_id',
+                'article_id'
+            );
         },
 
         points() {

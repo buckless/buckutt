@@ -54,7 +54,15 @@
         "template": "Hi !\n You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !"
     },
     "assigner": {
-        "ticketProvider": "test",
+        "ticketProvider": "csv",
+        "csv": {
+            "url": {
+                "url": "",
+                "method": "get",
+                "headers": {}
+            },
+            "file": null
+        },
         "sendPINMail": false,
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",

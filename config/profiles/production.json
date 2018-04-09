@@ -55,6 +55,14 @@
     },
     "assigner": {
         "ticketProvider": "ticketmaster",
+        "csv": {
+            "url": {
+                "url": "",
+                "method": "get",
+                "headers": {}
+            },
+            "file": null
+        },
         "sendPINMail": true,
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",

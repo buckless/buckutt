@@ -1,9 +1,9 @@
-const bcrypt_  = require('bcryptjs');
-const express  = require('express');
-const Promise  = require('bluebird');
+const bcrypt_ = require('bcryptjs');
+const express = require('express');
+const Promise = require('bluebird');
 const APIError = require('../../../errors/APIError');
-const dbCatch  = require('../../../lib/dbCatch');
-const logger   = require('../../../lib/log');
+const dbCatch = require('../../../lib/dbCatch');
+const logger = require('../../../lib/log');
 
 const log = logger(module);
 
@@ -24,16 +24,20 @@ router.put('/services/manager/changepin', (req, res, next) => {
 
     let cryptedPin;
 
-    bcrypt.compareAsync(req.body.currentPin.toString(), req.user.pin)
-        .then(match => (match
-            ? Promise.resolve()
-            : Promise.reject(new APIError(module, 401, 'PIN is wrong'))))
+    bcrypt
+        .compareAsync(req.body.currentPin.toString(), req.user.pin)
+        .then(
+            match =>
+                match
+                    ? Promise.resolve()
+                    : Promise.reject(new APIError(module, 401, 'PIN is wrong'))
+        )
         .then(() => bcrypt.hash(req.body.pin, 10))
-        .then((hash) => {
+        .then(hash => {
             cryptedPin = hash;
             return models.User.where({ id: req.user.id }).fetch();
         })
-        .then((user) => {
+        .then(user => {
             user.set('pin', cryptedPin);
             user.set('updated_at', new Date());
 
@@ -43,7 +47,8 @@ router.put('/services/manager/changepin', (req, res, next) => {
             res
                 .status(200)
                 .json({ changed: true })
-                .end())
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 

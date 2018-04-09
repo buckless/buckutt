@@ -1,0 +1,37 @@
+image: node:alpine
+
+services:
+  - postgres:latest
+
+stages:
+  - test
+  - deploy
+
+variables:
+  POSTGRES_DB: buckless_test
+  POSTGRES_USER: buckless
+  POSTGRES_PASSWORD: "buckless"
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - apk add --no-cache openssh openssl python
+  - yarn
+
+test:
+  stage: test
+  script:
+    - yarn lint
+    - yarn test
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - docker build -t lab.buckless.com/core/server .
+    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com
+    - docker push lab.buckless.com/core/server
+

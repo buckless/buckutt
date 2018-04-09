@@ -4,77 +4,85 @@ const APIError = require('../errors/APIError');
  * Retrieve the point id from the SSL certificate fingerprint
  * @param {Object} connector HTTP/Socket.IO connector
  */
-module.exports = connector => connector.models.Device
-    .where({
+module.exports = connector =>
+    connector.models.Device.where({
         fingerprint: connector.fingerprint
     })
-    .fetch({
-        withRelated: [
-            'wikets',
-            'wikets.point',
-            'wikets.period',
-            'wikets.period.event'
-        ]
-    })
-    .then(res => ((res) ? res.toJSON() : null))
-    .then((device) => {
-        /* istanbul ignore if */
-        if (!device || (!device.isUser && device.wikets.length === 0)) {
-            return Promise.reject(new APIError(
-                module, 404, 'Device not found',
-                { fingerprint: connector.fingerprint }
-            ));
-        }
+        .fetch({
+            withRelated: ['wikets', 'wikets.point', 'wikets.period', 'wikets.period.event']
+        })
+        .then(res => (res ? res.toJSON() : null))
+        .then(device => {
+            /* istanbul ignore if */
+            if (!device || (!device.isUser && device.wikets.length === 0)) {
+                return Promise.reject(
+                    new APIError(module, 404, 'Device not found', {
+                        fingerprint: connector.fingerprint
+                    })
+                );
+            }
 
-        let minPeriod = Infinity;
+            let minPeriod = Infinity;
+            let handled = false;
 
-        let handled = false;
+            connector.device = device;
+            connector.point = {};
+            connector.event = {};
+            connector.wiket = {};
+            connector.details = {
+                device: connector.device.name,
+                path: connector.path,
+                method: connector.method
+            };
 
-        // Filters: allow an empty point but not a deleted point
-        device.wikets
-            .filter(wiket => wiket.period.event && wiket.period.event.id
-                && ((wiket.point_id && wiket.point.id) || !wiket.point_id))
-            .forEach((wiket) => {
-                const period = wiket.period;
-                const point = wiket.point;
+            // Filters: allow an empty point but not a deleted point
+            device.wikets
+                .filter(
+                    wiket =>
+                        wiket.period.event &&
+                        wiket.period.event.id &&
+                        ((wiket.point_id && wiket.point.id) || !wiket.point_id)
+                )
+                .forEach(wiket => {
+                    const period = wiket.period;
+                    const point = wiket.point;
 
-                const diff = period.end - period.start;
+                    const diff = period.end - period.start;
 
-                if (period.start > connector.date || period.end < connector.date) {
-                    return;
-                }
+                    if (period.start > connector.date || period.end < connector.date) {
+                        return;
+                    }
 
-                if (diff < minPeriod) {
-                    connector.point_id = point.id;
-                    connector.event_id = period.event.id;
-                    minPeriod          = diff;
+                    if (diff < minPeriod) {
+                        connector.point_id = point.id;
+                        connector.event_id = period.event.id;
+                        minPeriod = diff;
 
-                    connector.device                 = device;
-                    connector.point                  = point;
-                    connector.event                  = period.event;
-                    connector.device.defaultGroup_id = wiket.defaultGroup_id;
+                        connector.point = point;
+                        connector.event = period.event;
+                        connector.wiket = wiket;
+                        connector.device.defaultGroup_id = wiket.defaultGroup_id;
 
-                    connector.details = {
-                        device: connector.device.name,
-                        event : connector.event.name,
-                        point : connector.point.name,
-                        path  : connector.path,
-                        method: connector.method
-                    };
+                        connector.details = {
+                            ...connector.details,
+                            event: connector.event.name,
+                            point: connector.point.name
+                        };
 
-                    handled = true;
-                }
-            });
+                        handled = true;
+                    }
+                });
 
-        if (!handled) {
-            return Promise.reject(new APIError(module, 404, 'No assigned points'));
-        }
+            if (!handled && !device.isUser) {
+                return Promise.reject(new APIError(module, 404, 'No assigned points'));
+            }
 
-        connector.header('event', connector.event_id);
-        connector.header('eventName', connector.event.name);
-        connector.header('point', connector.point_id);
-        connector.header('pointName', connector.point.name);
-        connector.header('device', device.id);
+            connector.header('event', connector.event_id);
+            connector.header('eventName', connector.event.name);
+            connector.header('point', connector.point_id);
+            connector.header('pointName', connector.point.name);
+            connector.header('wiket', connector.wiket.id);
+            connector.header('device', device.id);
 
-        return Promise.resolve();
-    });
+            return Promise.resolve();
+        });

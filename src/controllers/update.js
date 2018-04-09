@@ -1,9 +1,9 @@
-const express                      = require('express');
-const idParser                     = require('../lib/idParser');
-const logger                       = require('../lib/log');
-const modelParser                  = require('../lib/modelParser');
+const express = require('express');
+const idParser = require('../lib/idParser');
+const logger = require('../lib/log');
+const modelParser = require('../lib/modelParser');
 const { embedParser, embedFilter } = require('../lib/embedParser');
-const dbCatch                      = require('../lib/dbCatch');
+const dbCatch = require('../lib/dbCatch');
 
 const log = logger(module);
 
@@ -13,17 +13,19 @@ const log = logger(module);
 const router = new express.Router();
 
 router.put('/:model/:id', (req, res, next) => {
-    log.info(`Update ${req.params.model}(${req.params.id}) with ${JSON.stringify(req.body)}`, req.details);
+    log.info(
+        `Update ${req.params.model}(${req.params.id}) with ${JSON.stringify(req.body)}`,
+        req.details
+    );
 
     // First, get the model
-    req.Model
-        .where({ id: req.params.id })
+    req.Model.where({ id: req.params.id })
         .fetch()
-        .then((inst) => {
+        .then(inst => {
             const previous = inst.toJSON();
 
             // Update based on body values
-            Object.keys(req.body).forEach((key) => {
+            Object.keys(req.body).forEach(key => {
                 inst.set(key, req.body[key]);
             });
 
@@ -39,18 +41,16 @@ router.put('/:model/:id', (req, res, next) => {
 
             return inst.save();
         })
-        .then((result) => {
+        .then(result => {
             // Embed multiple relatives
-            const withRelated = (req.query.embed) ? embedParser(req.query.embed) : [];
+            const withRelated = req.query.embed ? embedParser(req.query.embed) : [];
 
-            return req.Model
-                .where({ id: result.id })
-                .fetch({ withRelated });
+            return req.Model.where({ id: result.id }).fetch({ withRelated });
         })
-        .then((result) => {
-            const embedFilters = (req.query.embed) ?
-                req.query.embed.filter(rel => rel.required).map(rel => rel.embed) :
-                [];
+        .then(result => {
+            const embedFilters = req.query.embed
+                ? req.query.embed.filter(rel => rel.required).map(rel => rel.embed)
+                : [];
 
             res
                 .status(200)

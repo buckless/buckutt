@@ -14,15 +14,15 @@ module.exports = class APIError extends Error {
 
         Error.captureStackTrace(this, this.constructor);
 
-        this.module  = module;
+        this.module = module;
         this.message = message;
-        this.status  = status;
+        this.status = status;
         this.details = details;
     }
 
     toJSON() {
         return {
-            status : this.status,
+            status: this.status,
             message: this.message,
             details: this.details
         };

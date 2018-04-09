@@ -25,7 +25,7 @@ exports.seed = function (knex) {
             knex('meansoflogin').insert([
                 item({
                     id     : uuid(),
-                    type   : 'etuMail',
+                    type   : 'mail',
                     data   : 'admin@buckless.com',
                     blocked: false,
                     user_id

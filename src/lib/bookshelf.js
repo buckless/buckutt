@@ -1,15 +1,15 @@
-const fs        = require('fs');
-const path      = require('path');
-const config    = require('../../config');
-const logger    = require('./log');
+const fs = require('fs');
+const path = require('path');
+const config = require('../../config');
+const logger = require('./log');
 
-const knex      = require('knex')(config.db);
+const knex = require('knex')(config.db);
 const bookshelf = require('bookshelf')(knex);
 
 const log = logger(module);
 
 const modelsPath = path.join(__dirname, '..', 'models');
-const models     = {};
+const models = {};
 
 bookshelf.plugin('registry');
 bookshelf.plugin('virtuals');
@@ -20,19 +20,18 @@ bookshelf.plugin(require('bookshelf-signals')());
 bookshelf.plugin('bookshelf-manager', { root: modelsPath });
 bookshelf.plugin(require('bookshelf-paranoia'), { field: 'deleted_at', sentinel: 'active' });
 
-fs
-    .readdirSync(modelsPath)
-    .map((file) => {
-        const { Model, name } = require(path.join(modelsPath, file))(bookshelf);
+fs.readdirSync(modelsPath).map(file => {
+    const { Model, name } = require(path.join(modelsPath, file))(bookshelf);
 
-        models[name] = bookshelf.model(name, Model);
-    });
+    models[name] = bookshelf.model(name, Model);
+});
 
 function waitForDb(interval, retries) {
     let tries = 0;
     const tryConnect = (resolve, reject) => {
         log.info('Connection to database...');
-        knex.raw('select 1 as result')
+        knex
+            .raw('select 1 as result')
             .then(() => {
                 log.info('Connected to database.');
                 resolve();
@@ -49,9 +48,9 @@ function waitForDb(interval, retries) {
             });
     };
 
-    return new Promise(((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         tryConnect(resolve, reject);
-    }));
+    });
 }
 
 function sync() {

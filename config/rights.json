@@ -5,12 +5,8 @@
           "canSell": true,
           "canReload": false,
           "canAssign": false,
+          "canControl": false,
           "read": [
-              "/events",
-              "/meansoflogin",
-              "/meansofpayment",
-              "/devices",
-              "/devices/search",
               "/services/items",
               "/services/pendingCardUpdate",
               "alert"
@@ -24,12 +20,8 @@
           "canSell": false,
           "canReload": true,
           "canAssign": false,
+          "canControl": false,
           "read": [
-              "/events",
-              "/devices",
-              "/meansoflogin",
-              "/meansofpayment",
-              "/meansofpayment/search",
               "/services/items",
               "/services/pendingCardUpdate",
               "alert"
@@ -42,18 +34,32 @@
           "canSell": false,
           "canReload": false,
           "canAssign": true,
+          "canControl": false,
           "read": [
               "/users",
-              "/events",
-              "/groups",
-              "/meansoflogin",
+              "/services/items",
               "/services/assigner",
-              "/services/pendingCardUpdate"
+              "/services/pendingCardUpdate",
+              "alert"
           ],
           "write": [
-              "/users",
               "/meansoflogin",
-              "/services/assigner/groups"
+              "/services/assigner/groups",
+              "/services/assigner/anon"
+          ]
+      },
+      "controller": {
+          "canSell": false,
+          "canReload": false,
+          "canAssign": false,
+          "canControl": true,
+          "read": [
+              "/services/items",
+              "/services/controller",
+              "alert"
+          ],
+          "write": [
+              "/services/controller"
           ]
       },
       "openUrls": [
@@ -61,6 +67,7 @@
           "/services/login",
           "/services/manager/askpin",
           "/services/manager/generatepin",
+          "/services/manager/register",
           "/services/deviceEssentials",
           "/provider/callback",
           "/services/assigner"
@@ -71,8 +78,9 @@
           "/services/manager/searchuser",
           "/services/manager/transfer",
           "/services/manager/reload",
+          "/services/manager/giftReloads",
           "userCredit"
       ],
-      "pinLoggingAllowed": ["seller", "reloader", "assigner"]
+      "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
    }
 }
