@@ -1,8 +1,8 @@
-const mkdirp            = require('mkdirp');
-const winston           = require('winston');
+const mkdirp = require('mkdirp');
+const winston = require('winston');
 const WinstonTcpGraylog = require('winston-tcp-graylog');
-const config            = require('../../config');
-const { pad2 }          = require('./utils');
+const config = require('../../config');
+const { pad2 } = require('./utils');
 
 const MAX_LOG_FILE_SIZE = 10 * 1000 * 1000;
 
@@ -23,7 +23,7 @@ function timestamp() {
  * @param  {Module} moduleToUse The current module (accessible with `module`)
  * @return {Object} A winston logger
  */
-module.exports = (moduleToUse) => {
+module.exports = moduleToUse => {
     let path;
 
     if (typeof moduleToUse === 'string') {
@@ -41,11 +41,11 @@ module.exports = (moduleToUse) => {
     if (config.log.console !== 'none') {
         const consoleTransport = new winston.transports.Console({
             timestamp,
-            level      : config.log.console.level,
-            name       : 'console',
+            level: config.log.console.level,
+            name: 'console',
             prettyPrint: true,
-            colorize   : true,
-            label      : path
+            colorize: true,
+            label: path
         });
 
         transports.push(consoleTransport);
@@ -57,13 +57,13 @@ module.exports = (moduleToUse) => {
 
         const fileTransport = new winston.transports.File({
             timestamp,
-            name       : 'file',
-            level      : config.log.file.level,
-            filename   : './log/server.log',
-            maxsize    : MAX_LOG_FILE_SIZE,
+            name: 'file',
+            level: config.log.file.level,
+            filename: './log/server.log',
+            maxsize: MAX_LOG_FILE_SIZE,
             prettyPrint: false,
-            colorize   : false,
-            label      : path
+            colorize: false,
+            label: path
         });
 
         transports.push(fileTransport);
@@ -76,7 +76,7 @@ module.exports = (moduleToUse) => {
 
         // Debouce disconnect errors
         let lastError = Date.now();
-        graylogTransport.on('error', (error) => {
+        graylogTransport.on('error', error => {
             const now = Date.now();
 
             if (now - lastError >= 60 * 1000) {

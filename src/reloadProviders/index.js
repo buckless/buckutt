@@ -1,6 +1,6 @@
 const name = require('../../config').provider.name;
 
-module.exports = (app) => {
+module.exports = app => {
     let provider;
 
     try {

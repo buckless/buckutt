@@ -1,20 +1,18 @@
-const express       = require('express');
+const express = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
-const APIError      = require('../../errors/APIError');
+const APIError = require('../../errors/APIError');
 const rightsDetails = require('../../lib/rightsDetails');
-const logger        = require('../../lib/log');
-const dbCatch       = require('../../lib/dbCatch');
+const logger = require('../../lib/log');
+const dbCatch = require('../../lib/dbCatch');
 
 const log = logger(module);
 
-const getPriceAmount = (Price, priceId) => Price
-    .where({ id: priceId })
-    .fetch()
-    .then(price => price.get('amount'));
+const getPriceAmount = (Price, priceId) =>
+    Price.where({ id: priceId })
+        .fetch()
+        .then(price => price.get('amount'));
 
-const getUserInst = (User, userId) => User
-    .where({ id: userId })
-    .fetch();
+const getUserInst = (User, userId) => User.where({ id: userId }).fetch();
 
 /**
  * CancelTransaction controller. Cancel purchases, reloads, refunds and transfers
@@ -25,11 +23,11 @@ router.post('/services/cancelTransaction', (req, res, next) => {
     log.info(`Canceling ${req.body.rawType} ${req.body.id}`, req.details);
 
     const transactionModels = {
-        transfer : 'Transfer',
-        reload   : 'Reload',
-        purchase : 'Purchase',
+        transfer: 'Transfer',
+        reload: 'Reload',
+        purchase: 'Purchase',
         promotion: 'Purchase',
-        refund   : 'Refund'
+        refund: 'Refund'
     };
 
     const currentModel = transactionModels[req.body.rawType];
@@ -42,14 +40,14 @@ router.post('/services/cancelTransaction', (req, res, next) => {
         .where({ id: req.body.id })
         .fetch()
         .then(transaction => (transaction ? transaction.toJSON() : null))
-        .then((transaction) => {
+        .then(transaction => {
             if (!transaction) {
                 return next(new APIError(module, 404, 'Transaction not found'));
             }
 
             req.transaction = {
                 model: currentModel,
-                data : transaction
+                data: transaction
             };
 
             next();
@@ -60,8 +58,8 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 });
 
 router.post('/services/cancelTransaction', (req, res, next) => {
-    const models         = req.app.locals.models;
-    const isFromAdmin    = req.query.addPendingCardUpdate && rightsDetails(req.user).admin;
+    const models = req.app.locals.models;
+    const isFromAdmin = req.query.addPendingCardUpdate && rightsDetails(req.user).admin;
     // Don't check if from client and card data are used
     const checkApiCredit = isFromAdmin || !req.event.useCardData;
 
@@ -78,39 +76,39 @@ router.post('/services/cancelTransaction', (req, res, next) => {
     }
 
     amountPromise
-        .then((amount) => {
+        .then(amount => {
             req.pendingCardUpdates = {};
 
             if (req.transaction.model === 'Purchase' || req.transaction.model === 'Refund') {
-                getUserInst(models.User, req.transaction.data.buyer_id)
-                    .then((user) => {
-                        req.pendingCardUpdates[user.id] = amount;
+                getUserInst(models.User, req.transaction.data.buyer_id).then(user => {
+                    req.pendingCardUpdates[user.id] = amount;
 
-                        next();
-                    });
+                    next();
+                });
             } else if (req.transaction.model === 'Reload') {
-                getUserInst(models.User, req.transaction.data.buyer_id)
-                    .then((user) => {
-                        if (user.get('credit') - amount < 0 && checkApiCredit) {
-                            return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
-                        }
+                getUserInst(models.User, req.transaction.data.buyer_id).then(user => {
+                    if (user.get('credit') - amount < 0 && checkApiCredit) {
+                        return next(new APIError(module, 403, "User doesn't have enough credit"));
+                    }
 
-                        req.pendingCardUpdates[user.id] = -1 * amount;
+                    req.pendingCardUpdates[user.id] = -1 * amount;
 
-                        next();
-                    });
+                    next();
+                });
             } else {
                 getUserInst(models.User, req.transaction.data.sender_id)
-                    .then((user) => {
+                    .then(user => {
                         if (user.get('credit') - amount < 0 && checkApiCredit) {
-                            return next(new APIError(module, 403, 'User doesn\'t have enough credit'));
+                            return next(
+                                new APIError(module, 403, "User doesn't have enough credit")
+                            );
                         }
 
                         req.pendingCardUpdates[user.id] = -1 * amount;
 
                         return getUserInst(models.User, req.transaction.data.reciever_id);
                     })
-                    .then((user) => {
+                    .then(user => {
                         req.pendingCardUpdates[user.id] = amount;
 
                         next();
@@ -123,16 +121,16 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 router.post('/services/cancelTransaction', (req, res, next) => {
     const queries = [];
 
-    Object.keys(req.pendingCardUpdates).forEach((user) => {
+    Object.keys(req.pendingCardUpdates).forEach(user => {
         let query;
         if (req.query.addPendingCardUpdate && rightsDetails(req.user).admin) {
             query = new req.app.locals.models.PendingCardUpdate({
                 user_id: user,
-                amount : req.pendingCardUpdates[user]
+                amount: req.pendingCardUpdates[user]
             })
                 .save()
                 .then(() => ({
-                    id     : user,
+                    id: user,
                     pending: req.pendingCardUpdates[user]
                 }));
         } else {
@@ -141,7 +139,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                 .where({ id: user })
                 .update({
                     updated_at: req.body.created_at || new Date(),
-                    credit    : bookshelf.knex.raw(`credit + ${req.pendingCardUpdates[user]}`)
+                    credit: bookshelf.knex.raw(`credit + ${req.pendingCardUpdates[user]}`)
                 })
                 .returning('credit')
                 .then(credit => ({
@@ -156,22 +154,25 @@ router.post('/services/cancelTransaction', (req, res, next) => {
     const Model = req.app.locals.models[req.transaction.model];
 
     Promise.all(queries)
-        .then((results) => {
-            results.forEach((result) => {
+        .then(results => {
+            results.forEach(result => {
                 req.app.locals.modelChanges.emit('userCreditUpdate', result);
             });
 
-            return new Model({ id: req.transaction.data.id })
-                .save({
-                    active    : null,
+            return new Model({ id: req.transaction.data.id }).save(
+                {
+                    active: null,
                     deleted_at: req.body.created_at || new Date()
-                }, { patch: true });
+                },
+                { patch: true }
+            );
         })
         .then(() =>
             res
                 .status(200)
                 .json({})
-                .end())
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 

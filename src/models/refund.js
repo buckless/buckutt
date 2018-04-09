@@ -1,10 +1,10 @@
-module.exports = (bookshelf) => {
+module.exports = bookshelf => {
     const name = 'Refund';
     const Model = bookshelf.Model.extend({
-        tableName    : 'refunds',
+        tableName: 'refunds',
         hasTimestamps: true,
-        uuid         : true,
-        softDelete   : true,
+        uuid: true,
+        softDelete: true,
 
         buyer() {
             return this.belongsTo('User', 'buyer_id');

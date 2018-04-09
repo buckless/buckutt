@@ -1,12 +1,12 @@
-const express      = require('express');
-const bcrypt       = require('bcryptjs');
+const express = require('express');
+const bcrypt = require('bcryptjs');
 const { padStart } = require('lodash');
-const mailer       = require('../../lib/mailer');
-const dbCatch      = require('../../lib/dbCatch');
+const mailer = require('../../lib/mailer');
+const dbCatch = require('../../lib/dbCatch');
 const fetchFromAPI = require('../../ticketProviders');
-const APIError     = require('../../errors/APIError');
-const template     = require('../../mailTemplates');
-const config       = require('../../../config');
+const APIError = require('../../errors/APIError');
+const template = require('../../mailTemplates');
+const config = require('../../../config');
 
 /**
  * Assigner controller. Handles cards assignment
@@ -27,59 +27,68 @@ router.get('/services/assigner', (req, res, next) => {
     let pin;
     let ticketId;
 
-    MeanOfLogin
-        .where('type', 'in', ['ticketId', 'mail'])
+    MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
         .where({
-            data   : ticketOrMail,
+            data: ticketOrMail,
             blocked: false
         })
         .fetch({
             withRelated: ['user']
         })
-        .then(mol => ((mol) ? mol.toJSON() : null))
-        .then((mol) => {
+        .then(mol => (mol ? mol.toJSON() : null))
+        .then(mol => {
             if (mol && mol.user.id) {
                 if (req.user) {
                     return res
                         .status(200)
                         .json({
-                            id    : mol.user.id,
+                            id: mol.user.id,
                             credit: mol.user.credit,
-                            name  : `${mol.user.firstname} ${mol.user.lastname}`
+                            name: `${mol.user.firstname} ${mol.user.lastname}`
                         })
                         .end();
                 }
 
-                return res.status(404).json({}).end();
+                return res
+                    .status(404)
+                    .json({})
+                    .end();
             }
 
             return fetchFromAPI(ticketOrMail)
-                .then((userData_) => {
+                .then(userData_ => {
                     if (!userData_) {
-                        const err = new APIError(module, 404, 'Couldn\'t find ticket', req.query.ticketOrMail);
+                        const err = new APIError(
+                            module,
+                            404,
+                            "Couldn't find ticket",
+                            req.query.ticketOrMail
+                        );
                         return Promise.reject(err);
                     }
 
+                    userData = userData_;
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
-
                     ticketId = userData_.ticketId;
 
-                    return MeanOfLogin
-                        .where('type', 'in', ['ticketId', 'mail'])
+                    return MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
                         .where('data', 'in', [ticketId, userData.mail])
                         .where({ blocked: false })
                         .fetchAll();
                 })
-                .then((mols) => {
+                .then(mols => {
                     if (mols.length > 0) {
-                        return Promise.reject(new APIError(module, 404, 'Already assigned', { userData }));
+                        return Promise.reject(
+                            new APIError(module, 404, 'Already assigned', { userData })
+                        );
                     }
 
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
 
                     userData.password = 'none';
-                    userData.pin      = bcrypt.hashSync(pin);
-                    userData.credit   = userData.credit || 0;
+                    userData.pin = bcrypt.hashSync(pin);
+                    userData.credit = userData.credit || 0;
+                    delete userData.ticketId;
 
                     user = new User(userData);
 
@@ -90,40 +99,44 @@ router.get('/services/assigner', (req, res, next) => {
                         return Promise.resolve();
                     }
 
-                    const from     = config.askpin.from;
-                    const to       = user.get('mail');
-                    const subject  = config.assigner.subject;
+                    const from = config.askpin.from;
+                    const to = user.get('mail');
+                    const subject = config.assigner.subject;
                     const { html, text } = template('pinAssign', {
                         pin,
                         brandname: config.provider.config.merchantName,
-                        link     : `${config.urls.managerUrl}`
+                        link: `${config.urls.managerUrl}`
                     });
 
                     return mailer.sendMail({
-                        from, to, subject, html, text
+                        from,
+                        to,
+                        subject,
+                        html,
+                        text
                     });
                 })
                 .then(() => {
                     const mailMol = new MeanOfLogin({
                         user_id: user.id,
-                        type   : 'mail',
-                        data   : user.get('mail'),
+                        type: 'mail',
+                        data: user.get('mail'),
                         blocked: false
                     });
 
                     const ticketMol = new MeanOfLogin({
                         user_id: user.id,
-                        type   : 'ticketId',
-                        data   : ticketId,
+                        type: 'ticketId',
+                        data: ticketId,
                         blocked: false
                     });
 
                     const initialReload = new Reload({
-                        credit   : user.get('credit'),
-                        type     : 'initial',
-                        trace    : ticketOrMail,
-                        point_id : req.point_id,
-                        buyer_id : user.id,
+                        credit: user.get('credit'),
+                        type: 'initial',
+                        trace: ticketOrMail,
+                        point_id: req.point_id,
+                        buyer_id: user.id,
                         seller_id: user.id
                     });
 
@@ -134,14 +147,17 @@ router.get('/services/assigner', (req, res, next) => {
                         return res
                             .status(200)
                             .json({
-                                id    : user.id,
+                                id: user.id,
                                 credit: user.get('credit'),
-                                name  : `${user.get('firstname')} ${user.get('lastname')}`
+                                name: `${user.get('firstname')} ${user.get('lastname')}`
                             })
                             .end();
                     }
 
-                    return res.status(200).json({}).end();
+                    return res
+                        .status(200)
+                        .json({})
+                        .end();
                 });
         })
         .catch(err => dbCatch(module, err, next));
@@ -163,10 +179,10 @@ router.post('/services/assigner/groups', (req, res, next) => {
 
     const Membership = req.app.locals.models.Membership;
 
-    const memberships = groups.map((groupId) => {
+    const memberships = groups.map(groupId => {
         const membership = new Membership({
-            user_id  : userId,
-            group_id : groupId,
+            user_id: userId,
+            group_id: groupId,
             period_id: req.event.defaultPeriod_id
         });
 
@@ -178,7 +194,8 @@ router.post('/services/assigner/groups', (req, res, next) => {
             res
                 .status(200)
                 .json({})
-                .end())
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 
@@ -201,27 +218,27 @@ router.post('/services/assigner/anon', (req, res, next) => {
 
     groups.push(req.event.defaultGroup_id);
 
-    const User        = req.app.locals.models.User;
-    const Membership  = req.app.locals.models.Membership;
-    const Reload      = req.app.locals.models.Reload;
+    const User = req.app.locals.models.User;
+    const Membership = req.app.locals.models.Membership;
+    const Reload = req.app.locals.models.Reload;
     const MeanOfLogin = req.app.locals.models.MeanOfLogin;
 
     const user = new User({
         firstname: 'anon',
-        lastname : 'anon',
-        mail     : 'anon@anon.com',
-        pin      : 'none',
-        password : 'none',
+        lastname: 'anon',
+        mail: 'anon@anon.com',
+        pin: 'none',
+        password: 'none',
         credit
     });
 
     user
         .save()
         .then(() => {
-            const memberships = groups.map((groupId) => {
+            const memberships = groups.map(groupId => {
                 const membership = new Membership({
-                    user_id  : user.id,
-                    group_id : groupId,
+                    user_id: user.id,
+                    group_id: groupId,
                     period_id: req.event.defaultPeriod_id
                 });
 
@@ -229,22 +246,23 @@ router.post('/services/assigner/anon', (req, res, next) => {
             });
 
             const mol = new MeanOfLogin({
-                type   : 'cardId',
-                data   : cardId,
+                type: 'cardId',
+                data: cardId,
                 blocked: false,
                 user_id: user.id
             }).save();
 
-            const reload = credit > 0
-                ? new Reload({
-                    credit,
-                    type     : 'anon',
-                    trace    : 'anon',
-                    point_id : req.point_id,
-                    buyer_id : user.id,
-                    seller_id: req.user.id
-                }).save()
-                : Promise.resolve();
+            const reload =
+                credit > 0
+                    ? new Reload({
+                          credit,
+                          type: 'anon',
+                          trace: 'anon',
+                          point_id: req.point_id,
+                          buyer_id: user.id,
+                          seller_id: req.user.id
+                      }).save()
+                    : Promise.resolve();
 
             return Promise.all(memberships.concat([reload, mol]));
         })
@@ -252,7 +270,8 @@ router.post('/services/assigner/anon', (req, res, next) => {
             res
                 .status(200)
                 .json({})
-                .end())
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 

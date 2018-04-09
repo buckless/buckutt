@@ -1,12 +1,12 @@
-const express       = require('express');
-const randomstring  = require('randomstring');
-const APIError      = require('../../../errors/APIError');
-const mailer        = require('../../../lib/mailer');
-const dbCatch       = require('../../../lib/dbCatch');
-const logger        = require('../../../lib/log');
+const express = require('express');
+const randomstring = require('randomstring');
+const APIError = require('../../../errors/APIError');
+const mailer = require('../../../lib/mailer');
+const dbCatch = require('../../../lib/dbCatch');
+const logger = require('../../../lib/log');
 const { bookshelf } = require('../../../lib/bookshelf');
-const template      = require('../../../mailTemplates');
-const config        = require('../../../../config');
+const template = require('../../../mailTemplates');
+const config = require('../../../../config');
 
 const log = logger(module);
 
@@ -17,19 +17,22 @@ const log = logger(module);
  * @return {Object}      Mail to send
  */
 function generateMessage(mail, key) {
-    const from     = config.askpin.from;
-    const to       = mail;
-    const subject  = config.askpin.subject;
+    const from = config.askpin.from;
+    const to = mail;
+    const subject = config.askpin.subject;
     const { html, text } = template('pinLink', {
         brandname: config.provider.config.merchantName,
-        link     : `${config.urls.managerUrl}/forgot-pin?key=${key}`
+        link: `${config.urls.managerUrl}/forgot-pin?key=${key}`
     });
 
     return {
-        from, to, subject, html, text
+        from,
+        to,
+        subject,
+        html,
+        text
     };
 }
-
 
 /**
  * AskPin controller.
@@ -39,15 +42,16 @@ const router = new express.Router();
 router.get('/services/manager/askpin', (req, res, next) => {
     log.info(`Ask pin for mail ${req.query.mail}`);
 
-    const mail   = req.query.mail;
+    const mail = req.query.mail;
     const models = req.app.locals.models;
 
     let user;
 
-    models.User
-        .query(q => q.where(bookshelf.knex.raw('lower(mail)'), '=', mail.toLowerCase().trim()))
+    models.User.query(q =>
+        q.where(bookshelf.knex.raw('lower(mail)'), '=', mail.toLowerCase().trim())
+    )
         .fetch()
-        .then((user_) => {
+        .then(user_ => {
             user = user_;
 
             if (!user) {
@@ -59,7 +63,12 @@ router.get('/services/manager/askpin', (req, res, next) => {
             return user.save();
         })
         .then(() => mailer.sendMail(generateMessage(mail, user.get('recoverKey'))))
-        .then(() => res.status(200).json({ success: true }).end())
+        .then(() =>
+            res
+                .status(200)
+                .json({ success: true })
+                .end()
+        )
         .catch(err => dbCatch(module, err, next));
 });
 

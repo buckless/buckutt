@@ -1,28 +1,33 @@
 const hasDot = str => str.indexOf('.') > 0;
 
-const removeLevel = embed => embed
-    .filter(rel => hasDot(rel))
-    .map(rel => rel.split('.').slice(1).join('.'));
+const removeLevel = embed =>
+    embed.filter(rel => hasDot(rel)).map(rel =>
+        rel
+            .split('.')
+            .slice(1)
+            .join('.')
+    );
 
-const embedParser = embed => embed.map((relation) => {
-    if (typeof relation === 'string') {
-        return relation;
-    } else if (!relation.filters) {
-        return relation.embed;
-    }
-
-    return {
-        [relation.embed]: (query) => {
-            let filteredQuery = query;
-
-            relation.filters.forEach((filter) => {
-                filteredQuery = filteredQuery.where(...filter);
-            });
-
-            return filteredQuery;
+const embedParser = embed =>
+    embed.map(relation => {
+        if (typeof relation === 'string') {
+            return relation;
+        } else if (!relation.filters) {
+            return relation.embed;
         }
-    };
-});
+
+        return {
+            [relation.embed]: query => {
+                let filteredQuery = query;
+
+                relation.filters.forEach(filter => {
+                    filteredQuery = filteredQuery.where(...filter);
+                });
+
+                return filteredQuery;
+            }
+        };
+    });
 
 /* eslint no-use-before-define: 0 */
 const propagate = (embed, result) => {
@@ -32,7 +37,7 @@ const propagate = (embed, result) => {
         return result;
     }
 
-    Object.keys(result).forEach((key) => {
+    Object.keys(result).forEach(key => {
         if (Array.isArray(result[key])) {
             result[key] = embedFilter(subEmbed, result[key]);
         } else if (result[key] && result[key].constructor === Object) {
@@ -45,10 +50,10 @@ const propagate = (embed, result) => {
 
 const embedFilter = (embed, results_) => {
     const filterList = embed.filter(rel => !hasDot(rel));
-    let results      = results_;
+    let results = results_;
 
-    filterList.forEach((filter) => {
-        results = results.filter((result) => {
+    filterList.forEach(filter => {
+        results = results.filter(result => {
             if (Array.isArray(result[filter])) {
                 return result[filter].length > 0;
             } else if (typeof result[filter] === 'object') {

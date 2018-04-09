@@ -5,7 +5,7 @@ const broadcast = (clients, action, model, data) => {
         .map(id => clients[id])
         .filter(client => Array.isArray(client.listenForModelChanges))
         .filter(client => client.listenForModelChanges.indexOf(model) > -1)
-        .forEach((client) => {
+        .forEach(client => {
             client.client.emit(action, { model, data });
         });
 };
@@ -22,8 +22,9 @@ module.exports = {
     client(clients, client, models) {
         /* istanbul ignore else */
         if (Array.isArray(models)) {
-            clients[client.id].listenForModelChanges = models
-                .map(m => modelsNames[m.toLowerCase()]);
+            clients[client.id].listenForModelChanges = models.map(
+                m => modelsNames[m.toLowerCase()]
+            );
 
             client.emit('listening', clients[client.id].listenForModelChanges);
         }
