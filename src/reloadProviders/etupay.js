@@ -1,6 +1,6 @@
-const express  = require('express');
-const dbCatch  = require('../lib/dbCatch');
-const config   = require('../../config');
+const express = require('express');
+const dbCatch = require('../lib/dbCatch');
+const config = require('../../config');
 
 const providerConfig = config.provider.config;
 
@@ -11,8 +11,8 @@ module.exports = {
         const Basket      = etupay.Basket;
 
         const transaction = new Transaction({
-            state  : 'pending',
-            amount : data.amount,
+            state: 'pending',
+            amount: data.amount,
             user_id: data.buyer.id
         });
 

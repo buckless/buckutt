@@ -1,20 +1,19 @@
-const express            = require('express');
-const APIError           = require('../../errors/APIError');
-const { isUUID }         = require('../../lib/idParser');
-const dbCatch            = require('../../lib/dbCatch');
+const express = require('express');
+const APIError = require('../../errors/APIError');
+const { isUUID } = require('../../lib/idParser');
+const dbCatch = require('../../lib/dbCatch');
 
 const router = new express.Router();
 
 router.get('/services/treasury/csv/purchases', (req, res, next) => {
     const models = req.app.locals.models;
 
-    let initialQuery = models.Purchase
-        .query('orderBy', 'created_at', 'DESC');
-    let price        = 'price';
-    let pricePeriod  = 'price.period';
+    let initialQuery = models.Purchase.query('orderBy', 'created_at', 'DESC');
+    let price = 'price';
+    let pricePeriod = 'price.period';
 
     if (req.query.dateIn && req.query.dateOut) {
-        const dateIn  = new Date(req.query.dateIn);
+        const dateIn = new Date(req.query.dateIn);
         const dateOut = new Date(req.query.dateOut);
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
@@ -42,42 +41,53 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
         };
     }
 
-    initialQuery = initialQuery
-        .fetchAll({
-            withRelated: [
-                price,
-                pricePeriod,
-                'price.article',
-                'price.promotion',
-                'seller',
-                'buyer',
-                'point'
-            ],
-            withDeleted: true
-        });
+    initialQuery = initialQuery.fetchAll({
+        withRelated: [
+            price,
+            pricePeriod,
+            'price.article',
+            'price.promotion',
+            'seller',
+            'buyer',
+            'point'
+        ],
+        withDeleted: true
+    });
 
     initialQuery
-        .then((results) => {
+        .then(results => {
             // Remove deleted purchases, transform price relation to an outer join
             const purchases = results
                 .toJSON()
                 .filter(p => !p.deleted_at && p.price.id && p.price.period && p.price.period.id);
 
-            const header = ['Date', 'Point de vente', 'Vendeur', 'Acheteur', 'Article', 'Prix HT', 'Prix TTC'];
+            const header = [
+                'Date',
+                'Point de vente',
+                'Vendeur',
+                'Acheteur',
+                'Article',
+                'Prix HT',
+                'Prix TTC'
+            ];
 
-            const csv = purchases.map((purchase) => {
-                const item = purchase.price.article ? purchase.price.article : purchase.price.promotion;
+            const csv = purchases
+                .map(purchase => {
+                    const item = purchase.price.article
+                        ? purchase.price.article
+                        : purchase.price.promotion;
 
-                return [
-                    purchase.created_at.toISOString(),
-                    purchase.point.name,
-                    `${purchase.seller.firstname} ${purchase.seller.lastname}`,
-                    `${purchase.buyer.firstname} ${purchase.buyer.lastname}`,
-                    item.name,
-                    purchase.price.amount / (1 + purchase.vat) / 100,
-                    purchase.price.amount / 100
-                ].join(',');
-            }).join('\n');
+                    return [
+                        purchase.created_at.toISOString(),
+                        purchase.point.name,
+                        `${purchase.seller.firstname} ${purchase.seller.lastname}`,
+                        `${purchase.buyer.firstname} ${purchase.buyer.lastname}`,
+                        item.name,
+                        purchase.price.amount / (1 + purchase.vat) / 100,
+                        purchase.price.amount / 100
+                    ].join(',');
+                })
+                .join('\n');
 
             return res
                 .status(200)
@@ -90,8 +100,7 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
 router.get('/services/treasury/csv/reloads', (req, res, next) => {
     const models = req.app.locals.models;
 
-    let initialQuery = models.Reload
-        .query('orderBy', 'created_at', 'DESC');
+    let initialQuery = models.Reload.query('orderBy', 'created_at', 'DESC');
 
     if (req.query.point) {
         if (isUUID(req.query.point)) {
@@ -112,29 +121,34 @@ router.get('/services/treasury/csv/reloads', (req, res, next) => {
         }
     }
 
-    initialQuery = initialQuery
-        .fetchAll({
-            withRelated: [
-                'seller',
-                'buyer',
-                'point'
-            ]
-        });
+    initialQuery = initialQuery.fetchAll({
+        withRelated: ['seller', 'buyer', 'point']
+    });
 
     initialQuery
-        .then((reloads) => {
-            const header = ['Date', 'Point de vente', 'Vendeur', 'Acheteur', 'Moyen de paiement', 'Montant'];
+        .then(reloads => {
+            const header = [
+                'Date',
+                'Point de vente',
+                'Vendeur',
+                'Acheteur',
+                'Moyen de paiement',
+                'Montant'
+            ];
 
             const csv = reloads
                 .toJSON()
-                .map(reload => [
-                    reload.created_at.toISOString(),
-                    reload.point.name,
-                    `${reload.seller.firstname} ${reload.seller.lastname}`,
-                    `${reload.buyer.firstname} ${reload.buyer.lastname}`,
-                    reload.type,
-                    reload.credit / 100
-                ].join(',')).join('\n');
+                .map(reload =>
+                    [
+                        reload.created_at.toISOString(),
+                        reload.point.name,
+                        `${reload.seller.firstname} ${reload.seller.lastname}`,
+                        `${reload.buyer.firstname} ${reload.buyer.lastname}`,
+                        reload.type,
+                        reload.credit / 100
+                    ].join(',')
+                )
+                .join('\n');
 
             res
                 .status(200)
@@ -147,8 +161,7 @@ router.get('/services/treasury/csv/reloads', (req, res, next) => {
 router.get('/services/treasury/csv/refunds', (req, res, next) => {
     const models = req.app.locals.models;
 
-    let initialQuery = models.Refund
-        .query('orderBy', 'created_at', 'DESC');
+    let initialQuery = models.Refund.query('orderBy', 'created_at', 'DESC');
 
     if (req.query.dateIn && req.query.dateOut) {
         const dateIn = new Date(req.query.dateIn);
@@ -163,27 +176,26 @@ router.get('/services/treasury/csv/refunds', (req, res, next) => {
         }
     }
 
-    initialQuery = initialQuery
-        .fetchAll({
-            withRelated: [
-                'seller',
-                'buyer'
-            ]
-        });
+    initialQuery = initialQuery.fetchAll({
+        withRelated: ['seller', 'buyer']
+    });
 
     initialQuery
-        .then((refunds) => {
+        .then(refunds => {
             const header = ['Date', 'Vendeur', 'Acheteur', 'Moyen de paiement', 'Montant'];
 
             const csv = refunds
                 .toJSON()
-                .map(refund => [
-                    refund.created_at.toISOString(),
-                    `${refund.seller.firstname} ${refund.seller.lastname}`,
-                    `${refund.buyer.firstname} ${refund.buyer.lastname}`,
-                    refund.type,
-                    refund.amount / 100
-                ].join(',')).join('\n');
+                .map(refund =>
+                    [
+                        refund.created_at.toISOString(),
+                        `${refund.seller.firstname} ${refund.seller.lastname}`,
+                        `${refund.buyer.firstname} ${refund.buyer.lastname}`,
+                        refund.type,
+                        refund.amount / 100
+                    ].join(',')
+                )
+                .join('\n');
 
             res
                 .status(200)

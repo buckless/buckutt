@@ -14,7 +14,7 @@ module.exports.marshal = function marshal(mw) {
             models: app.locals.models,
 
             result: {
-                err    : null,
+                err: null,
                 headers: {}
             },
 
@@ -32,7 +32,7 @@ module.exports.marshal = function marshal(mw) {
         };
 
         return mw(socket.connector)
-            .catch((err) => {
+            .catch(err => {
                 socket.connector.result.err = err;
 
                 return Promise.resolve();

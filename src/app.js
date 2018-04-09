@@ -13,11 +13,11 @@ const config              = require('../config');
 const controllers         = require('./controllers');
 const socketServer        = require('./socketServer');
 const purchaseWebservices = require('./lib/purchaseWebservices');
-const logger              = require('./lib/log');
-const bookshelf           = require('./lib/bookshelf');
-const APIError            = require('./errors/APIError');
-const sslConfig           = require('../scripts/sslConfig');
-const { addDevice }       = require('../scripts/addDevice');
+const logger = require('./lib/log');
+const bookshelf = require('./lib/bookshelf');
+const APIError = require('./errors/APIError');
+const sslConfig = require('../scripts/sslConfig');
+const { addDevice } = require('../scripts/addDevice');
 
 const log = logger(module);
 
@@ -31,12 +31,14 @@ app.locals.models = bookshelf.models;
 /**
  * Middlewares
  */
-app.use(cors({
-    allowedHeaders: ['content-type', 'Authorization'],
-    credentials   : true,
-    exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
-    origin        : true
-}));
+app.use(
+    cors({
+        allowedHeaders: ['content-type', 'Authorization'],
+        credentials: true,
+        exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
+        origin: true
+    })
+);
 app.use(bodyParser.msgpack({ limit: '5mb' }));
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(cookieParser());
@@ -56,7 +58,8 @@ app.use((req, res, next) => {
 });
 
 // Internal error
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+app.use((err, req, res, next) => {
+    // eslint-disable-line no-unused-vars
     let error = err;
 
     /* istanbul ignore next */
@@ -75,9 +78,9 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 
 app.start = () => {
     const sslFilesPath = {
-        key : './ssl/certificates/server/server-key.pem',
+        key: './ssl/certificates/server/server-key.pem',
         cert: './ssl/certificates/server/server-crt.pem',
-        ca  : './ssl/certificates/ca/ca-crt.pem'
+        ca: './ssl/certificates/ca/ca-crt.pem'
     };
 
     let startingQueue = bookshelf
@@ -85,9 +88,11 @@ app.start = () => {
         .then(() => bookshelf.sync());
 
     /* istanbul ignore if */
-    if (!fs.existsSync(sslFilesPath.key) ||
+    if (
+        !fs.existsSync(sslFilesPath.key) ||
         !fs.existsSync(sslFilesPath.cert) ||
-        !fs.existsSync(sslFilesPath.ca)) {
+        !fs.existsSync(sslFilesPath.ca)
+    ) {
         startingQueue = startingQueue
             .then(() => {
                 log.info('No SSL certificates found, generating new ones...');
@@ -103,11 +108,14 @@ app.start = () => {
             .then(() => {
                 log.info('Creating admin device...');
 
-                const password = process.env.NODE_ENV === 'development' ? 'development' : randomstring.generate();
+                const password =
+                    process.env.NODE_ENV === 'development'
+                        ? 'development'
+                        : randomstring.generate();
 
                 return addDevice({ admin: true, deviceName: 'admin', password });
             })
-            .then((adminPassword) => {
+            .then(adminPassword => {
                 log.info(`[ admin .p12 password ] ${adminPassword}`);
             })
             .then(() => {
@@ -118,30 +126,38 @@ app.start = () => {
     }
 
     return startingQueue.then(() => {
-        const server = process.env.SERVER_PROTOCOL === 'http' ? http.createServer(app) : https.createServer({
-            key               : fs.readFileSync(sslFilesPath.key),
-            cert              : fs.readFileSync(sslFilesPath.cert),
-            ca                : fs.readFileSync(sslFilesPath.ca),
-            requestCert       : true,
-            rejectUnauthorized: false
-        }, app);
+        const server =
+            process.env.SERVER_PROTOCOL === 'http'
+                ? http.createServer(app)
+                : https.createServer(
+                      {
+                          key: fs.readFileSync(sslFilesPath.key),
+                          cert: fs.readFileSync(sslFilesPath.cert),
+                          ca: fs.readFileSync(sslFilesPath.ca),
+                          requestCert: true,
+                          rejectUnauthorized: false
+                      },
+                      app
+                  );
 
         app.locals.modelChanges = new EventEmitter();
-        app.locals.server       = server;
+        app.locals.server = server;
 
         socketServer.ioServer(server, app);
 
         purchaseWebservices(app);
 
         return new Promise((resolve, reject) => {
-            server.listen(config.http.port, config.http.host, (err) => {
+            server.listen(config.http.port, config.http.host, err => {
                 /* istanbul ignore if */
                 if (err) {
                     return reject(err);
                 }
 
                 log.info(
-                    'Server is listening %s://%s:%d', process.env.SERVER_PROTOCOL || 'https', config.http.host,
+                    'Server is listening %s://%s:%d',
+                    process.env.SERVER_PROTOCOL || 'https',
+                    config.http.host,
                     config.http.port
                 );
 
@@ -154,7 +170,7 @@ app.start = () => {
 };
 
 /* istanbul ignore next */
-const clearLock = (status) => {
+const clearLock = status => {
     if (status instanceof Error) {
         log.error(status);
     }
@@ -169,9 +185,11 @@ const clearLock = (status) => {
 };
 
 /* istanbul ignore next */
-process.on('unhandledRejection', (err) => {
-    if (err.name === 'ReqlDriverError' &&
-        err.message === 'None of the pools have an opened connection and failed to open a new one.') {
+process.on('unhandledRejection', err => {
+    if (
+        err.name === 'ReqlDriverError' &&
+        err.message === 'None of the pools have an opened connection and failed to open a new one.'
+    ) {
         log.error('Cannot open connection to database');
         process.exit(1);
     }
@@ -188,9 +206,7 @@ if (require.main === module) {
     process.on('uncaughtException', clearLock);
     process.on('unhandledRejection', clearLock);
 
-    app
-        .start()
-        .catch((err) => {
-            log.error('Start error: %s', err);
-        });
+    app.start().catch(err => {
+        log.error('Start error: %s', err);
+    });
 }

@@ -1,6 +1,6 @@
-const axios                 = require('axios');
+const axios = require('axios');
 const { models, bookshelf } = require('./bookshelf');
-const log                   = require('./log')(module);
+const log = require('./log')(module);
 
 function pushToWebservices(rawPurchase) {
     const purchase = rawPurchase.toJSON();
@@ -12,26 +12,20 @@ function pushToWebservices(rawPurchase) {
     delete purchase.buyer.recoverKey;
     delete purchase.seller.recoverKey;
 
-    return models.Webservice.fetchAll().then(webservices => Promise
-        .all(webservices.toJSON().map(webservice => axios.post(webservice.url, purchase)))
-        .catch((err) => {
-            log.error('Couldn\'t notify webservice', err.message);
-        }));
+    return models.Webservice.fetchAll().then(webservices =>
+        Promise.all(
+            webservices.toJSON().map(webservice => axios.post(webservice.url, purchase))
+        ).catch(err => {
+            log.error("Couldn't notify webservice", err.message);
+        })
+    );
 }
 
 module.exports = () => {
-    bookshelf.on('saved', models.Purchase, (p) => {
-        models.Purchase
-            .where('id', p.id)
+    bookshelf.on('saved', models.Purchase, p => {
+        models.Purchase.where('id', p.id)
             .fetch({
-                withRelated: [
-                    'price',
-                    'point',
-                    'buyer',
-                    'seller',
-                    'articles',
-                    'promotion'
-                ]
+                withRelated: ['price', 'point', 'buyer', 'seller', 'articles', 'promotion']
             })
             .then(purchase => (purchase ? pushToWebservices(purchase) : null));
     });

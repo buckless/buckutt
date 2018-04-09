@@ -1,10 +1,10 @@
-const express  = require('express');
-const Payline  = require('flav-payline');
-const moment   = require('moment');
+const express = require('express');
+const Payline = require('flav-payline');
+const moment = require('moment');
 const APIError = require('../errors/APIError');
-const dbCatch  = require('../lib/dbCatch');
-const ns       = require('../lib/ns');
-const config   = require('../../config');
+const dbCatch = require('../lib/dbCatch');
+const ns = require('../lib/ns');
+const config = require('../../config');
 
 const providerConfig = config.provider.config;
 
@@ -14,14 +14,14 @@ const currencies = {
 
 const actions = {
     payment: 101,
-    refund : 421
+    refund: 421
 };
 
 const modes = {
-    full        : 'CPT',
-    differed    : 'DIF',
+    full: 'CPT',
+    differed: 'DIF',
     nInstalments: 'NX',
-    recurring   : 'REC'
+    recurring: 'REC'
 };
 
 const dateFormat = 'DD/MM/YYYY HH:mm';
@@ -32,52 +32,52 @@ module.exports = {
         const Transaction = app.locals.models.Transaction;
 
         const transaction = new Transaction({
-            state  : 'pending',
-            amount : data.amount,
+            state: 'pending',
+            amount: data.amount,
             user_id: data.buyer.id
         });
 
         return transaction
             .save()
-            .then(() => payline.runAction('doWebPayment', {
-                version: 18,
-                payment: {
-                    attributes    : ns('payment'),
-                    amount        : data.amount,
-                    currency      : currencies.eur,
-                    action        : actions.payment,
-                    mode          : modes.full,
-                    contractNumber: providerConfig.contractNumber
-                },
-                returnURL: `${config.urls.managerUrl}/#/reload/success`,
-                cancelURL: `${config.urls.managerUrl}/#/reload/failed`,
-                order    : {
-                    attributes: ns('order'),
-                    ref       : transaction.get('id'),
-                    country   : 'FR',
-                    amount    : data.amount,
-                    currency  : currencies.eur,
-                    date      : moment().format(dateFormat)
-                },
-                notificationURL: `${config.urls.managerUrl}/api/provider/callback`,
-                // selectedContractList: [ config.contractNumber ],
-                buyer          : {
-                    attributes: ns('buyer'),
-                    firstName : data.buyer.firstname,
-                    lastName  : data.buyer.lastname,
-                    email     : data.buyer.email
-                },
-                merchantName: config.merchantName
-            }))
-            .then((result) => {
+            .then(() =>
+                payline.runAction('doWebPayment', {
+                    version: 18,
+                    payment: {
+                        attributes: ns('payment'),
+                        amount: data.amount,
+                        currency: currencies.eur,
+                        action: actions.payment,
+                        mode: modes.full,
+                        contractNumber: providerConfig.contractNumber
+                    },
+                    returnURL: `${config.urls.managerUrl}/#/reload/success`,
+                    cancelURL: `${config.urls.managerUrl}/#/reload/failed`,
+                    order: {
+                        attributes: ns('order'),
+                        ref: transaction.get('id'),
+                        country: 'FR',
+                        amount: data.amount,
+                        currency: currencies.eur,
+                        date: moment().format(dateFormat)
+                    },
+                    notificationURL: `${config.urls.managerUrl}/api/provider/callback`,
+                    // selectedContractList: [ config.contractNumber ],
+                    buyer: {
+                        attributes: ns('buyer'),
+                        firstName: data.buyer.firstname,
+                        lastName: data.buyer.lastname,
+                        email: data.buyer.email
+                    },
+                    merchantName: config.merchantName
+                })
+            )
+            .then(result => {
                 transaction.set('transactionId', result.token);
 
-                return transaction
-                    .save()
-                    .then(() => ({
-                        type: 'url',
-                        res : result.redirectURL
-                    }));
+                return transaction.save().then(() => ({
+                    type: 'url',
+                    res: result.redirectURL
+                }));
             });
     },
 

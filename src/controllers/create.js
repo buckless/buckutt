@@ -1,9 +1,9 @@
-const express                      = require('express');
-const Promise                      = require('bluebird');
-const logger                       = require('../lib/log');
-const modelParser                  = require('../lib/modelParser');
+const express = require('express');
+const Promise = require('bluebird');
+const logger = require('../lib/log');
+const modelParser = require('../lib/modelParser');
 const { embedParser, embedFilter } = require('../lib/embedParser');
-const dbCatch                      = require('../lib/dbCatch');
+const dbCatch = require('../lib/dbCatch');
 
 const log = logger(module);
 
@@ -26,17 +26,17 @@ router.post('/:model/', (req, res, next) => {
     }
 
     // Embed multiple relatives
-    const withRelated = (req.query.embed) ? embedParser(req.query.embed) : [];
-    const embedFilters = (req.query.embed) ?
-        req.query.embed.filter(rel => rel.required).map(rel => rel.embed) :
-        [];
+    const withRelated = req.query.embed ? embedParser(req.query.embed) : [];
+    const embedFilters = req.query.embed
+        ? req.query.embed.filter(rel => rel.required).map(rel => rel.embed)
+        : [];
 
     Promise.all(insts.map(inst => inst.save()))
-        .then(results => req.Model
-            .where('id', 'in', results.map(i => i.id))
-            .fetchAll({ withRelated }))
+        .then(results =>
+            req.Model.where('id', 'in', results.map(i => i.id)).fetchAll({ withRelated })
+        )
         .then(results => embedFilter(embedFilters, results.toJSON()))
-        .then((results) => {
+        .then(results => {
             req.app.locals.modelChanges.emit(
                 'data',
                 'create',
@@ -46,7 +46,7 @@ router.post('/:model/', (req, res, next) => {
 
             res
                 .status(200)
-                .json((results.length === 1) ? results[0] : results)
+                .json(results.length === 1 ? results[0] : results)
                 .end();
         })
         .catch(err => dbCatch(module, err, next));
