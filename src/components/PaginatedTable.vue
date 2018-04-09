@@ -221,8 +221,9 @@ export default {
     padding: 0 24px;
     border-bottom: 1px solid rgba(0,0,0,.12);
 
-    & > .b-table__cell:first-child {
-        flex: 2;
+    & > .b-table__cell:nth-child(1) {
+        min-width: 125px;
+        max-width: 125px;
     }
 
     & > .b-table__cell {
@@ -230,6 +231,14 @@ export default {
         height: 100%;
         display: flex;
         align-items: center;
+        overflow: hidden;
+        padding: 2px 4px;
+
+        & > span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     }
 }
 
@@ -247,7 +256,7 @@ export default {
 
 .b-table__row > .b-table__numeric-cell {
     text-align: right;
-    flex: 0;
+    flex-shrink: 1;
 }
 
 .b-table__header-row {
