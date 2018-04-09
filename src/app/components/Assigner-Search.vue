@@ -17,14 +17,14 @@
             <input
                 type="text"
                 name="search"
-                @keyup="search"
+                @input="search"
                 class="b-assigner-search__input"
                 :placeholder="searchBy === 'name' ? 'Nom' : 'Numéro de ticket'"
                 ref="search"
                 v-model="searchInput">
 
             <h4>Résultats :</h4>
-            <div class="b-assigner-search__results" v-show="matches.length > 0">
+            <div class="b-assigner-search__results" v-if="matches.length > 0 && searchInput.length > 2">
                 <div
                     class="b-assigner-search__results__result"
                     v-for="match in matches"
@@ -36,8 +36,8 @@
                     v-if="matches[0].name"
                     @click="selectUser(match)">{{ match.name }}</div>
             </div>
-            <p v-show="matches.length === 0 && searchInput.length === 0">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
-            <p v-show="matches.length === 0 && searchInput.length > 2">Aucun résultat.</p>
+            <p v-else-if="searchInput.length <= 2">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
+            <p v-else>Aucun résultat.</p>
         </form>
     </div>
 </template>
@@ -72,39 +72,48 @@ export default {
             this.$refs.search.blur();
         },
 
-        search: debounce(function () {
+        search: debounce(function() {
             if (this.searchInput.length <= 2) {
                 return;
             }
 
             if (this.online) {
                 if (this.searchBy === 'name') {
-                    axios.get(`${config.api}/services/manager/searchuser?name=${this.searchInput}`, this.tokenHeaders)
-                        .then((res) => {
+                    axios
+                        .get(
+                            `${config.api}/services/manager/searchuser?name=${this.searchInput}`,
+                            this.tokenHeaders
+                        )
+                        .then(res => {
                             this.matches = res.data;
                         });
                 } else {
-                    const filterRel = [ {
-                        embed   : 'meansOfLogin',
-                        filters : [
-                            ['type', '=', 'ticketId'],
-                            ['data', 'like', `${this.searchInput}%`]
-                        ],
-                        required: true
-                    } ];
+                    const filterRel = [
+                        {
+                            embed: 'meansOfLogin',
+                            filters: [
+                                ['type', '=', 'ticketId'],
+                                ['data', 'like', `${this.searchInput}%`]
+                            ],
+                            required: true
+                        }
+                    ];
 
                     const embed = encodeURIComponent(JSON.stringify(filterRel));
 
-                    axios.get(`${config.api}/users?embed=${embed}`, this.tokenHeaders)
-                        .then((res) => {
-                            this.matches = res.data;
-                        });
+                    axios.get(`${config.api}/users?embed=${embed}`, this.tokenHeaders).then(res => {
+                        this.matches = res.data;
+                    });
                 }
             } else {
-                this.db.findUser(this.searchInput)
-                    .then((users) => {
-                        this.matches = users;
-                    });
+                const searchMethod =
+                    this.searchBy === 'name'
+                        ? this.db.findByName.bind(this.db)
+                        : this.db.findByBarcode.bind(this.db);
+
+                searchMethod(this.searchInput).then(users => {
+                    this.matches = users;
+                });
             }
         }, 500),
 
@@ -119,10 +128,9 @@ export default {
 
     mounted() {
         this.db = new OfflineData();
-
         this.db.init();
     }
-}
+};
 </script>
 
 <style scoped>
@@ -151,7 +159,7 @@ export default {
 
 .b-assigner-search h4 {
     text-transform: uppercase;
-    color: rgba(0,0,0,.7);
+    color: rgba(0, 0, 0, 0.7);
     font-size: 14px;
 }
 
@@ -166,7 +174,7 @@ export default {
     width: 100%;
     padding: 10px;
     border-radius: 42px;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
 
     &:not(:first-child) {
         margin-top: 16px;
@@ -180,7 +188,7 @@ export default {
 
 .b-assigner-search__results {
     background-color: #fff;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 3px;
     margin: 16px 0;
 }
@@ -190,7 +198,7 @@ export default {
     cursor: pointer;
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     .b-assigner-search > form {
         width: calc(100% - 20px);
         margin: 10px auto;

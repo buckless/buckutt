@@ -1,12 +1,13 @@
-const http         = require('http');
-const path         = require('path');
-const fs           = require('fs');
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const { Readable } = require('stream');
 // const unzip        = require('unzip');
 const EventEmitter = require('events');
-const electron     = require('electron');
+const electron = require('electron');
 
-const UPDATE_TEXT = 'Une mise à jour a été effectuée. Recharger pour mettre à jour ? (cela entraînera une déconnexion)';
+const UPDATE_TEXT =
+    'Une mise à jour a été effectuée. Recharger pour mettre à jour ? (cela entraînera une déconnexion)';
 
 function applyUpdate(source, target) {
     const r = new Readable();
@@ -23,7 +24,7 @@ function listenToUpdates() {
     const server = http.createServer((req, res) => {
         let body = Buffer.alloc(0);
 
-        req.on('data', (data) => {
+        req.on('data', data => {
             body = Buffer.concat([body, data]);
         });
 
@@ -61,6 +62,5 @@ export function init() {
     //         location.reload(true);
     //     }
     // });
-
     // TODO
 }

@@ -39,18 +39,16 @@ export default {
 
     computed: {
         selectedItem() {
-            return this.$store.state.items
-                .basket
-                .itemList
-                .filter(article => article.id === this.item.id)
-                .length;
+            return this.$store.state.items.basket.itemList.filter(
+                article => article.id === this.item.id
+            ).length;
         }
     },
 
     methods: {
         ...mapActions({
-            add     : 'addItemToBasket',
-            remove  : 'removeItemFromBasket',
+            add: 'addItemToBasket',
+            remove: 'removeItemFromBasket',
             getImage: 'getImage'
         })
     },
@@ -62,10 +60,17 @@ export default {
         const size = textSize(this.item.name);
 
         // width - padding - padding - blue border
-        const maxSize = this.$refs.name.getBoundingClientRect().width - parseInt(getComputedStyle(this.$refs.name).paddingLeft, 10) * 2 - 4 * 2;
+        const maxSize =
+            this.$refs.name.getBoundingClientRect().width -
+            parseInt(getComputedStyle(this.$refs.name).paddingLeft, 10) * 2 -
+            4 * 2;
 
         if (size > maxSize) {
             $name.style.fontSize = `${initialFontSize * (maxSize / size)}px`;
+        }
+
+        if (initialFontSize * (maxSize / size) < 9) {
+            $name.style.fontSize = '9px';
         }
 
         this.getImage(this.item.id)
@@ -83,8 +88,7 @@ export default {
 @import '../main.css';
 
 .b-item {
-    box-shadow: 0 0 2px color($black a(0.25)),
-                0 2px 3px color($black a(0.25));
+    box-shadow: 0 0 2px color($black a(0.25)), 0 2px 3px color($black a(0.25));
     border-radius: 2px;
     cursor: pointer;
     height: 150px;
@@ -119,7 +123,8 @@ export default {
     }
 }
 
-.b-item__count, .b-item__minus {
+.b-item__count,
+.b-item__minus {
     background-color: $red;
     border-radius: 50%;
     color: #fff;
@@ -160,6 +165,7 @@ export default {
     position: absolute;
     white-space: nowrap;
     width: 100%;
+    text-overflow: ellipsis;
 }
 
 .b-item__price {

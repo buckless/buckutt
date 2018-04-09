@@ -9,8 +9,8 @@
 export default {
     props: {
         status: {
-          type: Boolean,
-          default: true
+            type: Boolean,
+            default: true
         }
     },
 
@@ -19,10 +19,10 @@ export default {
             return {
                 'b-ok': true,
                 'b-ok--not-ok': !this.status
-            }
+            };
         }
     }
-}
+};
 </script>
 
 <style scoped>

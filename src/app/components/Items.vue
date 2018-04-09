@@ -23,7 +23,7 @@ export default {
         ...mapGetters(['tabsItems']),
 
         ...mapState({
-            buyer    : state => state.auth.buyer,
+            buyer: state => state.auth.buyer,
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing
         })
@@ -38,7 +38,7 @@ export default {
             console.log('items-validate', cardNumber, credit);
             this.setBuyer({
                 cardNumber,
-                credit    : Number.isInteger(credit) ? credit : null,
+                credit: Number.isInteger(credit) ? credit : null,
                 isOnlyAuth: this.isWaiting && !this.isWriting
             });
         },

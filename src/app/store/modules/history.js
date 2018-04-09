@@ -13,34 +13,36 @@ const mutations = {
 
     ADD_PENDING_CANCELLATION(state, payload) {
         state.pendingCancellations.push(payload);
-        window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
+        window.localStorage.setItem(
+            'pendingCancellations',
+            JSON.stringify(state.pendingCancellations)
+        );
     },
 
     REMOVE_FROM_HISTORY(state, payload) {
         const index = state.history.findIndex(entry => entry.localId === payload.localId);
 
-        state.history.splice(
-            index,
-            1
-        );
+        state.history.splice(index, 1);
     },
 
     REMOVE_PENDING_CANCELLATION(state, payload) {
-        const index = state.pendingCancellations.findIndex(entry => entry.localId === payload.localId);
-
-        state.pendingCancellations.splice(
-            index,
-            1
+        const index = state.pendingCancellations.findIndex(
+            entry => entry.localId === payload.localId
         );
 
-        window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
+        state.pendingCancellations.splice(index, 1);
+
+        window.localStorage.setItem(
+            'pendingCancellations',
+            JSON.stringify(state.pendingCancellations)
+        );
     },
 
     UPDATE_HISTORY_ENTRY(state, payload) {
-        const historyIndex = state.history
-            .findIndex(entry => payload.localId === entry.localId);
-        const pendingIndex = state.pendingCancellations
-            .findIndex(entry => payload.localId === entry.localId);
+        const historyIndex = state.history.findIndex(entry => payload.localId === entry.localId);
+        const pendingIndex = state.pendingCancellations.findIndex(
+            entry => payload.localId === entry.localId
+        );
 
         if (historyIndex > -1) {
             state.history.splice(historyIndex, 1, {
@@ -55,7 +57,10 @@ const mutations = {
                 transactionIds: payload.basketData.transactionIds
             });
 
-            window.localStorage.setItem('pendingCancellations', JSON.stringify(state.pendingCancellations));
+            window.localStorage.setItem(
+                'pendingCancellations',
+                JSON.stringify(state.pendingCancellations)
+            );
         }
     },
 

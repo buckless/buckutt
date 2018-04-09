@@ -4,7 +4,7 @@
 
 <script>
 function p2(n) {
-    return (n < 10) ? `0${n}` : n.toString();
+    return n < 10 ? `0${n}` : n.toString();
 }
 
 export default {
@@ -12,7 +12,7 @@ export default {
         const now = new Date();
 
         return {
-            hours  : p2(now.getHours()),
+            hours: p2(now.getHours()),
             minutes: p2(now.getMinutes())
         };
     },
@@ -27,7 +27,7 @@ export default {
 
             this.live = setTimeout(() => this.update(), 1000);
 
-            this.hours   = p2(now.getHours());
+            this.hours = p2(now.getHours());
             this.minutes = p2(now.getMinutes());
         }
     }

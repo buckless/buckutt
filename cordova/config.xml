@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.buckless.client" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Cashless Gala</name>
+    <name>Cashless</name>
     <description>
-        Application vendeur Cashless — Gala UTT 2018
+        Application opérateur Cashless
     </description>
     <icon src="../static/icon.png" />
     <author email="contact@buckless.com" href="http://buckless.com">
-        Buckless
+        Studio Async
     </author>
     <content src="index.html" />
     <allow-navigation href="*" />

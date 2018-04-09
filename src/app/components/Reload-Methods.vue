@@ -19,14 +19,14 @@ export default {
     },
 
     computed: mapState({
-        meanOfPayment : state => state.reload.meanOfPayment,
+        meanOfPayment: state => state.reload.meanOfPayment,
         meansOfPayment: state => state.reload.meansOfPayment
     }),
 
     methods: {
         buttonClasses(mean) {
             return {
-                'b-reload-methods__method--active'  : this.meanOfPayment === mean.slug,
+                'b-reload-methods__method--active': this.meanOfPayment === mean.slug,
                 'b-reload-methods__method--disabled': this.disabled
             };
         },
@@ -63,7 +63,7 @@ export default {
     &--active {
         color: #fff;
         cursor: default;
-        background-color: $lightblue
+        background-color: $lightblue;
     }
 }
 

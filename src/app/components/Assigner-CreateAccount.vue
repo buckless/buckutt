@@ -43,7 +43,7 @@ export default {
             assignModalOpened: false,
             credit: null,
             activeGroups: []
-        }
+        };
     },
 
     computed: {
@@ -52,10 +52,10 @@ export default {
         },
 
         ...mapState({
-            online     : state => state.online.status,
-            point      : state => state.auth.device.point.id,
-            seller     : state => state.auth.seller.id,
-            groups     : state => state.auth.groups.filter(group => group.name !== 'Défaut'),
+            online: state => state.online.status,
+            point: state => state.auth.device.point.id,
+            seller: state => state.auth.seller.id,
+            groups: state => state.auth.groups.filter(group => group.name !== 'Défaut'),
             useCardData: state => state.auth.device.event.config.useCardData
         }),
 
@@ -66,7 +66,7 @@ export default {
         assignCard(cardId) {
             if (this.assignModalOpened) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                let promise  = Promise.resolve();
+                let promise = Promise.resolve();
                 const groups = this.activeGroups.map(group => group.id);
 
                 const anon = {
@@ -76,29 +76,35 @@ export default {
                 };
 
                 if (this.online) {
-                    promise = promise.then(() => axios.post(
-                        `${config.api}/services/assigner/anon`,
-                        anon,
-                        this.tokenHeaders
-                    ));
+                    promise = promise.then(() =>
+                        axios.post(`${config.api}/services/assigner/anon`, anon, this.tokenHeaders)
+                    );
                 } else {
-                    promise = promise.then(() => this.addPendingRequest({
-                        url: `${config.api}/services/assigner/anon`,
-                        body: anon
-                    }));
+                    promise = promise.then(() =>
+                        this.addPendingRequest({
+                            url: `${config.api}/services/assigner/anon`,
+                            body: anon
+                        })
+                    );
                 }
 
                 promise = promise
                     .then(() => Promise.resolve(true))
-                    .catch(err => err.response.data.message === 'Duplicate Entry'
-                        ? Promise.resolve(true)
-                        : Promise.reject(err))
-                    .then(write => write && this.useCardData
-                        ? new Promise(resolve => {
-                            window.app.$root.$emit('readyToWrite', this.numberCredit);
-                            window.app.$root.$on('writeCompleted', () => resolve());
-                        })
-                        : Promise.resolve())
+                    .catch(
+                        err =>
+                            err.response.data.message === 'Duplicate Entry'
+                                ? Promise.resolve(true)
+                                : Promise.reject(err)
+                    )
+                    .then(
+                        write =>
+                            write && this.useCardData
+                                ? new Promise(resolve => {
+                                      window.app.$root.$emit('readyToWrite', this.numberCredit);
+                                      window.app.$root.$on('writeCompleted', () => resolve());
+                                  })
+                                : Promise.resolve()
+                    )
                     .then(() => this.ok())
                     .catch(err => this.$store.commit('ERROR', err.response.data))
                     .then(() => this.$store.commit('SET_DATA_LOADED', true));
@@ -114,7 +120,7 @@ export default {
 
         ...mapActions(['addPendingRequest'])
     }
-}
+};
 </script>
 
 <style scoped>
@@ -133,7 +139,7 @@ export default {
 
 .b-assigner-create-account h4 {
     text-transform: uppercase;
-    color: rgba(0,0,0,.7);
+    color: rgba(0, 0, 0, 0.7);
 }
 
 .b-assigner-create-account__input {
@@ -141,7 +147,7 @@ export default {
     width: 100%;
     padding: 10px;
     border-radius: 42px;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
 
     &:not(:first-child) {
         margin-top: 16px;
@@ -156,7 +162,7 @@ export default {
 .b-assigner-create-account__groups {
     margin-top: 16px;
     background: #fff;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 3px;
 }
 
@@ -187,7 +193,7 @@ export default {
     border-radius: 25px;
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     .b-assigner-create-account > form {
         width: calc(100% - 20px);
         margin: 10px auto;

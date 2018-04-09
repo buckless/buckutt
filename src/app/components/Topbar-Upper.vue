@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
@@ -45,10 +45,10 @@ export default {
         ...mapGetters(['credit', 'isSellerMode', 'isReloaderMode']),
 
         ...mapState({
-            history      : state => state.history.opened,
-            seller       : state => state.auth.seller,
+            history: state => state.history.opened,
+            seller: state => state.auth.seller,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
-            buyer        : state => state.auth.buyer
+            buyer: state => state.auth.buyer
         }),
 
         onlyLogout() {

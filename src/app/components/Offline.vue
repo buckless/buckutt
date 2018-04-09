@@ -10,7 +10,7 @@ import { mapState } from 'vuex';
 export default {
     computed: {
         syncingClass() {
-            return this.syncing ? { 'b-offline-syncing': true } : {}
+            return this.syncing ? { 'b-offline-syncing': true } : {};
         },
 
         ...mapState({
@@ -18,7 +18,7 @@ export default {
             syncing: state => state.online.syncing
         })
     }
-}
+};
 </script>
 
 <style scoped>

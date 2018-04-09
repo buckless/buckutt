@@ -37,19 +37,19 @@ import { mapState } from 'vuex';
 
 export default {
     props: {
-        mode            : String,
-        successText     : String,
+        mode: String,
+        successText: String,
         disableSignCheck: Boolean
     },
 
     data() {
         return {
-            inputValue : '',
-            isCordova  : process.env.TARGET === 'cordova',
-            rewrite    : false,
-            success    : false,
+            inputValue: '',
+            isCordova: process.env.TARGET === 'cordova',
+            rewrite: false,
+            success: false,
             dataToWrite: null
-        }
+        };
     },
 
     methods: {
@@ -75,7 +75,7 @@ export default {
 
         hideVirtualKeyboard() {
             if (process.env.TARGET === 'cordova') {
-                setTimeout(() => Keyboard.hide())
+                setTimeout(() => Keyboard.hide());
             }
         },
 
@@ -85,22 +85,25 @@ export default {
                 return;
             }
 
-            this.success     = false;
-            this.rewrite     = false;
+            this.success = false;
+            this.rewrite = false;
             this.dataToWrite = null;
 
             const nfc = window.nfc;
 
             if (this.useCardData) {
-                nfc.on('uid', (data) => {
+                nfc.on('uid', data => {
                     this.inputValue = data.toString();
                 });
 
-                nfc.on('data', (data) => {
+                nfc.on('data', data => {
                     let credit;
 
                     try {
-                        credit = nfc.dataToCredit(data.toLowerCase ? data.toLowerCase() : data, config.signingKey);
+                        credit = nfc.dataToCredit(
+                            data.toLowerCase ? data.toLowerCase() : data,
+                            config.signingKey
+                        );
                         console.log('nfc-data', credit);
                         this.onCard(credit);
                     } catch (err) {
@@ -113,17 +116,17 @@ export default {
                     }
                 });
             } else {
-                nfc.on('uid', (data) => {
+                nfc.on('uid', data => {
                     this.inputValue = data;
                     this.onCard();
                 });
             }
 
-            nfc.on('error', (err) => {
+            nfc.on('error', err => {
                 console.error(err);
             });
 
-            this.$root.$on('readyToWrite', (credit) => {
+            this.$root.$on('readyToWrite', credit => {
                 this.dataToWrite = credit;
                 this.write();
             });
@@ -163,7 +166,7 @@ export default {
     computed: {
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            dataLoaded : state => state.ui.dataLoaded
+            dataLoaded: state => state.ui.dataLoaded
         }),
 
         successTextUpdated() {
@@ -178,7 +181,7 @@ export default {
     beforeDestroy() {
         this.destroyListeners();
     }
-}
+};
 </script>
 
 <style scoped>

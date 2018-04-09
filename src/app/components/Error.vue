@@ -67,7 +67,9 @@ export default {
     text-transform: uppercase;
     width: 100%;
 
-    &:active, &:focus, &:hover {
+    &:active,
+    &:focus,
+    &:hover {
         background-color: color($black a(0.3));
     }
 }

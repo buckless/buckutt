@@ -1,8 +1,8 @@
 const initialState = {
-    reloadState   : 'closed',
-    meanOfPayment : 'card',
+    reloadState: 'closed',
+    meanOfPayment: 'card',
     meansOfPayment: [],
-    reloads       : []
+    reloads: []
 };
 
 const mutations = {
@@ -40,7 +40,7 @@ const mutations = {
 
     LOGOUT_BUYER(state) {
         state.meanOfPayment = 'card';
-        state.reloads       = [];
+        state.reloads = [];
     }
 };
 

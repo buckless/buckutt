@@ -19,10 +19,10 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import axios                                from '@/utils/axios';
+import axios from '@/utils/axios';
 
-import Chooser     from './Controller-Chooser';
-import Ok          from './Ok';
+import Chooser from './Controller-Chooser';
+import Ok from './Ok';
 import OfflineData from '@/../lib/offlineData';
 
 export default {
@@ -37,13 +37,13 @@ export default {
             okModalStatus: null,
             chooser: false,
             currentGroups: []
-        }
+        };
     },
 
     computed: {
         ...mapState({
             online: state => state.online.status,
-            wiket : state => state.auth.device.wiket,
+            wiket: state => state.auth.device.wiket,
             seller: state => state.auth.seller.id
         }),
         ...mapGetters(['tokenHeaders'])
@@ -60,52 +60,51 @@ export default {
 
             if (this.online) {
                 initialPromise = axios
-                  .get(`${config.api}/services/controller?user=${cardId}`, this.tokenHeaders)
-                  .then(res => res.data);
+                    .get(`${config.api}/services/controller?user=${cardId}`, this.tokenHeaders)
+                    .then(res => res.data);
             } else {
                 initialPromise = this.db.cardAccesses(cardId);
             }
 
-            initialPromise
-                .then((accesses) => {
-                    let match = false;
+            initialPromise.then(accesses => {
+                let match = false;
 
-                    for (let i = accesses.length - 1; i >= 0; i--) {
-                        // check if group matches one of currentGroups
-                        if (!this.currentGroups.find(group => group.id === accesses[i].groupId)) {
-                            continue;
-                        }
-
-                        const now   = new Date();
-                        const start = new Date(accesses[i].start);
-                        const end   = new Date(accesses[i].end);
-
-                        // check if now is between [start, end]
-                        if (now - start >= 0 && end - now >= 0) {
-                            match = true;
-                        }
+                for (let i = accesses.length - 1; i >= 0; i--) {
+                    // check if group matches one of currentGroups
+                    if (!this.currentGroups.find(group => group.id === accesses[i].groupId)) {
+                        continue;
                     }
 
-                    if (match) {
-                        const access = {
-                            operator_id: this.seller,
-                            wiket_id   : this.wiket,
-                            cardId
-                        };
+                    const now = new Date();
+                    const start = new Date(accesses[i].start);
+                    const end = new Date(accesses[i].end);
 
-                        if (this.online) {
-                            axios.post(`${config.api}/services/controller`, access, this.tokenHeaders);
-                        } else {
-                            this.addPendingRequest({
-                                url : `${config.api}/services/controller`,
-                                body: access
-                            });
-                        }
+                    // check if now is between [start, end]
+                    if (now - start >= 0 && end - now >= 0) {
+                        match = true;
                     }
+                }
 
-                    this.okModalStatus = match;
-                    this.showOkModal = true;
-                });
+                if (match) {
+                    const access = {
+                        operator_id: this.seller,
+                        wiket_id: this.wiket,
+                        cardId
+                    };
+
+                    if (this.online) {
+                        axios.post(`${config.api}/services/controller`, access, this.tokenHeaders);
+                    } else {
+                        this.addPendingRequest({
+                            url: `${config.api}/services/controller`,
+                            body: access
+                        });
+                    }
+                }
+
+                this.okModalStatus = match;
+                this.showOkModal = true;
+            });
         },
 
         ...mapActions(['updateEssentials', 'addPendingRequest'])
@@ -113,11 +112,9 @@ export default {
 
     mounted() {
         this.db = new OfflineData();
-
-        this.updateEssentials();
         this.db.init();
     }
-}
+};
 </script>
 
 <style>

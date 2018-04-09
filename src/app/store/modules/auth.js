@@ -1,15 +1,15 @@
 const initialState = {
     alert: null,
     device: {
-        id   : null,
+        id: null,
         point: {
-            id  : null,
+            id: null,
             name: null
         },
         wiket: null,
         event: {
-            id    : null,
-            name  : null,
+            id: null,
+            name: null,
             config: {}
         },
         config: {
@@ -20,27 +20,27 @@ const initialState = {
         DefaultGroup_id: null
     },
     buyer: {
-        isAuth     : false,
-        id         : null,
-        credit     : 0,
-        firstname  : null,
-        lastname   : null,
-        groups     : [],
-        purchases  : [],
+        isAuth: false,
+        id: null,
+        credit: 0,
+        firstname: null,
+        lastname: null,
+        groups: [],
+        purchases: [],
         meanOfLogin: ''
     },
     seller: {
-        isAuth           : false,
-        meanOfLogin      : '',
-        pin              : '',
-        id               : '',
-        token            : '',
-        firstname        : '',
-        lastname         : '',
-        canSell          : false,
-        canReload        : false,
-        canAssign        : false,
-        canControl       : false,
+        isAuth: false,
+        meanOfLogin: '',
+        pin: '',
+        id: '',
+        token: '',
+        firstname: '',
+        lastname: '',
+        canSell: false,
+        canReload: false,
+        canAssign: false,
+        canControl: false,
         disconnectWarning: false
     },
     groups: []
@@ -48,21 +48,21 @@ const initialState = {
 
 const mutations = {
     SET_DEVICE(state, payload) {
-        state.device.id         = payload.id;
-        state.device.point      = payload.point;
-        state.device.wiket      = payload.wiket;
-        state.device.event.id   = payload.event.id;
+        state.device.id = payload.id;
+        state.device.point = payload.point;
+        state.device.wiket = payload.wiket;
+        state.device.event.id = payload.event.id;
         state.device.event.name = payload.event.name;
     },
 
     SET_FULL_DEVICE(state, payload) {
         const keys = ['alcohol', 'doubleValidation', 'showPicture'];
 
-        keys.forEach((key) => {
+        keys.forEach(key => {
             state.device.config[key] = payload[key];
         });
 
-        state.device.DefaultGroup_id = payload.DefaultGroup_id
+        state.device.DefaultGroup_id = payload.DefaultGroup_id;
     },
 
     DISABLE_DOUBLE_VALIDATION(state) {
@@ -72,7 +72,7 @@ const mutations = {
     SET_EVENT(state, payload) {
         const keys = ['maxAlcohol', 'maxPerAccount', 'minReload', 'useCardData'];
 
-        keys.forEach((key) => {
+        keys.forEach(key => {
             state.device.event.config[key] = payload[key];
         });
     },
@@ -86,17 +86,17 @@ const mutations = {
     },
 
     AUTH_SELLER(state, payload) {
-        state.seller.isAuth      = true;
+        state.seller.isAuth = true;
         state.seller.meanOfLogin = payload.meanOfLogin;
-        state.seller.pin         = payload.pin;
-        state.seller.id          = payload.id;
-        state.seller.token       = payload.token;
-        state.seller.firstname   = payload.firstname;
-        state.seller.lastname    = payload.lastname;
-        state.seller.canSell     = payload.canSell;
-        state.seller.canReload   = payload.canReload;
-        state.seller.canAssign   = payload.canAssign;
-        state.seller.canControl  = payload.canControl;
+        state.seller.pin = payload.pin;
+        state.seller.id = payload.id;
+        state.seller.token = payload.token;
+        state.seller.firstname = payload.firstname;
+        state.seller.lastname = payload.lastname;
+        state.seller.canSell = payload.canSell;
+        state.seller.canReload = payload.canReload;
+        state.seller.canAssign = payload.canAssign;
+        state.seller.canControl = payload.canControl;
     },
 
     SET_GROUPS(state, groups) {
@@ -108,12 +108,12 @@ const mutations = {
     },
 
     ID_BUYER(state, payload) {
-        state.buyer.isAuth    = true;
-        state.buyer.id        = payload.id;
-        state.buyer.credit    = payload.credit;
+        state.buyer.isAuth = true;
+        state.buyer.id = payload.id;
+        state.buyer.credit = payload.credit;
         state.buyer.firstname = payload.firstname;
-        state.buyer.lastname  = payload.lastname;
-        state.buyer.groups    = payload.groups;
+        state.buyer.lastname = payload.lastname;
+        state.buyer.groups = payload.groups;
         state.buyer.purchases = payload.purchases;
     },
 
@@ -126,11 +126,11 @@ const mutations = {
     },
 
     FIRST_LOGOUT_SELLER(state) {
-        state.seller.disconnectWarning = true
+        state.seller.disconnectWarning = true;
     },
 
     REMOVE_LOGOUT_WARNING(state) {
-        state.seller.disconnectWarning = false
+        state.seller.disconnectWarning = false;
     },
 
     LOGOUT_BUYER(state) {

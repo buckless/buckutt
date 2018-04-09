@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
 
 export default {
     props: ['defaultGroups'],
@@ -40,10 +40,12 @@ export default {
     },
 
     computed: mapState({
-        groups: state => app.$store.state.auth.groups
-            .filter(group => group.name !== app.$store.state.auth.device.event.name)
+        groups: state =>
+            app.$store.state.auth.groups.filter(
+                group => group.name !== app.$store.state.auth.device.event.name
+            )
     })
-}
+};
 </script>
 
 <style>
@@ -62,7 +64,7 @@ export default {
     max-width: 600px;
     margin: 0 auto;
     border-radius: 4px;
-    border: 1px solid rgba(0,0,0,.12);
+    border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .b-controller-chooser__groups__group {
@@ -85,7 +87,7 @@ export default {
         cursor: pointer;
 
         &:not(:last-child) {
-            border-bottom: 1px solid rgba(0,0,0,.12);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.12);
         }
     }
 
@@ -109,5 +111,4 @@ export default {
         background-color: $orange;
     }
 }
-
 </style>

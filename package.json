@@ -1,21 +1,23 @@
 {
   "name": "buckless-client",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "buckless-client",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
-    "Gabriel Juchault <gabriel.juchault@gmail.com>",
-    "Axel Mousset <axel@mousset.me>",
-    "Lucas Soulier <lucas.soulier.utt@gmail.com>"
+    "Gabriel Juchault <gabriel@buckless.com>",
+    "Axel Mousset <axel@buckless.com>",
+    "Lucas Soulier <lucas@buckless.com>"
   ],
-  "repository": "git@lab.buckless.com:core/client.git",
+  "repository": "https://lab.buckless.com/core/client.git",
   "homepage": "https://buckless.com",
   "private": true,
+  "license": "MIT",
   "main": "src/main.js",
   "scripts": {
-    "postinstall": "cp config/profiles/development.json.example config/profiles/development.json && cp config/profiles/production.json.example config/profiles/production.json && cd cordova && cordova prepare",
+    "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\"",
+    "buildmobile": "cd cordova && cordova prepare",
     "buildnative": "electron-rebuild .",
-    "build:docker": "docker build -t buckless/client .",
+    "build:docker": "docker build -t lab.buckless.com:4567/core/client .",
     "build:android": "cross-env TARGET=cordova PLATFORM=android node build/build.js",
     "build:electron": "cross-env TARGET=electron node build/build.js",
     "build:browser": "cross-env TARGET=browser node build/build.js",
@@ -86,6 +88,7 @@
     "postcss-nested": "^3.0.0",
     "postcss-simple-vars": "^4.1.0",
     "postcss-url": "^7.2.1",
+    "prettier": "1.11.1",
     "rimraf": "^2.6.0",
     "semver": "^5.3.0",
     "shelljs": "^0.8.1",

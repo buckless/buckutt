@@ -25,31 +25,31 @@
 import countBy from 'lodash.countby';
 import { mapGetters, mapState } from 'vuex';
 
-import SidebarItem      from './Sidebar-Item';
+import SidebarItem from './Sidebar-Item';
 import SidebarPromotion from './Sidebar-Promotion';
-import SidebarReload    from './Sidebar-Reload';
-import SidebarValidate  from './Sidebar-Validate';
+import SidebarReload from './Sidebar-Reload';
+import SidebarValidate from './Sidebar-Validate';
 
 export default {
     computed: {
-         ...mapGetters(['reloadAmount']),
+        ...mapGetters(['reloadAmount']),
 
-         ...mapState({
+        ...mapState({
             sidebar: state => state.items.basket.sidebar
-         }),
+        }),
 
-         sidebarItems() {
+        sidebarItems() {
             const counts = countBy(this.sidebar.items.map(item => item.id));
 
-            return Object.keys(counts).map((id) => {
+            return Object.keys(counts).map(id => {
                 return {
                     id: id,
                     name: this.sidebar.items.find(item => item.id === id).name,
                     count: counts[id]
-                }
+                };
             });
-         }
-     },
+        }
+    },
 
     components: {
         SidebarItem,
