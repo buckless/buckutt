@@ -6,7 +6,7 @@
             </section>
             <form @submit.prevent="transferWrapper(currentPin, amount, user)">
                 <section class="mdc-card__supporting-text">
-                    Toutes les opérations en ligne ne sont effectives qu'après une opération physique.
+                    Les opérations en ligne ne sont validées qu'à la suite une transaction sur site.
                     <b-autocomplete label="Destinataire" id="b-name" @input="defineUser" class="b--inputwidth" required="required" error="Un utilisateur doit être sélectionné"/>
                     <label class="mdc-text-field" ref="currentPin">
                         <input type="password" class="mdc-text-field__input" required minlength="4" v-model="currentPin">
@@ -14,7 +14,7 @@
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
                     <label class="mdc-text-field" ref="amount">
-                        <input type="number" class="mdc-text-field__input" required v-model="amount">
+                        <input type="number" class="mdc-text-field__input" required step="0.01" min="0" v-model="amount">
                         <span class="mdc-text-field__label">Montant</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
@@ -57,7 +57,10 @@ export default {
 
         transferWrapper(currentPin, amount, user) {
             this.transfer({ currentPin, amount, user })
-                .then(message => this.notify(message))
+                .then((message) => {
+                    this.notify(message);
+                    this.$router.push('/history');
+                })
                 .catch(error => this.notify(error));
         }
     },

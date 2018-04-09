@@ -13,8 +13,11 @@
                     </div class="b-table__row">
                 </div class="b-table__header">
                 <div class="b-table__body">
-                    <div class="b-table__row" v-for="data in displayedData">
+                    <div class="b-table__row" v-for="(data, index) in displayedData" :class="{ 'b-table__row--removed': data.warning }">
                         <div v-for="header in headers" class="b-table__cell" :class="header.class">
+                            <template v-if="data.warning && index === 0">
+                                <i class="material-icons">delete</i>
+                            </template>
                             <span v-if="header.type === 'price'">
                                 {{ lodget(data, header.field) | price(true) }}
                             </span>
@@ -24,6 +27,9 @@
                             <span v-else>
                                 {{ lodget(data, header.field) }}
                             </span>
+                            <ul v-if="header.list" class="b-table__list">
+                                <li v-for="article in lodget(data, header.list)">{{ article }}</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -215,8 +221,9 @@ export default {
     padding: 0 24px;
     border-bottom: 1px solid rgba(0,0,0,.12);
 
-    & > .b-table__cell:first-child {
-        flex: 2;
+    & > .b-table__cell:nth-child(1) {
+        min-width: 125px;
+        max-width: 125px;
     }
 
     & > .b-table__cell {
@@ -224,7 +231,19 @@ export default {
         height: 100%;
         display: flex;
         align-items: center;
+        overflow: hidden;
+        padding: 2px 4px;
+
+        & > span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     }
+}
+
+.b-table__row--removed {
+    background-color: #f0f0f0;
 }
 
 .b-table__row:not(.b-table__header-row) {
@@ -237,7 +256,7 @@ export default {
 
 .b-table__row > .b-table__numeric-cell {
     text-align: right;
-    flex: 0;
+    flex-shrink: 1;
 }
 
 .b-table__header-row {

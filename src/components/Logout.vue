@@ -10,18 +10,12 @@ import { mapActions } from 'vuex';
 export default {
     methods: {
         ...mapActions([
-            'updateLoggedUser',
-            'clearHistory',
-            'closeSocket'
+            'logoutUser'
         ])
     },
 
     mounted() {
-        sessionStorage.clear();
-        this.updateLoggedUser(null);
-        this.clearHistory();
-        this.closeSocket();
-
+        this.logoutUser();
         this.$router.push('/');
     }
 };

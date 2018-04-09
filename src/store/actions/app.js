@@ -4,8 +4,25 @@ import { get, post, updateBearer } from '../../lib/fetch';
  * Global actions
  */
 
+export function setToken(_, token) {
+    updateBearer(token);
+    if (token) {
+        localStorage.setItem('token', token);
+    } else {
+        localStorage.removeItem('token');
+    }
+}
+
+export function logoutUser({ dispatch }) {
+    dispatch('clearHistory');
+    dispatch('setToken');
+    dispatch('updateLoggedUser');
+    dispatch('closeSocket');
+    localStorage.clear();
+}
+
 export function updateLoggedUser({ commit }, loggedUser) {
-    sessionStorage.setItem('user', JSON.stringify(loggedUser));
+    localStorage.setItem('user', JSON.stringify(loggedUser));
     commit('UPDATELOGGEDUSER', loggedUser);
 }
 
@@ -16,8 +33,9 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 }
 
 export function autoLoginUser({ commit, dispatch }) {
-    if (sessionStorage.hasOwnProperty('token')) {
-        commit('UPDATELOGGEDUSER', JSON.parse(sessionStorage.getItem('user')));
+    if (localStorage.hasOwnProperty('token')) {
+        commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('user')));
+        dispatch('setToken', localStorage.getItem('token'));
         dispatch('loadUser');
     }
 }
@@ -41,18 +59,24 @@ export function clearHistory({ commit }) {
 }
 
 export function loadUser({ dispatch }) {
-    dispatch('initSocket', sessionStorage.getItem('token'));
+    dispatch('initSocket', localStorage.getItem('token'));
     dispatch('loadHistory');
+    dispatch('loadGiftReloads');
+}
+
+export function loadGiftReloads({ commit }) {
+    get('giftReloads')
+        .then((result) => {
+            commit('SET_GIFT_RELOADS', result);
+        });
 }
 
 export function login({ dispatch }, credentials) {
     return post('login', credentials)
         .then((result) => {
             if (result.user) {
-                sessionStorage.setItem('token', result.token);
+                dispatch('setToken', result.token);
                 dispatch('updateLoggedUser', result.user);
-                updateBearer(result.token);
-
                 dispatch('loadUser');
                 return result.user;
             }

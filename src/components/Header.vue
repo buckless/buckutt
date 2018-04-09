@@ -114,14 +114,16 @@ export default {
             }
 
             & > .b-header__credit__pending {
-                margin-bottom: 2rem;
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
                 display: flex;
-                margin-top: -2rem;
+                margin-top: -3rem;
                 align-items: center;
                 justify-content: center;
 
                 & > i {
                     margin-right: 5px;
+                    font-size: 1.5rem !important;
                 }
             }
         }
