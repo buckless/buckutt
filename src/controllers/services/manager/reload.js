@@ -1,8 +1,8 @@
-const express         = require('express');
+const express = require('express');
 const { makePayment } = require('../../../reloadProviders');
-const logger          = require('../../../lib/log');
-const dbCatch         = require('../../../lib/dbCatch');
-const APIError        = require('../../../errors/APIError');
+const logger = require('../../../lib/log');
+const dbCatch = require('../../../lib/dbCatch');
+const APIError = require('../../../errors/APIError');
 
 const log = logger(module);
 
@@ -20,12 +20,12 @@ router.post('/services/manager/reload', (req, res, next) => {
     }
 
     makePayment(req.app, {
-        buyer : req.user,
+        buyer: req.user,
         amount: parseInt(req.body.amount, 10),
         // Used by test reloadProvider
-        point : req.point_id
+        point: req.point_id
     })
-        .then((result) => {
+        .then(result => {
             res
                 .status(200)
                 .json(result)

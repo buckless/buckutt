@@ -6,21 +6,19 @@ module.exports = {
         const Transaction = app.locals.models.Transaction;
 
         const transaction = new Transaction({
-            state  : 'pending',
-            amount : data.amount,
+            state: 'pending',
+            amount: data.amount,
             user_id: data.buyer.id
         });
 
-        return transaction
-            .save()
-            .then(() => {
-                setTimeout(() => module.exports.callback(app, transaction.get('id'), data), 1000);
+        return transaction.save().then(() => {
+            setTimeout(() => module.exports.callback(app, transaction.get('id'), data), 1000);
 
-                return {
-                    type: 'url',
-                    res : `${config.urls.managerUrl}/#/reload/success`
-                };
-            });
+            return {
+                type: 'url',
+                res: `${config.urls.managerUrl}/#/reload/success`
+            };
+        });
     },
 
     callback(app, id, data) {
@@ -29,9 +27,9 @@ module.exports = {
             return () => {};
         }
 
-        const Transaction       = app.locals.models.Transaction;
-        const GiftReload        = app.locals.models.GiftReload;
-        const Reload            = app.locals.models.Reload;
+        const Transaction = app.locals.models.Transaction;
+        const GiftReload = app.locals.models.GiftReload;
+        const Reload = app.locals.models.Reload;
         const PendingCardUpdate = app.locals.models.PendingCardUpdate;
 
         let giftReloads;
