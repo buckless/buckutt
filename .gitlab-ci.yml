@@ -1,0 +1,29 @@
+image: node:alpine
+
+stages:
+  - test
+  - deploy
+
+before_script:
+  - yarn
+  - cp config/profiles/production.json.example config/profiles/production.json
+  - cp config/profiles/development.json.example config/profiles/development.json
+
+cache:
+  paths:
+    - node_modules/
+
+test:
+  stage: test
+  script:
+    - yarn build
+    - yarn lint
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - docker build -t lab.buckless.com/core/admin .
+    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com
+    - docker push lab.buckless.com/core/admin

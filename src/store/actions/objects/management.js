@@ -1,5 +1,5 @@
 import { post, put, del } from '../../../lib/fetch';
-import routeToRelation    from '../../../lib/routeToRelation';
+import routeToRelation from '../../../lib/routeToRelation';
 
 /**
  * App actions
@@ -15,19 +15,19 @@ export function clearObject({ commit }, route) {
 
 export function checkAndAddObjects({ commit, dispatch, state }, data) {
     if (state.objects[data.route]) {
-        const objectsToAdd = data.objects
-            .filter(object =>
-                state.objects[data.route].findIndex(o => (o.id === object.id)) === -1);
+        const objectsToAdd = data.objects.filter(
+            object => state.objects[data.route].findIndex(o => o.id === object.id) === -1
+        );
 
         if (objectsToAdd.length > 0) {
             commit('ADDOBJECTS', { route: data.route, objects: objectsToAdd });
         }
 
         dispatch('checkAndUpdateObjects', {
-            route  : data.route,
-            objects: data.objects
-                .filter(object =>
-                    state.objects[data.route].findIndex(o => (o.id === object.id)) !== -1),
+            route: data.route,
+            objects: data.objects.filter(
+                object => state.objects[data.route].findIndex(o => o.id === object.id) !== -1
+            ),
             forceUpdate: true
         });
     }
@@ -35,7 +35,7 @@ export function checkAndAddObjects({ commit, dispatch, state }, data) {
 
 export function checkAndUpdateObjects({ commit, state }, data) {
     if (state.objects[data.route]) {
-        const objects = data.objects.filter((object) => {
+        const objects = data.objects.filter(object => {
             const foundObject = state.objects[data.route].find(o => o.id === object.id);
 
             if (foundObject) {
@@ -56,9 +56,9 @@ export function checkAndUpdateObjects({ commit, state }, data) {
 
 export function checkAndDeleteObjects({ commit, state }, data) {
     if (state.objects[data.route]) {
-        const objects = data.objects
-            .filter(object =>
-                state.objects[data.route].find(o => (o.id === object.id)));
+        const objects = data.objects.filter(object =>
+            state.objects[data.route].find(o => o.id === object.id)
+        );
 
         if (objects.length > 0) {
             commit('DELETEOBJECTS', { route: data.route, objects });
@@ -73,25 +73,27 @@ export function createObject({ dispatch, state }, object) {
         embed = `?embed=${routeToRelation(object.route)}`;
     }
 
-    return post(`${object.route.toLowerCase()}${embed}`, object.value)
-        .then((result) => {
-            if (state.objects[object.route]) {
-                dispatch('checkAndAddObjects', { route: object.route, objects: [result] });
-            }
+    return post(`${object.route.toLowerCase()}${embed}`, object.value).then(result => {
+        if (state.objects[object.route]) {
+            dispatch('checkAndAddObjects', { route: object.route, objects: [result] });
+        }
 
-            state.app.focusedElements
-                .forEach((element, depth) => {
-                    if (element[object.route]) {
-                        dispatch('updateFocusedElement', {
-                            depth,
-                            newRelation: object.route,
-                            value      : result
-                        });
-                    }
+        state.app.focusedElements.forEach((element, depth) => {
+            if (
+                element[object.route] &&
+                Object.values(result).some(value => value === element.id)
+            ) {
+                dispatch('updateFocusedElement', {
+                    depth,
+                    newRelation: object.route,
+                    value: result,
+                    saveInStore: true
                 });
-
-            return result;
+            }
         });
+
+        return result;
+    });
 }
 
 export function updateObject({ dispatch, state }, object) {
@@ -101,27 +103,28 @@ export function updateObject({ dispatch, state }, object) {
         embed = `?embed=${routeToRelation(object.route)}`;
     }
 
-    return put(`${object.route.toLowerCase()}/${object.value.id}${embed}`, object.value)
-        .then((result) => {
+    return put(`${object.route.toLowerCase()}/${object.value.id}${embed}`, object.value).then(
+        result => {
             dispatch('checkAndUpdateObjects', { route: object.route, objects: [result] });
 
             if (object.route === 'events' && result.id === state.app.currentEvent.id) {
                 dispatch('changeCurrentEvent', result);
             }
 
-            state.app.focusedElements
-                .forEach((element, depth) => {
-                    if (element[object.route]) {
-                        dispatch('updateFocusedElement', {
-                            depth,
-                            relation: object.route,
-                            value   : result
-                        });
-                    }
-                });
+            state.app.focusedElements.forEach((element, depth) => {
+                if (element[object.route]) {
+                    dispatch('updateFocusedElement', {
+                        depth,
+                        relation: object.route,
+                        value: result,
+                        saveInStore: true
+                    });
+                }
+            });
 
             return result;
-        });
+        }
+    );
 }
 
 export function removeObject({ dispatch, state }, object) {
@@ -129,21 +132,20 @@ export function removeObject({ dispatch, state }, object) {
         dispatch('unselectCurrentEvent');
     }
 
-    return del(`${object.route.toLowerCase()}/${object.value.id}`)
-        .then(() => {
-            dispatch('checkAndDeleteObjects', { route: object.route, objects: [object.value] });
+    return del(`${object.route.toLowerCase()}/${object.value.id}`).then(() => {
+        dispatch('checkAndDeleteObjects', { route: object.route, objects: [object.value] });
 
-            state.app.focusedElements
-                .forEach((element, depth) => {
-                    if (element[object.route]) {
-                        dispatch('updateFocusedElement', {
-                            depth,
-                            delRelation: object.route,
-                            value      : object.value
-                        });
-                    }
+        state.app.focusedElements.forEach((element, depth) => {
+            if (element[object.route]) {
+                dispatch('updateFocusedElement', {
+                    depth,
+                    delRelation: object.route,
+                    value: object.value,
+                    saveInStore: true
                 });
-
-            return { deleted: true };
+            }
         });
+
+        return { deleted: true };
+    });
 }

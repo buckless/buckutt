@@ -25,21 +25,19 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'notify', 'notifyError']),
         createWebservice(webservice) {
             this.createObject({ route: 'webservices', value: webservice })
-                .then((createdWebservice) => {
+                .then(createdWebservice => {
                     this.notify({ message: 'Le webhook a bien été créé' });
                     this.$router.push(`/webservices/${createdWebservice.id}`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création du webhook',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la création du webhook',
+                        full: err
+                    })
+                );
         }
     }
 };

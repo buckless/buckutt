@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { mapState }           from 'vuex';
+import { mapState } from 'vuex';
 import { promotionDisplayer } from './promotionDisplayer';
 
 export default {
@@ -48,8 +48,8 @@ export default {
         elements() {
             return [
                 {
-                    icon   : 'keyboard_arrow_right',
-                    title  : 'Nom',
+                    icon: 'keyboard_arrow_right',
+                    title: 'Nom',
                     content: this.focusedPromotion.name
                 }
             ];
@@ -63,18 +63,18 @@ export default {
 </script>
 
 <style>
-    .b-chip--margin {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
+.b-chip--margin {
+    margin-left: 5px;
+    margin-right: 5px;
+}
 
-    .b-table__little {
-        max-width: 140px;
-    }
+.b-table__little {
+    max-width: 140px;
+}
 
-    .b-table-inter {
-        position: relative;
-        top: 30px;
-        left: -72px;
-    }
+.b-table-inter {
+    position: relative;
+    top: 30px;
+    left: -72px;
+}
 </style>

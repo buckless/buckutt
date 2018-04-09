@@ -21,22 +21,20 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'notify', 'notifyError']),
 
         createDevice(device) {
             this.createObject({ route: 'devices', value: device })
-                .then((createdDevice) => {
-                    this.notify({ message: 'L\'équipement a bien été créé' });
+                .then(createdDevice => {
+                    this.notify({ message: "L'équipement a bien été créé" });
                     this.$router.push(`/devices/${createdDevice.id}`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création de l\'équipement',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la création de l'équipement",
+                        full: err
+                    })
+                );
         }
     }
 };

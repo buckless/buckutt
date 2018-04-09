@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { mapState }  from 'vuex';
+import { mapState } from 'vuex';
 import { parseDate } from '../../../lib/date';
 
 export default {
@@ -19,18 +19,18 @@ export default {
         elements() {
             return [
                 {
-                    icon   : 'keyboard_arrow_right',
-                    title  : 'Nom',
+                    icon: 'keyboard_arrow_right',
+                    title: 'Nom',
                     content: this.focusedPeriod.name
                 },
                 {
-                    icon   : 'date_range',
-                    title  : 'Début',
+                    icon: 'date_range',
+                    title: 'Début',
                     content: parseDate(this.focusedPeriod.start)
                 },
                 {
-                    icon   : 'date_range',
-                    title  : 'Fin',
+                    icon: 'date_range',
+                    title: 'Fin',
                     content: parseDate(this.focusedPeriod.end)
                 }
             ];

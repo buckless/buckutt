@@ -47,13 +47,13 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { saveAs }          from 'file-saver';
-import { download }        from '../../lib/fetch';
+import { saveAs } from 'file-saver';
+import { download } from '../../lib/fetch';
 import treasuryQueryString from '../../lib/treasuryQueryString';
 
 const fieldsPattern = {
-    point  : null,
-    dateIn : null,
+    point: null,
+    dateIn: null,
     dateOut: null
 };
 
@@ -61,14 +61,12 @@ export default {
     data() {
         return {
             fields: Object.assign({}, fieldsPattern),
-            data  : 'reloads'
+            data: 'reloads'
         };
     },
 
     computed: {
-        ...mapGetters([
-            'pointOptions'
-        ]),
+        ...mapGetters(['pointOptions']),
 
         pointOptionsAll() {
             const points = Object.assign([], this.pointOptions);
@@ -86,50 +84,51 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['notify', 'notifyError']),
 
         exportTreasury() {
             const inputFields = JSON.parse(JSON.stringify(this.fields));
-            let isFilled      = false;
+            let isFilled = false;
 
-            Object.keys(inputFields).forEach((key) => {
+            Object.keys(inputFields).forEach(key => {
                 if (inputFields[key]) {
                     isFilled = true;
                 }
             });
 
-            if (!isFilled
-                || (inputFields.dateIn && !inputFields.dateOut)
-                || (!inputFields.dateIn && inputFields.dateOut)) {
+            if (
+                !isFilled ||
+                (inputFields.dateIn && !inputFields.dateOut) ||
+                (!inputFields.dateIn && inputFields.dateOut)
+            ) {
                 return this.notifyError({ message: 'Vous devez choisir au moins un filtre' });
             }
 
             const qString = treasuryQueryString(inputFields);
 
             download(`services/treasury/csv/${this.data}?${qString}`)
-                .then((result) => {
-                    const currentTime =  Math.floor(Date.now() / 1000);
+                .then(result => {
+                    const currentTime = Math.floor(Date.now() / 1000);
                     this.notify({ message: 'Le téléchargement du document va commencer...' });
                     saveAs(result, `treasury-${this.data}-${currentTime}.csv`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la génération des données',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la génération des données',
+                        full: err
+                    })
+                );
         }
     }
 };
 </script>
 
 <style>
-    .b-treasuryExport__options {
-        display: flex;
+.b-treasuryExport__options {
+    display: flex;
 
-        & > div {
-            margin-right: 15px;
-        }
+    & > div {
+        margin-right: 15px;
     }
+}
 </style>

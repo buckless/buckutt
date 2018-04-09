@@ -17,38 +17,38 @@ export default {
         elements() {
             const elements = [
                 {
-                    icon   : 'keyboard_arrow_right',
-                    title  : 'Nom',
+                    icon: 'keyboard_arrow_right',
+                    title: 'Nom',
                     content: this.focusedDevice.name
                 },
                 {
-                    icon   : 'perm_device_information',
-                    title  : 'Équipement administrateur',
-                    content: (this.focusedDevice.isUser) ? 'Oui' : 'Non'
+                    icon: 'perm_device_information',
+                    title: 'Équipement administrateur',
+                    content: this.focusedDevice.isUser ? 'Oui' : 'Non'
                 },
                 {
-                    icon   : 'security',
-                    title  : 'Certificat SSL actif',
-                    content: (this.focusedDevice.fingerprint) ? 'Oui' : 'Non'
+                    icon: 'security',
+                    title: 'Certificat SSL actif',
+                    content: this.focusedDevice.fingerprint ? 'Oui' : 'Non'
                 }
             ];
 
             if (!this.focusedDevice.isUser) {
                 elements.push(
                     {
-                        icon   : 'done_all',
-                        title  : 'Badgeage avant achat',
-                        content: (this.focusedDevice.doubleValidation) ? 'Activé' : 'Désactivé'
+                        icon: 'done_all',
+                        title: 'Badgeage avant achat',
+                        content: this.focusedDevice.doubleValidation ? 'Activé' : 'Désactivé'
                     },
                     {
-                        icon   : 'local_drink',
-                        title  : 'Avertissement alcool',
-                        content: (this.focusedDevice.alcohol) ? 'Activé' : 'Désactivé'
+                        icon: 'local_drink',
+                        title: 'Avertissement alcool',
+                        content: this.focusedDevice.alcohol ? 'Activé' : 'Désactivé'
                     },
                     {
-                        icon   : 'person',
-                        title  : 'Afficher l\'image utilisateur',
-                        content: (this.focusedDevice.showPicture) ? 'Activé' : 'Désactivé'
+                        icon: 'person',
+                        title: "Afficher l'image utilisateur",
+                        content: this.focusedDevice.showPicture ? 'Activé' : 'Désactivé'
                     }
                 );
             }

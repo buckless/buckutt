@@ -38,16 +38,14 @@ import { mapState, mapActions } from 'vuex';
 export default {
     data() {
         return {
-            name        : '',
+            name: '',
             displayWiket: true,
             displayAdmin: true
         };
     },
 
     methods: {
-        ...mapActions([
-            'removeObject'
-        ]),
+        ...mapActions(['removeObject']),
 
         editDevice(device) {
             this.$router.push(`/devices/${device.id}/edit`);
@@ -59,22 +57,25 @@ export default {
             devices: state => state.objects.devices
         }),
         displayedDevices() {
-            return this.devices
-                .filter(device => (this.displayWiket && !device.isUser) || (this.displayAdmin && device.isUser));
+            return this.devices.filter(
+                device =>
+                    device.name !== 'manager' &&
+                    ((this.displayWiket && !device.isUser) || (this.displayAdmin && device.isUser))
+            );
         }
     }
 };
 </script>
 
 <style>
-    .b-devices-options {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
+.b-devices-options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 
-        & > label {
-            width: 150px;
-            margin-left: 15px;
-        }
+    & > label {
+        width: 150px;
+        margin-left: 15px;
     }
+}
 </style>

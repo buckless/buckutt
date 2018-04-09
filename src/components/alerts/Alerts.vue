@@ -1,5 +1,5 @@
 <template>
-    <div class="b-webhooks b-page">
+    <div class="b-alerts b-page">
         <div class="mdl-card mdl-shadow--2dp">
             <b-navbar
                 title="Alertes"

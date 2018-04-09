@@ -10,7 +10,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { saveAs }   from 'file-saver';
+import { saveAs } from 'file-saver';
 import { download } from '../../../lib/fetch';
 
 export default {
@@ -21,21 +21,20 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['notify', 'notifyError']),
 
         generateCert(device, password) {
             download(`services/certificate?deviceId=${device.id}&password=${password}`)
-                .then((result) => {
+                .then(result => {
                     this.notify({ message: 'Le téléchargement du certificat va démarrer...' });
                     saveAs(result, `${device.name}.p12`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la génération du certificat',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la génération du certificat',
+                        full: err
+                    })
+                );
         }
     },
 

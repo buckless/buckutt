@@ -14,22 +14,19 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updatePoint(point) {
             const fields = ['id', 'name'];
 
             this.updateObject({ route: 'points', value: pick(point, fields) })
                 .then(() => this.notify({ message: 'Le guichet a bien été modifié' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification du guichet',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification du guichet',
+                        full: err
+                    })
+                );
         }
     },
 

@@ -1,15 +1,12 @@
 const state = {
-    curves    : [],
-    timeseries: {}
+    curves: [],
+    curvesData: {}
 };
 
 // mutations
 const mutations = {
-    UPDATETIMESERIE(state_, data) {
-        state_.timeseries[data.name] = data.values;
-    },
-    REMOVETIMESERIE(state_, name) {
-        delete state_.timeseries[name];
+    UPDATECURVESDATA(state_, data) {
+        state_.curvesData = data;
     },
     ADDCURVE(state_, curve) {
         state_.curves.push(curve);

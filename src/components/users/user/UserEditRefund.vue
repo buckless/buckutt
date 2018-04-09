@@ -17,14 +17,14 @@ import { mapState, mapActions } from 'vuex';
 
 const refundPattern = {
     amount: null,
-    trace : null,
-    type  : null
+    trace: null,
+    type: null
 };
 
 export default {
     data() {
         return {
-            refund     : Object.assign({}, refundPattern),
+            refund: Object.assign({}, refundPattern),
             typeOptions: [
                 { name: 'Chèque', value: 'check' },
                 { name: 'Espèces', value: 'cash' },
@@ -35,19 +35,15 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'refundUser',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['refundUser', 'notify', 'notifyError']),
 
         doRefund(user, refund) {
             this.refundUser({ user, refund })
                 .then(() => this.notify({ message: 'Le remboursement a bien été effectué' }))
-                .catch((err) => {
+                .catch(err => {
                     let message = 'Erreur inconnue';
-                    if (err.message === 'The user doesn\'t have enough credit') {
-                        message = 'Le solde de l\'utilisateur est inférieur au montant à rembourser';
+                    if (err.message === "The user doesn't have enough credit") {
+                        message = "Le solde de l'utilisateur est inférieur au montant à rembourser";
                     }
 
                     this.notifyError({ message, full: err });

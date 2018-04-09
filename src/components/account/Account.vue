@@ -19,17 +19,13 @@ import { mapState, mapActions } from 'vuex';
 export default {
     data() {
         return {
-            newPassword : '',
+            newPassword: '',
             confirmation: ''
         };
     },
 
     methods: {
-        ...mapActions([
-            'updateObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'notify', 'notifyError']),
 
         changePassword(user, newPassword, confirmation) {
             if (newPassword !== confirmation) {
@@ -41,15 +37,17 @@ export default {
             this.updateObject({
                 route: 'users',
                 value: {
-                    id      : user.id,
+                    id: user.id,
                     password: bcrypt.hashSync(newPassword, 10)
                 }
             })
                 .then(this.notify({ message: 'Le mot de passe a bien été modifié' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification du mot de passe',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification du mot de passe',
+                        full: err
+                    })
+                );
         }
     },
 

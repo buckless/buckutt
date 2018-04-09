@@ -15,22 +15,19 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateCategory(category) {
             const fields = ['id', 'name'];
 
             this.updateObject({ route: 'categories', value: pick(category, fields) })
                 .then(() => this.notify({ message: 'La catégorie a bien été modifiée' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de la catégorie',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification de la catégorie',
+                        full: err
+                    })
+                );
         }
     },
 

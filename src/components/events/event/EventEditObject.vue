@@ -44,24 +44,37 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateEvent(event) {
-            const fields              = ['id', 'name', 'minReload', 'maxPerAccount', 'maxAlcohol'];
-            const defaultPeriodFields = ['id', 'start', 'end'];
+            const fields = ['id', 'name', 'minReload', 'maxPerAccount', 'maxAlcohol'];
+            const defaultPeriodFields = ['id', 'name', 'start', 'end'];
+            event.defaultPeriod.name = event.name;
 
-            this.updateObject({ route: 'periods', value: pick(event.defaultPeriod, defaultPeriodFields) })
+            this.updateObject({
+                route: 'periods',
+                value: pick(event.defaultPeriod, defaultPeriodFields)
+            })
+                .then(() =>
+                    this.updateObject({
+                        route: 'fundations',
+                        value: { id: event.defaultFundation.id, name: event.name }
+                    })
+                )
+                .then(() =>
+                    this.updateObject({
+                        route: 'groups',
+                        value: { id: event.defaultGroup.id, name: event.name }
+                    })
+                )
                 .then(() => this.updateObject({ route: 'events', value: pick(event, fields) }))
-                .then(() => this.notify({ message: 'L\'événement a bien été modifié' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de l\'événement',
-                    full   : err
-                }));
+                .then(() => this.notify({ message: "L'événement a bien été modifié" }))
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la modification de l'événement",
+                        full: err
+                    })
+                );
         }
     },
 

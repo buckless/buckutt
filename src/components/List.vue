@@ -25,22 +25,26 @@ import '../lib/price';
 export default {
     props: {
         elements: Array,
-        columns : {
-            type    : Number,
+        columns: {
+            type: Number,
             required: false,
-            default : 1
+            default: 1
         }
     },
 
     computed: {
         lists() {
-            const lists           = [];
-            const elementsNumber  = this.elements.length;
+            const lists = [];
+            const elementsNumber = this.elements.length;
             const elementsPerList = Math.ceil(elementsNumber / this.columns);
 
             for (let i = 0; i < this.columns; i += 1) {
                 const list = [];
-                for (let j = (i * elementsPerList); (j < ((i + 1) * elementsPerList) && j < elementsNumber); j += 1) {
+                for (
+                    let j = i * elementsPerList;
+                    j < (i + 1) * elementsPerList && j < elementsNumber;
+                    j += 1
+                ) {
                     list.push(this.elements[j]);
                 }
 
@@ -56,18 +60,18 @@ export default {
 </script>
 
 <style>
-    .b-list {
-        display: flex;
-        flex-direction: line;
-        flex-wrap: wrap;
+.b-list {
+    display: flex;
+    flex-direction: line;
+    flex-wrap: wrap;
 
-        & > ul {
-            flex-grow: 1;
-            min-width: 250px;
-            max-width: 600px;
-            margin: 0px;
-            padding-top:0px;
-            padding-bottom:0px;
-        }
+    & > ul {
+        flex-grow: 1;
+        min-width: 250px;
+        max-width: 600px;
+        margin: 0px;
+        padding-top: 0px;
+        padding-bottom: 0px;
     }
+}
 </style>

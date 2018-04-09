@@ -29,7 +29,7 @@ import { mapState } from 'vuex';
 export default {
     props: {
         event: {
-            type    : Object,
+            type: Object,
             required: true
         }
     },
@@ -46,8 +46,9 @@ export default {
         }),
 
         defaultPeriod() {
-            const defaultPeriod = this.periods
-                .find(period => period.id === this.event.defaultPeriod_id);
+            const defaultPeriod = this.periods.find(
+                period => period.id === this.event.defaultPeriod_id
+            );
 
             if (!defaultPeriod) {
                 return;
@@ -56,7 +57,7 @@ export default {
             return {
                 ...defaultPeriod,
                 startString: moment(defaultPeriod.start).format('DD MMMM YYYY, HH:mm'),
-                endString  : moment(defaultPeriod.end).format('DD MMMM YYYY, HH:mm')
+                endString: moment(defaultPeriod.end).format('DD MMMM YYYY, HH:mm')
             };
         }
     },
@@ -76,39 +77,39 @@ export default {
 </script>
 
 <style>
-    .tile-card-event.mdl-card {
-        width: 256px;
-        height: 256px;
-        background: #3E4EB8;
-    }
+.tile-card-event.mdl-card {
+    width: 256px;
+    height: 256px;
+    background: #3e4eb8;
+}
 
-    .tile-card-event > .mdl-card__actions {
-        border-color: rgba(255, 255, 255, 0.2);
-    }
+.tile-card-event > .mdl-card__actions {
+    border-color: rgba(255, 255, 255, 0.2);
+}
 
-    .tile-card-event > .mdl-card__title {
-        align-items: flex-start;
-        cursor: pointer;
-    }
+.tile-card-event > .mdl-card__title {
+    align-items: flex-start;
+    cursor: pointer;
+}
 
-    .tile-card-event > .mdl-card__title > h4 {
-        margin-top: 0;
-    }
+.tile-card-event > .mdl-card__title > h4 {
+    margin-top: 0;
+}
 
-    .tile-card-event > .mdl-card__actions {
-        display: flex;
-        box-sizing: border-box;
-        align-items: center;
-    }
+.tile-card-event > .mdl-card__actions {
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+}
 
-    .tile-card-event > .mdl-card__actions > .material-icons {
-        padding-right: 10px;
-    }
+.tile-card-event > .mdl-card__actions > .material-icons {
+    padding-right: 10px;
+}
 
-    .tile-card-event > .mdl-card__title,
-    .tile-card-event > .mdl-card__supporting-text,
-    .tile-card-event > .mdl-card__actions,
-    .tile-card-event > .mdl-card__actions > .mdl-button {
-        color: #fff;
-    }
+.tile-card-event > .mdl-card__title,
+.tile-card-event > .mdl-card__supporting-text,
+.tile-card-event > .mdl-card__actions,
+.tile-card-event > .mdl-card__actions > .mdl-button {
+    color: #fff;
+}
 </style>

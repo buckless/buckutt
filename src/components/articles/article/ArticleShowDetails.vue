@@ -30,28 +30,27 @@ export default {
         elements() {
             return [
                 {
-                    icon   : 'keyboard_arrow_right',
-                    title  : 'Nom',
+                    icon: 'keyboard_arrow_right',
+                    title: 'Nom',
                     content: this.focusedArticle.name
                 },
                 {
-                    icon   : 'local_drink',
-                    title  : 'Unités alcool',
-                    content: (this.focusedArticle.alcohol > 0) ?
-                        this.focusedArticle.alcohol :
-                        'Non définie'
+                    icon: 'local_drink',
+                    title: 'Unités alcool',
+                    content:
+                        this.focusedArticle.alcohol > 0
+                            ? this.focusedArticle.alcohol
+                            : 'Non définie'
                 },
                 {
-                    icon   : 'inbox',
-                    title  : 'Stock',
+                    icon: 'inbox',
+                    title: 'Stock',
                     content: this.focusedArticle.stock
                 },
                 {
-                    icon   : 'account_balance',
-                    title  : 'TVA',
-                    content: (this.focusedArticle.vat > 0) ?
-                        this.focusedArticle.vat :
-                        'Non définie'
+                    icon: 'account_balance',
+                    title: 'TVA',
+                    content: this.focusedArticle.vat > 0 ? this.focusedArticle.vat : 'Non définie'
                 }
             ];
         }
@@ -59,7 +58,7 @@ export default {
 
     mounted() {
         getImage(this.focusedArticle.id)
-            .then((result) => {
+            .then(result => {
                 this.image = result.image;
             })
             .catch(() => {
@@ -70,31 +69,30 @@ export default {
 </script>
 
 <style>
-    .b-article-top {
-        display: flex;
-        flex-wrap: wrap;
+.b-article-top {
+    display: flex;
+    flex-wrap: wrap;
 
-        & .b-article-top__fill {
-            flex-grow: 1;
-        }
+    & .b-article-top__fill {
+        flex-grow: 1;
     }
+}
 
-    .b-article-preview {
-        background-image: url('../../../assets/placeholder.jpg');
-        background-repeat: no-repeat;
-        width: 150px;
-        height: 150px;
-        min-width: 150px;
-        min-height: 150px;
-        box-shadow: 0 0 2px color(#222 a(0.25)),
-                    0 2px 3px color(#222 a(0.25));
-        border-radius: 2px;
-        margin-right: 20px;
+.b-article-preview {
+    background-image: url('../../../assets/placeholder.jpg');
+    background-repeat: no-repeat;
+    width: 150px;
+    height: 150px;
+    min-width: 150px;
+    min-height: 150px;
+    box-shadow: 0 0 2px color(#222 a(0.25)), 0 2px 3px color(#222 a(0.25));
+    border-radius: 2px;
+    margin-right: 20px;
 
-        & > .b-article-preview__image {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
+    & > .b-article-preview__image {
+        position: relative;
+        width: 100%;
+        height: 100%;
     }
+}
 </style>

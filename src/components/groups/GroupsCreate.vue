@@ -21,22 +21,20 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'notify', 'notifyError']),
 
         createGroup(group) {
             this.createObject({ route: 'groups', value: group })
-                .then((createdGroup) => {
+                .then(createdGroup => {
                     this.notify({ message: 'Le groupe a bien été créé' });
                     this.$router.push(`/groups/${createdGroup.id}`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création du groupe',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la création du groupe',
+                        full: err
+                    })
+                );
         }
     }
 };

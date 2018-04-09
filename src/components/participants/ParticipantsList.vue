@@ -3,9 +3,9 @@
         <h5>Liste des utilisateurs</h5>
         <div class="b-table-search">
             <i class="material-icons">search</i>
-            <mdl-textfield floating-label="Nom ou Prénom de l'utilisateur" v-model="userName" @input="searchUsers(userName)"></mdl-textfield>
+            <mdl-textfield floating-label="Nom ou Prénom de l'utilisateur" v-model="userName" @input="search(userName)"></mdl-textfield>
             <i class="material-icons" id="usertip">info</i>
-            <mdl-tooltip target="usertip">En dessous de 2 caractères, seuls les 10 premiers résultats sont affichés.</mdl-tooltip>
+            <mdl-tooltip target="usertip">En dessous de 3 caractères, seule la première page est affichée.</mdl-tooltip>
         </div>
 
         <b-table
@@ -13,7 +13,8 @@
             :data="displayedUsers"
             :sort="{ field: 'firstname', order: 'ASC' }"
             route="users"
-            :paging="10">
+            :paging="10"
+            @pagingChanged="pagingChanged">
         </b-table>
     </div>
 </template>
@@ -25,16 +26,22 @@ import { mapState, mapActions } from 'vuex';
 export default {
     data() {
         return {
-            userName: ''
+            userName: '',
+            minResults: 10
         };
     },
 
     methods: {
-        ...mapActions([
-            'searchUsers',
-            'clearObject',
-            'removeObject'
-        ])
+        ...mapActions(['searchUsers', 'clearObject', 'removeObject']),
+
+        pagingChanged(paging) {
+            this.minResults = paging;
+            this.searchUsers({ name: this.userName, min: this.minResults });
+        },
+
+        search(name) {
+            this.searchUsers({ name, min: this.minResults });
+        }
     },
 
     computed: {
@@ -43,7 +50,7 @@ export default {
         }),
 
         displayedUsers() {
-            return this.users.map((user) => {
+            return this.users.map(user => {
                 user.fullname = `${user.firstname} ${user.lastname}`;
                 return user;
             });
@@ -51,9 +58,9 @@ export default {
     },
 
     mounted() {
-        this.searchUsers('');
-        const searchUsers = this.searchUsers;
-        this.searchUsers  = debounce(name => searchUsers(name), 500);
+        this.search('');
+        const search = this.search;
+        this.search = debounce(name => search(name), 500);
     },
 
     destroyed() {

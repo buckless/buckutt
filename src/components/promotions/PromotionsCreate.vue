@@ -21,22 +21,20 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'notify', 'notifyError']),
 
         createPromotion(promotion) {
             this.createObject({ route: 'promotions', value: promotion })
-                .then((createdPromotion) => {
+                .then(createdPromotion => {
                     this.notify({ message: 'La formule a bien été créé' });
                     this.$router.push(`/promotions/${createdPromotion.id}`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création de la formule',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la création de la formule',
+                        full: err
+                    })
+                );
         }
     }
 };

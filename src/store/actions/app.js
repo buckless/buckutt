@@ -1,4 +1,4 @@
-import { get }         from '../../lib/fetch';
+import { get } from '../../lib/fetch';
 import routeToRelation from '../../lib/routeToRelation';
 
 /**
@@ -8,26 +8,25 @@ import routeToRelation from '../../lib/routeToRelation';
 export function updateCurrentEvent({ dispatch }, currentEvent) {
     const embedEvents = routeToRelation('events');
 
-    return get(`events/${currentEvent.id}?embed=${embedEvents}`)
-        .then((result) => {
-            if (result.periods) {
-                result.periods = result.periods.filter(period => !period.isRemoved);
-            }
+    return get(`events/${currentEvent.id}?embed=${embedEvents}`).then(result => {
+        if (result.periods) {
+            result.periods = result.periods.filter(period => !period.isRemoved);
+        }
 
-            return dispatch('changeCurrentEvent', result);
-        });
+        return dispatch('changeCurrentEvent', result);
+    });
 }
 
 export function changeCurrentEvent({ commit }, currentEvent) {
-    return new Promise((resolve) => {
-        sessionStorage.setItem('event', JSON.stringify(currentEvent));
+    return new Promise(resolve => {
+        localStorage.setItem('event', JSON.stringify(currentEvent));
         commit('UPDATECURRENTEVENT', currentEvent);
         resolve();
     });
 }
 
 export function unselectCurrentEvent({ commit }) {
-    sessionStorage.removeItem('event');
+    localStorage.removeItem('event');
     commit('UPDATECURRENTEVENT', null);
 }
 
@@ -53,19 +52,20 @@ export function load({ state, dispatch }) {
         'events',
         'meansofpayment',
         'webservices',
-        'alerts'
+        'alerts',
+        'accesses',
+        'giftreloads'
     ];
 
-    dispatch('initSocket', sessionStorage.getItem('token'));
+    dispatch('initSocket', localStorage.getItem('token'));
 
     const objectsToFetch = routes.map(route => dispatch('fetchObjects', { route }));
 
-    Promise.all(objectsToFetch)
-        .then(() => {
-            if (state.objects.events.length === 1) {
-                dispatch('updateCurrentEvent', state.objects.events[0]);
-            }
-        });
+    Promise.all(objectsToFetch).then(() => {
+        if (state.objects.events.length === 1) {
+            dispatch('updateCurrentEvent', state.objects.events[0]);
+        }
+    });
 
     dispatch('registerModels', routes);
 }
@@ -77,13 +77,14 @@ export function checkAndCreateNeededRouterData({ state, commit, dispatch }) {
 
     const actions = [];
 
-    if (sessionStorage.hasOwnProperty('token')) {
-        commit('UPDATELOGGEDUSER', JSON.parse(sessionStorage.getItem('user')));
+    if (localStorage.hasOwnProperty('token')) {
+        commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('user')));
+        dispatch('setToken', localStorage.getItem('token'));
         dispatch('load');
     }
 
-    if (sessionStorage.hasOwnProperty('event')) {
-        actions.push(dispatch('updateCurrentEvent', JSON.parse(sessionStorage.getItem('event'))));
+    if (localStorage.hasOwnProperty('event')) {
+        actions.push(dispatch('updateCurrentEvent', JSON.parse(localStorage.getItem('event'))));
     }
 
     return Promise.all(actions)

@@ -1,29 +1,31 @@
 const state = {
-    points        : [],
-    devices       : [],
-    periods       : [],
-    articles      : [],
-    fundations    : [],
-    groups        : [],
-    categories    : [],
-    promotions    : [],
-    sets          : [],
-    events        : [],
-    users         : [],
-    transfers     : [],
-    reloads       : [],
-    refunds       : [],
-    purchases     : [],
+    points: [],
+    devices: [],
+    periods: [],
+    articles: [],
+    fundations: [],
+    groups: [],
+    categories: [],
+    promotions: [],
+    sets: [],
+    events: [],
+    users: [],
+    transfers: [],
+    reloads: [],
+    refunds: [],
+    purchases: [],
     meansofpayment: [],
-    rights        : [],
-    webservices   : [],
-    history       : [],
-    alerts        : []
+    rights: [],
+    webservices: [],
+    history: [],
+    alerts: [],
+    accesses: [],
+    giftreloads: []
 };
 
 const mutations = {
     CLEARAPPSTORE(state_) {
-        Object.keys(state_).forEach((key) => {
+        Object.keys(state_).forEach(key => {
             state_[key] = [];
         });
     },
@@ -37,7 +39,7 @@ const mutations = {
     },
 
     UPDATEOBJECTS(state_, data) {
-        data.objects.forEach((object) => {
+        data.objects.forEach(object => {
             const i = state_[data.route].findIndex(o => o.id === object.id);
 
             state_[data.route].splice(i, 1, object);
@@ -45,7 +47,7 @@ const mutations = {
     },
 
     DELETEOBJECTS(state_, data) {
-        data.objects.forEach((object) => {
+        data.objects.forEach(object => {
             const i = state_[data.route].findIndex(o => o.id === object.id);
 
             state_[data.route].splice(i, 1);

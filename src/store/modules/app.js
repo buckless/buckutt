@@ -1,9 +1,9 @@
 const state = {
     focusedElements: [],
-    currentEvent   : null,
-    loggedUser     : null,
-    firstLoad      : false,
-    creationData   : {}
+    currentEvent: null,
+    loggedUser: null,
+    firstLoad: false,
+    creationData: {}
 };
 
 const mutations = {
@@ -20,8 +20,7 @@ const mutations = {
     },
 
     TRIMFOCUSEDELEMENTS(state_, keepLength) {
-        state_.focusedElements = state_.focusedElements
-            .filter((_, index) => index < keepLength);
+        state_.focusedElements = state_.focusedElements.filter((_, index) => index < keepLength);
     },
 
     UPDATECURRENTEVENT(state_, currentEvent) {

@@ -1,12 +1,12 @@
-import Purchases       from './Purchases.vue';
+import Purchases from './Purchases.vue';
 import PurchasesExport from './PurchasesExport.vue';
-import PurchasesShow   from './PurchasesShow.vue';
+import PurchasesShow from './PurchasesShow.vue';
 
 export default [
     {
-        path     : '/purchases',
+        path: '/purchases',
         component: Purchases,
-        children : [
+        children: [
             { path: '', component: PurchasesShow },
             { path: 'export', component: PurchasesExport }
         ]

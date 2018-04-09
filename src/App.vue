@@ -13,12 +13,12 @@
 <script>
 import { mapState } from 'vuex';
 import Sidebar from './components/Sidebar.vue';
-import Topbar  from './components/Topbar.vue';
+import Topbar from './components/Topbar.vue';
 
 export default {
     components: {
         'b-sidebar': Sidebar,
-        'b-topbar' : Topbar
+        'b-topbar': Topbar
     },
 
     computed: {
@@ -30,5 +30,5 @@ export default {
 </script>
 
 <style>
-    @import './main.css';
+@import './main.css';
 </style>

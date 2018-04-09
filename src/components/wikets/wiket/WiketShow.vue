@@ -20,16 +20,14 @@ import sortOrder from '../../../lib/sortOrder';
 
 export default {
     methods: {
-        ...mapActions([
-            'fetchObjectsAndRelations'
-        ])
+        ...mapActions(['fetchObjectsAndRelations'])
     },
 
     computed: {
         ...mapState({
             focusedPoint: state => state.app.focusedElements[0],
-            fullPath    : state => state.route.fullPath,
-            params      : state => state.route.params
+            fullPath: state => state.route.fullPath,
+            params: state => state.route.params
         }),
 
         title() {
@@ -41,7 +39,7 @@ export default {
                 .sort((a, b) => sortOrder(a.name, b.name))
                 .map(category => ({
                     route: category.id,
-                    name : category.name
+                    name: category.name
                 }));
 
             tabs.push({ route: 'add', icon: 'add_circle_outline' });
@@ -55,7 +53,9 @@ export default {
 
         if (!this.params.category && this.fullPath.split('/').length < 5) {
             if (this.displayedTabs[0]) {
-                return this.$router.push(`${this.fullPath}/category/${this.displayedTabs[0].route}`);
+                return this.$router.push(
+                    `${this.fullPath}/category/${this.displayedTabs[0].route}`
+                );
             }
             return this.$router.push(`${this.fullPath}/category/add`);
         }

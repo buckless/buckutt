@@ -25,16 +25,12 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateAndSaveFocusedElement(payload) {
-            this.updateDeepestFocusedElement(payload)
-                .then(() => this.updateDevice(this.focusedDevice));
+            this.updateDeepestFocusedElement(payload).then(() =>
+                this.updateDevice(this.focusedDevice)
+            );
         },
 
         updateDevice(device) {
@@ -42,10 +38,12 @@ export default {
 
             this.updateObject({ route: 'devices', value: pick(device, fields) })
                 .then(() => this.notify({ message: 'La modification a bien été prise en compte' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la configuration de l\'équipement',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la configuration de l'équipement",
+                        full: err
+                    })
+                );
         }
     },
 

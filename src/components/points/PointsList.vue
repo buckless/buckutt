@@ -34,9 +34,7 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'removeObject'
-        ]),
+        ...mapActions(['removeObject']),
 
         editPoint(point) {
             this.$router.push(`/points/${point.id}/edit`);
@@ -45,7 +43,7 @@ export default {
 
     computed: {
         ...mapState({
-            points: state => state.objects.points
+            points: state => state.objects.points.filter(point => point.name !== 'Internet')
         })
     }
 };

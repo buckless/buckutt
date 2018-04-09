@@ -26,8 +26,8 @@ import { mapState, mapActions } from 'vuex';
 export default {
     computed: {
         ...mapState({
-            focusedUser   : state => state.app.focusedElements[0],
-            history       : state => state.objects.history,
+            focusedUser: state => state.app.focusedElements[0],
+            history: state => state.objects.history,
             meansofpayment: state => state.objects.meansofpayment
         }),
         displayedHistory() {
@@ -35,15 +35,17 @@ export default {
                 return [];
             }
 
-            return this.history.map((transaction) => {
+            return this.history.map(transaction => {
                 const displayedTransaction = {
-                    id      : transaction.id,
-                    rawType : transaction.type,
-                    date    : transaction.date,
-                    amount  : transaction.amount,
-                    point   : transaction.point,
-                    type    : this.translation(transaction.type),
-                    operator: `Opérateur ${transaction.seller.firstname} ${transaction.seller.lastname}`
+                    id: transaction.id,
+                    rawType: transaction.type,
+                    date: transaction.date,
+                    amount: transaction.amount,
+                    point: transaction.point,
+                    type: this.translation(transaction.type),
+                    operator: `Opérateur ${transaction.seller.firstname} ${
+                        transaction.seller.lastname
+                    }`
                 };
 
                 if (transaction.isCanceled) {
@@ -64,7 +66,7 @@ export default {
                         displayedTransaction.object = transaction.articles[0];
                         break;
                     case 'promotion':
-                        displayedTransaction.object   = transaction.promotion;
+                        displayedTransaction.object = transaction.promotion;
                         displayedTransaction.articles = transaction.articles;
                         break;
                     default:
@@ -77,19 +79,14 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'loadUserHistory',
-            'cancelTransaction',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['loadUserHistory', 'cancelTransaction', 'notify', 'notifyError']),
         translation(type) {
             const translateTable = {
-                refund   : 'Remboursement',
+                refund: 'Remboursement',
                 promotion: 'Achat',
-                purchase : 'Achat',
-                reload   : 'Rechargement',
-                transfer : 'Virement'
+                purchase: 'Achat',
+                reload: 'Rechargement',
+                transfer: 'Virement'
             };
 
             return translateTable[type];
@@ -105,11 +102,11 @@ export default {
                 user: this.focusedUser
             })
                 .then(() => this.notify({ message: 'La transaction a bien été annulée' }))
-                .catch((err) => {
+                .catch(err => {
                     let message;
                     switch (err.message) {
                         case 'Forbidden':
-                            message = 'L\'utilisateur n\'a pas assez de crédit';
+                            message = "L'utilisateur n'a pas assez de crédit";
                             break;
                         default:
                             message = 'Erreur inconnue';

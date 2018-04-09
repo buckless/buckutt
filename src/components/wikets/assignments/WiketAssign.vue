@@ -28,9 +28,7 @@ export default {
         },
 
         displayedTabs() {
-            const tabs = [
-                { route: '', name: 'Assigner des équipements', exact: true }
-            ];
+            const tabs = [{ route: '', name: 'Assigner des équipements', exact: true }];
 
             if (this.currentEvent.useGroups) {
                 tabs.push({ route: 'preferences', name: 'Préférences' });

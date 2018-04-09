@@ -34,9 +34,7 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'removeObject'
-        ]),
+        ...mapActions(['removeObject']),
         editWebservice(webservice) {
             this.$router.push(`/webservices/${webservice.id}/edit`);
         }

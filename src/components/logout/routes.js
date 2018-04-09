@@ -1,5 +1,3 @@
 import Logout from './Logout.vue';
 
-export default [
-    { path: '/logout', component: Logout }
-];
+export default [{ path: '/logout', component: Logout }];

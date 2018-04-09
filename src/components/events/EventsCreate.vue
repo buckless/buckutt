@@ -35,67 +35,84 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     data() {
         return {
             newEvent: {
-                name         : '',
-                minReload    : 0,
+                name: '',
+                minReload: 0,
                 maxPerAccount: 10000,
-                maxAlcohol   : 0
+                maxAlcohol: 0
             },
             newPeriod: {
                 start: null,
-                end  : null
+                end: null
             }
         };
     },
 
+    computed: {
+        ...mapState({
+            devices: state => state.objects.devices,
+            points: state => state.objects.points
+        })
+    },
+
     methods: {
-        ...mapActions([
-            'createObject',
-            'updateObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'updateObject', 'notify', 'notifyError']),
 
         createEvent(event) {
             const defaultPromises = [
                 this.createObject({ route: 'fundations', value: { name: event.name } }),
                 this.createObject({ route: 'groups', value: { name: event.name } }),
-                this.createObject({ route: 'periods', value: { name: event.name, ...this.newPeriod } })
+                this.createObject({
+                    route: 'periods',
+                    value: { name: event.name, ...this.newPeriod }
+                })
             ];
 
             let createdEvent;
 
             Promise.all(defaultPromises)
-                .then((defaultObjects) => {
+                .then(defaultObjects => {
                     event.defaultFundation_id = defaultObjects[0].id;
-                    event.defaultGroup_id     = defaultObjects[1].id;
-                    event.defaultPeriod_id    = defaultObjects[2].id;
+                    event.defaultGroup_id = defaultObjects[1].id;
+                    event.defaultPeriod_id = defaultObjects[2].id;
 
                     return this.createObject({ route: 'events', value: event });
                 })
-                .then((createdEvent_) => {
+                .then(createdEvent_ => {
                     createdEvent = createdEvent_;
                     return this.updateObject({
                         route: 'periods',
                         value: {
-                            id      : createdEvent.defaultPeriod_id,
+                            id: createdEvent.defaultPeriod_id,
                             event_id: createdEvent.id
                         }
                     });
                 })
+                .then(createdPeriod =>
+                    this.createObject({
+                        route: 'wikets',
+                        value: {
+                            period_id: createdPeriod.id,
+                            device_id: this.devices.find(device => device.name === 'manager').id,
+                            point_id: this.points.find(point => point.name === 'Internet').id
+                        }
+                    })
+                )
                 .then(() => {
-                    this.notify({ message: 'L\'événement a bien été créé' });
+                    this.notify({ message: "L'événement a bien été créé" });
                     this.$router.push(`/events/${createdEvent.id}`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création de l\'événement',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la création de l'événement",
+                        full: err
+                    })
+                );
         }
     }
 };

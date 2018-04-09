@@ -24,13 +24,13 @@ import { getImage, postImage } from '../lib/fetchImages';
 
 export default {
     props: {
-        id  : String,
+        id: String,
         name: String
     },
 
     data() {
         return {
-            image      : null,
+            image: null,
             displaySave: false
         };
     },
@@ -64,7 +64,7 @@ export default {
 
     mounted() {
         getImage(this.id)
-            .then((result) => {
+            .then(result => {
                 this.image = result.image;
             })
             .catch(() => {
@@ -75,68 +75,67 @@ export default {
 </script>
 
 <style>
-    .b-imageUploader {
-        background-image: url('../assets/placeholder.jpg');
-        background-repeat: no-repeat;
+.b-imageUploader {
+    background-image: url('../assets/placeholder.jpg');
+    background-repeat: no-repeat;
+    width: 150px;
+    height: 150px;
+    box-shadow: 0 0 2px color(#222 a(0.25)), 0 2px 3px color(#222 a(0.25));
+    border-radius: 2px;
+
+    & > .b-imageUploader__image {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    & > .b-imageUploader__note {
+        display: flex;
+        align-items: center;
+        position: relative;
         width: 150px;
-        height: 150px;
-        box-shadow: 0 0 2px color(#222 a(0.25)),
-                    0 2px 3px color(#222 a(0.25));
-        border-radius: 2px;
+        height: 70px;
+        background: rgba(0, 0, 0, 0.55);
+        margin-top: -150px;
+        margin-bottom: 80px;
+        color: white;
+        text-align: center;
+        font-size: 13px;
+        padding: 5px;
 
-        & > .b-imageUploader__image {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        & > i {
+            font-size: 30px;
+            margin: 5px;
         }
 
-        & > .b-imageUploader__note {
-            display: flex;
-            align-items: center;
-            position: relative;
-            width: 150px;
-            height: 70px;
-            background: rgba(0, 0, 0, 0.55);
-            margin-top: -150px;
-            margin-bottom: 80px;
-            color: white;
-            text-align: center;
-            font-size: 13px;
-            padding: 5px;
-
-            & > i {
-                font-size: 30px;
-                margin: 5px;
-            }
-
-            & > span {
-                flex: 1;
-            }
-        }
-
-        /* Necessary to avoid strange dragover behaviour */
-        & > .b-imageUploader_over {
-            width: 150px;
-            height: 150px;
-            position: relative;
-            margin-top: -150px;
-        }
-
-        & > .b-imageUploader__add {
-            position: relative;
-            top: -35px;
-            left: 115px;
-
-            & > input[type="file"] {
-                cursor: pointer;
-                height: 100%;
-                right: 0;
-                opacity: 0;
-                position: absolute;
-                top: 0;
-                width: 100%;
-                z-index: 4;
-            }
+        & > span {
+            flex: 1;
         }
     }
+
+    /* Necessary to avoid strange dragover behaviour */
+    & > .b-imageUploader_over {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        margin-top: -150px;
+    }
+
+    & > .b-imageUploader__add {
+        position: relative;
+        top: -35px;
+        left: 115px;
+
+        & > input[type='file'] {
+            cursor: pointer;
+            height: 100%;
+            right: 0;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 4;
+        }
+    }
+}
 </style>

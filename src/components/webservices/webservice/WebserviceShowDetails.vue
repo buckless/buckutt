@@ -17,8 +17,8 @@ export default {
         elements() {
             return [
                 {
-                    icon   : 'link',
-                    title  : 'url',
+                    icon: 'link',
+                    title: 'url',
                     content: this.focusedWebservice.url
                 }
             ];

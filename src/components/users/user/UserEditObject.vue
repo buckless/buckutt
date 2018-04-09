@@ -31,7 +31,7 @@ const randTen = () => Math.floor(Math.random() * 10);
 export default {
     data() {
         return {
-            newPin     : '',
+            newPin: '',
             newPassword: ''
         };
     },
@@ -49,27 +49,29 @@ export default {
             this.newPin = `${randTen()}${randTen()}${randTen()}${randTen()}`;
 
             const modUser = {
-                id : user.id,
+                id: user.id,
                 pin: bcrypt.hashSync(this.newPin, 10)
             };
 
             this.updateObject({ route: 'users', value: modUser });
         },
+
         regenPassword(user) {
             this.newPassword = randString(8);
 
-            const modUser    = {
-                id      : user.id,
+            const modUser = {
+                id: user.id,
                 password: bcrypt.hashSync(this.newPassword, 10)
             };
 
             this.updateObject({ route: 'users', value: modUser });
         },
+
         updateUser(user) {
             let existingMol = null;
 
-            user.meansOfLogin.forEach((meanOfLogin) => {
-                if (meanOfLogin.type === config.mainMol) {
+            user.meansOfLogin.forEach(meanOfLogin => {
+                if (meanOfLogin.type === 'mail') {
                     existingMol = meanOfLogin;
                 }
             });
@@ -77,7 +79,7 @@ export default {
             if (!existingMol) {
                 this.createObject({
                     route: 'meansOfLogin',
-                    value: { type: config.mainMol, data: user.mail, user_id: user.id }
+                    value: { type: 'mail', data: user.mail, user_id: user.id }
                 });
             } else {
                 existingMol.data = user.mail;
@@ -90,11 +92,13 @@ export default {
             const fields = ['id', 'lastname', 'firstname', 'nickname', 'mail'];
 
             this.updateObject({ route: 'users', value: pick(user, fields) })
-                .then(() => this.notify({ message: 'L\'utilisateur a bien été modifié' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de l\'utilisateur',
-                    full   : err
-                }));
+                .then(() => this.notify({ message: "L'utilisateur a bien été modifié" }))
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la modification de l'utilisateur",
+                        full: err
+                    })
+                );
         }
     },
 

@@ -17,7 +17,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { getImage } from '../../../lib/fetchImages';
-import textSize     from '../../../lib/textSize';
+import textSize from '../../../lib/textSize';
 
 export default {
     props: {
@@ -31,40 +31,37 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'removeRelation',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['removeRelation', 'notify', 'notifyError']),
 
         unlinkArticle() {
-            this
-                .removeRelation({
-                    obj1: {
-                        route: 'categories',
-                        value: this.focusedCategory
-                    },
-                    obj2: {
-                        route: 'articles',
-                        value: this.article
-                    }
-                })
+            this.removeRelation({
+                obj1: {
+                    route: 'categories',
+                    value: this.focusedCategory
+                },
+                obj2: {
+                    route: 'articles',
+                    value: this.article
+                }
+            })
                 .then(() => {
-                    this.notify({ message: 'L\'article a bien été supprimé de la catégorie' });
+                    this.notify({ message: "L'article a bien été supprimé de la catégorie" });
                     this.$router.push(this.categoryPath);
                 })
-                .catch(err => this.notifyError({
-                    message: 'L\'article n\'a pas pu être supprimé de la catégorie',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "L'article n'a pas pu être supprimé de la catégorie",
+                        full: err
+                    })
+                );
         }
     },
 
     computed: {
         ...mapState({
             focusedCategory: state => state.app.focusedElements[1],
-            focusedArticle : state => (state.app.focusedElements[2] || {}),
-            fullPath       : state => state.route.fullPath
+            focusedArticle: state => state.app.focusedElements[2] || {},
+            fullPath: state => state.route.fullPath
         }),
 
         selected() {
@@ -92,8 +89,8 @@ export default {
     mounted() {
         const initialFontSize = 16;
 
-        const $name   = this.$refs.name;
-        const size    = textSize(this.article.name);
+        const $name = this.$refs.name;
+        const size = textSize(this.article.name);
         const maxSize = 130;
 
         if (size > maxSize) {
@@ -101,7 +98,7 @@ export default {
         }
 
         getImage(this.article.id)
-            .then((image) => {
+            .then(image => {
                 this.image = image.image;
             })
             .catch(() => {

@@ -1,25 +1,25 @@
-import Promotions           from './Promotions.vue';
-import PromotionsCreate     from './PromotionsCreate.vue';
-import PromotionsList       from './PromotionsList.vue';
+import Promotions from './Promotions.vue';
+import PromotionsCreate from './PromotionsCreate.vue';
+import PromotionsList from './PromotionsList.vue';
 
-import PromotionShow        from './promotion/PromotionShow.vue';
+import PromotionShow from './promotion/PromotionShow.vue';
 import PromotionShowDetails from './promotion/PromotionShowDetails.vue';
-import PromotionEditObject  from './promotion/PromotionEditObject.vue';
+import PromotionEditObject from './promotion/PromotionEditObject.vue';
 import PromotionEditContent from './promotion/PromotionEditContent.vue';
 
 export default [
     {
-        path     : '/promotions',
+        path: '/promotions',
         component: Promotions,
-        children : [
+        children: [
             { path: '', component: PromotionsList },
             { path: 'create', component: PromotionsCreate }
         ]
     },
     {
-        path     : '/promotions/:promotion',
+        path: '/promotions/:promotion',
         component: PromotionShow,
-        children : [
+        children: [
             { path: '', component: PromotionShowDetails },
             { path: 'edit', component: PromotionEditObject },
             { path: 'content', component: PromotionEditContent }

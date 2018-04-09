@@ -14,22 +14,19 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updatePromotion(promotion) {
             const fields = ['id', 'name'];
 
             this.updateObject({ route: 'promotions', value: pick(promotion, fields) })
                 .then(() => this.notify({ message: 'La formule a bien été modifiée' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de la formule',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification de la formule',
+                        full: err
+                    })
+                );
         }
     },
 

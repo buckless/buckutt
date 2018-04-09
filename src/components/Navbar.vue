@@ -27,20 +27,20 @@ import { mapState } from 'vuex';
 export default {
     props: {
         title: String,
-        tabs : {
-            type    : Array,
+        tabs: {
+            type: Array,
             required: false
         },
         inCard: {
-            type    : Boolean,
+            type: Boolean,
             required: false
         },
         goBack: {
-            type    : Boolean,
+            type: Boolean,
             required: false
         },
         level: {
-            type    : Number,
+            type: Number,
             required: false
         }
     },
@@ -70,25 +70,25 @@ export default {
 </script>
 
 <style>
-    .b-navbar {
-        & > .mdl-tabs {
-            & > .mdl-tabs__tab-bar  {
-                display: flex;
-                justify-content: flex-start;
+.b-navbar {
+    & > .mdl-tabs {
+        & > .mdl-tabs__tab-bar {
+            display: flex;
+            justify-content: flex-start;
 
-                & > a {
-                    & > i {
-                        vertical-align: middle;
-                    }
+            & > a {
+                & > i {
+                    vertical-align: middle;
                 }
             }
         }
     }
+}
 
-    .b-navbar__inCard {
-        margin-top: -20px;
-        margin-left: -20px;
-        margin-right: -20px;
-        margin-bottom: 10px;
-    }
+.b-navbar__inCard {
+    margin-top: -20px;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: 10px;
+}
 </style>

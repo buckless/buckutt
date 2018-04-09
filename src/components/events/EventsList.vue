@@ -29,9 +29,7 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'removeObject'
-        ]),
+        ...mapActions(['removeObject']),
 
         editEvent(event) {
             this.$router.push(`/events/${event.id}/edit`);

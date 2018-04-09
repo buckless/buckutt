@@ -18,12 +18,7 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updatePoint(point) {
             const newPoint = {
@@ -37,11 +32,15 @@ export default {
             const fields = ['id', 'defaultGroup_id'];
 
             this.updateObject({ route: 'points', value: pick(newPoint, fields) })
-                .then(() => this.notify({ message: 'Les préférences du guichet ont bien été modifiées' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification des préférences',
-                    full   : err
-                }));
+                .then(() =>
+                    this.notify({ message: 'Les préférences du guichet ont bien été modifiées' })
+                )
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification des préférences',
+                        full: err
+                    })
+                );
         }
     },
     computed: {
@@ -50,22 +49,20 @@ export default {
             focusedPoint: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters([
-            'groupOptions'
-        ])
+        ...mapGetters(['groupOptions'])
     }
 };
 </script>
 
 <style>
-    .b-wikets-preferences {
-        & > form > div {
-            display: flex;
-            align-items: center;
+.b-wikets-preferences {
+    & > form > div {
+        display: flex;
+        align-items: center;
 
-            & > i {
-                margin-left: 5px;
-            }
+        & > i {
+            margin-left: 5px;
         }
     }
+}
 </style>

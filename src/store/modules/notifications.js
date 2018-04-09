@@ -1,5 +1,5 @@
 const state = {
-    error : null,
+    error: null,
     notify: null
 };
 

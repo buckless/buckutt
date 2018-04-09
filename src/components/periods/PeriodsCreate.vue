@@ -39,32 +39,30 @@ export default {
     data() {
         return {
             newPeriod: {
-                name : '',
+                name: '',
                 start: null,
-                end  : null
+                end: null
             }
         };
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'notify', 'notifyError']),
 
         createPeriod(period) {
             period.event_id = this.currentEvent.id;
 
             this.createObject({ route: 'periods', value: period })
-                .then((createdPeriod) => {
+                .then(createdPeriod => {
                     this.notify({ message: 'La période a bien été créée' });
                     this.$router.push(`/periods/${createdPeriod.id}`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création de la période',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la création de la période',
+                        full: err
+                    })
+                );
         }
     },
 

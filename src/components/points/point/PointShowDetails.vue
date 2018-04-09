@@ -17,8 +17,8 @@ export default {
         elements() {
             return [
                 {
-                    icon   : 'keyboard_arrow_right',
-                    title  : 'Nom',
+                    icon: 'keyboard_arrow_right',
+                    title: 'Nom',
                     content: this.focusedPoint.name
                 }
             ];

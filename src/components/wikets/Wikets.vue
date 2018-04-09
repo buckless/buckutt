@@ -34,34 +34,33 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'fetchObjectsAndRelations'
-        ])
+        ...mapActions(['fetchObjectsAndRelations'])
     },
 
     computed: {
         ...mapState({
-            fullPath    : state => state.route.fullPath,
-            points      : state => state.objects.points,
+            fullPath: state => state.route.fullPath,
+            points: state => state.objects.points,
             currentEvent: state => state.app.currentEvent
         }),
 
         pointsWikets() {
-            const now              = new Date();
+            const now = new Date();
             const pointsWiketsList = [];
 
-            this.points.forEach((point) => {
-                if (point.wikets) {
+            this.points.forEach(point => {
+                if (point.wikets && point.name !== 'Internet') {
                     const lightWikets = point.wikets
-                        .filter(wiket => (
-                            wiket.period.event_id === this.currentEvent.id &&
-                            new Date(wiket.period.end) >= now &&
-                            wiket.device.id
-                        ))
+                        .filter(
+                            wiket =>
+                                wiket.period.event_id === this.currentEvent.id &&
+                                new Date(wiket.period.end) >= now &&
+                                wiket.device.id
+                        )
                         .map(wiket => ({
                             device: wiket.device,
                             period: wiket.period,
-                            id    : wiket.id
+                            id: wiket.id
                         }));
 
                     if (lightWikets.length > 0) {
@@ -73,8 +72,7 @@ export default {
                 }
             });
 
-            return pointsWiketsList
-                .sort((a, b) => sortOrder(a.name, b.name));
+            return pointsWiketsList.sort((a, b) => sortOrder(a.name, b.name));
         },
 
         addWiket() {
@@ -89,31 +87,31 @@ export default {
 </script>
 
 <style>
-    @import '../../variables.css';
+@import '../../variables.css';
 
-    .b-wikets {
-        & > div {
-            & > .b-wikets__panel {
-                border-bottom: 1px solid #E0E0E0;
-                margin: 0px -20px 10px -20px;
-                padding: 0px 20px 10px 20px;
-            }
+.b-wikets {
+    & > div {
+        & > .b-wikets__panel {
+            border-bottom: 1px solid #e0e0e0;
+            margin: 0px -20px 10px -20px;
+            padding: 0px 20px 10px 20px;
+        }
 
-            & > .b-wikets__container {
-                display: flex;
-                flex-wrap: wrap;
-            }
+        & > .b-wikets__container {
+            display: flex;
+            flex-wrap: wrap;
+        }
 
-            & > span {
-                margin-top: 15px;
-            }
+        & > span {
+            margin-top: 15px;
+        }
 
-            & > a {
-                width: 56px;
-                position: absolute;
-                right: 20px;
-                top: 35px;
-            }
+        & > a {
+            width: 56px;
+            position: absolute;
+            right: 20px;
+            top: 35px;
         }
     }
+}
 </style>

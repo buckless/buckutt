@@ -1,25 +1,25 @@
-import Participants           from './Participants.vue';
-import ParticipantsList       from './ParticipantsList.vue';
-import ParticipantsStaff      from './ParticipantsStaff.vue';
+import Participants from './Participants.vue';
+import ParticipantsList from './ParticipantsList.vue';
+import ParticipantsStaff from './ParticipantsStaff.vue';
 
-import ParticipantShow        from './participant/ParticipantShow.vue';
+import ParticipantShow from './participant/ParticipantShow.vue';
 import ParticipantShowDetails from './participant/ParticipantShowDetails.vue';
-import ParticipantEditGroups  from './participant/ParticipantEditGroups.vue';
-import ParticipantEditRights  from './participant/ParticipantEditRights.vue';
+import ParticipantEditGroups from './participant/ParticipantEditGroups.vue';
+import ParticipantEditRights from './participant/ParticipantEditRights.vue';
 
 export default [
     {
-        path     : '/participants',
+        path: '/participants',
         component: Participants,
-        children : [
+        children: [
             { path: '', component: ParticipantsList },
             { path: 'staff', component: ParticipantsStaff }
         ]
     },
     {
-        path     : '/participants/:participant',
+        path: '/participants/:participant',
         component: ParticipantShow,
-        children : [
+        children: [
             { path: '', component: ParticipantShowDetails },
             { path: 'groups', component: ParticipantEditGroups },
             { path: 'rights', component: ParticipantEditRights }

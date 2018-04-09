@@ -15,22 +15,19 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateDevice(device) {
             const fields = ['id', 'name'];
 
             this.updateObject({ route: 'devices', value: pick(device, fields) })
-                .then(() => this.notify({ message: 'L\'équipement a bien été modifié' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de l\'équipement',
-                    full   : err
-                }));
+                .then(() => this.notify({ message: "L'équipement a bien été modifié" }))
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la modification de l'équipement",
+                        full: err
+                    })
+                );
         }
     },
 

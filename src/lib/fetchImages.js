@@ -2,7 +2,7 @@ import memoize from 'lodash.memoize';
 
 const headers = {
     headers: {
-        Accept        : 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
     }
 };
@@ -13,19 +13,18 @@ const headers = {
  * @return {Promise} The result as JSON
  */
 
-export const getImage = memoize((id) => {
+export const getImage = memoize(id => {
     const opts = Object.assign({}, headers, {
         method: 'GET'
     });
 
-    return fetch(`${config.images}/image/${id}?width=100&height=100`, opts)
-        .then((res) => {
-            if (res.status !== 200) {
-                return Promise.reject(res);
-            }
+    return fetch(`${config.images}/image/${id}?width=100&height=100`, opts).then(res => {
+        if (res.status !== 200) {
+            return Promise.reject(res);
+        }
 
-            return res.json();
-        });
+        return res.json();
+    });
 });
 
 /**
@@ -38,17 +37,16 @@ export const getImage = memoize((id) => {
 export const postImage = (id, image) => {
     const opts = Object.assign({}, headers, {
         method: 'POST',
-        body  : JSON.stringify({ image })
+        body: JSON.stringify({ image })
     });
 
-    return fetch(`${config.images}/image/${id}`, opts)
-        .then((res) => {
-            if (res.status !== 200) {
-                return Promise.reject(res);
-            }
+    return fetch(`${config.images}/image/${id}`, opts).then(res => {
+        if (res.status !== 200) {
+            return Promise.reject(res);
+        }
 
-            getImage.cache.clear();
+        getImage.cache.clear();
 
-            return res.json();
-        });
+        return res.json();
+    });
 };

@@ -33,16 +33,12 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateAndSaveFocusedElement(payload) {
-            this.updateDeepestFocusedElement(payload)
-                .then(() => this.updateEvent(this.focusedEvent));
+            this.updateDeepestFocusedElement(payload).then(() =>
+                this.updateEvent(this.focusedEvent)
+            );
         },
 
         updateEvent(event) {
@@ -50,10 +46,12 @@ export default {
 
             this.updateObject({ route: 'events', value: pick(event, fields) })
                 .then(() => this.notify({ message: 'La modification a bien été prise en compte' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la configuration de l\'événement',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la configuration de l'événement",
+                        full: err
+                    })
+                );
         }
     },
 

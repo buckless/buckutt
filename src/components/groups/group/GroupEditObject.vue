@@ -14,22 +14,19 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateGroup(group) {
             const fields = ['id', 'name'];
 
             this.updateObject({ route: 'groups', value: pick(group, fields) })
                 .then(() => this.notify({ message: 'Le groupe a bien été modifié' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification du groupe',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification du groupe',
+                        full: err
+                    })
+                );
         }
     },
 

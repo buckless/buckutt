@@ -14,20 +14,17 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
         updateWebservice(webservice) {
             const fields = ['id', 'url'];
             this.updateObject({ route: 'webservices', value: pick(webservice, fields) })
                 .then(() => this.notify({ message: 'Le webhook a bien été modifiée' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification du webhook',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification du webhook',
+                        full: err
+                    })
+                );
         }
     },
 

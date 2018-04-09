@@ -21,7 +21,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import EventTile                from '../events/home/EventTile.vue';
+import EventTile from '../events/home/EventTile.vue';
 
 export default {
     components: {
@@ -35,10 +35,7 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'updateCurrentEvent',
-            'removeObject'
-        ]),
+        ...mapActions(['updateCurrentEvent', 'removeObject']),
 
         changeEvent(event) {
             if (this.currentEvent) {
@@ -47,8 +44,9 @@ export default {
                 }
             }
 
-            this.updateCurrentEvent(event)
-                .then(() => this.$router.push(`/events/${event.id}/config`));
+            this.updateCurrentEvent(event).then(() =>
+                this.$router.push(`/events/${event.id}/config`)
+            );
         },
 
         editEvent(event) {
@@ -70,33 +68,33 @@ export default {
     computed: {
         ...mapState({
             currentEvent: state => state.app.currentEvent,
-            loggedUser  : state => state.app.loggedUser,
-            events      : state => state.objects.events
+            loggedUser: state => state.app.loggedUser,
+            events: state => state.objects.events
         })
     }
 };
 </script>
 
 <style>
-    .b-home__eventContainer {
-        display: flex;
-        flex-wrap: wrap;
+.b-home__eventContainer {
+    display: flex;
+    flex-wrap: wrap;
 
-        & > div {
-            margin: 10px;
-        }
+    & > div {
+        margin: 10px;
+    }
 
-        & > .add-card-event.mdl-card {
-            width: 256px;
-            height: 256px;
-            background: #3E4EB8;
-            cursor: pointer;
+    & > .add-card-event.mdl-card {
+        width: 256px;
+        height: 256px;
+        background: #3e4eb8;
+        cursor: pointer;
 
-            & > i {
-                color: white;
-                font-size: 80px;
-                margin: auto;
-            }
+        & > i {
+            color: white;
+            font-size: 80px;
+            margin: auto;
         }
     }
+}
 </style>

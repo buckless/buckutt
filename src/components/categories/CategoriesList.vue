@@ -34,9 +34,7 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'removeObject'
-        ]),
+        ...mapActions(['removeObject']),
 
         editCategory(category) {
             this.$router.push(`/categories/${category.id}/edit`);

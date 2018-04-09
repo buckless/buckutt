@@ -1,6 +1,6 @@
-import lodget      from 'lodash.get';
-import lodset      from 'lodash.set';
-import cloneDeep   from 'lodash.clonedeep';
+import lodget from 'lodash.get';
+import lodset from 'lodash.set';
+import cloneDeep from 'lodash.clonedeep';
 import pathToRoute from '../../../lib/pathToRoute';
 
 /**
@@ -21,8 +21,7 @@ export function updateFocusedElement({ state, dispatch }, payload) {
     // Relation update
     if (payload.relation) {
         const relations = lodget(focusedElement, payload.relation);
-        const index     = relations
-            .findIndex(o => o.id === payload.value.id);
+        const index = relations.findIndex(o => o.id === payload.value.id);
 
         if (index !== -1) {
             relations[index] = payload.value;
@@ -31,9 +30,9 @@ export function updateFocusedElement({ state, dispatch }, payload) {
     } else if (payload.newRelation) {
         lodget(focusedElement, payload.newRelation).push(payload.value);
     } else if (payload.delRelation) {
-        console.log(payload.delRelation);
-        const index = lodget(focusedElement, payload.delRelation)
-            .findIndex(o => o.id === payload.value.id);
+        const index = lodget(focusedElement, payload.delRelation).findIndex(
+            o => o.id === payload.value.id
+        );
 
         lodget(focusedElement, payload.delRelation).splice(index, 1);
     } else {
@@ -42,32 +41,37 @@ export function updateFocusedElement({ state, dispatch }, payload) {
 
     return dispatch('saveFocusedElement', {
         depth: payload.depth,
-        value: focusedElement
+        value: focusedElement,
+        saveInStore: payload.saveInStore
     });
 }
 
 export function saveFocusedElement({ state, commit, dispatch }, payload) {
     commit('UPDATEFOCUSEDELEMENT', payload);
 
-    // Echoes changes to the store (can be redundant if it's called by management functions)
-    const params = Object.keys(state.route.params);
-    dispatch('checkAndUpdateObjects', {
-        forceUpdate: true,
-        route      : pathToRoute(params[payload.depth]),
-        objects    : [payload.value]
-    });
+    // Save changes inside the store only if it's an answer from the API, can be redundant
+    // Used to update promotions, as long as a promotion isn't part of a wiket
+    if (payload.saveInStore) {
+        const params = Object.keys(state.route.params);
+        dispatch('checkAndUpdateObjects', {
+            forceUpdate: true,
+            route: pathToRoute(params[payload.depth]),
+            objects: [payload.value]
+        });
+    }
 
     if (payload.depth > 0) {
-        const nextDepth   = payload.depth - 1;
+        const nextDepth = payload.depth - 1;
         const nextElement = cloneDeep(state.app.focusedElements[nextDepth]);
         let nextKey;
 
         Object.keys(nextElement)
-            .filter(key => nextElement[key] && (typeof nextElement[key] === 'object'))
-            .forEach((key) => {
+            .filter(key => nextElement[key] && typeof nextElement[key] === 'object')
+            .forEach(key => {
                 if (Array.isArray(nextElement[key])) {
-                    const index = nextElement[key]
-                        .findIndex(element => element.id === payload.value.id);
+                    const index = nextElement[key].findIndex(
+                        element => element.id === payload.value.id
+                    );
 
                     if (index > -1) {
                         nextKey = `${key}[${index}]`;
@@ -84,7 +88,8 @@ export function saveFocusedElement({ state, commit, dispatch }, payload) {
 
             dispatch('saveFocusedElement', {
                 depth: nextDepth,
-                value: nextElement
+                value: nextElement,
+                saveInStore: payload.saveInStore
             });
         }
     }
@@ -97,20 +102,20 @@ export function clearFocusedElements({ commit }) {
 }
 
 export function syncFocusedElement({ dispatch, commit }, payload) {
-    return dispatch('retrieveObject', payload)
-        .then(result =>
-            commit('UPDATEFOCUSEDELEMENT', {
-                depth: payload.depth,
-                value: result
-            }));
+    return dispatch('retrieveObject', payload).then(result =>
+        commit('UPDATEFOCUSEDELEMENT', {
+            depth: payload.depth,
+            value: result
+        })
+    );
 }
 
 export function loadFocusedElement({ state, dispatch, commit }, payload) {
-    const alreadyFocusedElement = state.app.focusedElements
-        .find(element => payload.id === element.id);
+    const alreadyFocusedElement = state.app.focusedElements.find(
+        element => payload.id === element.id
+    );
 
-    const storedElement = state.objects[payload.route]
-        .find(object => payload.id === object.id);
+    const storedElement = state.objects[payload.route].find(object => payload.id === object.id);
 
     const foundElement = alreadyFocusedElement || storedElement;
 
@@ -130,13 +135,13 @@ export function loadFocusedElement({ state, dispatch, commit }, payload) {
 export function loadFocusedElements({ dispatch, commit }, params) {
     commit('TRIMFOCUSEDELEMENTS', Object.keys(params).length);
 
-    const loadPromises = Object.keys(params)
-        .map((key, index) =>
-            dispatch('loadFocusedElement', {
-                depth: index,
-                route: pathToRoute(key),
-                id   : params[key]
-            }));
+    const loadPromises = Object.keys(params).map((key, index) =>
+        dispatch('loadFocusedElement', {
+            depth: index,
+            route: pathToRoute(key),
+            id: params[key]
+        })
+    );
 
     return Promise.all(loadPromises);
 }

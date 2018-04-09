@@ -73,15 +73,15 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { promotionDisplayer }   from './promotionDisplayer';
+import { promotionDisplayer } from './promotionDisplayer';
 
 export default {
     data() {
         return {
-            articleName  : '',
-            chosenIndex  : 0,
+            articleName: '',
+            chosenIndex: 0,
             chooseArticle: false,
-            newStep      : false
+            newStep: false
         };
     },
 
@@ -95,34 +95,34 @@ export default {
         ]),
 
         addArticleToCurrentPromotion(article) {
-            this
-                .addStepToPromotion({
-                    promotion: this.focusedPromotion,
-                    articles : [article]
-                })
-                .then(() => this.notify({ message: 'L\'article a bien été ajouté à la promotion.' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de l\'ajout à la promotion',
-                    full   : err
-                }));
+            this.addStepToPromotion({
+                promotion: this.focusedPromotion,
+                articles: [article]
+            })
+                .then(() => this.notify({ message: "L'article a bien été ajouté à la promotion." }))
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de l'ajout à la promotion",
+                        full: err
+                    })
+                );
         },
 
         addArticleToChosenStep(article) {
-            this
-                .addArticleToStep({
-                    article,
-                    step     : this.displayedPromotion[this.chosenIndex],
-                    promotion: this.focusedPromotion
-                })
-                .then(() => this.notify({ message: 'L\'article a bien été ajouté à la promotion.' }))
-                .catch((err) => {
+            this.addArticleToStep({
+                article,
+                step: this.displayedPromotion[this.chosenIndex],
+                promotion: this.focusedPromotion
+            })
+                .then(() => this.notify({ message: "L'article a bien été ajouté à la promotion." }))
+                .catch(err => {
                     let message;
                     switch (err.message) {
                         case 'The article is already in this set':
-                            message = 'L\'article est déjà présent dans cet ensemble.';
+                            message = "L'article est déjà présent dans cet ensemble.";
                             break;
                         default:
-                            message = 'Une erreur inconue a eu lieu lors de l\'ajout à la promotion';
+                            message = "Une erreur inconue a eu lieu lors de l'ajout à la promotion";
                     }
 
                     this.notifyError({ message, full: err });
@@ -130,28 +130,35 @@ export default {
         },
 
         removeSelectedArticleFromStep(article, index) {
-            this
-                .removeArticleFromStep({
-                    article,
-                    step     : this.displayedPromotion[index],
-                    promotion: this.focusedPromotion
-                })
-                .then(() => this.notify({ message: 'L\'article a bien été supprimé de la promotion.' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la suppression de la promotion',
-                    full   : err
-                }));
+            this.removeArticleFromStep({
+                article,
+                step: this.displayedPromotion[index],
+                promotion: this.focusedPromotion
+            })
+                .then(() =>
+                    this.notify({ message: "L'article a bien été supprimé de la promotion." })
+                )
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la suppression de la promotion',
+                        full: err
+                    })
+                );
         },
 
         createStep() {
             this.chooseArticle = !(this.chooseArticle && this.newStep);
-            this.newStep       = true;
+            this.newStep = true;
         },
 
         chooseIndex(index) {
-            this.chooseArticle = !(this.chooseArticle && !this.newStep && this.chosenIndex === index);
-            this.newStep       = false;
-            this.chosenIndex   = index;
+            this.chooseArticle = !(
+                this.chooseArticle &&
+                !this.newStep &&
+                this.chosenIndex === index
+            );
+            this.newStep = false;
+            this.chosenIndex = index;
         },
 
         processArticle(article) {
@@ -165,7 +172,7 @@ export default {
 
     computed: {
         ...mapState({
-            articles        : state => state.objects.articles,
+            articles: state => state.objects.articles,
             focusedPromotion: state => state.app.focusedElements[0]
         }),
 
@@ -176,9 +183,9 @@ export default {
         alreadyInArticles() {
             if (this.displayedPromotion.length > 0) {
                 if (!this.newStep) {
-                    return this.displayedPromotion[this.chosenIndex]
-                        .articles
-                        .map(article => article.id);
+                    return this.displayedPromotion[this.chosenIndex].articles.map(
+                        article => article.id
+                    );
                 }
             }
 
@@ -189,30 +196,30 @@ export default {
 </script>
 
 <style>
-    .b-promotions__contentManager {
-        display: flex;
-        flex-wrap: nowrap;
+.b-promotions__contentManager {
+    display: flex;
+    flex-wrap: nowrap;
 
-        & > div {
-            flex: 1;
-            max-width: 750px;
-            margin-left: 5px;
-            margin-right: 5px;
-        }
-    }
-
-    .b-chip--margin {
+    & > div {
+        flex: 1;
+        max-width: 750px;
         margin-left: 5px;
         margin-right: 5px;
     }
+}
 
-    .b-table__little {
-        max-width: 140px;
-    }
+.b-chip--margin {
+    margin-left: 5px;
+    margin-right: 5px;
+}
 
-    .b-table-inter {
-        position: relative;
-        top: 30px;
-        left: -72px;
-    }
+.b-table__little {
+    max-width: 140px;
+}
+
+.b-table-inter {
+    position: relative;
+    top: 30px;
+    left: -72px;
+}
 </style>

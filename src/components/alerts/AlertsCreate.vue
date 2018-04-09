@@ -21,30 +21,28 @@ export default {
     data() {
         return {
             newAlert: {
-                content        : '',
+                content: '',
                 minimumViewTime: 5
             }
         };
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'notify', 'notifyError']),
         createAlert(alert) {
             alert.event_id = this.currentEvent.id;
 
             this.createObject({ route: 'alerts', value: alert })
                 .then(() => {
-                    this.notify({ message: 'L\'alerte a bien été envoyée' });
+                    this.notify({ message: "L'alerte a bien été envoyée" });
                     this.$router.push('/alerts');
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de l\'envoi de l\'alerte',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de l'envoi de l'alerte",
+                        full: err
+                    })
+                );
         }
     },
 

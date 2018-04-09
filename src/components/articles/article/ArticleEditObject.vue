@@ -28,30 +28,30 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateArticle(article) {
             const fields = ['id', 'name', 'stock', 'alcohol', 'vat'];
 
             this.updateObject({ route: 'articles', value: pick(article, fields) })
-                .then(() => this.notify({ message: 'L\'article a bien été modifié' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de l\'article',
-                    full   : err
-                }));
+                .then(() => this.notify({ message: "L'article a bien été modifié" }))
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la modification de l'article",
+                        full: err
+                    })
+                );
         },
 
         imageUpdated(error) {
             if (error) {
-                return this.notifyError({ message: 'L\'image de l\'article a bien été modifiée', full: error });
+                return this.notifyError({
+                    message: "L'image de l'article a bien été modifiée",
+                    full: error
+                });
             }
 
-            this.notify({ message: 'L\'image de l\'article a bien été modifiée' });
+            this.notify({ message: "L'image de l'article a bien été modifiée" });
         }
     },
 
@@ -68,12 +68,12 @@ export default {
 </script>
 
 <style>
-    .b-articles-container {
-        display: flex;
-        flex-wrap: wrap;
+.b-articles-container {
+    display: flex;
+    flex-wrap: wrap;
 
-        & > div:first-child {
-            margin-right: 50px;
-        }
+    & > div:first-child {
+        margin-right: 50px;
     }
+}
 </style>

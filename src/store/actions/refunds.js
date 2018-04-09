@@ -10,19 +10,19 @@ export function refundUser({ state, dispatch }, refundData) {
         route: 'users',
         value: { id: refundedUser.id }
     })
-        .then((user) => {
+        .then(user => {
             refundedUser = user;
 
             if (refundData.refund.amount > refundedUser.credit) {
-                return Promise.reject(new Error('The user doesn\'t have enough credit'));
+                return Promise.reject(new Error("The user doesn't have enough credit"));
             }
 
             const refund = {
-                amount   : refundData.refund.amount,
-                trace    : refundData.refund.trace,
-                type     : refundData.refund.type,
+                amount: refundData.refund.amount,
+                trace: refundData.refund.trace,
+                type: refundData.refund.type,
                 seller_id: state.app.loggedUser.id,
-                buyer_id : refundedUser.id
+                buyer_id: refundedUser.id
             };
 
             return dispatch('createObject', {
@@ -32,7 +32,7 @@ export function refundUser({ state, dispatch }, refundData) {
         })
         .then(() => {
             const modifiedUser = {
-                id    : refundedUser.id,
+                id: refundedUser.id,
                 credit: refundedUser.credit - refundData.refund.amount
             };
 

@@ -1,16 +1,16 @@
 const authData = {
     headers: {
-        Accept        : 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
     }
 };
 
-if (sessionStorage.hasOwnProperty('token')) {
-    authData.headers.Authorization = `Bearer ${sessionStorage.getItem('token')}`;
-}
-
 export function updateBearer(token) {
-    authData.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+        authData.headers.Authorization = `Bearer ${token}`;
+    } else {
+        delete authData.headers.Authorization;
+    }
 }
 
 /**
@@ -20,19 +20,23 @@ export function updateBearer(token) {
  * @return {Promise} The result as JSON
  */
 export function get(url, opts_) {
-    const opts = Object.assign({}, authData, {
-        method     : 'GET',
-        credentials: 'include'
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'GET',
+            credentials: 'include'
+        },
+        opts_
+    );
 
-    return fetch(`${config.api}/${url}`, opts)
-        .then((res) => {
-            if (!res.ok) {
-                return Promise.reject(new Error(res.statusText));
-            }
+    return fetch(`${config.api}/${url}`, opts).then(res => {
+        if (!res.ok) {
+            return Promise.reject(new Error(res.statusText));
+        }
 
-            return res.json();
-        });
+        return res.json();
+    });
 }
 
 /**
@@ -43,20 +47,24 @@ export function get(url, opts_) {
  * @return {Promise} The result as JSON
  */
 export function post(url, data, opts_) {
-    const opts = Object.assign({}, authData, {
-        method     : 'POST',
-        body       : JSON.stringify(data),
-        credentials: 'include'
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'POST',
+            body: JSON.stringify(data),
+            credentials: 'include'
+        },
+        opts_
+    );
 
-    return fetch(`${config.api}/${url}`, opts)
-        .then((res) => {
-            if (!res.ok) {
-                return Promise.reject(new Error(res.statusText));
-            }
+    return fetch(`${config.api}/${url}`, opts).then(res => {
+        if (!res.ok) {
+            return Promise.reject(new Error(res.statusText));
+        }
 
-            return res.json();
-        });
+        return res.json();
+    });
 }
 
 /**
@@ -67,20 +75,24 @@ export function post(url, data, opts_) {
  * @return {Promise} The result as JSON
  */
 export function put(url, data, opts_) {
-    const opts = Object.assign({}, authData, {
-        method     : 'PUT',
-        body       : JSON.stringify(data),
-        credentials: 'include'
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            credentials: 'include'
+        },
+        opts_
+    );
 
-    return fetch(`${config.api}/${url}`, opts)
-        .then((res) => {
-            if (!res.ok) {
-                return Promise.reject(new Error(res.statusText));
-            }
+    return fetch(`${config.api}/${url}`, opts).then(res => {
+        if (!res.ok) {
+            return Promise.reject(new Error(res.statusText));
+        }
 
-            return res.json();
-        });
+        return res.json();
+    });
 }
 
 /**
@@ -90,19 +102,23 @@ export function put(url, data, opts_) {
  * @return {Promise} The result as JSON
  */
 export function del(url, opts_) {
-    const opts = Object.assign({}, authData, {
-        method     : 'DELETE',
-        credentials: 'include'
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'DELETE',
+            credentials: 'include'
+        },
+        opts_
+    );
 
-    return fetch(`${config.api}/${url}`, opts)
-        .then((res) => {
-            if (!res.ok) {
-                return Promise.reject(new Error(res.statusText));
-            }
+    return fetch(`${config.api}/${url}`, opts).then(res => {
+        if (!res.ok) {
+            return Promise.reject(new Error(res.statusText));
+        }
 
-            return res.json();
-        });
+        return res.json();
+    });
 }
 
 /**
@@ -112,17 +128,21 @@ export function del(url, opts_) {
  * @return {Promise} The result as blob
  */
 export function download(url, opts_) {
-    const opts = Object.assign({}, authData, {
-        method     : 'GET',
-        credentials: 'include'
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'GET',
+            credentials: 'include'
+        },
+        opts_
+    );
 
-    return fetch(`${config.api}/${url}`, opts)
-        .then((res) => {
-            if (!res.ok) {
-                return Promise.reject(new Error('Download failed'));
-            }
+    return fetch(`${config.api}/${url}`, opts).then(res => {
+        if (!res.ok) {
+            return Promise.reject(new Error('Download failed'));
+        }
 
-            return res.blob();
-        });
+        return res.blob();
+    });
 }

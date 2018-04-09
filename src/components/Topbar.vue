@@ -59,76 +59,76 @@ export default {
             loggedUser: state => state.app.loggedUser
         }),
 
-        ...mapGetters([
-            'logged'
-        ])
+        ...mapGetters(['logged'])
     }
 };
 </script>
 
 <style>
-    @import '../variables.css';
+@import '../variables.css';
 
-    .b-topbar {
-        z-index: 9;
-        position: fixed;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        background-color: white;
-        height: 86px;
-        width: 100%;
-        padding-left: var(--sidebarWidth);
+.b-topbar {
+    z-index: 9;
+    position: fixed;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+    height: 86px;
+    width: 100%;
+    padding-left: var(--sidebarWidth);
 
-        & > .b-topbar__menu {
-            flex: 1;
-            margin-left: 15px;
-            text-align: center;
+    & > .b-topbar__menu {
+        flex: 1;
+        margin-left: 15px;
+        text-align: center;
 
-            & > a:hover {
-                color: black;
-            }
-
-            & > a {
-                width: 90px;
-                font-size: 14px;
-
-                & > i {
-                    font-size: 35px;
-                }
-            }
+        & > a:hover {
+            color: black;
         }
 
-        & > .b-topbar__account {
-            margin-left: 15px;
-            padding-right: 23px;
-            min-width: 170px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        & > a {
+            width: 90px;
+            font-size: 14px;
 
-            & > .b-topbar__admin {
-                display: flex;
-                align-items: center;
-
-                & > span {
-                    font-size: 14px;
-                    margin-left: 5px;
-                    margin-right: 5px;
-                }
-            }
-
-            & > a, & > .b-topbar__admin > a {
-                color: #222;
-
-                & > i {
-                    font-size: 40px;
-                }
-            }
-
-            & > a:hover, & > .b-topbar__admin > a:hover {
-                color: black;
+            & > i {
+                font-size: 35px;
             }
         }
     }
+
+    & > .b-topbar__account {
+        margin-left: 15px;
+        padding-right: 23px;
+        min-width: 170px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        & > .b-topbar__admin {
+            display: flex;
+            align-items: center;
+
+            & > span {
+                font-size: 14px;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+        }
+
+        & > a,
+        & > .b-topbar__admin > a {
+            color: #222;
+
+            & > i {
+                font-size: 40px;
+            }
+        }
+
+        & > a:hover,
+        & > .b-topbar__admin > a:hover {
+            color: black;
+        }
+    }
+}
 </style>

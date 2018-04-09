@@ -1,7 +1,7 @@
 // copied from here https://github.com/WebDevTmas/moment-round/blob/1d20ce5d338529c76da8439fe594cc6984505810/src/moment-round.js and modified
 import moment from 'moment';
 
-moment.fn.round = function (precision, key, direction = 'round') {
+moment.fn.round = function(precision, key, direction = 'round') {
     const keys = ['Hours', 'Minutes', 'Seconds', 'Milliseconds'];
     const maxValues = [24, 60, 60, 1000];
 
@@ -39,10 +39,10 @@ moment.fn.round = function (precision, key, direction = 'round') {
     return this;
 };
 
-moment.fn.ceil = function (precision, key) {
+moment.fn.ceil = function(precision, key) {
     return this.round(precision, key, 'ceil');
 };
 
-moment.fn.floor = function (precision, key) {
+moment.fn.floor = function(precision, key) {
     return this.round(precision, key, 'floor');
 };

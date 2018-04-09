@@ -3,7 +3,7 @@
         <transition name="fade">
             <div class="b-table">
                 <div class="b-table__paging" v-if="paging">
-                    Afficher <select v-model="chosenPaging"><option v-for="option in pagingOptions">{{ option }}</option></select> entrées
+                    Afficher <select v-model="chosenPaging" @input="pagingChanged"><option v-for="option in pagingOptions">{{ option }}</option></select> entrées
                 </div>
                 <div class="b-responsive-table">
                     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" v-if="displayedData.length > 0">
@@ -110,8 +110,8 @@
 </template>
 
 <script>
-import lodget    from 'lodash.get';
-import fuzzy     from 'fuzzy';
+import lodget from 'lodash.get';
+import fuzzy from 'fuzzy';
 import sortOrder from '../lib/sortOrder';
 import '../lib/price';
 import '../lib/date';
@@ -119,35 +119,35 @@ import '../lib/date';
 export default {
     props: {
         headers: Array,
-        data   : Array,
-        filter : {
-            type    : Object,
+        data: Array,
+        filter: {
+            type: Object,
             required: false
         },
         sort: {
-            type    : Object,
+            type: Object,
             required: false
         },
         actions: {
-            type    : Array,
+            type: Array,
             required: false
         },
         route: {
-            type    : String,
+            type: String,
             required: false
         },
         paging: {
-            type    : Number,
+            type: Number,
             required: false
         }
     },
 
     data() {
         return {
-            page         : 1,
-            tableId      : new Date().getTime().toString(),
+            page: 1,
+            tableId: new Date().getTime().toString(),
             pagingOptions: [5, 10, 25, 50, 100],
-            chosenPaging : this.paging
+            chosenPaging: this.paging
         };
     },
 
@@ -160,6 +160,10 @@ export default {
                 default:
                     this.$emit(action, arg);
             }
+        },
+
+        pagingChanged(event) {
+            this.$emit('pagingChanged', event.target.value);
         },
 
         previous() {
@@ -185,9 +189,9 @@ export default {
                     case 'exists':
                         return !object[condition.field];
                     case 'isIn':
-                        return (condition.value.indexOf(object[condition.field]) > -1);
+                        return condition.value.indexOf(object[condition.field]) > -1;
                     case 'isNotIn':
-                        return (condition.value.indexOf(object[condition.field]) === -1);
+                        return condition.value.indexOf(object[condition.field]) === -1;
                     default:
                         break;
                 }
@@ -211,12 +215,16 @@ export default {
             let transformedData = this.filteredData.slice();
 
             if (this.sort) {
-                transformedData = transformedData
-                    .sort((a, b) => sortOrder(a[this.sort.field], b[this.sort.field], this.sort.order));
+                transformedData = transformedData.sort((a, b) =>
+                    sortOrder(a[this.sort.field], b[this.sort.field], this.sort.order)
+                );
             }
 
             if (this.paging) {
-                transformedData = transformedData.slice(this.start, this.start + parseInt(this.chosenPaging, 10));
+                transformedData = transformedData.slice(
+                    this.start,
+                    this.start + parseInt(this.chosenPaging, 10)
+                );
             }
 
             return transformedData;
@@ -259,57 +267,57 @@ export default {
         },
 
         columnsNumber() {
-            return (this.actions) ? this.headers.length + 1 : this.headers.length;
+            return this.actions ? this.headers.length + 1 : this.headers.length;
         }
     }
 };
 </script>
 
 <style>
-    .b-table__paging {
-        width: 100%;
-        text-align: right;
-        font-size: 12px;
-        margin-bottom: 5px;
+.b-table__paging {
+    width: 100%;
+    text-align: right;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.b-actions-cell {
+    width: 175px;
+}
+
+.b-table__list {
+    margin-top: 2px;
+    margin-bottom: 0px;
+    padding-left: 25px;
+    font-size: 12px;
+
+    & > li {
+        line-height: 1.2;
     }
+}
 
-    .b-actions-cell {
-        width: 175px;
-    }
+.b-table__warning {
+    vertical-align: middle;
+    font-size: 25px;
+    margin-right: 10px;
+}
 
-    .b-table__list {
-        margin-top: 2px;
-        margin-bottom: 0px;
-        padding-left: 25px;
-        font-size: 12px;
+.b-table__pages {
+    display: flex;
+    justify-content: space-between;
 
-        & > li {
-            line-height: 1.2;
-        }
-    }
+    & > span {
+        & > a {
+            opacity: 0;
+            pointer-events: none;
+            text-decoration: none;
+            margin: 10px;
 
-    .b-table__warning {
-        vertical-align: middle;
-        font-size: 25px;
-        margin-right: 10px
-    }
-
-    .b-table__pages {
-        display: flex;
-        justify-content: space-between;
-
-        & > span {
-            & > a {
-                opacity: 0;
-                pointer-events: none;
-                text-decoration: none;
-                margin: 10px;
-
-                &.b-table__visible {
-                    opacity: 1;
-                    pointer-events: all;
-                }
+            &.b-table__visible {
+                opacity: 1;
+                pointer-events: all;
             }
         }
     }
+}
 </style>

@@ -46,7 +46,7 @@ import { mapState } from 'vuex';
 export default {
     props: {
         point: {
-            type    : Object,
+            type: Object,
             required: true
         }
     },
@@ -66,60 +66,60 @@ export default {
 </script>
 
 <style>
-    .tile-card-wiket.mdl-card {
-        width: 700px;
-        margin: 10px;
-        max-height: 300px;
+.tile-card-wiket.mdl-card {
+    width: 700px;
+    margin: 10px;
+    max-height: 300px;
 
-        & > div:first-child {
-            display: flex;
-            flex-direction: row;
+    & > div:first-child {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        & > .mdl-card__title {
             align-items: center;
+            flex-direction: column;
+            width: 250px;
+            text-align: center;
+            margin-top: 15px;
+            color: #222;
 
-            & > .mdl-card__title {
-                align-items: center;
-                flex-direction: column;
-                width: 250px;
-                text-align: center;
-                margin-top: 15px;
-                color: #222;
-
-                & > i {
-                    font-size: 100px;
-                    margin-left: -5px;
-                }
-
-                & > h6 {
-                    margin-top: 0;
-                }
+            & > i {
+                font-size: 100px;
+                margin-left: -5px;
             }
 
-            & > .mdl-card__supporting-text {
-                overflow-y: overlay;
-                height: 120px;
-                margin-right: 5px;
-                padding: 0;
+            & > h6 {
+                margin-top: 0;
+            }
+        }
 
-                & > div {
+        & > .mdl-card__supporting-text {
+            overflow-y: overlay;
+            height: 120px;
+            margin-right: 5px;
+            padding: 0;
+
+            & > div {
+                display: flex;
+
+                & > span {
                     display: flex;
+                    align-items: center;
+                    width: 50%;
+                    flex: auto;
 
-                    & > span {
-                        display: flex;
-                        align-items: center;
-                        width: 50%;
-                        flex: auto;
-
-                        & > i {
-                            margin-right: 5px;
-                            font-size: 25px;
-                        }
+                    & > i {
+                        margin-right: 5px;
+                        font-size: 25px;
                     }
                 }
             }
         }
-
-        & > .mdl-card__actions {
-            text-align: right;
-        }
     }
+
+    & > .mdl-card__actions {
+        text-align: right;
+    }
+}
 </style>

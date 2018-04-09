@@ -4,7 +4,6 @@
         <form @submit.prevent="updatePeriod(focusedPeriod)">
             <mdl-textfield floating-label="Nom" :value="focusedPeriod.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
             <br />
-            <span v-if="isPeriodProtected">Les dates de début et de fin de la période par défaut sont à modifier dans la configuration de l'événement.</span>
             <b-datetime-picker
                 :value="new Date(focusedPeriod.start)"
                 @input="updateDeepestFocusedElement({ field: 'start', value: $event })"
@@ -16,8 +15,7 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="Le début n'est pas une date"
                 label="Début"
-                class="b--limitsize b--inline"
-                v-if="!isPeriodProtected"></b-datetime-picker>
+                class="b--limitsize b--inline"></b-datetime-picker>
             <b-datetime-picker
                 :value="new Date(focusedPeriod.end)"
                 @input="updateDeepestFocusedElement({ field: 'end', value: $event })"
@@ -29,8 +27,7 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="La fin n'est pas une date"
                 label="Fin"
-                class="b--limitsize b--inline"
-                v-if="!isPeriodProtected"></b-datetime-picker>
+                class="b--limitsize b--inline"></b-datetime-picker>
             <br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>
@@ -43,22 +40,19 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateObject',
-            'updateDeepestFocusedElement',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updatePeriod(period) {
             const fields = ['id', 'name', 'start', 'end'];
 
             this.updateObject({ route: 'periods', value: pick(period, fields) })
                 .then(() => this.notify({ message: 'La période a bien été modifiée' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de la période',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la modification de la période',
+                        full: err
+                    })
+                );
         }
     },
 
@@ -67,13 +61,7 @@ export default {
             focusedPeriod: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters([
-            'protectedPeriodsIds'
-        ]),
-
-        isPeriodProtected() {
-            return (this.protectedPeriodsIds.indexOf(this.focusedPeriod.id) > -1);
-        }
+        ...mapGetters(['protectedPeriodsIds'])
     }
 };
 </script>

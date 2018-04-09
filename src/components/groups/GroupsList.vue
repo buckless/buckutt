@@ -12,7 +12,7 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', raised: true, colored: true },
+                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNotIn', value: protectedGroupsIds } },
                 { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNotIn', value: protectedGroupsIds } }
             ]"
             route="groups"
@@ -34,9 +34,7 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'removeObject'
-        ]),
+        ...mapActions(['removeObject']),
 
         editGroup(group) {
             this.$router.push(`/groups/${group.id}/edit`);
@@ -48,9 +46,7 @@ export default {
             groups: state => state.objects.groups
         }),
 
-        ...mapGetters([
-            'protectedGroupsIds'
-        ])
+        ...mapGetters(['protectedGroupsIds'])
     }
 };
 </script>

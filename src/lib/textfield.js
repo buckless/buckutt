@@ -32,7 +32,7 @@
         this.checkDirty();
         var dirty = this.element_.classList.contains(this.CssClasses_.IS_DIRTY);
         var required = this.input_.required;
-        if (!required || required && dirty) {
+        if (!required || (required && dirty)) {
             this.checkValidity();
         }
         this.checkFocus();
@@ -59,12 +59,19 @@
             this.label_ = this.element_.querySelector('.' + this.CssClasses_.LABEL);
             this.input_ = this.element_.querySelector('.' + this.CssClasses_.INPUT);
             if (this.input_) {
-                if (this.input_.hasAttribute(
+                if (
+                    this.input_.hasAttribute(
                         /** @type {string} */
-                        (this.Constant_.MAX_ROWS_ATTRIBUTE))) {
-                    this.maxRows = parseInt(this.input_.getAttribute(
-                        /** @type {string} */
-                        (this.Constant_.MAX_ROWS_ATTRIBUTE)), 10);
+                        (this.Constant_.MAX_ROWS_ATTRIBUTE)
+                    )
+                ) {
+                    this.maxRows = parseInt(
+                        this.input_.getAttribute(
+                            /** @type {string} */
+                            (this.Constant_.MAX_ROWS_ATTRIBUTE)
+                        ),
+                        10
+                    );
                     if (isNaN(this.maxRows)) {
                         this.maxRows = this.Constant_.NO_MAX_ROWS;
                     }
@@ -103,5 +110,5 @@
     };
     // The component registers itself. It can assume componentHandler is available
     // in the global scope.
-    componentHandler.registerUpgradedCallback(MaterialTextfield, function(textfield){});
+    componentHandler.registerUpgradedCallback(MaterialTextfield, function(textfield) {});
 })();

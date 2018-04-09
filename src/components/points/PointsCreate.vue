@@ -22,22 +22,20 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'notify', 'notifyError']),
 
         createPoint(point) {
             this.createObject({ route: 'points', value: point })
-                .then((createdPoint) => {
+                .then(createdPoint => {
                     this.notify({ message: 'Le guichet a bien été créé' });
                     this.$router.push(`/points/${createdPoint.id}`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création du guichet',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la création du guichet',
+                        full: err
+                    })
+                );
         }
     }
 };

@@ -24,46 +24,44 @@ export default {
             focusedPoint: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters([
-            'categoryOptions'
-        ]),
+        ...mapGetters(['categoryOptions']),
 
         remainingCategoryOptions() {
             return this.categoryOptions
-                .filter(option =>
-                    !(this.focusedPoint.categories || [])
-                        .find(category => category.id === option.value.id))
+                .filter(
+                    option =>
+                        !(this.focusedPoint.categories || []).find(
+                            category => category.id === option.value.id
+                        )
+                )
                 .sort((a, b) => sortOrder(a.value.name, b.value.name));
         }
     },
 
     methods: {
-        ...mapActions([
-            'createRelation',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createRelation', 'notify', 'notifyError']),
 
         addCategory(category) {
-            this
-                .createRelation({
-                    obj1: {
-                        route: 'points',
-                        value: this.focusedPoint
-                    },
-                    obj2: {
-                        route: 'categories',
-                        value: category
-                    }
-                })
+            this.createRelation({
+                obj1: {
+                    route: 'points',
+                    value: this.focusedPoint
+                },
+                obj2: {
+                    route: 'categories',
+                    value: category
+                }
+            })
                 .then(() => {
                     this.notify({ message: 'La catégorie a bien été assignée au point' });
                     this.category = '';
                 })
-                .catch(err => this.notifyError({
-                    message: 'La catégore n\'a pas pu être assignée au point',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "La catégore n'a pas pu être assignée au point",
+                        full: err
+                    })
+                );
         }
     }
 };

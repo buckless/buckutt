@@ -1,0 +1,63 @@
+<template>
+    <div>
+        <h5>Historique des accès</h5>
+        <div class="b-table-search">
+            <i class="material-icons">search</i>
+            <mdl-textfield floating-label="Utilisateur" v-model="user"></mdl-textfield>
+        </div>
+
+        <b-table
+            :headers="[{ title: 'Heure d\'acces', field: 'created_at', type: 'date' }, { title: 'Utilisateur', field: 'user' }, { title: 'Opérateur', field: 'operator' }, { title: 'Lieu', field: 'point' }]"
+            :data="eventAccesses"
+            :filter="{ val: this.user, field: 'user' }"
+            :sort="{ field: 'created_at', order: 'DESC' }"
+            :paging="10">
+        </b-table>
+    </div>
+</template>
+
+<script>
+import { mapState, mapActions } from 'vuex';
+
+export default {
+    data() {
+        return {
+            user: ''
+        };
+    },
+
+    methods: {
+        ...mapActions(['fetchObjectsAndRelations'])
+    },
+
+    computed: {
+        ...mapState({
+            currentEvent: state => state.app.currentEvent,
+            accesses: state => state.objects.accesses
+        }),
+
+        eventAccesses() {
+            return this.accesses
+                .filter(
+                    access =>
+                        access.wiket &&
+                        access.wiket.period &&
+                        access.wiket.period.event_id === this.currentEvent.id
+                )
+                .map(access => ({
+                    id: access.id,
+                    created_at: access.created_at,
+                    operator: `${access.operator.firstname} ${access.operator.lastname}`,
+                    user: `${access.meanOfLogin.user.firstname} ${
+                        access.meanOfLogin.user.lastname
+                    }`,
+                    point: access.wiket.point.name
+                }));
+        }
+    },
+
+    mounted() {
+        this.fetchObjectsAndRelations({ route: 'accesses' });
+    }
+};
+</script>

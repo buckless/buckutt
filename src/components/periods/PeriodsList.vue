@@ -16,7 +16,7 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'end', order: 'DESC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', raised: true, colored: true },
+                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNotIn', value: protectedPeriodsIds } },
                 { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNotIn', value: protectedPeriodsIds } }
             ]"
             route="periods"
@@ -38,15 +38,13 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            name           : '',
+            name: '',
             displayOutdated: false
         };
     },
 
     methods: {
-        ...mapActions([
-            'removeObject'
-        ]),
+        ...mapActions(['removeObject']),
 
         editPeriod(period) {
             this.$router.push(`/periods/${period.id}/edit`);
@@ -56,20 +54,15 @@ export default {
     computed: {
         ...mapState({
             currentEvent: state => state.app.currentEvent,
-            periods     : state => state.objects.periods
+            periods: state => state.objects.periods
         }),
 
-        ...mapGetters([
-            'protectedPeriodsIds',
-            'currentPeriods'
-        ]),
+        ...mapGetters(['protectedPeriodsIds', 'currentPeriods']),
 
         displayedPeriods() {
-            const selectedPeriods = (this.displayOutdated)
-                ? this.periods
-                : this.currentPeriods;
+            const selectedPeriods = this.displayOutdated ? this.periods : this.currentPeriods;
 
-            return selectedPeriods.filter(period => (period.event_id === this.currentEvent.id));
+            return selectedPeriods.filter(period => period.event_id === this.currentEvent.id);
         }
     }
 };

@@ -22,7 +22,7 @@
 export default {
     props: {
         label: String,
-        icon : String,
+        icon: String,
         value: Boolean
     },
 
@@ -41,32 +41,32 @@ export default {
 </script>
 
 <style>
-    .b-detailedSwitch {
-        cursor: pointer;
-        margin-top: 15px;
-        margin-bottom: 15px;
-        width: 100%;
-        flex-direction: column;
-        padding-left: 160px;
-        min-height: 160px;
+.b-detailedSwitch {
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+    flex-direction: column;
+    padding-left: 160px;
+    min-height: 160px;
 
-        & > .b-detailedSwitch_icon {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            text-align: center;
-            top: 0px;
-            bottom: 0px;
-            left: 0px;
-            margin: auto 0px auto 20px;
+    & > .b-detailedSwitch_icon {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        text-align: center;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        margin: auto 0px auto 20px;
 
-            & > i {
-                margin-top: 20px;
-                width: 80px;
-                height: 80px;
-                font-size: 80px;
-                color: white;
-            }
+        & > i {
+            margin-top: 20px;
+            width: 80px;
+            height: 80px;
+            font-size: 80px;
+            color: white;
         }
     }
+}
 </style>

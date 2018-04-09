@@ -70,8 +70,8 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import '../../lib/price';
 
 const fieldsPattern = {
-    point  : null,
-    dateIn : null,
+    point: null,
+    dateIn: null,
     dateOut: null
 };
 
@@ -84,15 +84,13 @@ export default {
 
     computed: {
         ...mapState({
-            transfers     : state => state.objects.transfers,
-            reloads       : state => state.objects.reloads,
-            refunds       : state => state.objects.refunds,
+            transfers: state => state.objects.transfers,
+            reloads: state => state.objects.reloads,
+            refunds: state => state.objects.refunds,
             meansofpayment: state => state.objects.meansofpayment
         }),
 
-        ...mapGetters([
-            'pointOptions'
-        ]),
+        ...mapGetters(['pointOptions']),
 
         totalReload() {
             return this.reloads
@@ -120,7 +118,7 @@ export default {
         },
 
         displayedReloads() {
-            return this.reloads.map((reload) => {
+            return this.reloads.map(reload => {
                 reload.type = this.slugToName(reload.type);
 
                 return reload;
@@ -128,7 +126,7 @@ export default {
         },
 
         displayedRefunds() {
-            return this.refunds.map((refund) => {
+            return this.refunds.map(refund => {
                 refund.type = this.slugToName(refund.type);
 
                 return refund;
@@ -136,9 +134,13 @@ export default {
         },
 
         displayedTransfers() {
-            return this.transfers.map((transfer) => {
-                transfer.sender.fullname   = `${transfer.sender.firstname} ${transfer.sender.lastname}`;
-                transfer.reciever.fullname = `${transfer.reciever.firstname} ${transfer.reciever.lastname}`;
+            return this.transfers.map(transfer => {
+                transfer.sender.fullname = `${transfer.sender.firstname} ${
+                    transfer.sender.lastname
+                }`;
+                transfer.reciever.fullname = `${transfer.reciever.firstname} ${
+                    transfer.reciever.lastname
+                }`;
 
                 return transfer;
             });
@@ -146,42 +148,40 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'getTreasury',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['getTreasury', 'notify', 'notifyError']),
 
         filter() {
             const inputFields = JSON.parse(JSON.stringify(this.fields));
-            let isFilled      = false;
+            let isFilled = false;
 
-            Object.keys(inputFields).forEach((key) => {
+            Object.keys(inputFields).forEach(key => {
                 if (inputFields[key]) {
                     isFilled = true;
                 }
             });
 
-            if (!isFilled
-                || (inputFields.dateIn && !inputFields.dateOut)
-                || (!inputFields.dateIn && inputFields.dateOut)) {
+            if (
+                !isFilled ||
+                (inputFields.dateIn && !inputFields.dateOut) ||
+                (!inputFields.dateIn && inputFields.dateOut)
+            ) {
                 return this.notifyError({ message: 'Vous devez choisir au moins un filtre' });
             }
 
             this.getTreasury(inputFields)
                 .then(() => this.notify({ message: 'Le calcul a été effectué avec succès' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors du calcul de la trésorerie',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors du calcul de la trésorerie',
+                        full: err
+                    })
+                );
         },
 
         slugToName(slug) {
-            const index = this.meansofpayment.findIndex(mop => (mop.slug === slug));
+            const index = this.meansofpayment.findIndex(mop => mop.slug === slug);
 
-            return (index !== -1)
-                ? this.meansofpayment[index].name
-                : slug;
+            return index !== -1 ? this.meansofpayment[index].name : slug;
         }
     }
 };

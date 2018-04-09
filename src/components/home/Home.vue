@@ -33,37 +33,33 @@ export default {
 
     data() {
         return {
-            mail    : null,
+            mail: null,
             password: null
         };
     },
 
     methods: {
-        ...mapActions([
-            'login',
-            'notifyError'
-        ]),
+        ...mapActions(['login', 'notifyError']),
 
         log(mail, password) {
-            this.login({ meanOfLogin: config.defaultMol, data: mail, password })
-                .catch((err) => {
-                    let message;
-                    switch (err.message) {
-                        case 'You are not administrator':
-                            message = 'Vous n\'êtes pas administrateur';
-                            break;
-                        case 'Not Found':
-                            message = 'Utilisateur introuvable';
-                            break;
-                        case 'Unauthorized':
-                            message = 'Vous n\'êtes pas autorisé à vous connecter';
-                            break;
-                        default:
-                            message = 'Erreur inconnue';
-                    }
+            this.login({ meanOfLogin: config.defaultMol, data: mail, password }).catch(err => {
+                let message;
+                switch (err.message) {
+                    case 'You are not administrator':
+                        message = "Vous n'êtes pas administrateur";
+                        break;
+                    case 'Not Found':
+                        message = 'Utilisateur introuvable';
+                        break;
+                    case 'Unauthorized':
+                        message = "Vous n'êtes pas autorisé à vous connecter";
+                        break;
+                    default:
+                        message = 'Erreur inconnue';
+                }
 
-                    this.notifyError({ message, full: err });
-                });
+                this.notifyError({ message, full: err });
+            });
         }
     },
 
@@ -72,35 +68,33 @@ export default {
             loggedUser: state => state.app.loggedUser
         }),
 
-        ...mapGetters([
-            'logged'
-        ])
+        ...mapGetters(['logged'])
     }
 };
 </script>
 
 <style>
-    @import '../../variables.css';
+@import '../../variables.css';
 
-    .b-container {
-        &.b-container__display {
-            margin-left: 0 !important;
-            width: 100% !important;
-        }
-
-        & .mdl-snackbar {
-            margin-left: calc(var(--sidebarWidth) / 2);
-        }
+.b-container {
+    &.b-container__display {
+        margin-left: 0 !important;
+        width: 100% !important;
     }
 
-    .b-container__login {
-        & > div {
-            width: 500px;
-            margin: 50px auto -50px auto;
+    & .mdl-snackbar {
+        margin-left: calc(var(--sidebarWidth) / 2);
+    }
+}
 
-            & .mdl-textfield {
-                width: 100%;
-            }
+.b-container__login {
+    & > div {
+        width: 500px;
+        margin: 50px auto -50px auto;
+
+        & .mdl-textfield {
+            width: 100%;
         }
     }
+}
 </style>

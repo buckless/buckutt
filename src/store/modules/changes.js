@@ -1,5 +1,5 @@
 const state = {
-    socket        : null,
+    socket: null,
     modelsToRoutes: {}
 };
 
@@ -13,7 +13,7 @@ const mutations = {
     },
 
     ADDMODELSTOROUTES(state_, modelsToRoutes) {
-        Object.keys(modelsToRoutes).forEach((key) => {
+        Object.keys(modelsToRoutes).forEach(key => {
             if (!state_.modelsToRoutes[key]) {
                 state_.modelsToRoutes[key] = modelsToRoutes[key];
             }

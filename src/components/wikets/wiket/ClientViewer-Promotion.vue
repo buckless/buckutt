@@ -18,8 +18,8 @@ export default {
 
     computed: {
         ...mapState({
-            focusedPromotion: state => (state.app.focusedElements[2] || {}),
-            fullPath        : state => state.route.fullPath
+            focusedPromotion: state => state.app.focusedElements[2] || {},
+            fullPath: state => state.route.fullPath
         }),
 
         selected() {
@@ -43,31 +43,31 @@ export default {
 </script>
 
 <style>
-    .b-promotion {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        text-align: left;
-        text-decoration: none;
-        padding-left: 10px;
-        color: #222 !important;
-        text-transform: uppercase;
-        padding: 7px 16px;
+.b-promotion {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    text-decoration: none;
+    padding-left: 10px;
+    color: #222 !important;
+    text-transform: uppercase;
+    padding: 7px 16px;
 
-        &:hover {
-            background-color: rgba(158,158,158,.2);
-        }
-
-        & > i {
-            margin-right: 10px;
-        }
-
-        &--gray {
-            color: #848281 !important;
-        }
-
-        &--selected {
-            background: #E1E1E1 !important;
-        }
+    &:hover {
+        background-color: rgba(158, 158, 158, 0.2);
     }
+
+    & > i {
+        margin-right: 10px;
+    }
+
+    &--gray {
+        color: #848281 !important;
+    }
+
+    &--selected {
+        background: #e1e1e1 !important;
+    }
+}
 </style>

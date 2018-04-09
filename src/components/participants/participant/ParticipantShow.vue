@@ -20,7 +20,7 @@ export default {
     computed: {
         ...mapState({
             focusedParticipant: state => state.app.focusedElements[0],
-            currentEvent      : state => state.app.currentEvent
+            currentEvent: state => state.app.currentEvent
         }),
 
         displayedTabs() {
@@ -37,7 +37,9 @@ export default {
         },
 
         title() {
-            return `Participant ${this.focusedParticipant.firstname} ${this.focusedParticipant.lastname}`;
+            return `Privilèges de ${this.focusedParticipant.firstname} ${
+                this.focusedParticipant.lastname
+            }`;
         }
     }
 };

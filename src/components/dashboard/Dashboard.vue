@@ -95,15 +95,14 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import Promise from 'bluebird';
-import c3 from 'c3';
+import c3 from 'c3/c3.min';
 import generateChartData from './generateChartData';
 import '../../lib/moment-round';
 
 const fieldsPattern = {
-    article  : null,
+    article: null,
     promotion: null,
-    point    : null,
+    point: null,
     fundation: null
 };
 
@@ -134,14 +133,16 @@ export default {
     data() {
         return {
             nextUpdateRef: 0,
-            typeField    : 'article',
-            fields       : Object.assign({}, fieldsPattern),
-            timefilter   : {
-                dateIn : moment().subtract(1, 'hour').toDate(),
-                dateOut: new Date(),
-                divide : 5
+            unit: 'count',
+            typeField: 'article',
+            fields: Object.assign({}, fieldsPattern),
+            timefilter: {
+                dateIn: moment()
+                    .subtract(1, 'hour')
+                    .toDate(),
+                dateOut: new Date()
             },
-            realtime        : true,
+            realtime: true,
             activeTimefilter: {},
             colorsPattern
         };
@@ -150,16 +151,11 @@ export default {
     computed: {
         ...mapState({
             currentEvent: state => state.app.currentEvent,
-            curves      : state => state.stats.curves,
-            timeseries  : state => state.stats.timeseries
+            curves: state => state.stats.curves,
+            curvesData: state => state.stats.curvesData
         }),
 
-        ...mapGetters([
-            'articleOptions',
-            'promotionOptions',
-            'pointOptions',
-            'fundationOptions'
-        ]),
+        ...mapGetters(['articleOptions', 'promotionOptions', 'pointOptions', 'fundationOptions']),
 
         articleOptionsAll() {
             const articles = Object.assign([], this.articleOptions);
@@ -191,35 +187,28 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'fetchTimeserie',
-            'removeTimeserie',
-            'addCurve',
-            'removeCurve'
-        ]),
+        ...mapActions(['fetchCurvesData', 'addCurve', 'removeCurve']),
 
         updateData() {
             if (this.realtime) {
-                this.timefilter.dateOut       = new Date();
+                this.timefilter.dateOut = new Date();
                 this.activeTimefilter.dateOut = new Date();
             }
 
-            const curvesActions = [];
-            this.curves.forEach((curve, index) =>
-                curvesActions.push(this.fetchTimeserie({
-                    name      : `Courbe ${index + 1}`,
-                    fields    : curve,
-                    timefilter: this.activeTimefilter
-                })));
-
             clearTimeout(this.nextUpdateRef);
 
-            return Promise
-                .all(curvesActions)
-                .then(() => {
-                    this.chart.load(generateChartData(this.activeTimefilter, this.timeseries, colorsPattern));
-                    this.nextUpdateRef = setTimeout(this.updateData, 10000);
-                });
+            const curves = {
+                ...this.activeTimefilter,
+                curves: this.curves
+            };
+
+            return this.fetchCurvesData(curves).then(() => {
+                if (this.chart) {
+                    this.chart.load(generateChartData(this.curvesData, this.unit, colorsPattern));
+                }
+
+                this.nextUpdateRef = setTimeout(this.updateData, 10000);
+            });
         },
 
         filter() {
@@ -243,10 +232,8 @@ export default {
             const lastCurve = this.curves.length;
             this.removeCurve(curveIndex);
 
-            // Unrender the last curve, and recalculate by shifting ids
-            this.removeTimeserie(`Courbe ${lastCurve}`);
             this.chart.unload({
-                ids : [`Courbe ${lastCurve}`],
+                ids: [`Courbe ${lastCurve}`],
                 done: this.updateData
             });
         }
@@ -259,31 +246,31 @@ export default {
             this.addCurve(Object.assign({ event: this.currentEvent }, this.fields));
         }
 
-        this.chart = c3.generate({
-            bindto: this.$refs.main,
-            data  : generateChartData(this.activeTimefilter, this.timeseries, colorsPattern),
-            grid  : {
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true
-                }
-            },
-            axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%d/%m %H:%M'
+        this.updateData().then(() => {
+            this.chart = c3.generate({
+                bindto: this.$refs.main,
+                data: generateChartData(this.curvesData, this.unit, colorsPattern),
+                grid: {
+                    x: {
+                        show: true
+                    },
+                    y: {
+                        show: true
                     }
+                },
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        tick: {
+                            format: '%d/%m %H:%M'
+                        }
+                    }
+                },
+                legend: {
+                    show: false
                 }
-            },
-            legend: {
-                show: false
-            }
+            });
         });
-
-        this.updateData();
     },
 
     beforeDestroy() {
@@ -293,68 +280,68 @@ export default {
 </script>
 
 <style>
-    .b-timebar {
-        margin-bottom: 5px;
+.b-timebar {
+    margin-bottom: 5px;
 
-        & > form {
-            display: flex;
-
-            & > div {
-                margin-right: 10px;
-
-                & > button {
-                    margin-top: 12px;
-                }
-
-                & > label {
-                    margin-top: -20px;
-                }
-            }
-        }
-    }
-
-    .b-curves {
+    & > form {
         display: flex;
 
-        & > .b-curves__add {
-            width: 25%;
+        & > div {
+            margin-right: 10px;
 
-            & > form {
-                & > label {
-                    margin-right: 20px;
-                }
+            & > button {
+                margin-top: 12px;
+            }
+
+            & > label {
+                margin-top: -20px;
             }
         }
+    }
+}
 
-        & > .b-curves__list {
-            & > div {
+.b-curves {
+    display: flex;
+
+    & > .b-curves__add {
+        width: 25%;
+
+        & > form {
+            & > label {
+                margin-right: 20px;
+            }
+        }
+    }
+
+    & > .b-curves__list {
+        & > div {
+            display: flex;
+            margin-left: 10px;
+            margin-bottom: 5px;
+
+            & > i {
+                margin-right: 15px;
+            }
+
+            & > span {
                 display: flex;
-                margin-left: 10px;
-                margin-bottom: 5px;
+                align-items: center;
+                width: 200px;
 
                 & > i {
-                    margin-right: 15px;
+                    margin-right: 5px;
+                    font-size: 25px;
                 }
+            }
 
-                & > span {
-                    display: flex;
-                    align-items: center;
-                    width: 200px;
+            & > span:first-child {
+                width: 50px;
 
-                    & > i {
-                        margin-right: 5px;
-                        font-size: 25px;
-                    }
-                }
-
-                & > span:first-child {
-                    width: 50px;
-
-                    & > i {
-                        margin-left: 5px;
-                    }
+                & > i {
+                    margin-left: 5px;
                 }
             }
         }
     }
+}
 </style>

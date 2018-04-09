@@ -21,15 +21,11 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'fetchObjectsAndRelations'
-        ])
+        ...mapActions(['fetchObjectsAndRelations'])
     },
 
     computed: {
-        ...mapGetters([
-            'staff'
-        ])
+        ...mapGetters(['staff'])
     },
 
     mounted() {
@@ -39,10 +35,10 @@ export default {
 </script>
 
 <style>
-    .b-staff {
-        & > .b-staff__list {
-            display: flex;
-            flex-wrap: wrap;
-        }
+.b-staff {
+    & > .b-staff__list {
+        display: flex;
+        flex-wrap: wrap;
     }
+}
 </style>

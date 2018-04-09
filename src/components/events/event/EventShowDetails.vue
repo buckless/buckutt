@@ -17,27 +17,28 @@ export default {
         elements() {
             return [
                 {
-                    icon   : 'keyboard_arrow_right',
-                    title  : 'Nom',
+                    icon: 'keyboard_arrow_right',
+                    title: 'Nom',
                     content: this.focusedEvent.name
                 },
                 {
-                    icon   : 'local_drink',
-                    title  : 'Unités alcool maximales par participant',
-                    content: (this.focusedEvent.maxAlcohol > 0) ?
-                        this.focusedEvent.maxAlcohol :
-                        'Pas de limite'
+                    icon: 'local_drink',
+                    title: 'Unités alcool maximales par participant',
+                    content:
+                        this.focusedEvent.maxAlcohol > 0
+                            ? this.focusedEvent.maxAlcohol
+                            : 'Pas de limite'
                 },
                 {
-                    icon   : 'attach_money',
-                    type   : 'price',
-                    title  : 'Rechargement minimal',
+                    icon: 'attach_money',
+                    type: 'price',
+                    title: 'Rechargement minimal',
                     content: this.focusedEvent.minReload
                 },
                 {
-                    icon   : 'attach_money',
-                    type   : 'price',
-                    title  : 'Solde maximal',
+                    icon: 'attach_money',
+                    type: 'price',
+                    title: 'Solde maximal',
                     content: this.focusedEvent.maxPerAccount
                 }
             ];

@@ -4,43 +4,32 @@ import { get } from '../../lib/fetch';
  * Stats actions
  */
 
-export function fetchTimeserie({ commit }, filters) {
+export function fetchCurvesData({ commit }, payload) {
     const q = [];
 
-    q.push(`event=${filters.fields.event.id}`);
-
-    if (filters.fields.promotion) {
-        q.push(`promotion=${filters.fields.promotion.id}`);
+    if (payload.dateIn && payload.dateOut) {
+        q.push(`dateIn=${payload.dateIn.toISOString()}`);
+        q.push(`dateOut=${payload.dateOut.toISOString()}`);
     }
 
-    if (filters.fields.article) {
-        q.push(`article=${filters.fields.article.id}`);
-    }
+    const filters = payload.curves.map(curve => {
+        const qCurve = {};
+        Object.keys(curve)
+            .filter(key => curve[key])
+            .forEach(key => {
+                qCurve[key] = curve[key].id;
+            });
 
-    if (filters.fields.point) {
-        q.push(`point=${filters.fields.point.id}`);
-    }
+        return qCurve;
+    });
 
-    if (filters.fields.fundation) {
-        q.push(`fundation=${filters.fields.fundation.id}`);
-    }
+    q.push(`filters=${encodeURIComponent(JSON.stringify(filters))}`);
 
-    if (filters.timefilter.dateIn && filters.timefilter.dateOut) {
-        q.push(`dateIn=${filters.timefilter.dateIn.toISOString()}`);
-        q.push(`dateOut=${filters.timefilter.dateOut.toISOString()}`);
-    }
+    const qString = q.join('&');
 
-    const qString = q
-        .join('&');
-
-    return get(`services/stats/purchases?${qString}`)
-        .then((timeserie) => {
-            commit('UPDATETIMESERIE', { name: filters.name, values: timeserie });
-        });
-}
-
-export function removeTimeserie({ commit }, name) {
-    commit('REMOVETIMESERIE', name);
+    return get(`services/stats/purchases?${qString}`).then(curvesData => {
+        commit('UPDATECURVESDATA', curvesData);
+    });
 }
 
 export function addCurve({ commit }, curve) {

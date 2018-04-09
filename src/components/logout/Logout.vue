@@ -9,19 +9,11 @@ import { mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateLoggedUser',
-            'clearAppStore',
-            'closeSocket'
-        ])
+        ...mapActions(['logoutUser'])
     },
 
     mounted() {
-        sessionStorage.clear();
-        this.updateLoggedUser(null);
-        this.clearAppStore();
-        this.closeSocket();
-
+        this.logoutUser();
         this.$router.push('/');
     }
 };

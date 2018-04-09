@@ -24,7 +24,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 
 const membershipPattern = {
-    group : null,
+    group: null,
     period: null
 };
 
@@ -36,42 +36,40 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'removeObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'removeObject', 'notify', 'notifyError']),
 
         addGroupToUser(user, membership) {
-            membership.period = (this.currentEvent.usePeriods)
+            membership.period = this.currentEvent.usePeriods
                 ? membership.period
                 : this.currentEvent.defaultPeriod;
 
-            const index = user.memberships.findIndex(m => (
-                m.group.id === membership.group.id && m.period.id === membership.period.id
-            ));
+            const index = user.memberships.findIndex(
+                m => m.group.id === membership.group.id && m.period.id === membership.period.id
+            );
 
             if (index > -1) {
-                return this.notifyError({ message: 'L\'utilisateur est déjà membre du groupe sur cette période.' });
+                return this.notifyError({
+                    message: "L'utilisateur est déjà membre du groupe sur cette période."
+                });
             }
 
             const newMembership = {
-                group_id : membership.group.id,
+                group_id: membership.group.id,
                 period_id: membership.period.id,
-                user_id  : user.id
+                user_id: user.id
             };
 
-            this
-                .createObject({
-                    route: 'memberships',
-                    value: newMembership
-                })
-                .then(() => this.notify({ message: 'L\'utilisateur a bien été ajouté au groupe' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la modification de l\'utilisateur',
-                    full   : err
-                }));
+            this.createObject({
+                route: 'memberships',
+                value: newMembership
+            })
+                .then(() => this.notify({ message: "L'utilisateur a bien été ajouté au groupe" }))
+                .catch(err =>
+                    this.notifyError({
+                        message: "Une erreur a eu lieu lors de la modification de l'utilisateur",
+                        full: err
+                    })
+                );
 
             this.membership = Object.assign({}, membershipPattern);
         }
@@ -79,15 +77,11 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent      : state => state.app.currentEvent,
+            currentEvent: state => state.app.currentEvent,
             focusedParticipant: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters([
-            'groupOptions',
-            'currentPeriodOptions',
-            'periodOptions'
-        ]),
+        ...mapGetters(['groupOptions', 'currentPeriodOptions', 'periodOptions']),
 
         displayedColumns() {
             const columns = [{ title: 'Groupe', field: 'group.name' }];
@@ -101,11 +95,14 @@ export default {
 
         displayedMemberships() {
             return (this.focusedParticipant.memberships || [])
-                .filter(membership => (membership.period.event_id === this.currentEvent.id))
-                .map((membership) => {
-                    if (membership.period.id !== this.currentEvent.defaultPeriod_id
-                        && !this.currentEvent.usePeriods) {
-                        membership.warning = 'Une période autre que<br />celle par défaut est utilisée.';
+                .filter(membership => membership.period.event_id === this.currentEvent.id)
+                .map(membership => {
+                    if (
+                        membership.period.id !== this.currentEvent.defaultPeriod_id &&
+                        !this.currentEvent.usePeriods
+                    ) {
+                        membership.warning =
+                            'Une période autre que<br />celle par défaut est utilisée.';
                     }
 
                     return membership;
@@ -113,7 +110,9 @@ export default {
         },
 
         disabledAdd() {
-            return (!this.membership.group || (!this.membership.period && this.currentEvent.usePeriods));
+            return (
+                !this.membership.group || (!this.membership.period && this.currentEvent.usePeriods)
+            );
         }
     }
 };

@@ -1,24 +1,32 @@
-export default (route) => {
+export default route => {
     const now = new Date();
 
     const relations = {
+        accesses: [
+            'meanOfLogin',
+            'meanOfLogin.user',
+            'operator',
+            'wiket',
+            'wiket.period',
+            'wiket.point'
+        ],
         articles: [
             'prices',
             {
-                embed   : 'prices.fundation',
+                embed: 'prices.fundation',
                 required: true
             },
             {
-                embed   : 'prices.group',
+                embed: 'prices.group',
                 required: true
             },
             {
-                embed   : 'prices.period',
-                filters : [['end', '>', now]],
+                embed: 'prices.period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'prices.point',
+                embed: 'prices.point',
                 required: true
             }
         ],
@@ -26,36 +34,32 @@ export default (route) => {
             'articles',
             'articles.prices',
             {
-                embed   : 'articles.prices.fundation',
+                embed: 'articles.prices.fundation',
                 required: true
             },
             {
-                embed   : 'articles.prices.group',
+                embed: 'articles.prices.group',
                 required: true
             },
             {
-                embed   : 'articles.prices.period',
-                filters : [['end', '>', now]],
+                embed: 'articles.prices.period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'articles.prices.point',
+                embed: 'articles.prices.point',
                 required: true
             }
         ],
-        events: [
-            'defaultFundation',
-            'defaultGroup',
-            'defaultPeriod'
-        ],
+        events: ['defaultFundation', 'defaultGroup', 'defaultPeriod'],
         memberships: [
             {
-                embed   : 'period',
-                filters : [['end', '>', now]],
+                embed: 'period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'group',
+                embed: 'group',
                 required: true
             }
         ],
@@ -64,47 +68,47 @@ export default (route) => {
             'categories.articles',
             'categories.articles.prices',
             {
-                embed   : 'categories.articles.prices.period',
-                filters : [['end', '>', now]],
+                embed: 'categories.articles.prices.period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'categories.articles.prices.point',
+                embed: 'categories.articles.prices.point',
                 required: true
             },
             'defaultGroup',
             'wikets',
             {
-                embed   : 'wikets.device',
+                embed: 'wikets.device',
                 required: true
             },
             {
-                embed   : 'wikets.period',
-                filters : [['end', '>', now]],
+                embed: 'wikets.period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'wikets.period.event',
+                embed: 'wikets.period.event',
                 required: true
             },
             'wikets.defaultGroup'
         ],
         prices: [
             {
-                embed   : 'fundation',
+                embed: 'fundation',
                 required: true
             },
             {
-                embed   : 'group',
+                embed: 'group',
                 required: true
             },
             {
-                embed   : 'period',
-                filters : [['end', '>', now]],
+                embed: 'period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'point',
+                embed: 'point',
                 required: true
             }
         ],
@@ -113,78 +117,73 @@ export default (route) => {
             'sets.articles',
             'prices',
             {
-                embed   : 'prices.fundation',
+                embed: 'prices.fundation',
                 required: true
             },
             {
-                embed   : 'prices.group',
+                embed: 'prices.group',
                 required: true
             },
             {
-                embed   : 'prices.period',
-                filters : [['end', '>', now]],
+                embed: 'prices.period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'prices.point',
+                embed: 'prices.point',
                 required: true
             }
         ],
         rights: [
             {
-                embed   : 'period',
-                filters : [['end', '>', now]],
+                embed: 'period',
+                filters: [['end', '>', now]],
                 required: true
             },
             'point',
             {
-                embed   : 'user',
+                embed: 'user',
                 required: true
             }
         ],
-        transfers: [
-            'sender',
-            'reciever'
-        ],
+        transfers: ['sender', 'reciever'],
         users: [
             'meansOfLogin',
             'rights',
             {
-                embed   : 'rights.period',
-                filters : [['end', '>', now]],
+                embed: 'rights.period',
+                filters: [['end', '>', now]],
                 required: true
             },
             'rights.point',
             'memberships',
             {
-                embed   : 'memberships.period',
-                filters : [['end', '>', now]],
+                embed: 'memberships.period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'memberships.group',
+                embed: 'memberships.group',
                 required: true
             }
         ],
         wikets: [
             {
-                embed   : 'device',
+                embed: 'device',
                 required: true
             },
             {
-                embed   : 'period',
-                filters : [['end', '>', now]],
+                embed: 'period',
+                filters: [['end', '>', now]],
                 required: true
             },
             {
-                embed   : 'period.event',
+                embed: 'period.event',
                 required: true
             },
             'defaultGroup'
         ]
     };
 
-    return (relations[route])
-        ? encodeURIComponent(JSON.stringify(relations[route]))
-        : null;
+    return relations[route] ? encodeURIComponent(JSON.stringify(relations[route])) : null;
 };

@@ -29,12 +29,11 @@ export default {
     computed: {
         ...mapState({
             currentEvent: state => state.app.currentEvent,
-            alerts      : state => state.objects.alerts
+            alerts: state => state.objects.alerts
         }),
 
         eventAlerts() {
-            return this.alerts
-                .filter(alert => (alert.event_id === this.currentEvent.id));
+            return this.alerts.filter(alert => alert.event_id === this.currentEvent.id);
         }
     }
 };

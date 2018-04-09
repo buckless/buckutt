@@ -55,10 +55,10 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import '../../lib/price';
 
 const fieldsPattern = {
-    point    : null,
+    point: null,
     fundation: null,
-    dateIn   : null,
-    dateOut  : null
+    dateIn: null,
+    dateOut: null
 };
 
 export default {
@@ -70,7 +70,7 @@ export default {
 
     computed: {
         ...mapState({
-            purchases   : state => state.objects.purchases,
+            purchases: state => state.objects.purchases,
             currentEvent: state => state.app.currentEvent
         }),
 
@@ -82,7 +82,7 @@ export default {
         ]),
 
         displayedPurchases() {
-            return this.purchases.map((purchase) => {
+            return this.purchases.map(purchase => {
                 purchase.totalWT = purchase.totalTI - purchase.totalVAT;
 
                 return purchase;
@@ -117,25 +117,23 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'getPurchases',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['getPurchases', 'notify', 'notifyError']),
 
         filter() {
             const inputFields = JSON.parse(JSON.stringify(this.fields));
-            let isFilled      = false;
+            let isFilled = false;
 
-            Object.keys(inputFields).forEach((key) => {
+            Object.keys(inputFields).forEach(key => {
                 if (inputFields[key]) {
                     isFilled = true;
                 }
             });
 
-            if (!isFilled
-                || (inputFields.dateIn && !inputFields.dateOut)
-                || (!inputFields.dateIn && inputFields.dateOut)) {
+            if (
+                !isFilled ||
+                (inputFields.dateIn && !inputFields.dateOut) ||
+                (!inputFields.dateIn && inputFields.dateOut)
+            ) {
                 return this.notifyError({ message: 'Vous devez choisir au moins un filtre' });
             }
 
@@ -143,15 +141,17 @@ export default {
 
             this.getPurchases(inputFields)
                 .then(() => this.notify({ message: 'Le calcul a été effectué avec succès' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors du calcul des achats',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors du calcul des achats',
+                        full: err
+                    })
+                );
         },
 
         fillDates(period) {
             if (period) {
-                this.fields.dateIn  = new Date(period.start);
+                this.fields.dateIn = new Date(period.start);
                 this.fields.dateOut = new Date(period.end);
             }
         }

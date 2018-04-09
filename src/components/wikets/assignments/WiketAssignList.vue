@@ -25,9 +25,9 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import { isPointUsedByEvent } from './isPointUsedByEvent';
 
 const wiketPattern = {
-    device      : null,
-    period      : null,
-    point       : null,
+    device: null,
+    period: null,
+    point: null,
     defaultGroup: null
 };
 
@@ -39,15 +39,10 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'createObject',
-            'removeObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['createObject', 'removeObject', 'notify', 'notifyError']),
 
         createWiket(wiket) {
-            wiket.point  = this.focusedPoint;
+            wiket.point = this.focusedPoint;
             wiket.period = this.currentEvent.usePeriods
                 ? wiket.period
                 : this.currentEvent.defaultPeriod;
@@ -57,30 +52,32 @@ export default {
 
             if (isPointUsedByEvent(this.focusedPoint.wikets, wiket)) {
                 return this.notifyError({
-                    message: 'Le guichet est déjà utilisé par un autre événement pendant cette période'
+                    message:
+                        'Le guichet est déjà utilisé par un autre événement pendant cette période'
                 });
             }
 
             const newWiket = {
-                point_id       : wiket.point.id,
-                device_id      : wiket.device.id,
-                period_id      : wiket.period.id,
+                point_id: wiket.point.id,
+                device_id: wiket.device.id,
+                period_id: wiket.period.id,
                 defaultGroup_id: wiket.defaultGroup.id
             };
 
-            this
-                .createObject({
-                    route: 'wikets',
-                    value: newWiket
-                })
+            this.createObject({
+                route: 'wikets',
+                value: newWiket
+            })
                 .then(() => {
                     this.wiket = Object.assign({}, wiketPattern);
-                    this.notify({ message: 'L\'équipement a bien été assigné au point' });
+                    this.notify({ message: "L'équipement a bien été assigné au point" });
                 })
-                .catch(err => this.notifyError({
-                    message: 'L\'équipement n\'a pas pu être assigné au point',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "L'équipement n'a pas pu être assigné au point",
+                        full: err
+                    })
+                );
         }
     },
     computed: {
@@ -89,12 +86,7 @@ export default {
             focusedPoint: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters([
-            'periodOptions',
-            'currentPeriodOptions',
-            'deviceOptions',
-            'groupOptions'
-        ]),
+        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'deviceOptions', 'groupOptions']),
 
         displayedColumns() {
             const columns = [{ title: 'Équipement', field: 'device.name' }];
@@ -112,16 +104,21 @@ export default {
 
         displayedWikets() {
             return (this.focusedPoint.wikets || [])
-                .filter(wiket => (wiket.period.event_id === this.currentEvent.id))
-                .map((wiket) => {
-                    if (wiket.period.id !== this.currentEvent.defaultPeriod_id
-                        && !this.currentEvent.usePeriods) {
+                .filter(wiket => wiket.period.event_id === this.currentEvent.id)
+                .map(wiket => {
+                    if (
+                        wiket.period.id !== this.currentEvent.defaultPeriod_id &&
+                        !this.currentEvent.usePeriods
+                    ) {
                         wiket.warning = 'Une période autre que<br />celle par défaut est utilisée.';
                     }
 
-                    if (wiket.defaultGroup.id !== this.currentEvent.defaultGroup_id
-                        && !this.currentEvent.useGroups) {
-                        wiket.warning = 'Un groupe par défaut autre que<br />celui de l`événement est utilisé.';
+                    if (
+                        wiket.defaultGroup.id !== this.currentEvent.defaultGroup_id &&
+                        !this.currentEvent.useGroups
+                    ) {
+                        wiket.warning =
+                            'Un groupe par défaut autre que<br />celui de l`événement est utilisé.';
                     }
 
                     return wiket;
@@ -129,9 +126,11 @@ export default {
         },
 
         disabledAdd() {
-            return (!this.wiket.period && this.currentEvent.usePeriods)
-                || (!this.wiket.defaultGroup && this.currentEvent.useGroups)
-                || !this.wiket.device;
+            return (
+                (!this.wiket.period && this.currentEvent.usePeriods) ||
+                (!this.wiket.defaultGroup && this.currentEvent.useGroups) ||
+                !this.wiket.device
+            );
         }
     },
 

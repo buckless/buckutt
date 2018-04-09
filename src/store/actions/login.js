@@ -1,24 +1,37 @@
 import { post, updateBearer } from '../../lib/fetch';
-import { isAdmin }            from '../../lib/isAdmin.js';
+import { isAdmin } from '../../lib/isAdmin.js';
 
 /**
  * Home actions
  */
 
 export function login({ commit, dispatch }, credentials) {
-    return post('services/login', credentials)
-        .then((result) => {
-            if (!isAdmin(result.user)) {
-                return Promise.reject(new Error('You are not administrator'));
-            }
+    return post('services/login', credentials).then(result => {
+        if (!isAdmin(result.user)) {
+            return Promise.reject(new Error('You are not administrator'));
+        }
 
-            sessionStorage.setItem('user', JSON.stringify(result.user));
-            sessionStorage.setItem('token', result.token);
+        localStorage.setItem('user', JSON.stringify(result.user));
 
-            commit('UPDATELOGGEDUSER', result.user);
+        commit('UPDATELOGGEDUSER', result.user);
+        dispatch('setToken', result.token);
+        dispatch('load');
+    });
+}
 
-            updateBearer(result.token);
+export function setToken(_, token) {
+    updateBearer(token);
+    if (token) {
+        localStorage.setItem('token', token);
+    } else {
+        localStorage.removeItem('token');
+    }
+}
 
-            dispatch('load');
-        });
+export function logoutUser({ dispatch }) {
+    dispatch('clearAppStore');
+    dispatch('setToken');
+    dispatch('updateLoggedUser');
+    dispatch('closeSocket');
+    localStorage.clear();
 }

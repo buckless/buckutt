@@ -1,24 +1,24 @@
-import Webservices       from './Webservices.vue';
+import Webservices from './Webservices.vue';
 import WebservicesCreate from './WebservicesCreate.vue';
-import WebservicesList   from './WebservicesList.vue';
+import WebservicesList from './WebservicesList.vue';
 
-import WebserviceShow        from './webservice/WebserviceShow.vue';
+import WebserviceShow from './webservice/WebserviceShow.vue';
 import WebserviceShowDetails from './webservice/WebserviceShowDetails.vue';
-import WebserviceEditObject  from './webservice/WebserviceEditObject.vue';
+import WebserviceEditObject from './webservice/WebserviceEditObject.vue';
 
 export default [
     {
-        path     : '/webservices',
+        path: '/webservices',
         component: Webservices,
-        children : [
+        children: [
             { path: '', component: WebservicesList },
             { path: 'create', component: WebservicesCreate }
         ]
     },
     {
-        path     : '/webservices/:webservice',
+        path: '/webservices/:webservice',
         component: WebserviceShow,
-        children : [
+        children: [
             { path: '', component: WebserviceShowDetails },
             { path: 'edit', component: WebserviceEditObject }
         ]

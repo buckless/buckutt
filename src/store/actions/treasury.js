@@ -1,7 +1,7 @@
-import { get }             from '../../lib/fetch';
-import queryString         from '../../lib/queryString';
+import { get } from '../../lib/fetch';
+import queryString from '../../lib/queryString';
 import treasuryQueryString from '../../lib/treasuryQueryString';
-import routeToRelation     from '../../lib/routeToRelation';
+import routeToRelation from '../../lib/routeToRelation';
 
 /**
  * Purchases actions
@@ -10,17 +10,16 @@ import routeToRelation     from '../../lib/routeToRelation';
 export function getPurchases({ commit, dispatch }, fields) {
     const qString = treasuryQueryString(fields);
 
-    return get(`services/treasury/purchases?${qString}`)
-        .then((purchases) => {
-            commit('CLEAROBJECT', 'purchases');
-            const purchasesWT = purchases.map((purchase) => {
-                const newPurchase   = Object.assign({}, purchase);
-                newPurchase.totalWT = newPurchase.totalTI - newPurchase.totalVAT;
+    return get(`services/treasury/purchases?${qString}`).then(purchases => {
+        commit('CLEAROBJECT', 'purchases');
+        const purchasesWT = purchases.map(purchase => {
+            const newPurchase = Object.assign({}, purchase);
+            newPurchase.totalWT = newPurchase.totalTI - newPurchase.totalVAT;
 
-                return newPurchase;
-            });
-            dispatch('checkAndAddObjects', { route: 'purchases', objects: purchasesWT });
+            return newPurchase;
         });
+        dispatch('checkAndAddObjects', { route: 'purchases', objects: purchasesWT });
+    });
 }
 
 /**
@@ -33,32 +32,32 @@ export function getTreasury({ commit, dispatch }, fields) {
     if (fields.dateIn) {
         qt.push({
             field: 'created_at',
-            ge   : fields.dateIn,
-            date : true
+            ge: fields.dateIn,
+            date: true
         });
     }
 
     if (fields.dateOut) {
         qt.push({
             field: 'created_at',
-            le   : fields.dateOut,
-            date : true
+            le: fields.dateOut,
+            date: true
         });
     }
 
     const qString = treasuryQueryString(fields);
-    let orQt      = queryString(qt);
+    let orQt = queryString(qt);
 
     if (orQt) {
         orQt = `&q=${orQt}`;
     }
 
     return get(`services/treasury/reloads?${qString}`)
-        .then((reloads) => {
+        .then(reloads => {
             commit('CLEAROBJECT', 'reloads');
-            const idReloads = reloads.map((reload) => {
+            const idReloads = reloads.map(reload => {
                 const newReload = Object.assign({}, reload);
-                newReload.id    = newReload.type;
+                newReload.id = newReload.type;
 
                 return newReload;
             });
@@ -67,11 +66,11 @@ export function getTreasury({ commit, dispatch }, fields) {
 
             return get(`services/treasury/refunds?${qString}`);
         })
-        .then((refunds) => {
+        .then(refunds => {
             commit('CLEAROBJECT', 'refunds');
-            const idRefunds = refunds.map((refund) => {
+            const idRefunds = refunds.map(refund => {
                 const newRefund = Object.assign({}, refund);
-                newRefund.id    = newRefund.type;
+                newRefund.id = newRefund.type;
 
                 return newRefund;
             });
@@ -82,7 +81,7 @@ export function getTreasury({ commit, dispatch }, fields) {
 
             return get(`transfers?embed=${relEmbed}${orQt}`);
         })
-        .then((transfers) => {
+        .then(transfers => {
             commit('CLEAROBJECT', 'transfers');
             dispatch('checkAndAddObjects', { route: 'transfers', objects: transfers });
         });

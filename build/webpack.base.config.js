@@ -1,6 +1,7 @@
 const path    = require('path');
 const webpack = require('webpack');
 const utils   = require('./utils');
+const appConfig = require('../config');
 
 module.exports = {
     entry: utils.resolve('./src/main.js'),
@@ -57,7 +58,8 @@ module.exports = {
         historyApiFallback: true,
         hot: true,
         port: 8082,
-        publicPath: '/'
+        publicPath: '/',
+        public: appConfig.url ? JSON.parse(appConfig.url) : ''
     },
     devtool: '#eval-source-map',
     plugins: [

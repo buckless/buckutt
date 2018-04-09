@@ -1,5 +1,3 @@
 import Dashboard from './Dashboard.vue';
 
-export default [
-    { path: '/stats', component: Dashboard }
-];
+export default [{ path: '/stats', component: Dashboard }];

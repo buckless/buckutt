@@ -13,43 +13,41 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'updateCreationData'
-        ])
+        ...mapActions(['updateCreationData'])
     },
 
     computed: {
         ...mapState({
-            focusedUser : state => state.app.focusedElements[0],
+            focusedUser: state => state.app.focusedElements[0],
             creationData: state => state.app.creationData
         }),
 
         elements() {
             const baseElements = [
                 {
-                    icon   : 'person',
-                    title  : 'Nom',
+                    icon: 'person',
+                    title: 'Nom',
                     content: this.focusedUser.lastname
                 },
                 {
-                    icon   : 'person',
-                    title  : 'Prénom',
+                    icon: 'person',
+                    title: 'Prénom',
                     content: this.focusedUser.firstname
                 },
                 {
-                    icon   : 'person',
-                    title  : 'Surnom',
+                    icon: 'person',
+                    title: 'Surnom',
                     content: this.focusedUser.nickname
                 },
                 {
-                    icon   : 'email',
-                    title  : 'Adresse mail',
+                    icon: 'email',
+                    title: 'Adresse mail',
                     content: this.focusedUser.mail
                 },
                 {
-                    icon   : 'attach_money',
-                    type   : 'price',
-                    title  : 'Solde',
+                    icon: 'attach_money',
+                    type: 'price',
+                    title: 'Solde',
                     content: this.focusedUser.credit
                 }
             ];

@@ -43,16 +43,16 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { saveAs }          from 'file-saver';
-import { download }        from '../../lib/fetch';
+import { saveAs } from 'file-saver';
+import { download } from '../../lib/fetch';
 import treasuryQueryString from '../../lib/treasuryQueryString';
 import '../../lib/price';
 
 const fieldsPattern = {
-    point    : null,
+    point: null,
     fundation: null,
-    dateIn   : null,
-    dateOut  : null
+    dateIn: null,
+    dateOut: null
 };
 
 export default {
@@ -90,45 +90,46 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['notify', 'notifyError']),
 
         exportPurchases() {
             const inputFields = JSON.parse(JSON.stringify(this.fields));
-            let isFilled      = false;
+            let isFilled = false;
 
-            Object.keys(inputFields).forEach((key) => {
+            Object.keys(inputFields).forEach(key => {
                 if (inputFields[key]) {
                     isFilled = true;
                 }
             });
 
-            if (!isFilled
-                || (inputFields.dateIn && !inputFields.dateOut)
-                || (!inputFields.dateIn && inputFields.dateOut)) {
+            if (
+                !isFilled ||
+                (inputFields.dateIn && !inputFields.dateOut) ||
+                (!inputFields.dateIn && inputFields.dateOut)
+            ) {
                 return this.notifyError({ message: 'Vous devez choisir au moins un filtre' });
             }
 
             inputFields.event = this.currentEvent;
-            const qString     = treasuryQueryString(inputFields);
+            const qString = treasuryQueryString(inputFields);
 
             download(`services/treasury/csv/purchases?${qString}`)
-                .then((result) => {
-                    const currentTime =  Math.floor(Date.now() / 1000);
+                .then(result => {
+                    const currentTime = Math.floor(Date.now() / 1000);
                     this.notify({ message: 'Le téléchargement du document va commencer...' });
                     saveAs(result, `treasury-purchases-${currentTime}.csv`);
                 })
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la génération des données',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la génération des données',
+                        full: err
+                    })
+                );
         },
 
         fillDates(period) {
             if (period) {
-                this.fields.dateIn  = new Date(period.start);
+                this.fields.dateIn = new Date(period.start);
                 this.fields.dateOut = new Date(period.end);
             }
         }

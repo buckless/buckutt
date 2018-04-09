@@ -5,11 +5,7 @@ export function parsePrice(price, divide) {
         return '0.00€';
     }
 
-    const newCredit = (
-        divide
-            ? (price / 100)
-            : price
-    ).toFixed(2);
+    const newCredit = (divide ? price / 100 : price).toFixed(2);
 
     return `${newCredit}€`;
 }

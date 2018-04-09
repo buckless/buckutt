@@ -25,29 +25,24 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 
 const userRightPattern = {
-    name  : null,
-    point : null,
+    name: null,
+    point: null,
     period: null
 };
 
 export default {
     data() {
         return {
-            rightsList: ['admin', 'seller', 'reloader', 'assigner'],
-            userRight : Object.assign({}, userRightPattern)
+            rightsList: ['admin', 'seller', 'reloader', 'assigner', 'controller'],
+            userRight: Object.assign({}, userRightPattern)
         };
     },
 
     methods: {
-        ...mapActions([
-            'removeObject',
-            'createObject',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['removeObject', 'createObject', 'notify', 'notifyError']),
 
         createUserRight(user, right) {
-            right.period = (this.currentEvent.usePeriods)
+            right.period = this.currentEvent.usePeriods
                 ? right.period
                 : this.currentEvent.defaultPeriod;
 
@@ -62,16 +57,17 @@ export default {
 
             right.user_id = user.id;
 
-            this
-                .createObject({
-                    route: 'rights',
-                    value: right
-                })
+            this.createObject({
+                route: 'rights',
+                value: right
+            })
                 .then(() => this.notify({ message: 'Le droit a bien été créé' }))
-                .catch(err => this.notifyError({
-                    message: 'Une erreur a eu lieu lors de la création du droit',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la création du droit',
+                        full: err
+                    })
+                );
 
             this.userRight = Object.assign({}, userRightPattern);
         }
@@ -79,15 +75,11 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent      : state => state.app.currentEvent,
+            currentEvent: state => state.app.currentEvent,
             focusedParticipant: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters([
-            'periodOptions',
-            'currentPeriodOptions',
-            'pointOptions'
-        ]),
+        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'pointOptions']),
 
         displayedColumns() {
             const columns = [
@@ -104,14 +96,16 @@ export default {
 
         displayedRights() {
             return (this.focusedParticipant.rights || [])
-                .filter(right => (right.period.event_id === this.currentEvent.id))
-                .map((right) => {
+                .filter(right => right.period.event_id === this.currentEvent.id)
+                .map(right => {
                     if (!right.point) {
                         right.point = { name: 'Aucun' };
                     }
 
-                    if (right.period.id !== this.currentEvent.defaultPeriod_id
-                        && !this.currentEvent.usePeriods) {
+                    if (
+                        right.period.id !== this.currentEvent.defaultPeriod_id &&
+                        !this.currentEvent.usePeriods
+                    ) {
                         right.warning = 'Une période autre que<br />celle par défaut est utilisée.';
                     }
 
@@ -120,7 +114,7 @@ export default {
         },
 
         disabledAdd() {
-            return (!this.userRight.name || (!this.userRight.period && this.currentEvent.usePeriods));
+            return !this.userRight.name || (!this.userRight.period && this.currentEvent.usePeriods);
         }
     }
 };

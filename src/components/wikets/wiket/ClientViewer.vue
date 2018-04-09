@@ -21,7 +21,7 @@
             </div>
             <div class="b-clientviewer__sidebar">
                 <b-confirm @confirm="unlinkCategory()">
-                    <mdl-button class="mdl-js-ripple-effect" accent>Enlever la catégorie du guichet</mdl-button>
+                    Enlever la catégorie du guichet
                 </b-confirm>
                 <div class="b-clientviewer__promotions" v-if="tabPromotions.length > 0">
                     <div>
@@ -42,52 +42,49 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import ClientItem      from './ClientViewer-Item';
+import ClientItem from './ClientViewer-Item';
 import ClientPromotion from './ClientViewer-Promotion';
-import sortOrder       from '../../../lib/sortOrder';
+import sortOrder from '../../../lib/sortOrder';
 
 export default {
     components: {
-        'b-clientitem'     : ClientItem,
+        'b-clientitem': ClientItem,
         'b-clientpromotion': ClientPromotion
     },
 
     methods: {
-        ...mapActions([
-            'removeRelation',
-            'notify',
-            'notifyError'
-        ]),
+        ...mapActions(['removeRelation', 'notify', 'notifyError']),
 
         unlinkCategory() {
-            this
-                .removeRelation({
-                    obj1: {
-                        route: 'categories',
-                        value: this.focusedCategory
-                    },
-                    obj2: {
-                        route: 'points',
-                        value: this.focusedPoint
-                    }
-                })
+            this.removeRelation({
+                obj1: {
+                    route: 'categories',
+                    value: this.focusedCategory
+                },
+                obj2: {
+                    route: 'points',
+                    value: this.focusedPoint
+                }
+            })
                 .then(() => {
                     this.notify({ message: 'La catégorie a bien été supprimée du guichet' });
                     this.$router.push(this.addPath);
                 })
-                .catch(err => this.notifyError({
-                    message: 'La catégorie n\'a pas pu être supprimée du guichet',
-                    full   : err
-                }));
+                .catch(err =>
+                    this.notifyError({
+                        message: "La catégorie n'a pas pu être supprimée du guichet",
+                        full: err
+                    })
+                );
         }
     },
 
     computed: {
         ...mapState({
-            focusedPoint   : state => state.app.focusedElements[0],
+            focusedPoint: state => state.app.focusedElements[0],
             focusedCategory: state => state.app.focusedElements[1],
-            promotions     : state => state.objects.promotions,
-            fullPath       : state => state.route.fullPath
+            promotions: state => state.objects.promotions,
+            fullPath: state => state.route.fullPath
         }),
 
         tabArticles() {
@@ -97,11 +94,12 @@ export default {
                 return [];
             }
 
-            const fullArticles = category.articles
-                .map(article => ({
-                    ...article,
-                    prices: (article.prices || []).filter(price => price.point_id === this.focusedPoint.id)
-                }));
+            const fullArticles = category.articles.map(article => ({
+                ...article,
+                prices: (article.prices || []).filter(
+                    price => price.point_id === this.focusedPoint.id
+                )
+            }));
 
             return [].concat(
                 fullArticles
@@ -114,33 +112,36 @@ export default {
         },
 
         tabPromotions() {
-            const pointArticles = (this.focusedPoint.categories || [])
-                .reduce((a, b) => a.concat(b.articles), []);
+            const pointArticles = (this.focusedPoint.categories || []).reduce(
+                (a, b) => a.concat(b.articles),
+                []
+            );
 
             const fullPromotions = this.promotions
-                .filter((promotion) => {
+                .filter(promotion => {
                     if (!promotion.sets) {
                         return true;
                     }
 
-                    const toReduce = promotion.sets
-                        .map((set) => {
-                            let match = false;
+                    const toReduce = promotion.sets.map(set => {
+                        let match = false;
 
-                            set.articles.forEach((article) => {
-                                if (pointArticles.some(a => a.id === article.id)) {
-                                    match = true;
-                                }
-                            });
-
-                            return match;
+                        set.articles.forEach(article => {
+                            if (pointArticles.some(a => a.id === article.id)) {
+                                match = true;
+                            }
                         });
 
-                    return toReduce.reduce((a, b) => a && b, (toReduce.length > 0));
+                        return match;
+                    });
+
+                    return toReduce.reduce((a, b) => a && b, toReduce.length > 0);
                 })
                 .map(promotion => ({
                     ...promotion,
-                    prices: (promotion.prices || []).filter(price => price.point_id === this.focusedPoint.id)
+                    prices: (promotion.prices || []).filter(
+                        price => price.point_id === this.focusedPoint.id
+                    )
                 }));
 
             return [].concat(
@@ -158,17 +159,13 @@ export default {
         },
 
         addPath() {
-            const wiketPath = this.splitedPath
-                .slice(0, 3)
-                .join('/');
+            const wiketPath = this.splitedPath.slice(0, 3).join('/');
 
             return `${wiketPath}/category/add`;
         },
 
         categoryPath() {
-            return this.splitedPath
-                .slice(0, 5)
-                .join('/');
+            return this.splitedPath.slice(0, 5).join('/');
         },
 
         addArticleLink() {
@@ -183,58 +180,75 @@ export default {
 </script>
 
 <style>
-    @import '../../../styles/item.css';
+@import '../../../styles/item.css';
 
-    .b-clientviewer {
-        & > .b-clientviewer__panel {
-            border-bottom: 1px solid #E0E0E0;
-            margin: 0px -20px 10px -20px;
-            padding: 0px 20px 10px 20px;
+.b-clientviewer {
+    & > .b-clientviewer__panel {
+        border-bottom: 1px solid #e0e0e0;
+        margin: 0px -20px 10px -20px;
+        padding: 0px 20px 10px 20px;
+    }
+
+    & > .b-clientviewer__items {
+        display: flex;
+
+        & > .b-clientviewer__articles {
+            align-content: flex-start;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+            overflow-y: auto;
+            padding: 10px;
+            flex: 1;
         }
 
-        & > .b-clientviewer__items {
+        & > .b-clientviewer__sidebar {
+            border-left: 1px solid #e0e0e0;
             display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            width: 20%;
+            margin: -10px -20px -20px 0px;
+            padding: 20px 0px 0px 0px;
 
-            & > .b-clientviewer__articles {
-                align-content: flex-start;
-                box-sizing: border-box;
-                display: flex;
-                flex-wrap: wrap;
-                overflow-y: auto;
-                padding: 10px;
-                flex: 1;
-            }
+            & > div:first-child {
+                width: 100%;
+                text-align: center;
 
-            & > .b-clientviewer__sidebar {
-                border-left: 1px solid #E0E0E0;
-                display: flex;
-                flex-direction: column;
-                overflow-y: auto;
-                width: 20%;
-                margin: -10px -20px -20px 0px;
-                padding: 20px 0px 0px 0px;
-
-                & > div:first-child {
+                & > span {
+                    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+                    height: 36px;
+                    text-transform: uppercase;
+                    color: #f84f93;
+                    cursor: pointer;
+                    padding: 5px 5px;
+                    display: block;
+                    height: 100%;
                     width: 100%;
-                    text-align: center;
+                    font-size: 15px;
                 }
 
-                & > .b-clientviewer__promotions {
-                    border-top: 1px solid #E0E0E0;
-                    margin: 10px 0px 0px -20px;
-                    padding: 10px 0px 10px 40px;
+                & > span:hover {
+                    background-color: #ebebeb;
+                }
+            }
 
-                    & > div:first-child {
-                        display: flex;
-                        align-items: center;
+            & > .b-clientviewer__promotions {
+                border-top: 1px solid #e0e0e0;
+                margin: 10px 0px 0px -20px;
+                padding: 10px 0px 10px 40px;
 
-                        & > i {
-                            margin-left: 5px;
-                            margin-bottom: 2px;
-                        }
+                & > div:first-child {
+                    display: flex;
+                    align-items: center;
+
+                    & > i {
+                        margin-left: 5px;
+                        margin-bottom: 2px;
                     }
                 }
             }
         }
     }
+}
 </style>

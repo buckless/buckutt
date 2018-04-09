@@ -1,14 +1,11 @@
-import Alerts       from './Alerts.vue';
+import Alerts from './Alerts.vue';
 import AlertsCreate from './AlertsCreate.vue';
-import AlertsList   from './AlertsList.vue';
+import AlertsList from './AlertsList.vue';
 
 export default [
     {
-        path     : '/alerts',
+        path: '/alerts',
         component: Alerts,
-        children : [
-            { path: '', component: AlertsList },
-            { path: 'create', component: AlertsCreate }
-        ]
+        children: [{ path: '', component: AlertsList }, { path: 'create', component: AlertsCreate }]
     }
 ];

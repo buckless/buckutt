@@ -6,8 +6,8 @@ import { post } from '../../lib/fetch';
 
 export function addStepToPromotion({ dispatch }, data) {
     return dispatch('createSetWithArticles', {
-        set      : {},
-        articles : data.articles,
+        set: {},
+        articles: data.articles,
         promotion: data.promotion
     });
 }
@@ -22,13 +22,12 @@ export function removeSetFromPromotion({ dispatch }, data) {
             route: 'sets',
             value: data.set
         }
-    })
-        .then(() => dispatch('removeObject', { route: 'sets', value: data.set }));
+    }).then(() => dispatch('removeObject', { route: 'sets', value: data.set }));
 }
 
 export function addArticleToStep({ dispatch }, data) {
     const article = data.article;
-    const step    = data.step;
+    const step = data.step;
 
     const articlesIds = step.set.articles.map(a => a.id);
 
@@ -38,22 +37,23 @@ export function addArticleToStep({ dispatch }, data) {
 
     return dispatch('addArticleToSet', {
         article,
-        set      : step.set,
+        set: step.set,
         promotion: data.promotion
     });
 }
 
 export function removeArticleFromStep({ dispatch }, data) {
-    const article   = data.article;
+    const article = data.article;
     const promotion = data.promotion;
-    const step      = data.step;
+    const step = data.step;
 
     if (step.set.articles.length > 1) {
         return dispatch('removeArticleFromSet', { article, promotion, set: step.set });
     }
 
-    return dispatch('removeArticleFromSet', { article, promotion, set: step.set })
-        .then(() => dispatch('removeSetFromPromotion', { promotion, set: step.set }));
+    return dispatch('removeArticleFromSet', { article, promotion, set: step.set }).then(() =>
+        dispatch('removeSetFromPromotion', { promotion, set: step.set })
+    );
 }
 
 /**
@@ -62,31 +62,29 @@ export function removeArticleFromStep({ dispatch }, data) {
  */
 
 export function createSetWithArticles({ commit, dispatch }, payload) {
-    const set       = payload.set;
-    const articles  = payload.articles;
+    const set = payload.set;
+    const articles = payload.articles;
     const promotion = payload.promotion;
 
-    return post('sets', set)
-        .then((result) => {
-            dispatch('checkAndAddObjects', { route: 'sets', objects: [result] });
+    return post('sets', set).then(result => {
+        dispatch('checkAndAddObjects', { route: 'sets', objects: [result] });
 
-            post(`sets/${result.id}/promotions/${promotion.id}`)
-                .catch((err) => {
-                    commit('UPDATEAPIERROR', err);
-                });
-
-            articles.forEach((article) => {
-                post(`sets/${result.id}/articles/${article.id}`);
-            });
-
-            return dispatch('updateDeepestFocusedElement', {
-                newRelation: 'sets',
-                value      : {
-                    id: result.id,
-                    articles
-                }
-            });
+        post(`sets/${result.id}/promotions/${promotion.id}`).catch(err => {
+            commit('UPDATEAPIERROR', err);
         });
+
+        articles.forEach(article => {
+            post(`sets/${result.id}/articles/${article.id}`);
+        });
+
+        return dispatch('updateDeepestFocusedElement', {
+            newRelation: 'sets',
+            value: {
+                id: result.id,
+                articles
+            }
+        });
+    });
 }
 
 export function addArticleToSet({ dispatch }, payload) {
@@ -94,7 +92,7 @@ export function addArticleToSet({ dispatch }, payload) {
 
     dispatch('updateDeepestFocusedElement', {
         newRelation: `sets[${index}].articles`,
-        value      : payload.article
+        value: payload.article
     });
 
     return dispatch('createRelation', {
@@ -110,11 +108,11 @@ export function addArticleToSet({ dispatch }, payload) {
 }
 
 export function removeArticleFromSet({ dispatch }, payload) {
-    const index = payload.promotion.sets.findIndex(s => (s.id === payload.set.id));
+    const index = payload.promotion.sets.findIndex(s => s.id === payload.set.id);
 
     dispatch('updateDeepestFocusedElement', {
         delRelation: `sets[${index}].articles`,
-        value      : payload.article
+        value: payload.article
     });
 
     return dispatch('removeRelation', {

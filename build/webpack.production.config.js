@@ -3,7 +3,8 @@ const merge             = require('webpack-merge');
 const utils             = require('./utils');
 const base              = require('./webpack.base.config');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Visualizer        = require('webpack-visualizer-plugin');
 
 module.exports = merge(base, {
     output: {
@@ -16,6 +17,7 @@ module.exports = merge(base, {
     },
     devtool: false,
     plugins: [
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new webpack.DefinePlugin({
             'process.env': { NODE_ENV: '"production"' },
             'config': require('../config')
@@ -34,6 +36,13 @@ module.exports = merge(base, {
                 collapseWhitespace   : true,
                 removeAttributeQuotes: true
             }
-        })
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            },
+            sourceMap: true
+        }),
+        new Visualizer()
     ]
 });
