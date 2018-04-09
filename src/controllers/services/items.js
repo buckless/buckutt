@@ -1,7 +1,7 @@
-const express       = require('express');
-const APIError      = require('../../errors/APIError');
+const express = require('express');
+const APIError = require('../../errors/APIError');
 const rightsDetails = require('../../lib/rightsDetails');
-const dbCatch       = require('../../lib/dbCatch');
+const dbCatch = require('../../lib/dbCatch');
 
 const router = new express.Router();
 
@@ -17,7 +17,7 @@ router.get('/services/items', (req, res, next) => {
             return res
                 .status(200)
                 .json({
-                    articles  : [],
+                    articles: [],
                     promotions: []
                 })
                 .end();
@@ -27,14 +27,13 @@ router.get('/services/items', (req, res, next) => {
     }
 
     const models = req.app.locals.models;
-    const now    = new Date();
+    const now = new Date();
 
-    models.MeanOfLogin
-        .where({
-            type   : req.query.molType,
-            data   : req.query.buyer,
-            blocked: false
-        })
+    models.MeanOfLogin.where({
+        type: req.query.molType,
+        data: req.query.buyer,
+        blocked: false
+    })
         .fetch({
             withRelated: [
                 'user',
@@ -43,36 +42,34 @@ router.get('/services/items', (req, res, next) => {
                 'user.purchases.price',
                 'user.purchases.price.period',
                 {
-                    'user.memberships.period': query => query
-                        .where('start', '<=', now)
-                        .where('end', '>=', now)
+                    'user.memberships.period': query =>
+                        query.where('start', '<=', now).where('end', '>=', now)
                 },
                 'user.memberships.period.event'
             ]
         })
-        .then(mol => ((mol) ? mol.toJSON() : null))
-        .then((mol) => {
+        .then(mol => (mol ? mol.toJSON() : null))
+        .then(mol => {
             if (!mol || !mol.user.id) {
                 return next(new APIError(module, 404, 'Buyer not found'));
             }
 
             const buyer = mol.user;
 
-            req.buyer          = buyer;
-            req.buyer.pin      = '';
+            req.buyer = buyer;
+            req.buyer.pin = '';
             req.buyer.password = '';
 
-            req.groups         = req.buyer.memberships
+            req.groups = req.buyer.memberships
                 .filter(membership => membership.period.id && membership.period.event.id)
                 .map(membership => membership.group_id);
-
 
             if (req.groups.length === 0) {
                 return res
                     .status(200)
                     .json({
-                        buyer     : req.buyer,
-                        articles  : [],
+                        buyer: req.buyer,
+                        articles: [],
                         promotions: []
                     })
                     .end();
@@ -84,21 +81,18 @@ router.get('/services/items', (req, res, next) => {
 });
 
 router.get('/services/items', (req, res, next) => {
-    const models   = req.app.locals.models;
-    const now      = new Date();
-    let articles   = [];
+    const models = req.app.locals.models;
+    const now = new Date();
+    let articles = [];
     let promotions = [];
 
-    models.Price
-        .query(price => price
-            .where('point_id', req.point.id)
-            .whereIn('group_id', req.groups))
+    models.Price.query(price =>
+        price.where('point_id', req.point.id).whereIn('group_id', req.groups)
+    )
         .fetchAll({
             withRelated: [
                 {
-                    period: query => query
-                        .where('start', '<=', now)
-                        .where('end', '>=', now)
+                    period: query => query.where('start', '<=', now).where('end', '>=', now)
                 },
                 'period.event',
                 'point',
@@ -111,23 +105,22 @@ router.get('/services/items', (req, res, next) => {
                 'article.categories.points'
             ]
         })
-        .then(prices => ((prices) ? prices.toJSON() : null))
+        .then(prices => (prices ? prices.toJSON() : null))
         .filter(price => price.period.id && price.point.id && price.fundation.id)
-        .then((prices) => {
-            prices.forEach((price) => {
+        .then(prices => {
+            prices.forEach(price => {
                 if (price.promotion && price.promotion.id) {
-                    const promotionSets = price.promotion.sets
-                        .map(set => ({
-                            id      : set.id,
-                            name    : set.name,
-                            articles: set.articles
-                        }));
+                    const promotionSets = price.promotion.sets.map(set => ({
+                        id: set.id,
+                        name: set.name,
+                        articles: set.articles
+                    }));
 
                     promotions.push({
-                        id   : price.promotion.id,
-                        name : price.promotion.name,
+                        id: price.promotion.id,
+                        name: price.promotion.name,
                         price: {
-                            id    : price.id,
+                            id: price.id,
                             amount: price.amount
                         },
                         sets: promotionSets
@@ -138,19 +131,19 @@ router.get('/services/items', (req, res, next) => {
                     const matchReqPoint = point => point.id === req.point.id;
                     price.article.categories
                         .filter(cat => cat.points.some(matchReqPoint))
-                        .forEach((category) => {
+                        .forEach(category => {
                             articles.push({
-                                id     : price.article.id,
-                                name   : price.article.name,
-                                vat    : price.article.vat,
+                                id: price.article.id,
+                                name: price.article.name,
+                                vat: price.article.vat,
                                 alcohol: price.article.alcohol,
-                                price  : {
-                                    id    : price.id,
+                                price: {
+                                    id: price.id,
                                     amount: price.amount
                                 },
                                 category: {
-                                    id      : category.id,
-                                    name    : category.name,
+                                    id: category.id,
+                                    name: category.name,
                                     priority: category.priority
                                 }
                             });
@@ -160,23 +153,28 @@ router.get('/services/items', (req, res, next) => {
 
             // Keep the lowest price (by category) for each article and promotion
             articles = articles
-                .sort((a, b) => (a.price.amount - b.price.amount))
-                .filter((article, i, initialArticles) => (
-                    i === initialArticles.findIndex(article2 =>
-                        article.id === article2.id &&
-                        article.category.id === article2.category.id)
-                ));
+                .sort((a, b) => a.price.amount - b.price.amount)
+                .filter(
+                    (article, i, initialArticles) =>
+                        i ===
+                        initialArticles.findIndex(
+                            article2 =>
+                                article.id === article2.id &&
+                                article.category.id === article2.category.id
+                        )
+                );
 
             promotions = promotions
-                .sort((a, b) => (a.price.amount - b.price.amount))
-                .filter((promotion, i, initialPromotion) => (
-                    i === initialPromotion.findIndex(promotion2 => promotion.id === promotion2.id)
-                ));
-
+                .sort((a, b) => a.price.amount - b.price.amount)
+                .filter(
+                    (promotion, i, initialPromotion) =>
+                        i ===
+                        initialPromotion.findIndex(promotion2 => promotion.id === promotion2.id)
+                );
 
             // Get the displayed price of a single article inside a promotion
-            promotions = promotions.map((promotion) => {
-                promotion.sets = promotion.sets.map((set) => {
+            promotions = promotions.map(promotion => {
+                promotion.sets = promotion.sets.map(set => {
                     set.articles = set.articles
                         .map(article => articles.find(a => a.id === article.id))
                         .filter(article => article);

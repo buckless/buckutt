@@ -1,7 +1,7 @@
 const config = require('../../config');
 
 module.exports = (user, pointId) => {
-    const now    = new Date();
+    const now = new Date();
     const result = { canSell: false, canReload: false, canAssign: false };
 
     /* istanbul ignore if */
@@ -10,8 +10,7 @@ module.exports = (user, pointId) => {
     }
 
     for (const right of user.rights) {
-        if (right.period.start <= now && right.period.end > now &&
-            right.point_id === pointId) {
+        if (right.period.start <= now && right.period.end > now && right.point_id === pointId) {
             const configRight = config.rights[right.name];
 
             if (configRight && configRight.canSell) {

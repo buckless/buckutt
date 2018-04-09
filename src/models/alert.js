@@ -1,10 +1,10 @@
-module.exports = (bookshelf) => {
+module.exports = bookshelf => {
     const name = 'Alert';
     const Model = bookshelf.Model.extend({
-        tableName    : 'alerts',
+        tableName: 'alerts',
         hasTimestamps: true,
-        uuid         : true,
-        softDelete   : true,
+        uuid: true,
+        softDelete: true,
 
         event() {
             return this.belongsTo('Event');

@@ -1,8 +1,8 @@
-const bcrypt_  = require('bcryptjs');
-const express  = require('express');
-const Promise  = require('bluebird');
-const logger   = require('../../../lib/log');
-const dbCatch  = require('../../../lib/dbCatch');
+const bcrypt_ = require('bcryptjs');
+const express = require('express');
+const Promise = require('bluebird');
+const logger = require('../../../lib/log');
+const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
 
 const log = logger(module);
@@ -23,10 +23,9 @@ router.post('/services/manager/transfer', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid reciever', { receiver: req.reciever_id }));
     }
 
-    req.app.locals.models.User
-        .where({ id: req.reciever_id })
+    req.app.locals.models.User.where({ id: req.reciever_id })
         .fetch()
-        .then((user) => {
+        .then(user => {
             if (!user) {
                 return next(new APIError(module, 400, 'Invalid reciever'));
             }
@@ -46,14 +45,13 @@ router.post('/services/manager/transfer', (req, res, next) => {
         return next(new APIError(module, 400, 'Current PIN has to be clear, not crypted'));
     }
 
-    bcrypt.compareAsync(req.body.currentPin.toString(), req.user.pin)
-        .then((match) => {
-            if (match) {
-                next();
-            } else {
-                next(new APIError(module, 400, 'Current PIN is wrong'));
-            }
-        });
+    bcrypt.compareAsync(req.body.currentPin.toString(), req.user.pin).then(match => {
+        if (match) {
+            next();
+        } else {
+            next(new APIError(module, 400, 'Current PIN is wrong'));
+        }
+    });
 });
 
 router.post('/services/manager/transfer', (req, res, next) => {
@@ -62,19 +60,23 @@ router.post('/services/manager/transfer', (req, res, next) => {
     const amount = parseInt(req.body.amount, 10);
 
     if (req.user.credit - amount < 0) {
-        return next(new APIError(module, 400, 'Not enough sender credit', {
-            sender: req.sender_id,
-            credit: req.user.credit,
-            amount
-        }));
+        return next(
+            new APIError(module, 400, 'Not enough sender credit', {
+                sender: req.sender_id,
+                credit: req.user.credit,
+                amount
+            })
+        );
     }
 
     if (req.recieverUser.credit + amount > 100 * 100) {
-        return next(new APIError(module, 400, 'Too much reciever credit', {
-            receiver: req.reciever_id,
-            credit  : req.user.credit,
-            amount
-        }));
+        return next(
+            new APIError(module, 400, 'Too much reciever credit', {
+                receiver: req.reciever_id,
+                credit: req.user.credit,
+                amount
+            })
+        );
     }
 
     if (req.user.id === req.recieverUser.id) {
@@ -93,7 +95,7 @@ router.post('/services/manager/transfer', (req, res, next) => {
 
     const updateSender = new models.PendingCardUpdate({
         user_id: req.user.id,
-        amount : -1 * amount
+        amount: -1 * amount
     });
 
     const updateReciever = new models.PendingCardUpdate({
@@ -101,20 +103,15 @@ router.post('/services/manager/transfer', (req, res, next) => {
         amount
     });
 
-    return Promise
-        .all([
-            updateSender.save(),
-            updateReciever.save(),
-            newTransfer.save()
-        ])
+    return Promise.all([updateSender.save(), updateReciever.save(), newTransfer.save()])
         .then(() => {
             req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id     : req.user.id,
+                id: req.user.id,
                 pending: -1 * amount
             });
 
             req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id     : req.recieverUser.id,
+                id: req.recieverUser.id,
                 pending: amount
             });
 

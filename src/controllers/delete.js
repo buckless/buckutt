@@ -1,8 +1,8 @@
-const express     = require('express');
-const idParser    = require('../lib/idParser');
-const logger      = require('../lib/log');
+const express = require('express');
+const idParser = require('../lib/idParser');
+const logger = require('../lib/log');
 const modelParser = require('../lib/modelParser');
-const dbCatch     = require('../lib/dbCatch');
+const dbCatch = require('../lib/dbCatch');
 
 const log = logger(module);
 
@@ -17,7 +17,7 @@ router.delete('/:model/:id', (req, res, next) => {
     // First, get the model
     new req.Model({ id: req.params.id })
         .destroy()
-        .then((inst) => {
+        .then(inst => {
             req.app.locals.modelChanges.emit(
                 'data',
                 'delete',

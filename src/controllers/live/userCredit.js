@@ -13,7 +13,7 @@ module.exports = {
     route: 'userCredit',
 
     setup(app, clients) {
-        app.locals.modelChanges.on('userCreditUpdate', (update) => {
+        app.locals.modelChanges.on('userCreditUpdate', update => {
             // update has : id, credit, update
             send(clients, update.id, update);
         });

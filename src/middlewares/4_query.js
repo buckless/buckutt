@@ -1,11 +1,11 @@
 const APIError = require('../errors/APIError');
 
 const types = {
-    q     : 'object',
-    or    : 'object',
-    embed : 'object',
+    q: 'object',
+    or: 'object',
+    embed: 'object',
     filter: 'object',
-    limit : 'number',
+    limit: 'number',
     offset: 'number'
 };
 
@@ -27,7 +27,9 @@ module.exports = function query(connector) {
                 try {
                     connector.query[q] = interpolater(connector.query[q]);
                 } catch (e) {
-                    return Promise.reject(new APIError(module, 400, 'Bad Input', `Invalid query ${q}`));
+                    return Promise.reject(
+                        new APIError(module, 400, 'Bad Input', `Invalid query ${q}`)
+                    );
                 }
             }
         }
