@@ -8,7 +8,8 @@ const APIError = require('../errors/APIError');
 module.exports = connector => {
     let event;
 
-    return bookshelf.knex('events')
+    return bookshelf
+        .knex('events')
         .limit(1)
         .then(res => (res ? res[0] : null))
         .then(event_ => {
