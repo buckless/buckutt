@@ -22,7 +22,7 @@ router.post('/services/manager/reload', (req, res, next) => {
 
     if (
         req.event.maxPerAccount &&
-        req.buyer.credit + credit > req.event.maxPerAccount &&
+        req.buyer.credit + amount > req.event.maxPerAccount &&
         !req.event.useCardData
     ) {
         const max = (req.event.maxPerAccount / 100).toFixed(2);
