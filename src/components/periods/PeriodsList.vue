@@ -16,8 +16,8 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'end', order: 'DESC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNotIn', value: protectedPeriodsIds } },
-                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNotIn', value: protectedPeriodsIds } }
+                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id } },
+                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id } }
             ]"
             route="periods"
             :paging="10"
@@ -56,7 +56,7 @@ export default {
             periods: state => state.objects.periods
         }),
 
-        ...mapGetters(['protectedPeriodsIds', 'currentPeriods']),
+        ...mapGetters(['event', 'currentPeriods']),
 
         displayedPeriods() {
             return this.displayOutdated ? this.periods : this.currentPeriods;

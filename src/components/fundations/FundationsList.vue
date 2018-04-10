@@ -12,8 +12,8 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', condition: { field: 'id', statement: 'isNotIn', value: protectedFundationsIds } },
-                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNotIn', value: protectedFundationsIds }  }
+                { action: 'edit', text: 'Modifier', condition: { field: 'id', statement: 'isNot', value: event.defaultFundation_id } },
+                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.defaultFundation_id }  }
             ]"
             route="fundations"
             :paging="10"
@@ -46,7 +46,7 @@ export default {
             fundations: state => state.objects.fundations
         }),
 
-        ...mapGetters(['protectedFundationsIds'])
+        ...mapGetters(['event'])
     }
 };
 </script>
