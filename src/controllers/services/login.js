@@ -103,22 +103,28 @@ router.post('/services/login', (req, res, next) => {
             user.canAssign = userRights.assign;
             user.canControl = userRights.control;
 
+            const output = {
+                user,
+                token: jwt.sign(
+                    {
+                        id: user.id,
+                        point: req.point,
+                        event: req.event,
+                        // Will be used by middleware (else how could middleware know if pin or password ?)
+                        connectType
+                    },
+                    secret,
+                    tokenOptions
+                )
+            }
+
+            if (req.device.name === 'manager' || req.device.name === 'chrome') {
+                output.cardCost = req.event.cardCost;
+            }
+
             return res
                 .status(200)
-                .json({
-                    user,
-                    token: jwt.sign(
-                        {
-                            id: user.id,
-                            point: req.point,
-                            event: req.event,
-                            // Will be used by middleware (else how could middleware know if pin or password ?)
-                            connectType
-                        },
-                        secret,
-                        tokenOptions
-                    )
-                })
+                .json(output)
                 .end();
         })
         .catch(err => dbCatch(module, err, next));
