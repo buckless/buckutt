@@ -22,7 +22,6 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { isPointUsedByEvent } from './isPointUsedByEvent';
 
 const wiketPattern = {
     device: null,
@@ -49,13 +48,6 @@ export default {
             wiket.defaultPeriod = this.event.useGroups
                 ? wiket.defaultGroup
                 : this.event.defaultGroup;
-
-            if (isPointUsedByEvent(this.focusedPoint.wikets, wiket)) {
-                return this.notifyError({
-                    message:
-                        'Le guichet est déjà utilisé par un autre événement pendant cette période'
-                });
-            }
 
             const newWiket = {
                 point_id: wiket.point.id,
