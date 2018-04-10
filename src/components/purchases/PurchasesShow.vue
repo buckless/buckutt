@@ -4,10 +4,10 @@
         <form @submit.prevent="filter()">
             <div>
                 <b-inputselect label="Point" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect>
-                <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptionsAll" v-model="fields.fundation" v-if="currentEvent.useFundations"></b-inputselect>
+                <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptionsAll" v-model="fields.fundation" v-if="event.useFundations"></b-inputselect>
             </div>
             <div>
-                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-if="currentEvent.usePeriods" @input="fillDates"></b-inputselect>
+                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-if="event.usePeriods" @input="fillDates"></b-inputselect>
                 <b-datetime-picker
                     v-model="fields.dateIn"
                     locale="fr"
@@ -70,15 +70,15 @@ export default {
 
     computed: {
         ...mapState({
-            purchases: state => state.objects.purchases,
-            currentEvent: state => state.app.currentEvent
+            purchases: state => state.objects.purchases
         }),
 
         ...mapGetters([
             'periodOptions',
             'currentPeriodOptions',
             'pointOptions',
-            'fundationOptions'
+            'fundationOptions',
+            'event'
         ]),
 
         displayedPurchases() {
@@ -136,8 +136,6 @@ export default {
             ) {
                 return this.notifyError({ message: 'Vous devez choisir au moins un filtre' });
             }
-
-            inputFields.event = this.currentEvent;
 
             this.getPurchases(inputFields)
                 .then(() => this.notify({ message: 'Le calcul a été effectué avec succès' }))
