@@ -1,6 +1,6 @@
 <template>
     <div class="b-container" :class="{ 'b-container__display': !logged }">
-        <div class="b-container__login" v-if="!logged">
+        <div class="b-container__login">
             <div class="mdl-card mdl-shadow--2dp">
                 <div class="mdl-card__title">
                     <h2 class="mdl-card__title-text">Connexion</h2>
@@ -16,21 +16,13 @@
                 </form>
             </div>
         </div>
-        <div class="b-container__home b-page" v-else>
-            <b-loggedhome></b-loggedhome>
-        </div>
     </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import LoggedHome from './LoggedHome.vue';
 
 export default {
-    components: {
-        'b-loggedhome': LoggedHome
-    },
-
     data() {
         return {
             mail: null,
@@ -42,24 +34,26 @@ export default {
         ...mapActions(['login', 'notifyError']),
 
         log(mail, password) {
-            this.login({ meanOfLogin: config.defaultMol, data: mail, password }).catch(err => {
-                let message;
-                switch (err.message) {
-                    case 'You are not administrator':
-                        message = "Vous n'êtes pas administrateur";
-                        break;
-                    case 'Not Found':
-                        message = 'Utilisateur introuvable';
-                        break;
-                    case 'Unauthorized':
-                        message = "Vous n'êtes pas autorisé à vous connecter";
-                        break;
-                    default:
-                        message = 'Erreur inconnue';
-                }
+            this.login({ meanOfLogin: config.defaultMol, data: mail, password })
+                .then(() => this.$router.push('/stats'))
+                .catch(err => {
+                    let message;
+                    switch (err.message) {
+                        case 'You are not administrator':
+                            message = "Vous n'êtes pas administrateur";
+                            break;
+                        case 'Not Found':
+                            message = 'Utilisateur introuvable';
+                            break;
+                        case 'Unauthorized':
+                            message = "Vous n'êtes pas autorisé à vous connecter";
+                            break;
+                        default:
+                            message = 'Erreur inconnue';
+                    }
 
-                this.notifyError({ message, full: err });
-            });
+                    this.notifyError({ message, full: err });
+                });
         }
     },
 
@@ -69,6 +63,12 @@ export default {
         }),
 
         ...mapGetters(['logged'])
+    },
+
+    mounted() {
+        if (this.logged) {
+            this.$router.push('/stats');
+        }
     }
 };
 </script>
