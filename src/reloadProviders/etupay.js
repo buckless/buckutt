@@ -13,7 +13,8 @@ module.exports = {
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
-            user_id: data.buyer.id
+            user_id: data.buyer.id,
+            includeCard: !data.buyer.hasPaidInitialCard && req.event.cardCost > 0
         });
 
         return transaction.save().then(() => {
@@ -27,6 +28,10 @@ module.exports = {
             );
 
             basket.addItem('Rechargement', data.amount, 1);
+
+            if (!data.buyer.hasPaidInitialCard && req.event.cardCost > 0) {
+                basket.addItem('Activation du support', req.event.cardCost, 1);
+            }
 
             return {
                 type: 'url',
@@ -58,7 +63,9 @@ module.exports = {
                 .then(giftReloads_ => {
                     giftReloads = giftReloads_;
 
-                    return Transaction.where({ id: req.etupay.serviceData }).fetch();
+                    return Transaction.where({ id: req.etupay.serviceData }).fetch({
+                        withRelated: ['user']
+                    });
                 })
                 .then(transaction => {
                     // this should not happen \o
@@ -106,10 +113,15 @@ module.exports = {
                             amount
                         });
 
+                        if (transaction.get('includeCard')) {
+                            transaction.related('user').set('hasPaidInitialCard', true);
+                        }
+
                         return Promise.all([
                             newReload.save(),
                             transaction.save(),
                             pendingCardUpdate.save(),
+                            transaction.related('user').save(),
                             reloadGiftSave
                         ]).then(() => {
                             req.app.locals.modelChanges.emit('userCreditUpdate', {

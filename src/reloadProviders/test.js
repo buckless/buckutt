@@ -8,7 +8,8 @@ module.exports = {
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
-            user_id: data.buyer.id
+            user_id: data.buyer.id,
+            includeCard: !data.buyer.hasPaidInitialCard && req.event.cardCost > 0
         });
 
         return transaction.save().then(() => {
@@ -41,7 +42,7 @@ module.exports = {
             .then(giftReloads_ => {
                 giftReloads = giftReloads_;
 
-                return Transaction.where({ id }).fetch();
+                return Transaction.where({ id }).fetch({ withRelated: ['user'] });
             })
             .then(transaction => {
                 transaction.set('transactionId', uuid());
@@ -79,10 +80,15 @@ module.exports = {
                         amount
                     });
 
+                    if (transaction.get('includeCard')) {
+                        transaction.related('user').set('hasPaidInitialCard', true);
+                    }
+
                     return Promise.all([
                         newReload.save(),
                         transaction.save(),
                         pendingCardUpdate.save(),
+                        transaction.related('user').save(),
                         reloadGiftSave
                     ]).then(() => {
                         app.locals.modelChanges.emit('userCreditUpdate', {
