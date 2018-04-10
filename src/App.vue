@@ -20,8 +20,8 @@
 
 <script>
 import { MDCSnackbar } from '@material/snackbar/dist/mdc.snackbar.min.js';
-import { mapState }    from 'vuex';
-import Header          from './components/Header.vue';
+import { mapState } from 'vuex';
+import Header from './components/Header.vue';
 
 export default {
     components: {
@@ -37,7 +37,7 @@ export default {
     mounted() {
         const snackbar = MDCSnackbar.attachTo(this.$refs.snackbar);
 
-        this.$store.subscribe((mutation) => {
+        this.$store.subscribe(mutation => {
             switch (mutation.type) {
                 case 'UPDATENOTIFY':
                     snackbar.show({
@@ -55,21 +55,21 @@ export default {
 <style lang="scss">
 $mdc-theme-primary: #27ae60;
 
-@import "@material/list/mdc-list.scss";
-@import "@material/button/mdc-button.scss";
-@import "@material/card/mdc-card.scss";
-@import "@material/textfield/mdc-text-field.scss";
-@import "@material/snackbar/mdc-snackbar.scss";
-@import "./main.css";
+@import '@material/list/mdc-list.scss';
+@import '@material/button/mdc-button.scss';
+@import '@material/card/mdc-card.scss';
+@import '@material/textfield/mdc-text-field.scss';
+@import '@material/snackbar/mdc-snackbar.scss';
+@import './main.css';
 </style>
 
 <style>
-    main.mdl-layout__content {
-        overflow: visible;
-    }
+main.mdl-layout__content {
+    overflow: visible;
+}
 
-    .b-forcedMain {
-        width: 100%;
-        margin-left: 0px !important;
-    }
+.b-forcedMain {
+    width: 100%;
+    margin-left: 0px !important;
+}
 </style>

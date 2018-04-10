@@ -1,10 +1,10 @@
-import Vue  from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import * as actions from './actions';
 
-import app           from './modules/app';
-import changes       from './modules/changes';
+import app from './modules/app';
+import changes from './modules/changes';
 import notifications from './modules/notifications';
 
 Vue.use(Vuex);

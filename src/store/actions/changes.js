@@ -1,22 +1,25 @@
 import io from 'socket.io-client/dist/socket.io.slim';
 
 export function initSocket({ commit, dispatch, state }, token) {
-    commit('CHANGESOCKET', io('', {
-        transportOptions: {
-            polling: {
-                extraHeaders: {
-                    Authorization: `Bearer ${token}`
+    commit(
+        'CHANGESOCKET',
+        io('', {
+            transportOptions: {
+                polling: {
+                    extraHeaders: {
+                        Authorization: `Bearer ${token}`
+                    }
                 }
             }
-        }
-    }));
+        })
+    );
 
     state.changes.socket.on('connected', () => {
         console.log('Connected');
         dispatch('registerUserCredit');
     });
 
-    state.changes.socket.on('APIError', (error) => {
+    state.changes.socket.on('APIError', error => {
         console.error(error);
     });
 }
@@ -24,7 +27,7 @@ export function initSocket({ commit, dispatch, state }, token) {
 export function registerUserCredit({ state, commit, dispatch }) {
     state.changes.socket.emit('userCredit');
 
-    state.changes.socket.on('userCredit', (payload) => {
+    state.changes.socket.on('userCredit', payload => {
         if (typeof payload.credit === 'number') {
             dispatch('updateLoggedUserField', {
                 field: 'credit',

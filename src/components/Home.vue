@@ -30,22 +30,19 @@
 </template>
 
 <script>
-import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapState, mapActions } from 'vuex';
 
 export default {
     data() {
         return {
             mail: '',
-            pin : ''
+            pin: ''
         };
     },
 
     methods: {
-        ...mapActions([
-            'login',
-            'notify'
-        ]),
+        ...mapActions(['login', 'notify']),
 
         log(mail, pin) {
             this.login({ meanOfLogin: process.env.defaultMol, data: mail, pin })

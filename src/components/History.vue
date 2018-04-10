@@ -29,11 +29,11 @@ export default {
     methods: {
         translation(type) {
             const translateTable = {
-                refund   : 'Remboursement',
+                refund: 'Remboursement',
                 promotion: 'Achat',
-                purchase : 'Achat',
-                reload   : 'Rechargement',
-                transfer : 'Virement'
+                purchase: 'Achat',
+                reload: 'Rechargement',
+                transfer: 'Virement'
             };
 
             return translateTable[type];
@@ -50,14 +50,14 @@ export default {
                 return [];
             }
 
-            return this.history.map((transaction) => {
+            return this.history.map(transaction => {
                 const displayedTransaction = {
-                    id      : transaction.id,
-                    rawType : transaction.type,
-                    date    : transaction.date,
-                    amount  : transaction.amount,
-                    point   : transaction.point,
-                    type    : this.translation(transaction.type),
+                    id: transaction.id,
+                    rawType: transaction.type,
+                    date: transaction.date,
+                    amount: transaction.amount,
+                    point: transaction.point,
+                    type: this.translation(transaction.type),
                     operator: `${transaction.seller.firstname} ${transaction.seller.lastname}`
                 };
 
@@ -79,7 +79,7 @@ export default {
                         displayedTransaction.object = transaction.articles[0];
                         break;
                     case 'promotion':
-                        displayedTransaction.object   = transaction.promotion;
+                        displayedTransaction.object = transaction.promotion;
                         displayedTransaction.articles = transaction.articles;
                         break;
                     default:
