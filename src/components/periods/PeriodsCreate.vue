@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     data() {
@@ -50,8 +50,6 @@ export default {
         ...mapActions(['createObject', 'notify', 'notifyError']),
 
         createPeriod(period) {
-            period.event_id = this.currentEvent.id;
-
             this.createObject({ route: 'periods', value: period })
                 .then(createdPeriod => {
                     this.notify({ message: 'La période a bien été créée' });
@@ -64,12 +62,6 @@ export default {
                     })
                 );
         }
-    },
-
-    computed: {
-        ...mapState({
-            currentEvent: state => state.app.currentEvent
-        })
     }
 };
 </script>

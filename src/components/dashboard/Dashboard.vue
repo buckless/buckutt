@@ -1,7 +1,7 @@
 <template>
     <div class="b-dashboard b-page">
         <div class="mdl-card mdl-shadow--2dp">
-            <b-navbar :title="`Tableau de bord de ${currentEvent.name}`" :inCard="true"></b-navbar>
+            <b-navbar :title="Tableau de bord" :inCard="true"></b-navbar>
 
             <h4>Suivi des achats</h4>
             <div class="b-timebar">
@@ -52,7 +52,7 @@
                         <b-inputselect label="Formule" id="promotion-select" :options="promotionOptionsAll" v-model="fields.promotion" v-show="typeField === 'promotion'"></b-inputselect>
                         <br />
                         <b-inputselect label="Guichet" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect><br />
-                        <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptionsAll" v-model="fields.fundation" v-if="currentEvent.useFundations"></b-inputselect><br />
+                        <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptionsAll" v-model="fields.fundation" v-if="event.useFundations"></b-inputselect><br />
 
                         <mdl-button colored raised>Ajouter</mdl-button>
                     </form>
@@ -150,12 +150,11 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             curves: state => state.stats.curves,
             curvesData: state => state.stats.curvesData
         }),
 
-        ...mapGetters(['articleOptions', 'promotionOptions', 'pointOptions', 'fundationOptions']),
+        ...mapGetters(['articleOptions', 'promotionOptions', 'pointOptions', 'fundationOptions', 'event']),
 
         articleOptionsAll() {
             const articles = Object.assign([], this.articleOptions);
@@ -223,7 +222,7 @@ export default {
                 this.fields.article = null;
             }
 
-            this.addCurve(Object.assign({ event: this.currentEvent }, this.fields));
+            this.addCurve(Object.assign({ event: this.event }, this.fields));
             this.updateData();
             this.fields = Object.assign({}, fieldsPattern);
         },
@@ -243,7 +242,7 @@ export default {
         this.activeTimefilter = Object.assign({}, this.timefilter);
 
         if (this.curves.length === 0) {
-            this.addCurve(Object.assign({ event: this.currentEvent }, this.fields));
+            this.addCurve(Object.assign({ event: this.event }, this.fields));
         }
 
         this.updateData().then(() => {

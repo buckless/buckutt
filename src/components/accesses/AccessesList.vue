@@ -8,7 +8,7 @@
 
         <b-table
             :headers="[{ title: 'Heure d\'acces', field: 'created_at', type: 'date' }, { title: 'Utilisateur', field: 'user' }, { title: 'Opérateur', field: 'operator' }, { title: 'Lieu', field: 'point' }]"
-            :data="eventAccesses"
+            :data="displayedAccesses"
             :filter="{ val: this.user, field: 'user' }"
             :sort="{ field: 'created_at', order: 'DESC' }"
             :paging="10">
@@ -32,17 +32,15 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             accesses: state => state.objects.accesses
         }),
 
-        eventAccesses() {
+        displayedAccesses() {
             return this.accesses
                 .filter(
                     access =>
                         access.wiket &&
-                        access.wiket.period &&
-                        access.wiket.period.event_id === this.currentEvent.id
+                        access.wiket.period
                 )
                 .map(access => ({
                     id: access.id,

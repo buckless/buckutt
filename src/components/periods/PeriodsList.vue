@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h5>Listes des périodes de "{{ currentEvent.name }}"</h5>
+        <h5>Listes des périodes</h5>
         <div class="b-table-search">
             <i class="material-icons">search</i>
             <mdl-textfield floating-label="Nom de la période" v-model="name"></mdl-textfield>
@@ -53,16 +53,13 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             periods: state => state.objects.periods
         }),
 
         ...mapGetters(['protectedPeriodsIds', 'currentPeriods']),
 
         displayedPeriods() {
-            const selectedPeriods = this.displayOutdated ? this.periods : this.currentPeriods;
-
-            return selectedPeriods.filter(period => period.event_id === this.currentEvent.id);
+            return this.displayOutdated ? this.periods : this.currentPeriods;
         }
     }
 };

@@ -8,7 +8,7 @@
 
         <b-table
             :headers="[{ title: 'Date d\'envoi', field: 'created_at', type: 'date' }, { title: 'Contenu', field: 'content' }, { title: 'Durée minimale', field: 'minimumViewTime' }]"
-            :data="eventAlerts"
+            :data="alerts"
             :filter="{ val: this.content, field: 'content' }"
             :sort="{ field: 'created_at', order: 'DESC' }"
             :paging="10">
@@ -28,13 +28,8 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             alerts: state => state.objects.alerts
-        }),
-
-        eventAlerts() {
-            return this.alerts.filter(alert => alert.event_id === this.currentEvent.id);
-        }
+        })
     }
 };
 </script>
