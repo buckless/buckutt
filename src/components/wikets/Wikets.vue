@@ -1,7 +1,7 @@
 <template>
     <div class="b-wikets b-page">
         <div class="mdl-card mdl-shadow--2dp">
-            <b-navbar title="Points de vente actifs" :inCard="true"></b-navbar>
+            <b-navbar title="Guichets" :inCard="true"></b-navbar>
             <router-link to="/wikets/add" v-if="!addWiket">
                 <mdl-button class="mdl-js-ripple-effect" fab accent>
                     <i class="material-icons">add</i>
@@ -40,8 +40,7 @@ export default {
     computed: {
         ...mapState({
             fullPath: state => state.route.fullPath,
-            points: state => state.objects.points,
-            currentEvent: state => state.app.currentEvent
+            points: state => state.objects.points
         }),
 
         pointsWikets() {
@@ -53,7 +52,6 @@ export default {
                     const lightWikets = point.wikets
                         .filter(
                             wiket =>
-                                wiket.period.event_id === this.currentEvent.id &&
                                 new Date(wiket.period.end) >= now &&
                                 wiket.device.id
                         )
@@ -63,16 +61,21 @@ export default {
                             id: wiket.id
                         }));
 
-                    if (lightWikets.length > 0) {
-                        pointsWiketsList.push({
-                            ...point,
-                            wikets: lightWikets
-                        });
-                    }
+                    pointsWiketsList.push({
+                        ...point,
+                        wikets: lightWikets
+                    });
                 }
             });
 
-            return pointsWiketsList.sort((a, b) => sortOrder(a.name, b.name));
+            return [].concat(
+                pointsWiketsList
+                    .filter(point => point.wikets.length > 0)
+                    .sort((a, b) => sortOrder(a.name, b.name)),
+                pointsWiketsList
+                    .filter(point => point.wikets.length === 0)
+                    .sort((a, b) => sortOrder(a.name, b.name))
+            );
         },
 
         addWiket() {

@@ -45,7 +45,6 @@ export default {
     },
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             focusedPoint: state => state.app.focusedElements[0]
         }),
 

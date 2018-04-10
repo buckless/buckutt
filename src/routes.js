@@ -12,7 +12,6 @@ import groups from './components/groups/routes';
 import home from './components/home/routes';
 import logout from './components/logout/routes';
 import periods from './components/periods/routes';
-import points from './components/points/routes';
 import promotions from './components/promotions/routes';
 import purchases from './components/purchases/routes';
 import treasury from './components/treasury/routes';
@@ -35,7 +34,6 @@ export default [].concat(
     home,
     logout,
     periods,
-    points,
     promotions,
     purchases,
     treasury,

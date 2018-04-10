@@ -147,6 +147,10 @@ html, body, main {
     width: 300px;
 }
 
+.b--error {
+    color: #e74c3c !important;
+}
+
 .fade-enter-active, .fade-leave-active {
     transition: opacity .4s ease;
 }

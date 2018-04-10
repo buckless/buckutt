@@ -3,8 +3,8 @@
         <h5>Équipements</h5>
         <form @submit.prevent="createWiket(wiket)">
             <b-inputselect label="Équipement" id="device-select" :options="deviceOptions" v-model="wiket.device"></b-inputselect>
-            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="wiket.period" v-if="currentEvent.usePeriods"></b-inputselect>
-            <b-inputselect label="Groupe par défaut" id="group-select" :options="groupOptions" v-model="wiket.defaultGroup" v-if="currentEvent.useGroups"></b-inputselect>
+            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="wiket.period" v-if="event.usePeriods"></b-inputselect>
+            <b-inputselect label="Groupe par défaut" id="group-select" :options="groupOptions" v-model="wiket.defaultGroup" v-if="event.useGroups"></b-inputselect>
             <mdl-button colored raised :disabled="disabledAdd">Ajouter</mdl-button>
         </form>
         <b-table
@@ -43,12 +43,12 @@ export default {
 
         createWiket(wiket) {
             wiket.point = this.focusedPoint;
-            wiket.period = this.currentEvent.usePeriods
+            wiket.period = this.event.usePeriods
                 ? wiket.period
-                : this.currentEvent.defaultPeriod;
-            wiket.defaultPeriod = this.currentEvent.useGroups
+                : this.event.defaultPeriod;
+            wiket.defaultPeriod = this.event.useGroups
                 ? wiket.defaultGroup
-                : this.currentEvent.defaultGroup;
+                : this.event.defaultGroup;
 
             if (isPointUsedByEvent(this.focusedPoint.wikets, wiket)) {
                 return this.notifyError({
@@ -82,20 +82,19 @@ export default {
     },
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             focusedPoint: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'deviceOptions', 'groupOptions']),
+        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'deviceOptions', 'groupOptions', 'event']),
 
         displayedColumns() {
             const columns = [{ title: 'Équipement', field: 'device.name' }];
 
-            if (this.currentEvent.usePeriods) {
+            if (this.event.usePeriods) {
                 columns.push({ title: 'Période', field: 'period.name' });
             }
 
-            if (this.currentEvent.useGroups) {
+            if (this.event.useGroups) {
                 columns.push({ title: 'Groupe par défaut', field: 'defaultGroup.name' });
             }
 
@@ -104,18 +103,17 @@ export default {
 
         displayedWikets() {
             return (this.focusedPoint.wikets || [])
-                .filter(wiket => wiket.period.event_id === this.currentEvent.id)
                 .map(wiket => {
                     if (
-                        wiket.period.id !== this.currentEvent.defaultPeriod_id &&
-                        !this.currentEvent.usePeriods
+                        wiket.period.id !== this.event.defaultPeriod_id &&
+                        !this.event.usePeriods
                     ) {
                         wiket.warning = 'Une période autre que<br />celle par défaut est utilisée.';
                     }
 
                     if (
-                        wiket.defaultGroup.id !== this.currentEvent.defaultGroup_id &&
-                        !this.currentEvent.useGroups
+                        wiket.defaultGroup.id !== this.event.defaultGroup_id &&
+                        !this.event.useGroups
                     ) {
                         wiket.warning =
                             'Un groupe par défaut autre que<br />celui de l`événement est utilisé.';
@@ -127,8 +125,8 @@ export default {
 
         disabledAdd() {
             return (
-                (!this.wiket.period && this.currentEvent.usePeriods) ||
-                (!this.wiket.defaultGroup && this.currentEvent.useGroups) ||
+                (!this.wiket.period && this.event.usePeriods) ||
+                (!this.wiket.defaultGroup && this.event.useGroups) ||
                 !this.wiket.device
             );
         }

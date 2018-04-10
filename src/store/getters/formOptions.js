@@ -23,15 +23,7 @@ export const eventOptions = state =>
     state.objects.events.map(event => ({ name: event.name, value: event }));
 
 export const periodOptions = state =>
-    !state.app.currentEvent
-        ? []
-        : state.objects.periods
-              .filter(period => period.event_id === state.app.currentEvent.id)
-              .map(period => ({ name: period.name, value: period }));
+    state.objects.periods.map(period => ({ name: period.name, value: period }));
 
-export const currentPeriodOptions = (state, getters) =>
-    !state.app.currentEvent
-        ? []
-        : getters.currentPeriods
-              .filter(period => period.event_id === state.app.currentEvent.id)
-              .map(period => ({ name: period.name, value: period }));
+export const currentPeriodOptions = (_, getters) =>
+    getters.currentPeriods.map(period => ({ name: period.name, value: period }));

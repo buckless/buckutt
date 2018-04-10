@@ -1,8 +1,11 @@
 import Wikets from './Wikets.vue';
 import WiketPanel from './WiketPanel.vue';
-import WiketAssign from './assignments/WiketAssign.vue';
-import WiketAssignList from './assignments/WiketAssignList.vue';
-import WiketAssignPreferences from './assignments/WiketAssignPreferences.vue';
+
+import PointShow from './point/PointShow.vue';
+import PointShowDetails from './point/PointShowDetails.vue';
+import PointEditObject from './point/PointEditObject.vue';
+import PointAssign from './point/PointAssign.vue';
+import PointPreferences from './point/PointPreferences.vue';
 
 import ClientViewer from './wiket/ClientViewer';
 import ClientAddArticle from './wiket/ClientViewer-AddArticle';
@@ -23,11 +26,13 @@ export default [
         ]
     },
     {
-        path: '/wikets/:wiket/assign',
-        component: WiketAssign,
+        path: '/points/:point',
+        component: PointShow,
         children: [
-            { path: '', component: WiketAssignList },
-            { path: 'preferences', component: WiketAssignPreferences }
+            { path: '', component: PointShowDetails },
+            { path: 'edit', component: PointEditObject },
+            { path: 'assign', component: PointAssign },
+            { path: 'preferences', component: PointPreferences }
         ]
     },
     {
