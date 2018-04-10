@@ -174,6 +174,7 @@ module.exports = {
 
                         if (transaction.get('includeCard')) {
                             transaction.related('user').set('hasPaidInitialCard', true);
+                            transaction.related('user').set('hasPaidCard', true);
                         }
 
                         return Promise.all([
