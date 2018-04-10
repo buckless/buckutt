@@ -118,7 +118,7 @@ router.post('/services/login', (req, res, next) => {
                 )
             };
 
-            if (req.device.name === 'manager' || req.device.name === 'chrome') {
+            if (req.device.name === 'manager') {
                 output.cardCost = req.event.cardCost;
             }
 
