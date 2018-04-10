@@ -160,7 +160,6 @@ export default {
 
     mounted() {
         componentHandler.upgradeElements(this.$el);
-
         if (this.suggestions.length === 1 && !this.disableAutoselect) {
             this.select(this.suggestions[0].original);
         }

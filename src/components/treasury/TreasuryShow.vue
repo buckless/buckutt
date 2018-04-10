@@ -6,6 +6,7 @@
                 <b-inputselect label="Point" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect>
             </div>
             <div>
+                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-if="event.usePeriods" @input="fillDates"></b-inputselect>
                 <b-datetime-picker
                     v-model="fields.dateIn"
                     locale="fr"
@@ -90,7 +91,7 @@ export default {
             meansofpayment: state => state.objects.meansofpayment
         }),
 
-        ...mapGetters(['pointOptions']),
+        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'pointOptions', 'event']),
 
         totalReload() {
             return this.reloads
@@ -182,6 +183,13 @@ export default {
             const index = this.meansofpayment.findIndex(mop => mop.slug === slug);
 
             return index !== -1 ? this.meansofpayment[index].name : slug;
+        },
+
+        fillDates(period) {
+            if (period) {
+                this.fields.dateIn = new Date(period.start);
+                this.fields.dateOut = new Date(period.end);
+            }
         }
     }
 };

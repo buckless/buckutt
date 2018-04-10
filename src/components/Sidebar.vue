@@ -19,13 +19,13 @@
                 <li>
                     <router-link to="/purchases" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
                         <i class="material-icons">shopping_cart</i>
-                        Achats
+                        Ventes
                     </router-link>
                 </li>
                 <li>
                     <router-link to="/treasury" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
                         <i class="material-icons">attach_money</i>
-                        Trésorerie
+                        Rechargements
                     </router-link>
                 </li>
                 <li>
