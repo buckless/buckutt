@@ -41,6 +41,8 @@ fs
     .filter(f => f.slice(-3) === '.js' && f.slice(0, -3) !== 'index')
     .forEach(f => router.use(require(path.join(__dirname, 'services', f))));
 
+router.use(require('../reloadProviders').callback());
+
 fs
     .readdirSync(path.join(__dirname))
     .filter(f => f.slice(-3) === '.js' && f.slice(0, -3) !== 'index')

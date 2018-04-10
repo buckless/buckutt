@@ -66,6 +66,7 @@
     "winston-tcp-graylog": "^1.0.10"
   },
   "devDependencies": {
+    "connect-sdk-nodejs": "^2.15.0",
     "coveralls": "^3.0.0",
     "inquirer": "^5.0.1",
     "mocha": "^5.0.0",
