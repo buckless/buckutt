@@ -5,6 +5,7 @@ const modelsNames = {
     articles: 'Article',
     categories: 'Category',
     devices: 'Device',
+    events: 'Event',
     fundations: 'Fundation',
     groups: 'Group',
     giftreloads: 'GiftReload',
