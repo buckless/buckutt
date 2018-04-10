@@ -4,7 +4,6 @@
 
 import { get, put } from '../../lib/fetch';
 
-
 export function changePin({ dispatch }, pins) {
     return new Promise((resolve, reject) => {
         let message = null;
@@ -14,7 +13,7 @@ export function changePin({ dispatch }, pins) {
         }
 
         if (pins.currentPin === pins.pin) {
-            message = 'L\'ancien et le nouveau code PIN rentrés sont identiques';
+            message = "L'ancien et le nouveau code PIN rentrés sont identiques";
         }
 
         if (pins.pin.length !== 4) {
@@ -22,7 +21,7 @@ export function changePin({ dispatch }, pins) {
         }
 
         if (pins.currentPin.length !== 4) {
-            message = 'L\'ancien code est faux';
+            message = "L'ancien code est faux";
         }
 
         if (message) {
@@ -31,10 +30,10 @@ export function changePin({ dispatch }, pins) {
 
         put('changepin', {
             currentPin: pins.currentPin,
-            pin       : pins.pin
-        }).then((result) => {
+            pin: pins.pin
+        }).then(result => {
             if (!result.changed) {
-                return reject(new Error('L\'ancien code est faux'));
+                return reject(new Error("L'ancien code est faux"));
             }
 
             dispatch('updateLoggedUserField', { field: 'pin', value: true });
@@ -50,12 +49,12 @@ export function changePin({ dispatch }, pins) {
 
 export function askPin(_, mail) {
     return get(`askpin?mail=${mail}`)
-        .then((result) => {
+        .then(result => {
             if (!result.success) {
                 return Promise.reject(new Error('Cette adresse mail est inconnue'));
             }
 
-            return { message: 'Un mail vient de vous être envoyé à l\'adresse indiquée' };
+            return { message: "Un mail vient de vous être envoyé à l'adresse indiquée" };
         })
         .catch(() => Promise.reject(new Error('Une erreur inconnue a eu lieu')));
 }
@@ -80,7 +79,7 @@ export function generatePin(_, pins) {
             key: pins.key,
             pin: pins.pin
         })
-            .then((result) => {
+            .then(result => {
                 if (!result.success) {
                     return reject(new Error('Impossible de changer le code PIN.'));
                 }

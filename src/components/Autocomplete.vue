@@ -17,18 +17,18 @@
 </template>
 
 <script>
-import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapActions, mapState } from 'vuex';
-import debounce                 from 'lodash.debounce';
+import debounce from 'lodash.debounce';
 
 export default {
     props: {
         id: {
-            type    : String,
+            type: String,
             required: true
         },
         label: {
-            type    : String,
+            type: String,
             required: true
         }
     },
@@ -36,7 +36,7 @@ export default {
     data() {
         return {
             content: '',
-            open   : false
+            open: false
         };
     },
 
@@ -48,27 +48,25 @@ export default {
         displayedSuggestions() {
             return this.users.map(user => ({
                 name: `${user.firstname} ${user.lastname}`,
-                id  : user.id
+                id: user.id
             }));
         },
 
         isOpen() {
             return (
                 this.displayedSuggestions.length > 0 &&
-                this.open === true
-                && this.content.length > 0
+                this.open === true &&
+                this.content.length > 0
             );
         }
     },
 
     methods: {
-        ...mapActions([
-            'searchUsers'
-        ]),
+        ...mapActions(['searchUsers']),
 
         select(suggestion) {
             this.content = suggestion.name;
-            this.open    = false;
+            this.open = false;
             this.$emit('input', suggestion);
         },
 
@@ -81,7 +79,7 @@ export default {
 
     mounted() {
         const searchUsers = this.searchUsers;
-        this.searchUsers  = debounce(name => searchUsers(name), 200);
+        this.searchUsers = debounce(name => searchUsers(name), 200);
 
         MDCTextField.attachTo(this.$refs.content);
     }
@@ -89,7 +87,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@material/elevation/mixins";
+@import '@material/elevation/mixins';
 
 .b-autocomplete {
     width: 100%;
@@ -103,7 +101,7 @@ export default {
     width: 100%;
     margin-top: -8px;
     background-color: #fff;
-    border: 1px solid rgba(0,0,0,.12);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     z-index: 5;
 }
 

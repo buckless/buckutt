@@ -59,8 +59,8 @@
 </template>
 
 <script>
-import lodget    from 'lodash.get';
-import fuzzy     from 'fuzzy';
+import lodget from 'lodash.get';
+import fuzzy from 'fuzzy';
 import sortOrder from '../lib/sortOrder';
 import '../lib/price';
 import '../lib/date';
@@ -68,26 +68,26 @@ import '../lib/date';
 export default {
     props: {
         headers: Array,
-        data   : Array,
-        filter : {
-            type    : Object,
+        data: Array,
+        filter: {
+            type: Object,
             required: false
         },
         sort: {
-            type    : Object,
+            type: Object,
             required: false
         },
         paging: {
-            type    : Number,
+            type: Number,
             required: false
         }
     },
 
     data() {
         return {
-            page         : 1,
+            page: 1,
             pagingOptions: [5, 10, 25, 50, 100],
-            chosenPaging : this.paging
+            chosenPaging: this.paging
         };
     },
 
@@ -113,9 +113,9 @@ export default {
             if (condition) {
                 switch (condition.statement) {
                     case 'isIn':
-                        return (condition.value.indexOf(object[condition.field]) > -1);
+                        return condition.value.indexOf(object[condition.field]) > -1;
                     case 'isNotIn':
-                        return (condition.value.indexOf(object[condition.field]) === -1);
+                        return condition.value.indexOf(object[condition.field]) === -1;
                     default:
                         break;
                 }
@@ -139,13 +139,16 @@ export default {
             let transformedData = this.filteredData.slice();
 
             if (this.sort) {
-                transformedData = transformedData
-                    .sort((a, b) => sortOrder(a[this.sort.field], b[this.sort.field], this.sort.order));
+                transformedData = transformedData.sort((a, b) =>
+                    sortOrder(a[this.sort.field], b[this.sort.field], this.sort.order)
+                );
             }
 
             if (this.paging) {
-                transformedData = transformedData
-                    .slice(this.start, this.start + parseInt(this.chosenPaging, 10));
+                transformedData = transformedData.slice(
+                    this.start,
+                    this.start + parseInt(this.chosenPaging, 10)
+                );
             }
 
             return transformedData;
@@ -190,7 +193,7 @@ export default {
         },
 
         columnsNumber() {
-            return (this.actions) ? this.headers.length + 1 : this.headers.length;
+            return this.actions ? this.headers.length + 1 : this.headers.length;
         }
     }
 };
@@ -219,10 +222,11 @@ export default {
     display: flex;
     justify-content: space-between;
     padding: 0 24px;
-    border-bottom: 1px solid rgba(0,0,0,.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
-    & > .b-table__cell:first-child {
-        flex: 2;
+    & > .b-table__cell:nth-child(1) {
+        min-width: 125px;
+        max-width: 125px;
     }
 
     & > .b-table__cell {
@@ -230,6 +234,14 @@ export default {
         height: 100%;
         display: flex;
         align-items: center;
+        overflow: hidden;
+        padding: 2px 4px;
+
+        & > span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     }
 }
 
@@ -247,17 +259,17 @@ export default {
 
 .b-table__row > .b-table__numeric-cell {
     text-align: right;
-    flex: 0;
+    flex-shrink: 1;
 }
 
 .b-table__header-row {
     font-weight: 600;
-    color: rgba(0,0,0,.54);
+    color: rgba(0, 0, 0, 0.54);
     height: 56px;
 }
 
 .b-table__footer {
-    color: rgba(0,0,0,.54);
+    color: rgba(0, 0, 0, 0.54);
 
     & .b-table__row {
         border-bottom: none;

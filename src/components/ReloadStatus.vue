@@ -23,7 +23,7 @@ import { get } from '../lib/fetch';
 export default {
     props: {
         status: {
-            type    : String,
+            type: String,
             required: true
         }
     },
