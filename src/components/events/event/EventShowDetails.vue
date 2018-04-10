@@ -17,11 +17,6 @@ export default {
         elements() {
             return [
                 {
-                    icon: 'keyboard_arrow_right',
-                    title: 'Nom',
-                    content: this.focusedEvent.name
-                },
-                {
                     icon: 'local_drink',
                     title: 'Unités alcool maximales par participant',
                     content:

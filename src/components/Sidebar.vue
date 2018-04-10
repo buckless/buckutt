@@ -86,6 +86,12 @@
                     <span>Avancé</span>
                 </li>
                 <li>
+                    <router-link :to="`/events/${event.id}`" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">event</i>
+                        Options
+                    </router-link>
+                </li>
+                <li>
                     <router-link to="/webservices" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
                         <i class="material-icons">call_made</i>
                         Webhooks
