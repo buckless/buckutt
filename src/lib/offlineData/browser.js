@@ -9,7 +9,7 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            users: 'uid,name,barcode,credit',
+            users: 'uid,name,barcode,credit,hasPaidCard',
             accesses: 'id,cardId,group,start,end'
         });
 

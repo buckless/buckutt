@@ -28,6 +28,7 @@ export default (deviceSellers, credentials) =>
 
         return resolve({
             data: {
+                cardCost: parseInt(localStorage.getItem('cardCost'), 10) || 0,
                 user: {
                     id: seller.id,
                     token: null,

@@ -119,9 +119,9 @@ export default {
 
         selectUser(user) {
             if (this.online) {
-                this.$emit('assign', user.credit, `${user.firstname} ${user.lastname}`, user.id);
+                this.$emit('assign', user.credit, `${user.firstname} ${user.lastname}`, user.id, user.hasPaidCard);
             } else {
-                this.$emit('assign', user.credit, user.name, user.id);
+                this.$emit('assign', user.credit, user.name, user.id, user.hasPaidCard);
             }
         }
     },
