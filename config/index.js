@@ -5,10 +5,10 @@ const fs = require('fs')
 const path = require('path')
 const https = require('https')
 
-const certPath = path.join(__dirname, '../../server/ssl/certificates/manager/manager.p12')
+const certPath = path.join(__dirname, '../../server/ssl/certificates/chrome/chrome.p12')
 const sslAgent = process.env.DEV_PROXY && new https.Agent({
   pfx       : fs.readFileSync(certPath),
-  passphrase: 'manager'
+  passphrase: 'test'
 })
 
 module.exports = {
@@ -51,6 +51,13 @@ module.exports = {
         secure      : false,
         agent       : sslAgent,
         pathRewrite : { '/api/assigner': '' }
+      },
+      '/api/callback': {
+        target      : 'https://0.0.0.0:3000/provider/callback',
+        changeOrigin: true,
+        secure      : false,
+        agent       : sslAgent,
+        pathRewrite : { '/api/callback': '' }
       },
       '/api/**': {
         target      : 'https://0.0.0.0:3000/services/manager/',

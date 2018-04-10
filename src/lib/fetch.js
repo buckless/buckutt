@@ -29,7 +29,7 @@ export function get(url, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts)
+    return fetch(`/api/${url}`, opts)
         .then(res => res.json())
         .then(results => {
             if (Array.isArray(results)) {
@@ -58,7 +58,7 @@ export function post(url, data, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts).then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(res => res.json());
 }
 
 /**
@@ -79,7 +79,7 @@ export function put(url, data, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts).then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(res => res.json());
 }
 
 /**
@@ -98,5 +98,5 @@ export function del(url, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts).then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(res => res.json());
 }
