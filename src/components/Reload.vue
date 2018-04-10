@@ -58,15 +58,15 @@
 </template>
 
 <script>
-import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapState, mapActions } from 'vuex';
-import { post }                 from '../lib/fetch';
+import { post } from '../lib/fetch';
 
 export default {
     data() {
         return {
-            loading  : false,
-            amount   : null,
+            loading: false,
+            amount: null,
             chosenBox: null
         };
     },
@@ -86,22 +86,20 @@ export default {
         reload(amount) {
             this.loading = true;
 
-            post('reload', { amount: parseInt(amount * 100, 10) })
-                .then((data) => {
-                    if (data.status) {
-                        this.notify(data.message);
+            post('reload', { amount: parseInt(amount * 100, 10) }).then(data => {
+                if (data.status) {
+                    this.notify(data.message);
 
-                        setTimeout(() => {
-                            this.loading = false;
-                        }, 200);
-                    }
+                    setTimeout(() => {
+                        this.loading = false;
+                    }, 200);
+                }
 
-                    if (data.type === 'url') {
-                        window.location.href = data.res;
-                    }
-                });
+                if (data.type === 'url') {
+                    window.location.href = data.res;
+                }
+            });
         },
-
 
         ...mapActions(['notify'])
     },
@@ -113,19 +111,19 @@ export default {
 </script>
 
 <style>
-    .b-reload__boxes {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 0px;
+.b-reload__boxes {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
 
-        & > button {
-            width: 80px;
-            height: 40px;
-            font-size: 16px;
-            margin: 0px 10px;
-            line-height: 16px;
-        }
+    & > button {
+        width: 80px;
+        height: 40px;
+        font-size: 16px;
+        margin: 0px 10px;
+        line-height: 16px;
     }
+}
 </style>

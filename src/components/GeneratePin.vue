@@ -50,30 +50,26 @@
 
 <script>
 import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
-import { mapActions }   from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     data() {
         return {
-            mail        : '',
-            pin         : '',
+            mail: '',
+            pin: '',
             confirmedPin: '',
-            key         : this.$route.query.key,
-            loading     : false
+            key: this.$route.query.key,
+            loading: false
         };
     },
 
     methods: {
-        ...mapActions([
-            'askPin',
-            'generatePin',
-            'notify'
-        ]),
+        ...mapActions(['askPin', 'generatePin', 'notify']),
 
         change(key, pin, confirmedPin) {
             this.generatePin({ key, pin, confirmedPin })
-                .then((message) => {
-                    this.pin          = '';
+                .then(message => {
+                    this.pin = '';
                     this.confirmedPin = '';
                     this.notify(message);
                     this.$router.push('/');
@@ -84,11 +80,11 @@ export default {
         ask(mail) {
             this.loading = true;
             this.askPin(mail)
-                .then((message) => {
+                .then(message => {
                     this.notify(message);
                     this.$router.push('/');
                 })
-                .catch((error) => {
+                .catch(error => {
                     this.loading = false;
                     this.notify(error);
                 });
