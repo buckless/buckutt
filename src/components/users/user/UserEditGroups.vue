@@ -93,24 +93,21 @@ export default {
         },
 
         displayedMemberships() {
-            return (this.focusedParticipant.memberships || [])
-                .map(membership => {
-                    if (
-                        membership.period.id !== this.event.defaultPeriod_id &&
-                        !this.event.usePeriods
-                    ) {
-                        membership.warning =
-                            'Une période autre que<br />celle par défaut est utilisée.';
-                    }
+            return (this.focusedParticipant.memberships || []).map(membership => {
+                if (
+                    membership.period.id !== this.event.defaultPeriod_id &&
+                    !this.event.usePeriods
+                ) {
+                    membership.warning =
+                        'Une période autre que<br />celle par défaut est utilisée.';
+                }
 
-                    return membership;
-                });
+                return membership;
+            });
         },
 
         disabledAdd() {
-            return (
-                !this.membership.group || (!this.membership.period && this.event.usePeriods)
-            );
+            return !this.membership.group || (!this.membership.period && this.event.usePeriods);
         }
     }
 };

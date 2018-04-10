@@ -37,11 +37,7 @@ export default {
 
         displayedAccesses() {
             return this.accesses
-                .filter(
-                    access =>
-                        access.wiket &&
-                        access.wiket.period
-                )
+                .filter(access => access.wiket && access.wiket.period)
                 .map(access => ({
                     id: access.id,
                     created_at: access.created_at,

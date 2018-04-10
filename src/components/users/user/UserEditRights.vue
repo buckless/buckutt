@@ -42,9 +42,7 @@ export default {
         ...mapActions(['removeObject', 'createObject', 'notify', 'notifyError']),
 
         createUserRight(user, right) {
-            right.period = this.event.usePeriods
-                ? right.period
-                : this.event.defaultPeriod;
+            right.period = this.event.usePeriods ? right.period : this.event.defaultPeriod;
 
             right.period_id = right.period.id;
             delete right.period;
@@ -94,21 +92,17 @@ export default {
         },
 
         displayedRights() {
-            return (this.focusedParticipant.rights || [])
-                .map(right => {
-                    if (!right.point) {
-                        right.point = { name: 'Aucun' };
-                    }
+            return (this.focusedParticipant.rights || []).map(right => {
+                if (!right.point) {
+                    right.point = { name: 'Aucun' };
+                }
 
-                    if (
-                        right.period.id !== this.event.defaultPeriod_id &&
-                        !this.event.usePeriods
-                    ) {
-                        right.warning = 'Une période autre que<br />celle par défaut est utilisée.';
-                    }
+                if (right.period.id !== this.event.defaultPeriod_id && !this.event.usePeriods) {
+                    right.warning = 'Une période autre que<br />celle par défaut est utilisée.';
+                }
 
-                    return right;
-                });
+                return right;
+            });
         },
 
         disabledAdd() {

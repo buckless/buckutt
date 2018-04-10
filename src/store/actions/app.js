@@ -36,7 +36,9 @@ export function load({ state, dispatch }) {
 
     const objectsToFetch = routes.map(route => dispatch('fetchObjects', { route }));
 
-    Promise.all(objectsToFetch).then(() => dispatch('fetchObjectsAndRelations', { route: 'events' }));
+    Promise.all(objectsToFetch).then(() =>
+        dispatch('fetchObjectsAndRelations', { route: 'events' })
+    );
 
     dispatch('registerModels', routes);
 }

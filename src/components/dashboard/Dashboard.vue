@@ -154,7 +154,13 @@ export default {
             curvesData: state => state.stats.curvesData
         }),
 
-        ...mapGetters(['articleOptions', 'promotionOptions', 'pointOptions', 'fundationOptions', 'event']),
+        ...mapGetters([
+            'articleOptions',
+            'promotionOptions',
+            'pointOptions',
+            'fundationOptions',
+            'event'
+        ]),
 
         articleOptionsAll() {
             const articles = Object.assign([], this.articleOptions);

@@ -86,13 +86,12 @@ export default {
         },
 
         filteredRights() {
-            return (this.focusedUser.rights || [])
-                .map(right => {
-                    if (!right.point) {
-                        right.point = { id: '0', name: 'Aucun' };
-                    }
-                    return right;
-                });
+            return (this.focusedUser.rights || []).map(right => {
+                if (!right.point) {
+                    right.point = { id: '0', name: 'Aucun' };
+                }
+                return right;
+            });
         },
 
         rights() {
@@ -105,9 +104,7 @@ export default {
                 groupedRights[key].forEach(right =>
                     rightPerPoint.rights.push({
                         icon: 'assignment_turned_in',
-                        title: this.event.usePeriods
-                            ? `Période ${right.period.name}`
-                            : undefined,
+                        title: this.event.usePeriods ? `Période ${right.period.name}` : undefined,
                         content: right.name
                     })
                 );
@@ -119,14 +116,11 @@ export default {
         },
 
         groups() {
-            return (this.focusedUser.memberships || [])
-                .map(membership => ({
-                    icon: 'group',
-                    title: this.event.usePeriods
-                        ? `Période ${membership.period.name}`
-                        : undefined,
-                    content: (membership.group || {}).name
-                }));
+            return (this.focusedUser.memberships || []).map(membership => ({
+                icon: 'group',
+                title: this.event.usePeriods ? `Période ${membership.period.name}` : undefined,
+                content: (membership.group || {}).name
+            }));
         },
 
         isInDefaultGroup() {
@@ -138,7 +132,13 @@ export default {
     },
 
     methods: {
-        ...mapActions(['createObject', 'removeObject', 'notify', 'notifyError', 'updateCreationData']),
+        ...mapActions([
+            'createObject',
+            'removeObject',
+            'notify',
+            'notifyError',
+            'updateCreationData'
+        ]),
 
         addUserToGroup(user, group, period) {
             const newMembership = {

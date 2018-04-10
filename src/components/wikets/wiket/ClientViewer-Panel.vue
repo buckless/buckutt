@@ -141,17 +141,11 @@ export default {
                 warning = 'Une fondation autre que<br />celle par défaut est utilisée.';
             }
 
-            if (
-                price.group_id !== this.event.defaultGroup_id &&
-                !this.event.useGroups
-            ) {
+            if (price.group_id !== this.event.defaultGroup_id && !this.event.useGroups) {
                 warning = 'Un groupe autre que<br />celui par défaut est utilisé.';
             }
 
-            if (
-                price.period_id !== this.event.defaultPeriod_id &&
-                !this.event.usePeriods
-            ) {
+            if (price.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods) {
                 warning = 'Une période autre que<br />celle par défaut est utilisée.';
             }
 
@@ -165,12 +159,8 @@ export default {
                 fundation_id: this.event.useFundations
                     ? price.fundation.id
                     : this.event.defaultFundation_id,
-                group_id: this.event.useGroups
-                    ? price.group.id
-                    : this.event.defaultGroup_id,
-                period_id: this.event.usePeriods
-                    ? price.period.id
-                    : this.event.defaultPeriod_id
+                group_id: this.event.useGroups ? price.group.id : this.event.defaultGroup_id,
+                period_id: this.event.usePeriods ? price.period.id : this.event.defaultPeriod_id
             };
 
             if (this.isArticle) {

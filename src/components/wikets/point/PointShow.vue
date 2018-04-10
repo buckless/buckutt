@@ -29,7 +29,11 @@ export default {
         },
 
         displayedTabs() {
-            const tabs = [{ route: '', name: 'Détails', exact: true }, { route: 'edit', name: 'Édition' }, { route: 'assign', name: 'Assigner des équipements' }];
+            const tabs = [
+                { route: '', name: 'Détails', exact: true },
+                { route: 'edit', name: 'Édition' },
+                { route: 'assign', name: 'Assigner des équipements' }
+            ];
 
             if (this.event.useGroups) {
                 tabs.push({ route: 'preferences', name: 'Préférences' });

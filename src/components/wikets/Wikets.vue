@@ -50,11 +50,7 @@ export default {
             this.points.forEach(point => {
                 if (point.wikets && point.name !== 'Internet') {
                     const lightWikets = point.wikets
-                        .filter(
-                            wiket =>
-                                new Date(wiket.period.end) >= now &&
-                                wiket.device.id
-                        )
+                        .filter(wiket => new Date(wiket.period.end) >= now && wiket.device.id)
                         .map(wiket => ({
                             device: wiket.device,
                             period: wiket.period,

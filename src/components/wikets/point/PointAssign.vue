@@ -42,9 +42,7 @@ export default {
 
         createWiket(wiket) {
             wiket.point = this.focusedPoint;
-            wiket.period = this.event.usePeriods
-                ? wiket.period
-                : this.event.defaultPeriod;
+            wiket.period = this.event.usePeriods ? wiket.period : this.event.defaultPeriod;
             wiket.defaultPeriod = this.event.useGroups
                 ? wiket.defaultGroup
                 : this.event.defaultGroup;
@@ -77,7 +75,13 @@ export default {
             focusedPoint: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'deviceOptions', 'groupOptions', 'event']),
+        ...mapGetters([
+            'periodOptions',
+            'currentPeriodOptions',
+            'deviceOptions',
+            'groupOptions',
+            'event'
+        ]),
 
         displayedColumns() {
             const columns = [{ title: 'Équipement', field: 'device.name' }];
@@ -94,25 +98,18 @@ export default {
         },
 
         displayedWikets() {
-            return (this.focusedPoint.wikets || [])
-                .map(wiket => {
-                    if (
-                        wiket.period.id !== this.event.defaultPeriod_id &&
-                        !this.event.usePeriods
-                    ) {
-                        wiket.warning = 'Une période autre que<br />celle par défaut est utilisée.';
-                    }
+            return (this.focusedPoint.wikets || []).map(wiket => {
+                if (wiket.period.id !== this.event.defaultPeriod_id && !this.event.usePeriods) {
+                    wiket.warning = 'Une période autre que<br />celle par défaut est utilisée.';
+                }
 
-                    if (
-                        wiket.defaultGroup.id !== this.event.defaultGroup_id &&
-                        !this.event.useGroups
-                    ) {
-                        wiket.warning =
-                            'Un groupe par défaut autre que<br />celui de l`événement est utilisé.';
-                    }
+                if (wiket.defaultGroup.id !== this.event.defaultGroup_id && !this.event.useGroups) {
+                    wiket.warning =
+                        'Un groupe par défaut autre que<br />celui de l`événement est utilisé.';
+                }
 
-                    return wiket;
-                });
+                return wiket;
+            });
         },
 
         disabledAdd() {

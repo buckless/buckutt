@@ -16,7 +16,11 @@ export default [
     {
         path: '/users',
         component: Users,
-        children: [{ path: '', component: UsersList }, { path: 'create', component: UsersCreate }, { path: 'staff', component: UsersStaff }]
+        children: [
+            { path: '', component: UsersList },
+            { path: 'create', component: UsersCreate },
+            { path: 'staff', component: UsersStaff }
+        ]
     },
     {
         path: '/users/:user',
