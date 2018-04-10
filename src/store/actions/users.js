@@ -4,7 +4,7 @@ import { get, post } from '../../lib/fetch';
  * Users actions
  */
 
-export function createUserWithMol({ dispatch, state }, user) {
+export function createUserWithMol({ dispatch, getters }, user) {
     let createdUser;
 
     return post('users', user)
@@ -24,8 +24,8 @@ export function createUserWithMol({ dispatch, state }, user) {
                 route: 'memberships',
                 value: {
                     user_id: createdUser.id,
-                    group_id: state.app.currentEvent.defaultGroup_id,
-                    period_id: state.app.currentEvent.defaultPeriod_id
+                    group_id: getters.event.defaultGroup_id,
+                    period_id: getters.event.defaultPeriod_id
                 }
             });
         })

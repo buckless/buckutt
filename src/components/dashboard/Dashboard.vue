@@ -1,7 +1,7 @@
 <template>
     <div class="b-dashboard b-page">
         <div class="mdl-card mdl-shadow--2dp">
-            <b-navbar :title="Tableau de bord" :inCard="true"></b-navbar>
+            <b-navbar title="Tableau de bord" :inCard="true"></b-navbar>
 
             <h4>Suivi des achats</h4>
             <div class="b-timebar">

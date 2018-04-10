@@ -61,11 +61,7 @@ export function load({ state, dispatch }) {
 
     const objectsToFetch = routes.map(route => dispatch('fetchObjects', { route }));
 
-    Promise.all(objectsToFetch).then(() => {
-        if (state.objects.events.length === 1) {
-            dispatch('updateCurrentEvent', state.objects.events[0]);
-        }
-    });
+    Promise.all(objectsToFetch).then(() => dispatch('fetchObjectsAndRelations', { route: 'events' }));
 
     dispatch('registerModels', routes);
 }

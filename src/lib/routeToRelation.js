@@ -87,10 +87,6 @@ export default route => {
                 filters: [['end', '>', now]],
                 required: true
             },
-            {
-                embed: 'wikets.period.event',
-                required: true
-            },
             'wikets.defaultGroup'
         ],
         prices: [
@@ -175,10 +171,6 @@ export default route => {
             {
                 embed: 'period',
                 filters: [['end', '>', now]],
-                required: true
-            },
-            {
-                embed: 'period.event',
                 required: true
             },
             'defaultGroup'

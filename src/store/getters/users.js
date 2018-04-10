@@ -2,11 +2,10 @@ import sortOrder from '../../lib/sortOrder';
 
 export const staff = state => {
     const now = new Date();
-    const event = state.app.currentEvent;
     const staffList = [];
 
     state.objects.rights
-        .filter(right => right.period.event_id === event.id && new Date(right.period.end) >= now)
+        .filter(right => new Date(right.period.end) >= now)
         .forEach(right => {
             const user = right.user;
 
