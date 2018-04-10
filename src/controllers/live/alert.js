@@ -1,7 +1,6 @@
 const send = (clients, alert) => {
     Object.keys(clients)
         .map(id => clients[id])
-        .filter(client => client.client.connector.event.id === alert.event_id)
         .forEach(client => {
             client.client.emit('alert', alert);
         });
