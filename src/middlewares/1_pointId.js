@@ -35,7 +35,6 @@ module.exports = connector =>
                 method: connector.method
             };
 
-            console.log('wiket', device.wikets);
             // Filters: allow an empty point but not a deleted point
             device.wikets
                 .filter(

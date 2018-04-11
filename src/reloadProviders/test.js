@@ -1,3 +1,4 @@
+const express = require('express');
 const uuid = require('uuid');
 const config = require('../../config');
 
@@ -13,16 +14,20 @@ module.exports = {
         });
 
         return transaction.save().then(() => {
-            setTimeout(() => module.exports.callback(app, transaction.get('id'), data), 1000);
+            setTimeout(() => module.exports.fakeCallback(app, transaction.get('id'), data), 1000);
 
             return {
                 type: 'url',
-                res: `${config.urls.managerUrl}/#/reload/success`
+                res: `${config.urls.managerUrl}/reload/success`
             };
         });
     },
 
-    callback(app, id, data) {
+    callback() {
+        return new express.Router();
+    },
+
+    fakeCallback(app, id, data) {
         if (!app || !id || !data) {
             // disable callback as a router (called from controllers)
             return () => {};

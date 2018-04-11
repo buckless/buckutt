@@ -51,8 +51,8 @@ module.exports = {
                         mode: modes.full,
                         contractNumber: providerConfig.contractNumber
                     },
-                    returnURL: `${config.urls.managerUrl}/#/reload/success`,
-                    cancelURL: `${config.urls.managerUrl}/#/reload/failed`,
+                    returnURL: `${config.urls.managerUrl}/reload/success`,
+                    cancelURL: `${config.urls.managerUrl}/reload/failed`,
                     order: {
                         attributes: ns('order'),
                         ref: transaction.get('id'),
