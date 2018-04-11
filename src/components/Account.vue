@@ -2,7 +2,10 @@
     <div class="b-account">
         <div class="mdc-card">
             <section class="mdc-card__primary" @click="pinPage = !pinPage">
-                <h1 class="mdc-card__title mdc-card__title--large">Changer mon code PIN</h1>
+                <h1 class="mdc-card__title mdc-card__title--large">
+                    <i class="material-icons" :active="pinPage">keyboard_arrow_right</i>
+                    Changer mon code PIN
+                </h1>
             </section>
             <transition name="slide">
                 <form class="b-changepin" @submit.prevent="change(currentPin, pin, confirmedPin)" v-show="pinPage">
@@ -31,7 +34,10 @@
         </div>
         <div class="mdc-card" v-if="mol && mol.data">
             <section class="mdc-card__primary" @click="qrPage = !qrPage">
-                <h1 class="mdc-card__title mdc-card__title--large">Mon QR Code</h1>
+                <h1 class="mdc-card__title mdc-card__title--large">
+                    <i class="material-icons" :active="qrPage">keyboard_arrow_right</i>
+                    Mon QR Code
+                </h1>
             </section>
             <transition name="slide">
                 <div class="b-qrcode" @submit.prevent="change(currentPin, pin, confirmedPin)" v-show="qrPage">
@@ -97,6 +103,21 @@ export default {
 <style>
 .b-account h1 {
     padding: 0 !important;
+    cursor: pointer;
+
+    & > i {
+        vertical-align: middle;
+        margin-right: 5px;
+        transition: .12s ease transform;
+
+        &[active] {
+            transform: rotate(90deg) !important;
+        }
+    }
+
+    &:hover i {
+        transform: rotate(45deg);
+    }
 }
 
 .b-account .mdc-card:not(:first-child) {
