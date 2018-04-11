@@ -6,7 +6,7 @@ const dbCatch = require('../lib/dbCatch');
 const ns = require('../lib/ns');
 const config = require('../../config');
 
-const providerConfig = config.provider.config;
+const providerConfig = config.provider.payline;
 
 const currencies = {
     eur: 978
@@ -28,7 +28,7 @@ const dateFormat = 'DD/MM/YYYY HH:mm';
 
 module.exports = {
     makePayment(app, data) {
-        const payline = new Payline(providerConfig.id, providerConfig.password, providerConfig.url);
+        const payline = new Payline(providerConfig.id, providerConfig.password);
         const Transaction = app.locals.models.Transaction;
 
         const transaction = new Transaction({

@@ -11,7 +11,7 @@ const log = logger(module);
 connectSdk.hostedcheckouts.create = promisify(connectSdk.hostedcheckouts.create);
 connectSdk.hostedcheckouts.get = promisify(connectSdk.hostedcheckouts.get);
 
-const providerConfig = config.provider.config;
+const providerConfig = config.provider.epayments;
 
 connectSdk.init({
     host: 'eu.sandbox.api-ingenico.com',

@@ -46,7 +46,7 @@
         }
     },
     "urls": {
-        "managerUrl": "https://b.inst.buckless.com"
+        "managerUrl": "http://localhost:8083"
     },
     "askpin": {
         "from": "noreply@buckless.com",
@@ -54,7 +54,7 @@
         "template": "Hi !\n You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !"
     },
     "assigner": {
-        "ticketProvider": "ticketmaster",
+        "ticketProvider": "billetweb",
         "csv": {
             "url": {
                 "url": "",
@@ -63,19 +63,35 @@
             },
             "file": null
         },
-        "sendPINMail": true,
+        "billetweb": {
+            "event": "",
+            "user": "",
+            "key": "",
+            "version": "1"
+        },
+        "sendPINMail": false,
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",
         "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
     },
     "provider": {
         "name": "epayments",
-        "config": {
+        "etupay": {
+            "id": 3,
+            "url": "https://etupay.utt.fr/initiate",
+            "key": "foobar"
+        },
+        "epayments": {
             "apiKeyId": "3c05301f77ceba9e",
-            "secretApiKey": "md4U20pDPfJwGod83gWhjl9pubLMZBlQ2/KVxHG6dvA=",
+            "secretApiKey": "",
             "merchantId": "1812",
             "variant": "default",
-            "urlPrefix": "https://payment"
+            "urlPrefix": "https://buckless"
+        },
+        "payline": {
+            "id": "foo",
+            "password": "bar",
+            "contractNumber": "1"
         }
     }
 }

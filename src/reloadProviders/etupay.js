@@ -2,7 +2,7 @@ const express = require('express');
 const dbCatch = require('../lib/dbCatch');
 const config = require('../../config');
 
-const providerConfig = config.provider.config;
+const providerConfig = config.provider.etupay;
 
 module.exports = {
     makePayment(app, data) {

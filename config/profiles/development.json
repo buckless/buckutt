@@ -63,6 +63,12 @@
             },
             "file": null
         },
+        "billetweb": {
+            "event": "",
+            "user": "",
+            "key": "",
+            "version": "1"
+        },
         "sendPINMail": false,
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",
@@ -70,12 +76,22 @@
     },
     "provider": {
         "name": "epayments",
-        "config": {
+        "etupay": {
+            "id": 3,
+            "url": "https://etupay.utt.fr/initiate",
+            "key": "foobar"
+        },
+        "epayments": {
             "apiKeyId": "3c05301f77ceba9e",
-            "secretApiKey": "md4U20pDPfJwGod83gWhjl9pubLMZBlQ2/KVxHG6dvA=",
+            "secretApiKey": "",
             "merchantId": "1812",
             "variant": "default",
             "urlPrefix": "https://buckless"
+        },
+        "payline": {
+            "id": "foo",
+            "password": "bar",
+            "contractNumber": "1"
         }
     }
 }
