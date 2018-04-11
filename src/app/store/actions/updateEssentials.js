@@ -69,7 +69,8 @@ export const updateEssentials = (store, force) => {
                     user.id,
                     user.fullname,
                     user.ticket,
-                    user.credit
+                    user.credit,
+                    user.hasPaidCard
                 ]);
 
                 promises.push(

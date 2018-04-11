@@ -10,7 +10,13 @@ const initialState = {
         event: {
             id: null,
             name: null,
-            config: {}
+            config: {
+              maxAlcohol: null,
+              maxPerAccount: null,
+              minReload: null,
+              useCardData: null,
+              cardCost: 0
+            }
         },
         config: {
             alcohol: null,
@@ -63,6 +69,10 @@ const mutations = {
         });
 
         state.device.DefaultGroup_id = payload.DefaultGroup_id;
+    },
+
+    SET_CARDCOST(state, payload) {
+        state.device.event.config.cardCost = payload;
     },
 
     DISABLE_DOUBLE_VALIDATION(state) {

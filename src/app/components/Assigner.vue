@@ -22,6 +22,13 @@
             <strong>{{ assignModalName }}</strong><br />
             Nouveau crédit: <strong><currency :value="assignModalCredit" /></strong>
 
+            <template v-if="cardCost > 0">
+                <strong v-if="!assignModalHasPaidCard">
+                    Support non pré-payé, débiter <currency :value="cardCost" />
+                </strong>
+                <em v-else>Support prépayé</em>
+            </template>
+
             <h4 v-if="groups.length > 0">Groupes :</h4>
             <div class="b-assigner-modal__modal__text__groups" v-if="groups.length > 0">
                 <div class="b-assigner-modal__modal__text__groups__group" v-for="group in groups">
@@ -62,6 +69,7 @@ export default {
             assignModalCredit: 0,
             assignModalName: '',
             assignModalId: '',
+            assignModalHasPaidCard: false,
             assignModalOpened: false,
             subpage: 'search',
             activeGroups: []
@@ -88,6 +96,7 @@ export default {
         ...mapState({
             online: state => state.online.status,
             useCardData: state => state.auth.device.event.config.useCardData,
+            cardCost: state => state.auth.device.event.config.cardCost,
             groups: state =>
                 state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
         }),
@@ -119,7 +128,15 @@ export default {
                             },
                             this.tokenHeaders
                         )
-                    );
+                    )
+                    .then(() =>
+                        axios.put(
+                            `${config.api}/users/${this.assignModalId}`,
+                            {
+                                hasPaidCard: false
+                            }
+                        )
+                    )
             } else {
                 initialPromise = initialPromise
                     .then(() =>
@@ -136,7 +153,16 @@ export default {
                                 groups: this.activeGroups.map(g => g.id)
                             }
                         })
-                    );
+                    )
+                    .then(() =>
+                        this.addPendingRequest({
+                            method: 'put',
+                            url: `${config.api}/users/${this.assignModalId}`,
+                            body: {
+                                hasPaidCard: false
+                            }
+                        })
+                    )
             }
 
             initialPromise
@@ -168,7 +194,7 @@ export default {
                     .get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
                     .then(res => {
                         if (typeof res.data.credit === 'number') {
-                            this.assignModal(res.data.credit, res.data.name, res.data.id);
+                            this.assignModal(res.data.credit, res.data.name, res.data.id, res.data.hasPaidCard);
                             return;
                         }
 
@@ -184,7 +210,7 @@ export default {
                     .findByBarcode(value)
                     .then(users => {
                         if (users.length === 1) {
-                            this.assignModal(users[0].credit, users[0].name, users[0].id);
+                            this.assignModal(users[0].credit, users[0].name, users[0].id, users[0].hasPaidCard);
                             return;
                         }
 
@@ -222,11 +248,12 @@ export default {
             }
         },
 
-        assignModal(credit, name, id) {
+        assignModal(credit, name, id, hasPaidCard) {
             this.assignModalOpened = true;
             this.assignModalCredit = credit;
             this.assignModalName = name;
             this.assignModalId = id;
+            this.assignModalHasPaidCard = hasPaidCard;
         },
 
         barcode() {
