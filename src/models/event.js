@@ -16,10 +16,6 @@ module.exports = bookshelf => {
 
         defaultPeriod() {
             return this.belongsTo('Period', 'defaultPeriod_id');
-        },
-
-        periods() {
-            return this.hasMany('Period');
         }
     });
 

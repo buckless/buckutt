@@ -4,11 +4,7 @@ module.exports = bookshelf => {
         tableName: 'alerts',
         hasTimestamps: true,
         uuid: true,
-        softDelete: true,
-
-        event() {
-            return this.belongsTo('Event');
-        }
+        softDelete: true
     });
 
     return { Model, name };

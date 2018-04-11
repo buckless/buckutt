@@ -6,10 +6,6 @@ module.exports = bookshelf => {
         uuid: true,
         softDelete: true,
 
-        event() {
-            return this.belongsTo('Event');
-        },
-
         wikets() {
             return this.hasMany('Wiket');
         },

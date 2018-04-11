@@ -63,7 +63,6 @@ module.exports = function token(connector) {
 
     let connectType;
     let point;
-    let event;
 
     const pinLoggingAllowed = config.rights.pinLoggingAllowed;
     const now = connector.date;
@@ -73,7 +72,6 @@ module.exports = function token(connector) {
         .then(decoded => {
             const userId = decoded.id;
             point = decoded.point;
-            event = decoded.event;
             connectType = decoded.connectType;
 
             return connector.models.User.where({ id: userId }).fetch({
@@ -89,9 +87,7 @@ module.exports = function token(connector) {
             connector.user = user;
 
             connector.point_id = point.id;
-            connector.event_id = event.id;
             connector.point = point;
-            connector.event = event;
 
             connector.connectType = connectType;
 
