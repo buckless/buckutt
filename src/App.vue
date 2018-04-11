@@ -56,11 +56,13 @@ export default {
 <style lang="scss">
 $mdc-theme-primary: #27ae60;
 
+@import '@material/ripple/mdc-ripple.scss';
 @import '@material/list/mdc-list.scss';
 @import '@material/button/mdc-button.scss';
 @import '@material/card/mdc-card.scss';
 @import '@material/textfield/mdc-text-field.scss';
 @import '@material/snackbar/mdc-snackbar.scss';
+@import '@material/checkbox/mdc-checkbox.scss';
 @import './main.css';
 </style>
 

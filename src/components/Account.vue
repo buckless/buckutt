@@ -50,16 +50,16 @@
 </template>
 
 <script>
-import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     data() {
         return {
-            qrPage      : false,
-            pinPage     : false,
-            currentPin  : '',
-            pin         : '',
+            qrPage: false,
+            pinPage: false,
+            currentPin: '',
+            pin: '',
             confirmedPin: ''
         };
     },
@@ -70,21 +70,19 @@ export default {
         }),
 
         qrcode() {
-            return `https://chart.apis.google.com/chart?cht=qr&chs=400x400&chl=${this.mol.data || ''}`;
+            return `https://chart.apis.google.com/chart?cht=qr&chs=400x400&chl=${this.mol.data ||
+                ''}`;
         }
     },
 
     methods: {
-        ...mapActions([
-            'changePin',
-            'notify'
-        ]),
+        ...mapActions(['changePin', 'notify']),
 
         change(currentPin, pin, confirmedPin) {
             this.changePin({ currentPin, pin, confirmedPin })
-                .then((message) => {
-                    this.currentPin   = '';
-                    this.pin          = '';
+                .then(message => {
+                    this.currentPin = '';
+                    this.pin = '';
                     this.confirmedPin = '';
                     this.notify(message);
                 })
@@ -108,7 +106,7 @@ export default {
     & > i {
         vertical-align: middle;
         margin-right: 5px;
-        transition: .12s ease transform;
+        transition: 0.12s ease transform;
 
         &[active] {
             transform: rotate(90deg) !important;
