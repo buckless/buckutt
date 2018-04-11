@@ -21,14 +21,10 @@ router.post('/services/manager/reload', (req, res, next) => {
 
     const amount = parseInt(req.body.amount, 10);
 
-    if (
-        req.event.maxPerAccount &&
-        req.user.credit + amount > req.event.maxPerAccount
-    ) {
+    if (req.event.maxPerAccount && req.user.credit + amount > req.event.maxPerAccount) {
         const max = (req.event.maxPerAccount / 100).toFixed(2);
         return next(new APIError(module, 400, `Maximum exceeded : ${max}€`, { user: req.user.id }));
     }
-
 
     if (req.event.minReload && amount < req.event.minReload) {
         const min = (req.event.minReload / 100).toFixed(2);
@@ -42,13 +38,13 @@ router.post('/services/manager/reload', (req, res, next) => {
         point: req.point_id,
         event: req.event
     })
-    .then(result => {
-        res
-            .status(200)
-            .json(result)
-            .end();
-    })
-    .catch(err => dbCatch(module, err, next));
+        .then(result => {
+            res
+                .status(200)
+                .json(result)
+                .end();
+        })
+        .catch(err => dbCatch(module, err, next));
 });
 
 router.get('/services/manager/giftReloads', (req, res, next) => {
