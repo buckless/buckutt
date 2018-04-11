@@ -69,11 +69,12 @@ export function loadGiftReloads({ commit }) {
     });
 }
 
-export function login({ dispatch }, credentials) {
+export function login({ dispatch, commit }, credentials) {
     return post('login', credentials).then(result => {
         if (result.user) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
+            commit('SETCARDCOST', result.cardCost ? result.cardCost : 0);
             dispatch('loadUser');
             return result.user;
         }
