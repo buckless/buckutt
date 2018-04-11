@@ -22,12 +22,12 @@ router.post('/services/manager/reload', (req, res, next) => {
 
     if (
         req.event.maxPerAccount &&
-        req.buyer.credit + amount > req.event.maxPerAccount &&
-        !req.event.useCardData
+        req.user.credit + amount > req.event.maxPerAccount
     ) {
         const max = (req.event.maxPerAccount / 100).toFixed(2);
         return next(new APIError(module, 400, `Maximum exceeded : ${max}€`, { user: req.user.id }));
     }
+
 
     if (req.event.minReload && amount < req.event.minReload) {
         const min = (req.event.minReload / 100).toFixed(2);
