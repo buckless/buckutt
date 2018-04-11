@@ -46,7 +46,7 @@
         }
     },
     "urls": {
-        "managerUrl": "https://b.inst.buckless.com"
+        "managerUrl": "http://localhost:8083"
     },
     "askpin": {
         "from": "noreply@buckless.com",
@@ -69,12 +69,13 @@
         "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
     },
     "provider": {
-        "name": "etupay",
+        "name": "epayments",
         "config": {
-            "id": 16,
-            "key": "foo",
-            "url": "https://etupay.utt.fr/initiate",
-            "merchantName": ""
+            "apiKeyId": "3c05301f77ceba9e",
+            "secretApiKey": "md4U20pDPfJwGod83gWhjl9pubLMZBlQ2/KVxHG6dvA=",
+            "merchantId": "1812",
+            "variant": "default",
+            "urlPrefix": "https://buckless"
         }
     }
 }

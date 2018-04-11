@@ -1,4 +1,5 @@
 const express = require('express');
+const { makePayment } = require('../../../reloadProviders');
 const logger = require('../../../lib/log');
 const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
@@ -34,20 +35,19 @@ router.post('/services/manager/reload', (req, res, next) => {
         return next(new APIError(module, 400, `Can not reload less than : ${min}€`));
     }
 
-    req.app.locals
-        .makePayment({
-            buyer: req.user,
-            amount,
-            // Used by test reloadProvider
-            point: req.point_id
-        })
-        .then(result => {
-            res
-                .status(200)
-                .json(result)
-                .end();
-        })
-        .catch(err => dbCatch(module, err, next));
+    makePayment(req.app, {
+        buyer: req.user,
+        amount,
+        // Used by test reloadProvider
+        point: req.point_id
+    })
+    .then(result => {
+        res
+            .status(200)
+            .json(result)
+            .end();
+    })
+    .catch(err => dbCatch(module, err, next));
 });
 
 router.get('/services/manager/giftReloads', (req, res, next) => {

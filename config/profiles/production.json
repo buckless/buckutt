@@ -69,13 +69,13 @@
         "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
     },
     "provider": {
-        "name": "payline",
+        "name": "epayments",
         "config": {
-            "id": "foo",
-            "password": "bar",
-            "url": "",
-            "contractNumber": "",
-            "merchantName": ""
+            "apiKeyId": "3c05301f77ceba9e",
+            "secretApiKey": "md4U20pDPfJwGod83gWhjl9pubLMZBlQ2/KVxHG6dvA=",
+            "merchantId": "1812",
+            "variant": "default",
+            "urlPrefix": "https://payment"
         }
     }
 }
