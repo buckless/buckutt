@@ -56,7 +56,7 @@ router.post('/services/login', (req, res, next) => {
             blocked: false
         })
         .fetch({
-            withRelated: ['user', 'user.rights', 'user.rights.period']
+            withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
