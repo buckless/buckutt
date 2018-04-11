@@ -8,6 +8,10 @@
                 <section class="mdc-card__supporting-text">
                     Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br />
                     Les opérations en ligne ne sont validées qu'à la suite une transaction sur site.
+                    <template v-if="!loggedUser.hasPaidInitialCard && cardCost > 0">
+                        <br/>
+                        <strong>Un prélèvement de {{ cardCost | price(true) }} sera prélevé au premier rechargement à la demande de l'organisateur.</strong>
+                    </template>
                     <div class="b-reload-gifts" v-if="giftReloads.length > 0">
 
                         <div class="b-reload-gifts__gift" v-for="giftReload in giftReloads">
@@ -41,7 +45,7 @@
                         <input
                             type="number"
                             class="mdc-text-field__input"
-                            max="100" min="5" step="0.10" pattern="[0-9]*(\.[0-9]+)?"
+                            step="0.10" pattern="[0-9]*(\.[0-9]+)?"
                             error="Veuillez entrer un montant correct"
                             v-model="amount">
                         <span class="mdc-text-field__label">Montant personnalisé</span>
@@ -58,22 +62,24 @@
 </template>
 
 <script>
-import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapState, mapActions } from 'vuex';
-import { post }                 from '../lib/fetch';
+import { post } from '../lib/fetch';
 
 export default {
     data() {
         return {
-            loading  : false,
-            amount   : null,
+            loading: false,
+            amount: null,
             chosenBox: null
         };
     },
 
     computed: {
         ...mapState({
-            giftReloads: state => state.app.giftReloads
+            giftReloads: state => state.app.giftReloads,
+            cardCost: state => state.app.cardCost,
+            loggedUser: state => state.app.loggedUser
         })
     },
 
@@ -87,9 +93,17 @@ export default {
             this.loading = true;
 
             post('reload', { amount: parseInt(amount * 100, 10) })
-                .then((data) => {
+                .then(data => {
                     if (data.status) {
-                        this.notify(data.message);
+                        if (data.message.indexOf('Can not reload less than') > -1) {
+                            data.message = data.message.replace('Can not reload less than', 'Rechargement minimal')
+                        }
+
+                        if (data.message.indexOf('Maximum exceeded') > -1) {
+                            data.message = data.message.replace('Maximum exceeded', 'Solde maximal')
+                        }
+
+                        this.notify(data);
 
                         setTimeout(() => {
                             this.loading = false;
@@ -99,9 +113,17 @@ export default {
                     if (data.type === 'url') {
                         window.location.href = data.res;
                     }
+                })
+                .catch(err => {
+                    throw err;
+
+                    setTimeout(() => {
+                        this.loading = false;
+                    }, 200);
+
+                    // todo: NaN credit / too much / too small
                 });
         },
-
 
         ...mapActions(['notify'])
     },
@@ -113,19 +135,19 @@ export default {
 </script>
 
 <style>
-    .b-reload__boxes {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 0px;
+.b-reload__boxes {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
 
-        & > button {
-            width: 80px;
-            height: 40px;
-            font-size: 16px;
-            margin: 0px 10px;
-            line-height: 16px;
-        }
+    & > button {
+        width: 80px;
+        height: 40px;
+        font-size: 16px;
+        margin: 0px 10px;
+        line-height: 16px;
     }
+}
 </style>

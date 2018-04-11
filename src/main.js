@@ -3,9 +3,9 @@ import 'whatwg-fetch';
 
 import Vue from 'vue';
 
-import App            from './App';
-import store          from './store/index';
-import router         from './router';
+import App from './App';
+import store from './store/index';
+import router from './router';
 import PaginatedTable from './components/PaginatedTable.vue';
 
 import './fonts.css';
@@ -17,7 +17,7 @@ Vue.component('b-table', PaginatedTable);
 store.dispatch('autoLoginUser');
 
 window.app = new Vue({
-    el    : '#app',
+    el: '#app',
     router,
     store,
     render: h => h(App)

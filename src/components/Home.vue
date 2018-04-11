@@ -30,27 +30,27 @@
 </template>
 
 <script>
-import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapState, mapActions } from 'vuex';
 
 export default {
     data() {
         return {
             mail: '',
-            pin : ''
+            pin: ''
         };
     },
 
     methods: {
-        ...mapActions([
-            'login',
-            'notify'
-        ]),
+        ...mapActions(['login', 'notify']),
 
         log(mail, pin) {
             this.login({ meanOfLogin: process.env.defaultMol, data: mail, pin })
                 .then(() => this.$router.push('/reload'))
-                .catch(() => this.notify({ message: 'Identifiants incorrects.' }));
+                .catch((err) => {
+                    console.log(err);
+                    this.notify({ message: 'Identifiants incorrects.' })
+                });
         }
     },
 

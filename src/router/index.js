@@ -4,57 +4,56 @@ import Router from 'vue-router';
 import Home from '@/components/Home';
 import GeneratePin from '@/components/GeneratePin';
 
-const History      = () => import(/* webpackChunkName: "dashboard" */'@/components/History');
-const Reload       = () => import(/* webpackChunkName: "dashboard" */'@/components/Reload');
-const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */'@/components/ReloadStatus');
-const Account    = () => import(/* webpackChunkName: "dashboard" */'@/components/Account');
-const Transfer     = () => import(/* webpackChunkName: "dashboard" */'@/components/Transfer');
-const Logout       = () => import(/* webpackChunkName: "dashboard" */'@/components/Logout');
-
+const History = () => import(/* webpackChunkName: "dashboard" */ '@/components/History');
+const Reload = () => import(/* webpackChunkName: "dashboard" */ '@/components/Reload');
+const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */ '@/components/ReloadStatus');
+const Account = () => import(/* webpackChunkName: "dashboard" */'@/components/Account');
+const Transfer = () => import(/* webpackChunkName: "dashboard" */ '@/components/Transfer');
+const Logout = () => import(/* webpackChunkName: "dashboard" */ '@/components/Logout');
 
 Vue.use(Router);
 
 const routes = [
     {
-        path     : '/',
+        path: '/',
         component: Home
     },
     {
-        path     : '/history',
+        path: '/history',
         component: History
     },
     {
-        path     : '/reload',
+        path: '/reload',
         component: Reload
     },
     {
-        path     : '/reload/success',
+        path: '/reload/success',
         component: ReloadStatus,
-        props    : {
+        props: {
             status: 'success'
         }
     },
     {
-        path     : '/reload/failed',
+        path: '/reload/failed',
         component: ReloadStatus,
-        props    : {
+        props: {
             status: 'failed'
         }
     },
     {
-        path     : '/account',
+        path: '/account',
         component: Account
     },
     {
-        path     : '/forgot-pin',
+        path: '/forgot-pin',
         component: GeneratePin
     },
     {
-        path     : '/transfer',
+        path: '/transfer',
         component: Transfer
     },
     {
-        path     : '/logout',
+        path: '/logout',
         component: Logout
     }
 ];
@@ -67,7 +66,7 @@ const router = new Router({
 router.beforeEach((route, from, next) => {
     const logged = !!router.app.$store.state.app.loggedUser;
 
-    if ((route.path !== '/' && route.path !== '/forgot-pin') && !logged) {
+    if (route.path !== '/' && route.path !== '/forgot-pin' && !logged) {
         next('/');
     } else if (route.path === '/' && logged) {
         next('/history');
