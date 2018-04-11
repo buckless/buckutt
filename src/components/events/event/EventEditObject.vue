@@ -32,6 +32,7 @@
             <mdl-textfield floating-label="Rechargement minimal (en centimes)" :value="focusedEvent.minReload" @input="updateDeepestFocusedElement({ field: 'minReload', value: $event })" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
             <mdl-textfield floating-label="Solde maximal (en centimes)" :value="focusedEvent.maxPerAccount" @input="updateDeepestFocusedElement({ field: 'maxPerAccount', value: $event })" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
             <mdl-textfield floating-label="Unités alcool maximales/participant" :value="focusedEvent.maxAlcohol" @input="updateDeepestFocusedElement({ field: 'maxAlcohol', value: $event })" required="required" pattern="[0-9]+" error="Les unités doivent être un entier"></mdl-textfield><br />
+            <mdl-textfield floating-label="Prix du support NFC (en centimes)" :value="focusedEvent.cardCost" @input="updateDeepestFocusedElement({ field: 'cardCost', value: $event })" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>
     </div>
@@ -46,7 +47,7 @@ export default {
         ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateEvent(event) {
-            const fields = ['id', 'minReload', 'maxPerAccount', 'maxAlcohol'];
+            const fields = ['id', 'minReload', 'maxPerAccount', 'maxAlcohol', 'cardCost'];
             const defaultPeriodFields = ['id', 'start', 'end'];
 
             this.updateObject({
