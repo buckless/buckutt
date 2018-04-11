@@ -82,9 +82,9 @@
 </template>
 
 <script>
-import { MDCTextField }         from '@material/textfield/dist/mdc.textfield.min.js';
+import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapState, mapActions } from 'vuex';
-import Checkbox                 from './Checkbox';
+import Checkbox from './Checkbox';
 
 export default {
     components: {
@@ -93,38 +93,33 @@ export default {
 
     data() {
         return {
-            firstname   : '',
-            lastname    : '',
-            rmail       : '',
-            lmail       : '',
-            cgu         : false,
-            ticket      : false,
+            firstname: '',
+            lastname: '',
+            rmail: '',
+            lmail: '',
+            cgu: false,
+            ticket: false,
             ticketNumber: '',
-            pin         : '',
-            tab         : 'connect',
-            working     : false
+            pin: '',
+            tab: 'connect',
+            working: false
         };
     },
 
     methods: {
-        ...mapActions([
-            'login',
-            'register',
-            'assign',
-            'notify'
-        ]),
+        ...mapActions(['login', 'register', 'assign', 'notify']),
 
         changeTab(tab) {
-            this.tab          = tab;
-            this.firstname    = '';
-            this.lastname     = '';
-            this.rmail        = '';
-            this.rpin         = '';
-            this.lmail        = '';
-            this.pin          = '';
+            this.tab = tab;
+            this.firstname = '';
+            this.lastname = '';
+            this.rmail = '';
+            this.rpin = '';
+            this.lmail = '';
+            this.pin = '';
             this.ticketNumber = '';
-            this.cgu          = false;
-            this.ticket       = false;
+            this.cgu = false;
+            this.ticket = false;
 
             setTimeout(() => {
                 if (this.tab === 'connect') {
@@ -147,7 +142,7 @@ export default {
                 .then(() => {
                     this.$router.push('/assign/success');
                 })
-                .catch((err) => {
+                .catch(err => {
                     this.ticketNumberInput.valid = false;
 
                     if (err.status === 404) {
@@ -178,7 +173,7 @@ export default {
                 .then(() => {
                     this.$router.push('/assign/success');
                 })
-                .catch((err) => {
+                .catch(err => {
                     this.ticketNumberInput.valid = false;
 
                     if (err.status === 404) {
@@ -214,15 +209,11 @@ export default {
 
     computed: {
         tabConnect() {
-            return this.tab === 'connect'
-                ? 'b-home__tabs__tab--active'
-                : '';
+            return this.tab === 'connect' ? 'b-home__tabs__tab--active' : '';
         },
 
         tabRegister() {
-            return this.tab.indexOf('register') === 0
-                ? 'b-home__tabs__tab--active'
-                : '';
+            return this.tab.indexOf('register') === 0 ? 'b-home__tabs__tab--active' : '';
         },
 
         ...mapState({
@@ -242,36 +233,36 @@ export default {
 </script>
 
 <style>
-    .b-home__tabs  {
-        display: flex;
-    }
+.b-home__tabs {
+    display: flex;
+}
 
-    .b-home__tabs__tab {
-        position: relative;
-        flex: 1;
-        padding: 16px 0;
-        cursor: pointer;
-        text-transform: uppercase;
-        text-align: center;
-        background-color: #dfdfdf;
-    }
+.b-home__tabs__tab {
+    position: relative;
+    flex: 1;
+    padding: 16px 0;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-align: center;
+    background-color: #dfdfdf;
+}
 
-    .b-home__tabs__tab--active {
-        color: #27ae60;
-        background-color: #fff;
-    }
+.b-home__tabs__tab--active {
+    color: #27ae60;
+    background-color: #fff;
+}
 
-    .b-home__register-chooser {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 32px 0;
-    }
+.b-home__register-chooser {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px 0;
+}
 
-    .b-home__register-chooser > .mdc-button {
-        width: 90%;
-        margin: 16px auto;
-        font-weight: 600;
-        height: 48px;
-    }
+.b-home__register-chooser > .mdc-button {
+    width: 90%;
+    margin: 16px auto;
+    font-weight: 600;
+    height: 48px;
+}
 </style>

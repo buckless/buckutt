@@ -1,14 +1,19 @@
 const state = {
-    loggedUser : null,
-    history    : [],
-    users      : [],
+    loggedUser: null,
+    history: [],
+    users: [],
     giftReloads: [],
-    pending    : 0
+    pending: 0,
+    cardCost: 0
 };
 
 const mutations = {
     UPDATELOGGEDUSER(state_, loggedUser) {
         state_.loggedUser = loggedUser;
+    },
+
+    SETCARDCOST(state_, cardCost) {
+        state_.cardCost = cardCost;
     },
 
     ADDHISTORY(state_, data) {

@@ -26,13 +26,13 @@
 <script>
 export default {
     model: {
-        prop : 'checked',
+        prop: 'checked',
         event: 'change'
     },
 
     props: {
         id: {
-            type    : String,
+            type: String,
             required: true
         },
 
@@ -42,7 +42,6 @@ export default {
 
         checked: [Array, Boolean]
     },
-
 
     computed: {
         model: {

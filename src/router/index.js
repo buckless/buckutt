@@ -4,72 +4,71 @@ import Router from 'vue-router';
 import Home from '@/components/Home';
 import GeneratePin from '@/components/GeneratePin';
 
-const History      = () => import(/* webpackChunkName: "dashboard" */'@/components/History');
-const Reload       = () => import(/* webpackChunkName: "dashboard" */'@/components/Reload');
-const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */'@/components/ReloadStatus');
-const AssignStatus = () => import(/* webpackChunkName: "dashboard" */'@/components/AssignStatus');
-const ChangePin    = () => import(/* webpackChunkName: "dashboard" */'@/components/ChangePin');
-const Transfer     = () => import(/* webpackChunkName: "dashboard" */'@/components/Transfer');
-const Logout       = () => import(/* webpackChunkName: "dashboard" */'@/components/Logout');
-
+const History = () => import(/* webpackChunkName: "dashboard" */ '@/components/History');
+const Reload = () => import(/* webpackChunkName: "dashboard" */ '@/components/Reload');
+const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */ '@/components/ReloadStatus');
+const AssignStatus = () => import(/* webpackChunkName: "dashboard" */ '@/components/AssignStatus');
+const Account = () => import(/* webpackChunkName: "dashboard" */ '@/components/Account');
+const Transfer = () => import(/* webpackChunkName: "dashboard" */ '@/components/Transfer');
+const Logout = () => import(/* webpackChunkName: "dashboard" */ '@/components/Logout');
 
 Vue.use(Router);
 
 const routes = [
     {
-        path     : '/',
+        path: '/',
         component: Home
     },
     {
-        path     : '/history',
+        path: '/history',
         component: History
     },
     {
-        path     : '/reload',
+        path: '/reload',
         component: Reload
     },
     {
-        path     : '/reload/success',
+        path: '/reload/success',
         component: ReloadStatus,
-        props    : {
+        props: {
             status: 'success'
         }
     },
     {
-        path     : '/reload/failed',
+        path: '/reload/failed',
         component: ReloadStatus,
-        props    : {
+        props: {
             status: 'failed'
         }
     },
     {
-        path     : '/assign/success',
+        path: '/assign/success',
         component: AssignStatus,
-        props    : {
+        props: {
             status: 'success'
         }
     },
     {
-        path     : '/assign/failed',
+        path: '/assign/failed',
         component: AssignStatus,
-        props    : {
+        props: {
             status: 'failed'
         }
     },
     {
-        path     : '/pin',
-        component: ChangePin
+        path: '/account',
+        component: Account
     },
     {
-        path     : '/forgot-pin',
+        path: '/forgot-pin',
         component: GeneratePin
     },
     {
-        path     : '/transfer',
+        path: '/transfer',
         component: Transfer
     },
     {
-        path     : '/logout',
+        path: '/logout',
         component: Logout
     }
 ];

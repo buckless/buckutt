@@ -9,9 +9,7 @@ import { mapActions } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'logoutUser'
-        ])
+        ...mapActions(['logoutUser'])
     },
 
     mounted() {
