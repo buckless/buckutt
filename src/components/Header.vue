@@ -137,7 +137,7 @@ export default {
         display: flex;
         justify-content: center;
 
-        > a {
+        & > a {
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -156,48 +156,16 @@ export default {
                 font-weight: 500;
             }
 
-<<<<<<< HEAD
-            > a {
-                text-decoration: none;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                cursor: pointer;
-                color: rgba(255,255,255,.6);
-                padding: 0 1rem;
-                min-width: 100px;
-
-                &:hover {
-                    background-color: transparent;
-                }
-
-                &.b--active {
-                    color: #fff;
-                    font-weight: 500;
-                }
-
-                > i {
-                    display: block;
-                    font-size: 2rem;
-                    margin-bottom: 5px;
-                }
-
-                > div {
-                    text-transform: uppercase;
-                    text-align: center;
-                    font-size: 0.8rem;
-                }
-=======
-            > i {
+            & > i {
                 display: block;
                 font-size: 2rem;
                 margin-bottom: 5px;
             }
 
-            > div {
+            & > div {
                 text-transform: uppercase;
+                text-align: center;
                 font-size: 0.8rem;
->>>>>>> v1.1
             }
         }
     }
