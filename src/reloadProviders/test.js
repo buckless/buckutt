@@ -3,8 +3,6 @@ const config = require('../../config');
 
 module.exports = {
     makePayment(app, data) {
-        console.log('makep');
-        console.log(data);
         const Transaction = app.locals.models.Transaction;
 
         const transaction = new Transaction({
