@@ -15,25 +15,25 @@
         </router-link>
 
         <nav class="b-header__navigation" v-if="loggedUser">
-                <router-link to="/reload" :class="reloadClass">
-                    <i class="material-icons">attach_money</i>
-                    <div>Rechargement</div>
-                </router-link>
-                <div class="b-header__navigation__separator"></div>
-                <router-link to="/history" :class="historyClass">
-                    <i class="material-icons">history</i>
-                    <div>Historique</div>
-                </router-link>
-                <div class="b-header__navigation__separator"></div>
-                <router-link to="/pin" :class="pinClass">
-                    <i class="material-icons">lock_ouline</i>
-                    <div>PIN</div>
-                </router-link>
-                <div class="b-header__navigation__separator"></div>
-                <router-link to="/transfer" :class="transferClass">
-                    <i class="material-icons">swap_horiz</i>
-                    <div>Virement</div>
-                </router-link>
+            <router-link to="/reload" :class="reloadClass">
+                <i class="material-icons">attach_money</i>
+                <div>Recharger</div>
+            </router-link>
+            <div class="b-header__navigation__separator"></div>
+            <router-link to="/history" :class="historyClass">
+                <i class="material-icons">history</i>
+                <div>Historique</div>
+            </router-link>
+            <div class="b-header__navigation__separator"></div>
+            <router-link to="/transfer" :class="transferClass">
+                <i class="material-icons">swap_horiz</i>
+                <div>Virement</div>
+            </router-link>
+            <div class="b-header__navigation__separator"></div>
+            <router-link to="/account" :class="accountClass">
+                <i class="material-icons">person</i>
+                <div>Mon compte</div>
+            </router-link>
         </nav>
     </header>
 </template>
@@ -65,8 +65,8 @@ export default {
             return this.$route.path === '/reload' ? { 'b--active': true } : null;
         },
 
-        pinClass() {
-            return this.$route.path === '/pin' ? { 'b--active': true } : null;
+        accountClass() {
+            return this.$route.path === '/account' ? { 'b--active': true } : null;
         },
 
         transferClass() {
@@ -137,7 +137,7 @@ export default {
         display: flex;
         justify-content: center;
 
-        > a {
+        & > a {
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -156,14 +156,15 @@ export default {
                 font-weight: 500;
             }
 
-            > i {
+            & > i {
                 display: block;
                 font-size: 2rem;
                 margin-bottom: 5px;
             }
 
-            > div {
+            & > div {
                 text-transform: uppercase;
+                text-align: center;
                 font-size: 0.8rem;
             }
         }

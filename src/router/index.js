@@ -7,7 +7,7 @@ import GeneratePin from '@/components/GeneratePin';
 const History = () => import(/* webpackChunkName: "dashboard" */ '@/components/History');
 const Reload = () => import(/* webpackChunkName: "dashboard" */ '@/components/Reload');
 const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */ '@/components/ReloadStatus');
-const ChangePin = () => import(/* webpackChunkName: "dashboard" */ '@/components/ChangePin');
+const Account = () => import(/* webpackChunkName: "dashboard" */'@/components/Account');
 const Transfer = () => import(/* webpackChunkName: "dashboard" */ '@/components/Transfer');
 const Logout = () => import(/* webpackChunkName: "dashboard" */ '@/components/Logout');
 
@@ -41,8 +41,8 @@ const routes = [
         }
     },
     {
-        path: '/pin',
-        component: ChangePin
+        path: '/account',
+        component: Account
     },
     {
         path: '/forgot-pin',
