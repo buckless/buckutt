@@ -3,6 +3,7 @@
         <b-header />
         <main class="mdl-layout__content" :class="{ 'b-forcedMain': !logged }">
             <router-view></router-view>
+            <footer class="b-cgu">&copy; Studio Async — <a href="https://buckless.com/static/cgu.pdf">Conditions</a></footer>
         </main>
 
         <div class="mdc-snackbar"
@@ -71,5 +72,17 @@ main.mdl-layout__content {
 .b-forcedMain {
     width: 100%;
     margin-left: 0px !important;
+}
+
+footer {
+    text-align: center;
+    color: #757575;
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+footer > a {
+    color: #757575;
 }
 </style>
