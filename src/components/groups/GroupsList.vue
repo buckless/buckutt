@@ -12,8 +12,8 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNotIn', value: protectedGroupsIds } },
-                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNotIn', value: protectedGroupsIds } }
+                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNot', value: event.defaultGroup_id } },
+                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.defaultGroup_id } }
             ]"
             route="groups"
             :paging="10"
@@ -46,7 +46,7 @@ export default {
             groups: state => state.objects.groups
         }),
 
-        ...mapGetters(['protectedGroupsIds'])
+        ...mapGetters(['event'])
     }
 };
 </script>

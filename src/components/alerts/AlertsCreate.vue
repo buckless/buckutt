@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     data() {
@@ -30,8 +30,6 @@ export default {
     methods: {
         ...mapActions(['createObject', 'notify', 'notifyError']),
         createAlert(alert) {
-            alert.event_id = this.currentEvent.id;
-
             this.createObject({ route: 'alerts', value: alert })
                 .then(() => {
                     this.notify({ message: "L'alerte a bien été envoyée" });
@@ -44,12 +42,6 @@ export default {
                     })
                 );
         }
-    },
-
-    computed: {
-        ...mapState({
-            currentEvent: state => state.app.currentEvent
-        })
     }
 };
 </script>

@@ -3,7 +3,7 @@
         <h5>Groupes</h5>
         <form @submit.prevent="addGroupToUser(focusedParticipant, membership)">
             <b-inputselect label="Groupe" id="group-select" :options="groupOptions" v-model="membership.group"></b-inputselect>
-            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="membership.period" v-if="currentEvent.usePeriods"></b-inputselect><br />
+            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="membership.period" v-if="event.usePeriods"></b-inputselect><br />
             <mdl-button colored raised :disabled="disabledAdd">Ajouter</mdl-button>
         </form>
         <br />
@@ -39,9 +39,9 @@ export default {
         ...mapActions(['createObject', 'removeObject', 'notify', 'notifyError']),
 
         addGroupToUser(user, membership) {
-            membership.period = this.currentEvent.usePeriods
+            membership.period = this.event.usePeriods
                 ? membership.period
-                : this.currentEvent.defaultPeriod;
+                : this.event.defaultPeriod;
 
             const index = user.memberships.findIndex(
                 m => m.group.id === membership.group.id && m.period.id === membership.period.id
@@ -77,16 +77,15 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             focusedParticipant: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters(['groupOptions', 'currentPeriodOptions', 'periodOptions']),
+        ...mapGetters(['groupOptions', 'currentPeriodOptions', 'periodOptions', 'event']),
 
         displayedColumns() {
             const columns = [{ title: 'Groupe', field: 'group.name' }];
 
-            if (this.currentEvent.usePeriods) {
+            if (this.event.usePeriods) {
                 columns.push({ title: 'Période', field: 'period.name' });
             }
 
@@ -94,25 +93,21 @@ export default {
         },
 
         displayedMemberships() {
-            return (this.focusedParticipant.memberships || [])
-                .filter(membership => membership.period.event_id === this.currentEvent.id)
-                .map(membership => {
-                    if (
-                        membership.period.id !== this.currentEvent.defaultPeriod_id &&
-                        !this.currentEvent.usePeriods
-                    ) {
-                        membership.warning =
-                            'Une période autre que<br />celle par défaut est utilisée.';
-                    }
+            return (this.focusedParticipant.memberships || []).map(membership => {
+                if (
+                    membership.period.id !== this.event.defaultPeriod_id &&
+                    !this.event.usePeriods
+                ) {
+                    membership.warning =
+                        'Une période autre que<br />celle par défaut est utilisée.';
+                }
 
-                    return membership;
-                });
+                return membership;
+            });
         },
 
         disabledAdd() {
-            return (
-                !this.membership.group || (!this.membership.period && this.currentEvent.usePeriods)
-            );
+            return !this.membership.group || (!this.membership.period && this.event.usePeriods);
         }
     }
 };

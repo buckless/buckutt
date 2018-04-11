@@ -14,13 +14,13 @@
                 <span>
                     <i class="material-icons">attach_money</i> {{ price.amount | price(true) }} TTC
                 </span>
-                <span v-if="currentEvent.usePeriods">
+                <span v-if="event.usePeriods">
                     <i class="material-icons">alarm</i> {{ price.period.name }}
                 </span>
-                <span v-if="currentEvent.useFundations">
+                <span v-if="event.useFundations">
                     <i class="material-icons">local_atm</i> {{ price.fundation.name }}
                 </span>
-                <span v-if="currentEvent.useGroups">
+                <span v-if="event.useGroups">
                     <i class="material-icons">group</i> {{ price.group.name }}
                 </span>
                 <b-confirm @confirm="removeObject({ route: 'prices', value: price })">
@@ -33,9 +33,9 @@
             </div>
             <form @submit.prevent="createPrice(newPrice)">
                 <mdl-textfield floating-label="Montant TTC (centimes)" v-model="newPrice.amount" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield>
-                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="newPrice.period" v-if="currentEvent.usePeriods"></b-inputselect>
-                <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptions" v-model="newPrice.fundation" v-if="currentEvent.useFundations"></b-inputselect>
-                <b-inputselect label="Groupe" id="group-select" :options="groupOptions" v-model="newPrice.group" v-if="currentEvent.useGroups"></b-inputselect>
+                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="newPrice.period" v-if="event.usePeriods"></b-inputselect>
+                <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptions" v-model="newPrice.fundation" v-if="event.useFundations"></b-inputselect>
+                <b-inputselect label="Groupe" id="group-select" :options="groupOptions" v-model="newPrice.group" v-if="event.useGroups"></b-inputselect>
                 <mdl-button :disabled="disabledAdd" icon="add" colored></mdl-button>
             </form>
         </div>
@@ -73,7 +73,6 @@ export default {
         ...mapState({
             focusedPoint: state => state.app.focusedElements[0],
             focusedItem: state => state.app.focusedElements[2],
-            currentEvent: state => state.app.currentEvent,
             isArticle: state => !!state.route.params.article
         }),
 
@@ -81,7 +80,8 @@ export default {
             'groupOptions',
             'periodOptions',
             'currentPeriodOptions',
-            'fundationOptions'
+            'fundationOptions',
+            'event'
         ]),
 
         displayedPrices() {
@@ -92,9 +92,9 @@ export default {
 
         disabledAdd() {
             return (
-                (!this.newPrice.fundation && this.currentEvent.useFundations) ||
-                (!this.newPrice.period && this.currentEvent.usePeriods) ||
-                (!this.newPrice.group && this.currentEvent.useGroups)
+                (!this.newPrice.fundation && this.event.useFundations) ||
+                (!this.newPrice.period && this.event.usePeriods) ||
+                (!this.newPrice.group && this.event.useGroups)
             );
         }
     },
@@ -135,23 +135,17 @@ export default {
             let warning;
 
             if (
-                price.fundation_id !== this.currentEvent.defaultFundation_id &&
-                !this.currentEvent.useFundations
+                price.fundation_id !== this.event.defaultFundation_id &&
+                !this.event.useFundations
             ) {
                 warning = 'Une fondation autre que<br />celle par défaut est utilisée.';
             }
 
-            if (
-                price.group_id !== this.currentEvent.defaultGroup_id &&
-                !this.currentEvent.useGroups
-            ) {
+            if (price.group_id !== this.event.defaultGroup_id && !this.event.useGroups) {
                 warning = 'Un groupe autre que<br />celui par défaut est utilisé.';
             }
 
-            if (
-                price.period_id !== this.currentEvent.defaultPeriod_id &&
-                !this.currentEvent.usePeriods
-            ) {
+            if (price.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods) {
                 warning = 'Une période autre que<br />celle par défaut est utilisée.';
             }
 
@@ -162,15 +156,11 @@ export default {
             const priceToCreate = {
                 amount: price.amount,
                 point_id: this.focusedPoint.id,
-                fundation_id: this.currentEvent.useFundations
+                fundation_id: this.event.useFundations
                     ? price.fundation.id
-                    : this.currentEvent.defaultFundation_id,
-                group_id: this.currentEvent.useGroups
-                    ? price.group.id
-                    : this.currentEvent.defaultGroup_id,
-                period_id: this.currentEvent.usePeriods
-                    ? price.period.id
-                    : this.currentEvent.defaultPeriod_id
+                    : this.event.defaultFundation_id,
+                group_id: this.event.useGroups ? price.group.id : this.event.defaultGroup_id,
+                period_id: this.event.usePeriods ? price.period.id : this.event.defaultPeriod_id
             };
 
             if (this.isArticle) {

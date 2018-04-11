@@ -192,6 +192,10 @@ export default {
                         return condition.value.indexOf(object[condition.field]) > -1;
                     case 'isNotIn':
                         return condition.value.indexOf(object[condition.field]) === -1;
+                    case 'is':
+                        return condition.value === object[condition.field];
+                    case 'isNot':
+                        return condition.value !== object[condition.field];
                     default:
                         break;
                 }

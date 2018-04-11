@@ -9,12 +9,6 @@ export function retrieveObject({ dispatch, state }, payload) {
     }
 
     return get(`${payload.route}/${payload.id}${embed}`).then(result => {
-        if (payload.route === 'events' && state.app.currentEvent) {
-            if (state.app.currentEvent.id === result.id) {
-                dispatch('updateCurrentEvent', result);
-            }
-        }
-
         dispatch('checkAndUpdateObjects', {
             route: payload.route,
             objects: [result],

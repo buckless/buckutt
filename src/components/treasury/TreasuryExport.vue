@@ -7,6 +7,7 @@
                 <b-inputselect label="Point" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect>
             </div>
             <div>
+                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-if="event.usePeriods" @input="fillDates"></b-inputselect>
                 <b-datetime-picker
                     v-model="fields.dateIn"
                     locale="fr"
@@ -66,7 +67,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['pointOptions']),
+        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'pointOptions', 'event']),
 
         pointOptionsAll() {
             const points = Object.assign([], this.pointOptions);
@@ -118,6 +119,13 @@ export default {
                         full: err
                     })
                 );
+        },
+
+        fillDates(period) {
+            if (period) {
+                this.fields.dateIn = new Date(period.start);
+                this.fields.dateOut = new Date(period.end);
+            }
         }
     }
 };

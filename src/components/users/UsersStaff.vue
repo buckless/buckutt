@@ -1,6 +1,6 @@
 <template>
     <div class="b-staff">
-        <h5>Staff de l'événement</h5>
+        <h5>Staff</h5>
         <div class="b-staff__list">
             <b-staff
                 v-for="user in staff"

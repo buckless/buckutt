@@ -4,82 +4,91 @@
             <h1>{{ barName }}</h1>
             <ul>
                 <li>
-                    <router-link to="/" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                        <i class="material-icons">home</i>
-                        Accueil
+                    <router-link to="/stats" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">insert_chart</i>
+                        Tableau de bord
+                    </router-link>
+                </li>
+            </ul>
+            <ul>
+                <li class="b-sidebar__separator"></li>
+                <li class="b-sidebar__category">
+                    <i class="material-icons">account_balance</i>
+                    <span>Financier</span>
+                </li>
+                <li>
+                    <router-link to="/purchases" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">shopping_cart</i>
+                        Ventes
                     </router-link>
                 </li>
                 <li>
                     <router-link to="/treasury" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
                         <i class="material-icons">attach_money</i>
-                        Trésorerie
+                        Rechargements
                     </router-link>
-                </li>
-            </ul>
-            <transition name="fade">
-                <ul v-if="currentEvent">
-                    <li class="b-sidebar__separator"></li>
-                    <li class="b-sidebar__eventDisplayer">
-                        <i class="material-icons">cake</i>
-                        <span>
-                            Événement<br />
-                            <strong>{{ currentEvent.name }}</strong>
-                        </span>
-                    </li>
-                    <li>
-                        <router-link to="/stats" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">insert_chart</i>
-                            Tableau de bord
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/purchases" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">shopping_cart</i>
-                            Achats
-                        </router-link>
-                    </li>
-                    <li v-if="currentEvent.usePeriods">
-                        <router-link to="/periods" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">alarm</i>
-                            Périodes
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/wikets" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">location_on</i>
-                            Points de vente
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/participants" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">edit</i>
-                            Privilèges
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/accesses" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">verified_user</i>
-                            Accès
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/alerts" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">add_alert</i>
-                            Alertes
-                        </router-link>
-                    </li>
-                </ul>
-            </transition>
-            <ul>
-                <li class="b-sidebar__separator"></li>
-                <li class="b-sidebar__eventDisplayer">
-                    <i class="material-icons">settings</i>
-                    <span>Avancé</span>
                 </li>
                 <li>
                     <router-link to="/giftreloads" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
                         <i class="material-icons">card_giftcard</i>
                         Offres
+                    </router-link>
+                </li>
+            </ul>
+            <ul>
+                <li class="b-sidebar__separator"></li>
+                <li class="b-sidebar__category">
+                    <i class="material-icons">device_hub</i>
+                    <span>Terminaux</span>
+                </li>
+                <li>
+                    <router-link to="/wikets" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">location_on</i>
+                        Guichets
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/accesses" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">verified_user</i>
+                        Accès
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/alerts" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">add_alert</i>
+                        Alertes
+                    </router-link>
+                </li>
+            </ul>
+            <ul>
+                <li class="b-sidebar__separator"></li>
+                <li class="b-sidebar__category">
+                    <i class="material-icons">person_outline</i>
+                    <span>Utilisateurs</span>
+                </li>
+                <li>
+                    <router-link to="/users" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">person</i>
+                        Comptes
+                    </router-link>
+                </li>
+                <li>
+                    <router-link to="/groups" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect" v-if="event.useGroups">
+                        <i class="material-icons">group</i>
+                        Groupes
+                    </router-link>
+                </li>
+            </ul>
+            <ul>
+                <li class="b-sidebar__separator"></li>
+                <li class="b-sidebar__category">
+                    <i class="material-icons">settings</i>
+                    <span>Avancé</span>
+                </li>
+                <li>
+                    <router-link :to="`/events/${event.id}`" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        <i class="material-icons">event</i>
+                        Options
                     </router-link>
                 </li>
                 <li>
@@ -94,15 +103,11 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
     computed: {
-        ...mapState({
-            currentEvent: state => state.app.currentEvent
-        }),
-
-        ...mapGetters(['logged']),
+        ...mapGetters(['logged', 'event']),
 
         barName() {
             return config.name;
@@ -168,7 +173,7 @@ export default {
             margin: auto;
         }
 
-        & > .b-sidebar__eventDisplayer {
+        & > .b-sidebar__category {
             color: var(--sidebarColor) !important;
             text-align: center;
             padding: 10px 5px 10px 5px;

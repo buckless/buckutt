@@ -107,10 +107,6 @@ export function updateObject({ dispatch, state }, object) {
         result => {
             dispatch('checkAndUpdateObjects', { route: object.route, objects: [result] });
 
-            if (object.route === 'events' && result.id === state.app.currentEvent.id) {
-                dispatch('changeCurrentEvent', result);
-            }
-
             state.app.focusedElements.forEach((element, depth) => {
                 if (element[object.route]) {
                     dispatch('updateFocusedElement', {
@@ -128,10 +124,6 @@ export function updateObject({ dispatch, state }, object) {
 }
 
 export function removeObject({ dispatch, state }, object) {
-    if (object.route === 'events' && state.app.currentEvent.id === object.value.id) {
-        dispatch('unselectCurrentEvent');
-    }
-
     return del(`${object.route.toLowerCase()}/${object.value.id}`).then(() => {
         dispatch('checkAndDeleteObjects', { route: object.route, objects: [object.value] });
 

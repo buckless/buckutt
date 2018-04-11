@@ -11,9 +11,7 @@ import giftreloads from './components/giftreloads/routes';
 import groups from './components/groups/routes';
 import home from './components/home/routes';
 import logout from './components/logout/routes';
-import participants from './components/participants/routes';
 import periods from './components/periods/routes';
-import points from './components/points/routes';
 import promotions from './components/promotions/routes';
 import purchases from './components/purchases/routes';
 import treasury from './components/treasury/routes';
@@ -35,9 +33,7 @@ export default [].concat(
     groups,
     home,
     logout,
-    participants,
     periods,
-    points,
     promotions,
     purchases,
     treasury,

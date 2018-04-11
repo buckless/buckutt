@@ -4,7 +4,7 @@
         <form @submit.prevent="createUserRight(focusedParticipant, userRight)">
             <b-inputselect label="Droit" id="right-select" :options="rightsList" v-model="userRight.name"></b-inputselect>
             <b-inputselect label="Point" id="point-select" :options="pointOptions" v-model="userRight.point"></b-inputselect>
-            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="userRight.period" v-if="currentEvent.usePeriods"></b-inputselect><br />
+            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="userRight.period" v-if="event.usePeriods"></b-inputselect><br />
             <mdl-button colored raised :disabled="disabledAdd">Ajouter</mdl-button>
         </form>
         <br />
@@ -42,9 +42,7 @@ export default {
         ...mapActions(['removeObject', 'createObject', 'notify', 'notifyError']),
 
         createUserRight(user, right) {
-            right.period = this.currentEvent.usePeriods
-                ? right.period
-                : this.currentEvent.defaultPeriod;
+            right.period = this.event.usePeriods ? right.period : this.event.defaultPeriod;
 
             right.period_id = right.period.id;
             delete right.period;
@@ -75,11 +73,10 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             focusedParticipant: state => state.app.focusedElements[0]
         }),
 
-        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'pointOptions']),
+        ...mapGetters(['periodOptions', 'currentPeriodOptions', 'pointOptions', 'event']),
 
         displayedColumns() {
             const columns = [
@@ -87,7 +84,7 @@ export default {
                 { title: 'Point', field: 'point.name' }
             ];
 
-            if (this.currentEvent.usePeriods) {
+            if (this.event.usePeriods) {
                 columns.push({ title: 'Période', field: 'period.name' });
             }
 
@@ -95,26 +92,21 @@ export default {
         },
 
         displayedRights() {
-            return (this.focusedParticipant.rights || [])
-                .filter(right => right.period.event_id === this.currentEvent.id)
-                .map(right => {
-                    if (!right.point) {
-                        right.point = { name: 'Aucun' };
-                    }
+            return (this.focusedParticipant.rights || []).map(right => {
+                if (!right.point) {
+                    right.point = { name: 'Aucun' };
+                }
 
-                    if (
-                        right.period.id !== this.currentEvent.defaultPeriod_id &&
-                        !this.currentEvent.usePeriods
-                    ) {
-                        right.warning = 'Une période autre que<br />celle par défaut est utilisée.';
-                    }
+                if (right.period.id !== this.event.defaultPeriod_id && !this.event.usePeriods) {
+                    right.warning = 'Une période autre que<br />celle par défaut est utilisée.';
+                }
 
-                    return right;
-                });
+                return right;
+            });
         },
 
         disabledAdd() {
-            return !this.userRight.name || (!this.userRight.period && this.currentEvent.usePeriods);
+            return !this.userRight.name || (!this.userRight.period && this.event.usePeriods);
         }
     }
 };
