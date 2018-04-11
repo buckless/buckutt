@@ -3,13 +3,15 @@ const config = require('../../config');
 
 module.exports = {
     makePayment(app, data) {
+        console.log('makep');
+        console.log(data);
         const Transaction = app.locals.models.Transaction;
 
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
             user_id: data.buyer.id,
-            includeCard: !data.buyer.hasPaidInitialCard && req.event.cardCost > 0
+            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
         });
 
         return transaction.save().then(() => {

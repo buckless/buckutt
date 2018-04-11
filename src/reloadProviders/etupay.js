@@ -14,7 +14,7 @@ module.exports = {
             state: 'pending',
             amount: data.amount,
             user_id: data.buyer.id,
-            includeCard: !data.buyer.hasPaidInitialCard && req.event.cardCost > 0
+            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
         });
 
         return transaction.save().then(() => {
@@ -29,8 +29,8 @@ module.exports = {
 
             basket.addItem('Rechargement', data.amount, 1);
 
-            if (!data.buyer.hasPaidInitialCard && req.event.cardCost > 0) {
-                basket.addItem('Activation du support', req.event.cardCost, 1);
+            if (!data.buyer.hasPaidInitialCard && data.event.cardCost > 0) {
+                basket.addItem('Activation du support', data.event.cardCost, 1);
             }
 
             return {

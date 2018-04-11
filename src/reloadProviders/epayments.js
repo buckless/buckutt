@@ -32,7 +32,7 @@ module.exports = {
             state: 'pending',
             amount: data.amount,
             user_id: data.buyer.id,
-            includeCard: !data.buyer.hasPaidInitialCard && req.event.cardCost > 0
+            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
         });
 
         return transaction
@@ -86,17 +86,17 @@ module.exports = {
                     }
                 };
 
-                if (!data.buyer.hasPaidInitialCard && req.event.cardCost > 0) {
-                    order.order.amountOfMoney.amount += req.event.cardCost;
+                if (!data.buyer.hasPaidInitialCard && data.event.cardCost > 0) {
+                    order.order.amountOfMoney.amount += data.event.cardCost;
                     order.order.shoppingCart.items.push({
                         amountOfMoney: {
                             currencyCode: 'EUR',
-                            amount: req.event.cardCost
+                            amount: data.event.cardCost
                         },
                         invoiceData: {
                             description: 'Activation du support',
                             nrOfItems: '1',
-                            pricePerItem: req.event.cardCost
+                            pricePerItem: data.event.cardCost
                         }
                     });
                 }

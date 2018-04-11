@@ -35,7 +35,7 @@ module.exports = {
             state: 'pending',
             amount: data.amount,
             user_id: data.buyer.id,
-            includeCard: !data.buyer.hasPaidInitialCard && req.event.cardCost > 0
+            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
         });
 
         return transaction
@@ -72,9 +72,9 @@ module.exports = {
                     merchantName: config.merchantName
                 };
 
-                if (!data.buyer.hasPaidInitialCard && req.event.cardCost > 0) {
-                    order.payment.amount += req.event.cardCost;
-                    order.order.amount += req.event.cardCost;
+                if (!data.buyer.hasPaidInitialCard && data.event.cardCost > 0) {
+                    order.payment.amount += data.event.cardCost;
+                    order.order.amount += data.event.cardCost;
                 }
 
                 return payline.runAction('doWebPayment', order);
