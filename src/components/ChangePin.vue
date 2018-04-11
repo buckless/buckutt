@@ -32,28 +32,25 @@
 
 <script>
 import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
-import { mapActions }   from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     data() {
         return {
-            currentPin  : '',
-            pin         : '',
+            currentPin: '',
+            pin: '',
             confirmedPin: ''
         };
     },
 
     methods: {
-        ...mapActions([
-            'changePin',
-            'notify'
-        ]),
+        ...mapActions(['changePin', 'notify']),
 
         change(currentPin, pin, confirmedPin) {
             this.changePin({ currentPin, pin, confirmedPin })
-                .then((message) => {
-                    this.currentPin   = '';
-                    this.pin          = '';
+                .then(message => {
+                    this.currentPin = '';
+                    this.pin = '';
                     this.confirmedPin = '';
                     this.notify(message);
                 })

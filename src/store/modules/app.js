@@ -1,9 +1,9 @@
 const state = {
-    loggedUser : null,
-    history    : [],
-    users      : [],
+    loggedUser: null,
+    history: [],
+    users: [],
     giftReloads: [],
-    pending    : 0
+    pending: 0
 };
 
 const mutations = {

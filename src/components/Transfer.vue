@@ -29,8 +29,8 @@
 
 <script>
 import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
-import { mapActions }   from 'vuex';
-import Autocomplete     from './Autocomplete';
+import { mapActions } from 'vuex';
+import Autocomplete from './Autocomplete';
 
 export default {
     components: {
@@ -40,16 +40,13 @@ export default {
     data() {
         return {
             currentPin: '',
-            amount    : '',
-            user      : undefined
+            amount: '',
+            user: undefined
         };
     },
 
     methods: {
-        ...mapActions([
-            'transfer',
-            'notify'
-        ]),
+        ...mapActions(['transfer', 'notify']),
 
         defineUser(user) {
             this.user = user;
@@ -57,7 +54,7 @@ export default {
 
         transferWrapper(currentPin, amount, user) {
             this.transfer({ currentPin, amount, user })
-                .then((message) => {
+                .then(message => {
                     this.notify(message);
                     this.$router.push('/history');
                 })

@@ -1,6 +1,6 @@
 const authData = {
     headers: {
-        Accept        : 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
     }
 };
@@ -20,13 +20,18 @@ export function updateBearer(token) {
  * @return {Promise} The result as JSON
  */
 export function get(url, opts_) {
-    const opts = Object.assign({}, authData, {
-        method: 'GET'
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'GET'
+        },
+        opts_
+    );
 
-    return fetch(`api/${url}`, opts)
+    return fetch(`/api/${url}`, opts)
         .then(res => res.json())
-        .then((results) => {
+        .then(results => {
             if (Array.isArray(results)) {
                 return results.filter(r => !r.isRemoved);
             } else if (!results.isRemoved) {
@@ -43,13 +48,17 @@ export function get(url, opts_) {
  * @return {Promise} The result as JSON
  */
 export function post(url, data, opts_) {
-    const opts = Object.assign({}, authData, {
-        method: 'POST',
-        body  : JSON.stringify(data)
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'POST',
+            body: JSON.stringify(data)
+        },
+        opts_
+    );
 
-    return fetch(`api/${url}`, opts)
-        .then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(res => res.json());
 }
 
 /**
@@ -60,13 +69,17 @@ export function post(url, data, opts_) {
  * @return {Promise} The result as JSON
  */
 export function put(url, data, opts_) {
-    const opts = Object.assign({}, authData, {
-        method: 'PUT',
-        body  : JSON.stringify(data)
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        },
+        opts_
+    );
 
-    return fetch(`api/${url}`, opts)
-        .then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(res => res.json());
 }
 
 /**
@@ -76,10 +89,14 @@ export function put(url, data, opts_) {
  * @return {Promise} The result as JSON
  */
 export function del(url, opts_) {
-    const opts = Object.assign({}, authData, {
-        method: 'DELETE'
-    }, opts_);
+    const opts = Object.assign(
+        {},
+        authData,
+        {
+            method: 'DELETE'
+        },
+        opts_
+    );
 
-    return fetch(`api/${url}`, opts)
-        .then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(res => res.json());
 }
