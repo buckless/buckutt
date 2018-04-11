@@ -107,6 +107,7 @@ router.post('/services/login', (req, res, next) => {
                 .status(200)
                 .json({
                     user,
+                    cardCost: req.event.cardCost,
                     token: jwt.sign(
                         {
                             id: user.id,

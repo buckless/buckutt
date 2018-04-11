@@ -34,13 +34,14 @@ module.exports = {
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
-            user_id: data.buyer.id
+            user_id: data.buyer.id,
+            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
         });
 
         return transaction
             .save()
-            .then(() =>
-                payline.runAction('doWebPayment', {
+            .then(() => {
+                const order = {
                     version: 18,
                     payment: {
                         attributes: ns('payment'),
@@ -50,8 +51,8 @@ module.exports = {
                         mode: modes.full,
                         contractNumber: providerConfig.contractNumber
                     },
-                    returnURL: `${config.urls.managerUrl}/#/reload/success`,
-                    cancelURL: `${config.urls.managerUrl}/#/reload/failed`,
+                    returnURL: `${config.urls.managerUrl}/reload/success`,
+                    cancelURL: `${config.urls.managerUrl}/reload/failed`,
                     order: {
                         attributes: ns('order'),
                         ref: transaction.get('id'),
@@ -69,8 +70,15 @@ module.exports = {
                         email: data.buyer.email
                     },
                     merchantName: config.merchantName
-                })
-            )
+                };
+
+                if (!data.buyer.hasPaidInitialCard && data.event.cardCost > 0) {
+                    order.payment.amount += data.event.cardCost;
+                    order.order.amount += data.event.cardCost;
+                }
+
+                return payline.runAction('doWebPayment', order);
+            })
             .then(result => {
                 transaction.set('transactionId', result.token);
 
@@ -122,7 +130,9 @@ module.exports = {
                 .then(result => {
                     paymentDetails = result;
 
-                    return Transaction.where({ transactionId: req.query.token }).fetch();
+                    return Transaction.where({ transactionId: req.query.token }).fetch({
+                        withRelated: ['user']
+                    });
                 })
                 .then(transaction => {
                     transaction.set('state', paymentDetails.result.shortMessage);
@@ -162,10 +172,16 @@ module.exports = {
                             amount
                         });
 
+                        if (transaction.get('includeCard')) {
+                            transaction.related('user').set('hasPaidInitialCard', true);
+                            transaction.related('user').set('hasPaidCard', true);
+                        }
+
                         return Promise.all([
                             newReload.save(),
                             transaction.save(),
                             pendingCardUpdate.save(),
+                            transaction.related('user').save(),
                             reloadGiftSave
                         ]).then(() => {
                             req.app.locals.modelChanges.emit('userCreditUpdate', {

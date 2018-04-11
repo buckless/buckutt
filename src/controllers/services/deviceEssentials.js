@@ -131,7 +131,8 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     id: meansOfLogin[i].user.id,
                     fullname: `${meansOfLogin[i].user.firstname} ${meansOfLogin[i].user.lastname}`,
                     ticket: meansOfLogin[i].data,
-                    credit: meansOfLogin[i].user.credit
+                    credit: meansOfLogin[i].user.credit,
+                    hasPaidCard: meansOfLogin[i].user.hasPaidCard
                 });
             }
 

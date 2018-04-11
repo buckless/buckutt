@@ -31,65 +31,78 @@ module.exports = {
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
-            user_id: data.buyer.id
+            user_id: data.buyer.id,
+            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
         });
 
         return transaction
             .save()
-            .then(() =>
-                connectSdk.hostedcheckouts.create(
-                    providerConfig.merchantId,
-                    {
-                        cardPaymentMethodSpecificInput: {
-                            skipAuthentication: true
+            .then(() => {
+                const order = {
+                    cardPaymentMethodSpecificInput: {
+                        skipAuthentication: true
+                    },
+                    order: {
+                        amountOfMoney: {
+                            currencyCode: 'EUR',
+                            amount: data.amount
                         },
-                        order: {
-                            amountOfMoney: {
-                                currencyCode: 'EUR',
-                                amount: data.amount
+                        customer: {
+                            billingAddress: {
+                                countryCode: 'FR'
                             },
-                            customer: {
-                                billingAddress: {
-                                    countryCode: 'FR'
-                                },
-                                contactDetails: {
-                                    emailAddress: data.buyer.email
-                                },
-                                personalInformation: {
-                                    name: {
-                                        firstName: data.buyer.firstname,
-                                        surname: data.buyer.lastname
-                                    }
-                                },
-                                merchantCustomerId:
-                                    data.buyer.id.slice(0, 3) + data.buyer.id.slice(24)
+                            contactDetails: {
+                                emailAddress: data.buyer.email
                             },
-                            shoppingCart: {
-                                items: [
-                                    {
-                                        amountOfMoney: {
-                                            currencyCode: 'EUR',
-                                            amount: data.amount
-                                        },
-                                        invoiceData: {
-                                            description: 'Rechargement cashless',
-                                            nrOfItems: '1',
-                                            pricePerItem: data.amount
-                                        }
-                                    }
-                                ]
-                            }
+                            personalInformation: {
+                                name: {
+                                    firstName: data.buyer.firstname,
+                                    surname: data.buyer.lastname
+                                }
+                            },
+                            merchantCustomerId: data.buyer.id.slice(0, 3) + data.buyer.id.slice(24)
                         },
-                        hostedCheckoutSpecificInput: {
-                            variant: providerConfig.variant,
-                            locale: 'fr_FR',
-                            showResultPage: false,
-                            returnUrl: `${config.urls.managerUrl}/reload/success`
+                        shoppingCart: {
+                            items: [
+                                {
+                                    amountOfMoney: {
+                                        currencyCode: 'EUR',
+                                        amount: data.amount
+                                    },
+                                    invoiceData: {
+                                        description: 'Rechargement cashless',
+                                        nrOfItems: '1',
+                                        pricePerItem: data.amount
+                                    }
+                                }
+                            ]
                         }
                     },
-                    null
-                )
-            )
+                    hostedCheckoutSpecificInput: {
+                        variant: providerConfig.variant,
+                        locale: 'fr_FR',
+                        showResultPage: false,
+                        returnUrl: `${config.urls.managerUrl}/reload/success`
+                    }
+                };
+
+                if (!data.buyer.hasPaidInitialCard && data.event.cardCost > 0) {
+                    order.order.amountOfMoney.amount += data.event.cardCost;
+                    order.order.shoppingCart.items.push({
+                        amountOfMoney: {
+                            currencyCode: 'EUR',
+                            amount: data.event.cardCost
+                        },
+                        invoiceData: {
+                            description: 'Activation du support',
+                            nrOfItems: '1',
+                            pricePerItem: data.event.cardCost
+                        }
+                    });
+                }
+
+                return connectSdk.hostedcheckouts.create(providerConfig.merchantId, order, null);
+            })
             .then(result => {
                 if (result.body.errors) {
                     const errs = JSON.stringify(result.body.errors);
@@ -130,15 +143,25 @@ module.exports = {
             }
 
             let paymentDetails;
+            let giftReloads;
 
             connectSdk.hostedcheckouts
                 .get(providerConfig.merchantId, req.query.hostedCheckoutId, null)
                 .then(result => {
                     paymentDetails = result.body;
 
+                    return GiftReload.fetchAll();
+                })
+                .then(
+                    giftReloads_ =>
+                        giftReloads_ && giftReloads_.length ? giftReloads_.toJSON() : []
+                )
+                .then(giftReloads_ => {
+                    giftReloads = giftReloads_;
+
                     return Transaction.where({
                         transactionId: `${req.query.hostedCheckoutId}_${req.query.RETURNMAC}`
-                    }).fetch();
+                    }).fetch({ withRelated: ['user'] });
                 })
                 .then(transaction => {
                     if (!transaction) {
@@ -176,15 +199,39 @@ module.exports = {
                             seller_id: transaction.get('user_id')
                         });
 
+                        const reloadGiftAmount = giftReloads
+                            .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
+                            .reduce((a, b) => a + b, 0);
+
+                        const reloadGift = new Reload({
+                            credit: reloadGiftAmount,
+                            type: 'gift',
+                            trace: `card-${amount}`,
+                            point_id: req.point_id,
+                            buyer_id: transaction.get('user_id'),
+                            seller_id: transaction.get('user_id')
+                        });
+
+                        const reloadGiftSave = reloadGiftAmount
+                            ? reloadGift.save()
+                            : Promise.resolve();
+
                         const pendingCardUpdate = new PendingCardUpdate({
                             user_id: transaction.get('user_id'),
                             amount: transaction.get('amount')
                         });
 
+                        if (transaction.get('includeCard')) {
+                            transaction.related('user').set('hasPaidInitialCard', true);
+                            transaction.related('user').set('hasPaidCard', true);
+                        }
+
                         return Promise.all([
                             newReload.save(),
                             transaction.save(),
-                            pendingCardUpdate.save()
+                            pendingCardUpdate.save(),
+                            transaction.related('user').save(),
+                            reloadGiftSave
                         ]).then(() => {
                             req.app.locals.modelChanges.emit('userCreditUpdate', {
                                 id: transaction.get('user_id'),
