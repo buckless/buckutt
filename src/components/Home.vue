@@ -9,7 +9,7 @@
                 <section class="mdc-card__supporting-text">
                     <label class="mdc-text-field" ref="lmail">
                         <input type="email" class="mdc-text-field__input" autofocus required v-model="lmail">
-                        <span class="mdc-text-field__label">Mail</span>
+                        <span class="mdc-text-field__label">Mail ou nom d'utilisateur</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
                     <label class="mdc-text-field" ref="pin">
