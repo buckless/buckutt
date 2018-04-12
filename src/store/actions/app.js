@@ -20,6 +20,7 @@ export function logoutUser({ dispatch }) {
     dispatch('closeSocket');
     localStorage.removeItem('manager-token', null);
     localStorage.removeItem('manager-user', null);
+    localStorage.removeItem('manager-linkedusers', null);
 }
 
 export function updateLoggedUser({ commit }, loggedUser) {
@@ -36,6 +37,8 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 export function autoLoginUser({ commit, dispatch }) {
     if (localStorage.hasOwnProperty('manager-token')) {
         commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
+        commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
+        commit('SETCREDENTIALS', JSON.parse(localStorage.getItem('manager-credentials')));
         dispatch('setToken', localStorage.getItem('manager-token'));
         dispatch('loadUser');
     }
@@ -75,8 +78,15 @@ export function login({ dispatch, commit }, credentials) {
         if (result.user) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
-            commit('SETCARDCOST', result.cardCost ? result.cardCost : 0);
             dispatch('loadUser');
+
+            commit('SETCREDENTIALS', credentials);
+            commit('UPDATELINKEDUSERS', result.linkedUsers);
+            commit('SETCARDCOST', result.cardCost ? result.cardCost : 0);
+
+            localStorage.setItem('manager-credentials', JSON.stringify(credentials));
+            localStorage.setItem('manager-linkedusers', JSON.stringify(result.linkedUsers));
+
             return result.user;
         }
 

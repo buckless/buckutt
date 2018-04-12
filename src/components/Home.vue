@@ -8,7 +8,7 @@
             <form @submit.prevent="log(lmail, pin)" v-show="tab === 'connect'">
                 <section class="mdc-card__supporting-text">
                     <label class="mdc-text-field" ref="lmail">
-                        <input type="email" class="mdc-text-field__input" autofocus required v-model="lmail">
+                        <input type="text" class="mdc-text-field__input" autofocus required v-model="lmail">
                         <span class="mdc-text-field__label">Mail ou nom d'utilisateur</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
@@ -40,7 +40,7 @@
                 <section class="mdc-card__supporting-text">
                     <label class="mdc-text-field" ref="ticketNumber">
                         <input type="text" class="mdc-text-field__input" v-model="ticketNumber">
-                        <span class="mdc-text-field__label">Numéro de billet ou mail</span>
+                        <span class="mdc-text-field__label">Numéro de billet</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
                 </section>
@@ -145,7 +145,7 @@ export default {
                 .catch(err => {
                     this.ticketNumberInput.valid = false;
 
-                    if (err.status === 404) {
+                    if (err.status === 410) {
                         return this.notify({ message: 'Le compte existe déjà.' });
                     }
 
