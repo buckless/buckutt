@@ -48,13 +48,12 @@ router.post('/services/login', (req, res, next) => {
     const infos = { type: req.body.meanOfLogin.toString(), data: req.body.data.toString() };
     log.info(`Login with mol ${infos.type}(${infos.data})`, infos);
 
-    models.MeanOfLogin.query(q =>
-        q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
-    )
-        .where({
-            type: infos.type,
-            blocked: false
-        })
+    models.MeanOfLogin
+        .query(q =>
+            q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
+        )
+        .where('type', 'in', infos.type.split(','))
+        .where({ blocked: false })
         .fetch({
             withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
         })
