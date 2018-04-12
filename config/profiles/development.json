@@ -40,8 +40,8 @@
             "host": "smtp.mailtrap.io",
             "port": 2525,
             "auth": {
-                "user": "ed37a3f7039a0e",
-                "pass": "d617720e0b2db0"
+                "user": "583285d5a62f63",
+                "pass": "51848dd566e072"
             }
         }
     },
@@ -54,7 +54,7 @@
         "template": "Hi !\n You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !"
     },
     "assigner": {
-        "ticketProvider": "csv",
+        "ticketProvider": "billetweb",
         "csv": {
             "url": {
                 "url": "",
@@ -66,10 +66,11 @@
         "billetweb": {
             "event": "30783",
             "user": "14522",
-            "key": "",
+            "key": "c4ca4238a0b923820dcc509a6f75849b",
             "version": "1"
         },
-        "sendPINMail": false,
+        "sendPINMail": true,
+        "merchantName": "Buckless",
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",
         "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"

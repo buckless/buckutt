@@ -64,6 +64,7 @@
         },
         "sendPINMail": false,
         "from": "noreply@buckless.com",
+        "merchantName": "Buckless",
         "subject": "Buckless — Votre code PIN",
         "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
     },

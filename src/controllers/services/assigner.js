@@ -51,10 +51,13 @@ router.get('/services/assigner', (req, res, next) => {
                         .end();
                 }
 
-                return res
-                    .status(404)
-                    .json({})
-                    .end();
+                const err = new APIError(
+                    module,
+                    410,
+                    "Ticket already binded",
+                    req.query.ticketOrMail
+                );
+                return Promise.reject(err);
             }
 
             return fetchFromAPI(ticketOrMail)
@@ -73,9 +76,12 @@ router.get('/services/assigner', (req, res, next) => {
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
                     ticketId = userData_.ticketId;
 
-                    return MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
-                        .where('data', 'in', [ticketId, userData.mail])
-                        .where({ blocked: false })
+                    return MeanOfLogin
+                        .where({
+                            type: 'ticketId',
+                            data: ticketId,
+                            blocked: false
+                        })
                         .fetchAll();
                 })
                 .then(mols => {
@@ -108,7 +114,7 @@ router.get('/services/assigner', (req, res, next) => {
                     const subject = config.assigner.subject;
                     const { html, text } = template('pinAssign', {
                         pin,
-                        brandname: config.provider.config.merchantName,
+                        brandname: config.assigner.merchantName,
                         link: `${config.urls.managerUrl}`
                     });
 
@@ -142,7 +148,7 @@ router.get('/services/assigner', (req, res, next) => {
                         blocked: false
                     });
 
-                    const initialReload = new Reload({
+                    let initialReload = new Reload({
                         credit: user.get('credit'),
                         type: 'initial',
                         trace: ticketOrMail,
@@ -150,6 +156,10 @@ router.get('/services/assigner', (req, res, next) => {
                         buyer_id: user.id,
                         seller_id: user.id
                     });
+
+                    if (user.get('credit') === 0) {
+                        initialReload = { save: () => Promise.resolve() }
+                    }
 
                     return Promise.all([mailMol.save(), ticketMol.save(), usernameMol.save(), initialReload.save()]);
                 })

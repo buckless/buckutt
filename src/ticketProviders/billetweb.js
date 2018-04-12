@@ -17,7 +17,7 @@ module.exports = ticketNumber => {
 
     let ticketData;
 
-    axios.get(url, { params })
+    return axios.get(url, { params })
         .then(res => {
             ticket = res.data.find(t => t.barcode === ticketNumber);
 
@@ -25,12 +25,17 @@ module.exports = ticketNumber => {
                 return Promise.resolve(null);
             }
 
-            return username()
+            return username(ticket.firstname, ticket.name);
         })
         .then((username) => {
+            if (!username) {
+                return null;
+            }
+
             return {
                 firstname: ticket.firstname,
-                lastname: ticket.lastname,
+                lastname: ticket.name,
+                mail: ticket.email,
                 username,
                 credit: 0,
                 ticketId: ticket.barcode

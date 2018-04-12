@@ -55,7 +55,7 @@ router.post('/services/login', (req, res, next) => {
         .where('type', 'in', infos.type.split(','))
         .where({ blocked: false })
         .fetch({
-            withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
+            withRelated: ['user', 'user.rights', 'user.rights.period']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
@@ -79,6 +79,7 @@ router.post('/services/login', (req, res, next) => {
         .then(
             match =>
                 new Promise((resolve, reject) => {
+                    console.log(match);
                     if (match) {
                         return resolve();
                     }
@@ -91,7 +92,16 @@ router.post('/services/login', (req, res, next) => {
                     reject(new APIError(module, 401, 'User not found', errDetails));
                 })
         )
-        .then(() => {
+        .then(() => models.User.where({ mail: user.mail }).fetchAll({ withRelated: ['meansOfLogin'] }))
+        .then((users_) => {
+            const users = users_.toJSON().map(user => ({
+                id: user.id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                credit: user.credit,
+                username: user.meansOfLogin.find(mol => mol.type === 'username').data
+            }));
+
             user.pin = '';
             user.password = '';
 
@@ -106,6 +116,7 @@ router.post('/services/login', (req, res, next) => {
                 .status(200)
                 .json({
                     user,
+                    linkedUsers: users,
                     cardCost: req.event.cardCost,
                     token: jwt.sign(
                         {
@@ -120,6 +131,10 @@ router.post('/services/login', (req, res, next) => {
                     )
                 })
                 .end();
+        })
+        .catch((err) => {
+            console.log(err);
+            return Promise.reject(err);
         })
         .catch(err => dbCatch(module, err, next));
 });
