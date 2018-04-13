@@ -13,10 +13,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "postinstall": "cp config/profiles/development.json.example config/profiles/development.json && cp config/profiles/production.json.example config/profiles/production.json",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config build/ --open --hot --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production webpack --config build/ --progress --hide-modules",
-    "build:docker": "docker build -t buckless/admin .",
+    "build:docker": "docker build -t lab.buckless.com:4567/core/admin .",
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\"",
     "start": "static dist --host-address 0.0.0.0 --port 8082"
   },

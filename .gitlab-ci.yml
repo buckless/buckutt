@@ -1,29 +1,32 @@
-image: node:alpine
+image: lab.buckless.com:4567/core/docker-node-alpine
+
+services:
+  - docker:dind
 
 stages:
-  - test
-  - deploy
-
-before_script:
-  - yarn
-  - cp config/profiles/production.json.example config/profiles/production.json
-  - cp config/profiles/development.json.example config/profiles/development.json
+  - build
+  - push
 
 cache:
   paths:
     - node_modules/
 
-test:
-  stage: test
+build:
+  stage: build
+  before_script:
+    - apk update
+    - apk add --no-cache git openssh openssl make gcc g++ python
   script:
+    - yarn
+    - cp config/profiles/development.json.example config/profiles/development.json
+    - cp config/profiles/production.json.example config/profiles/production.json
     - yarn build
-    - yarn lint
 
-deploy:
-  stage: deploy
+push:
+  stage: push
   only:
     - master
   script:
-    - docker build -t lab.buckless.com/core/admin .
-    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com
-    - docker push lab.buckless.com/core/admin
+    - yarn build:docker
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN https://lab.buckless.com:4567
+    - docker push lab.buckless.com:4567/core/admin
