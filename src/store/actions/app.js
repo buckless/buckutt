@@ -77,6 +77,9 @@ export function login({ dispatch, commit }, credentials) {
         if (result.user) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
+
+            console.log(result.user);
+
             dispatch('loadUser');
 
             commit('UPDATELINKEDUSERS', result.linkedUsers);
@@ -91,14 +94,14 @@ export function login({ dispatch, commit }, credentials) {
     });
 }
 
-export function switch({ dispatch, commit }, credentials) {
+export function switchUser({ dispatch, commit }, credentials) {
     return post('switchuser', credentials).then(result => {
         if (result.user) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
             dispatch('loadUser');
 
-            location.reload();
+            // location.reload();
         }
 
         return Promise.reject();

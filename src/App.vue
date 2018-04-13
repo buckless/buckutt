@@ -82,6 +82,7 @@ footer {
     text-align: center;
     color: #757575;
     font-size: 14px;
+    margin-bottom: 24px;
     font-weight: bold;
     opacity: 0.7;
 }

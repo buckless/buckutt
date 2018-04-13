@@ -2,6 +2,7 @@
     <div class="b-switcher mdc-menu-anchor">
         <div class="b-switcher__button" @click="toggleMenu">
             <span>{{ activeUser.firstname }} {{ activeUser.lastname }}</span>
+            <div class="b-space"></div>
             <i class="material-icons">group</i>
         </div>
         <div class="mdc-menu" tabindex="-1" ref="menu">
@@ -18,7 +19,7 @@
 
 <script>
 import { MDCMenu, Corner } from '@material/menu/dist/mdc.menu.min.js';
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex';
 
 export default {
     computed: {
@@ -34,7 +35,7 @@ export default {
         },
 
         changeUser(user) {
-            setTimeout(() => this.menu.open = false, 300);
+            setTimeout(() => (this.menu.open = false), 300);
 
             if (this.working || user.id === this.activeUser.id) {
                 return;
@@ -42,17 +43,17 @@ export default {
 
             this.working = true;
 
-            this.switch({ meanOfLogin: 'username', data: username });
+            this.switchUser({ meanOfLogin: 'username', data: user.username });
         },
 
-        ...mapActions(['switch'])
+        ...mapActions(['switchUser'])
     },
 
     mounted() {
         this.menu = MDCMenu.attachTo(this.$refs.menu);
         this.menu.setAnchorCorner(Corner.CENTER_TOP);
     }
-}
+};
 </script>
 
 <style>
