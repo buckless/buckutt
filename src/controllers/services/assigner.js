@@ -46,7 +46,9 @@ router.get('/services/assigner', (req, res, next) => {
                             id: mol.user.id,
                             credit: mol.user.credit,
                             name: `${mol.user.firstname} ${mol.user.lastname}`,
-                            username: (mol.user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
+                            username: (
+                                mol.user.meansOfLogin.find(mol => mol.type === 'username') || {}
+                            ).data
                         })
                         .end();
                 }
@@ -54,7 +56,7 @@ router.get('/services/assigner', (req, res, next) => {
                 const err = new APIError(
                     module,
                     410,
-                    "Ticket already binded",
+                    'Ticket already binded',
                     req.query.ticketOrMail
                 );
                 return Promise.reject(err);
@@ -76,13 +78,11 @@ router.get('/services/assigner', (req, res, next) => {
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
                     ticketId = userData_.ticketId;
 
-                    return MeanOfLogin
-                        .where({
-                            type: 'ticketId',
-                            data: ticketId,
-                            blocked: false
-                        })
-                        .fetchAll();
+                    return MeanOfLogin.where({
+                        type: 'ticketId',
+                        data: ticketId,
+                        blocked: false
+                    }).fetchAll();
                 })
                 .then(mols => {
                     if (mols.length > 0) {
@@ -158,10 +158,15 @@ router.get('/services/assigner', (req, res, next) => {
                     });
 
                     if (user.get('credit') === 0) {
-                        initialReload = { save: () => Promise.resolve() }
+                        initialReload = { save: () => Promise.resolve() };
                     }
 
-                    return Promise.all([mailMol.save(), ticketMol.save(), usernameMol.save(), initialReload.save()]);
+                    return Promise.all([
+                        mailMol.save(),
+                        ticketMol.save(),
+                        usernameMol.save(),
+                        initialReload.save()
+                    ]);
                 })
                 .then(() => {
                     if (req.user) {

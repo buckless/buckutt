@@ -114,11 +114,10 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             }
 
             // Step 3: fetch tickets
-            return models.MeanOfLogin
-                .where({
-                    type: 'ticketId',
-                    blocked: false
-                })
+            return models.MeanOfLogin.where({
+                type: 'ticketId',
+                blocked: false
+            })
                 .fetchAll({
                     withRelated: [
                         'user',

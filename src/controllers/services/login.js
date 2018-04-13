@@ -48,14 +48,13 @@ router.post('/services/login', (req, res, next) => {
     const infos = { type: req.body.meanOfLogin.toString(), data: req.body.data.toString() };
     log.info(`Login with mol ${infos.type}(${infos.data})`, infos);
 
-    models.MeanOfLogin
-        .query(q =>
-            q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
-        )
+    models.MeanOfLogin.query(q =>
+        q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
+    )
         .where('type', 'in', infos.type.split(','))
         .where({ blocked: false })
         .fetch({
-            withRelated: ['user', 'user.rights', 'user.rights.period']
+            withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
@@ -92,8 +91,10 @@ router.post('/services/login', (req, res, next) => {
                     reject(new APIError(module, 401, 'User not found', errDetails));
                 })
         )
-        .then(() => models.User.where({ mail: user.mail }).fetchAll({ withRelated: ['meansOfLogin'] }))
-        .then((users_) => {
+        .then(() =>
+            models.User.where({ mail: user.mail }).fetchAll({ withRelated: ['meansOfLogin'] })
+        )
+        .then(users_ => {
             const users = users_.toJSON().map(user => ({
                 id: user.id,
                 firstname: user.firstname,
@@ -132,7 +133,7 @@ router.post('/services/login', (req, res, next) => {
                 })
                 .end();
         })
-        .catch((err) => {
+        .catch(err => {
             console.log(err);
             return Promise.reject(err);
         })
