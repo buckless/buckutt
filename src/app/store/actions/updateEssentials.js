@@ -68,6 +68,7 @@ export const updateEssentials = (store, force) => {
                 const users = res.data.userTickets.map(user => [
                     user.id,
                     user.fullname,
+                    user.username,
                     user.ticket,
                     user.credit,
                     user.hasPaidCard

@@ -20,7 +20,8 @@
         <search v-show="subpage === 'search'" @assign="assignModal"/>
         <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck>
             <strong>{{ assignModalName }}</strong><br />
-            Nouveau crédit: <strong><currency :value="assignModalCredit" /></strong>
+            Nom d'utilisateur : <strong>{{ assignModalUsername }}</strong><br/>
+            Nouveau crédit : <strong><currency :value="assignModalCredit" /></strong>
 
             <template v-if="cardCost > 0">
                 <strong v-if="!assignModalHasPaidCard">
@@ -68,6 +69,7 @@ export default {
             showOkModal: false,
             assignModalCredit: 0,
             assignModalName: '',
+            assignModalUsername: '',
             assignModalId: '',
             assignModalHasPaidCard: false,
             assignModalOpened: false,
@@ -194,7 +196,7 @@ export default {
                     .get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
                     .then(res => {
                         if (typeof res.data.credit === 'number') {
-                            this.assignModal(res.data.credit, res.data.name, res.data.id, res.data.hasPaidCard);
+                            this.assignModal(res.data.credit, res.data.name, res.data.username, res.data.id, res.data.hasPaidCard);
                             return;
                         }
 
@@ -210,7 +212,7 @@ export default {
                     .findByBarcode(value)
                     .then(users => {
                         if (users.length === 1) {
-                            this.assignModal(users[0].credit, users[0].name, users[0].id, users[0].hasPaidCard);
+                            this.assignModal(users[0].credit, users[0].name, users[0].username, users[0].id, users[0].hasPaidCard);
                             return;
                         }
 
@@ -225,6 +227,7 @@ export default {
             this.assignModalOpened = false;
             this.assignModalCredit = 0;
             this.assignModalName = '';
+            this.assignModalUsername = '';
             this.assignModalId = '';
         },
 
@@ -248,10 +251,11 @@ export default {
             }
         },
 
-        assignModal(credit, name, id, hasPaidCard) {
+        assignModal(credit, name, username, id, hasPaidCard) {
             this.assignModalOpened = true;
             this.assignModalCredit = credit;
             this.assignModalName = name;
+            this.assignModalUsername = username;
             this.assignModalId = id;
             this.assignModalHasPaidCard = hasPaidCard;
         },
