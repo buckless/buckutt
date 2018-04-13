@@ -15,7 +15,7 @@ build:
   stage: build
   before_script:
     - apk update
-    - apk add --no-cache git openssh openssl make gcc g++ python
+    - apk add --no-cache git openssh openssl make gcc g++ python vips-dev
   script:
     - yarn
     - yarn test
