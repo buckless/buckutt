@@ -16,6 +16,10 @@ module.exports = bookshelf => {
 
         defaultPeriod() {
             return this.belongsTo('Period', 'defaultPeriod_id');
+        },
+
+        nfc() {
+            return this.belongsTo('Article', 'nfc_id');
         }
     });
 
