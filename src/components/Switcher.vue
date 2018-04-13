@@ -23,7 +23,6 @@ import { mapState, mapActions } from 'vuex'
 export default {
     computed: {
         ...mapState({
-            credentials: state => state.app.credentials,
             activeUser: state => state.app.loggedUser,
             linkedUsers: state => state.app.loggedLinkedUsers
         })
@@ -43,11 +42,10 @@ export default {
 
             this.working = true;
 
-            this.login(Object.assign({}, this.credentials, { data: user.username }))
-                .then(() => location.reload());
+            this.switch({ meanOfLogin: 'username', data: username });
         },
 
-        ...mapActions(['login'])
+        ...mapActions(['switch'])
     },
 
     mounted() {

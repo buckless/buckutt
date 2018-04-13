@@ -38,7 +38,6 @@ export function autoLoginUser({ commit, dispatch }) {
     if (localStorage.hasOwnProperty('manager-token')) {
         commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
         commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
-        commit('SETCREDENTIALS', JSON.parse(localStorage.getItem('manager-credentials')));
         dispatch('setToken', localStorage.getItem('manager-token'));
         dispatch('loadUser');
     }
@@ -80,14 +79,26 @@ export function login({ dispatch, commit }, credentials) {
             dispatch('updateLoggedUser', result.user);
             dispatch('loadUser');
 
-            commit('SETCREDENTIALS', credentials);
             commit('UPDATELINKEDUSERS', result.linkedUsers);
             commit('SETCARDCOST', result.cardCost ? result.cardCost : 0);
 
-            localStorage.setItem('manager-credentials', JSON.stringify(credentials));
             localStorage.setItem('manager-linkedusers', JSON.stringify(result.linkedUsers));
 
             return result.user;
+        }
+
+        return Promise.reject();
+    });
+}
+
+export function switch({ dispatch, commit }, credentials) {
+    return post('switchuser', credentials).then(result => {
+        if (result.user) {
+            dispatch('setToken', result.token);
+            dispatch('updateLoggedUser', result.user);
+            dispatch('loadUser');
+
+            location.reload();
         }
 
         return Promise.reject();
