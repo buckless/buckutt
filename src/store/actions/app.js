@@ -98,6 +98,8 @@ export function switchUser({ dispatch, commit }, credentials) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
             dispatch('loadUser');
+
+            return;
         }
 
         return Promise.reject();
