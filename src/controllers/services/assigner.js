@@ -110,6 +110,7 @@ router.get('/services/assigner', (req, res, next) => {
                     const subject = config.assigner.subject;
                     const { html, text } = template('pinAssign', {
                         pin,
+                        username,
                         brandname: config.assigner.merchantName,
                         link: `${config.urls.managerUrl}`
                     });
