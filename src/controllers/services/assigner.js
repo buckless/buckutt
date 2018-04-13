@@ -105,10 +105,6 @@ router.get('/services/assigner', (req, res, next) => {
                     return user.save();
                 })
                 .then(() => {
-                    if (!config.assigner.sendPINMail) {
-                        return Promise.resolve();
-                    }
-
                     const from = config.askpin.from;
                     const to = user.get('mail');
                     const subject = config.assigner.subject;

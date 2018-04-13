@@ -69,7 +69,6 @@
             "key": "",
             "version": "1"
         },
-        "sendPINMail": true,
         "merchantName": "Buckless",
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",
