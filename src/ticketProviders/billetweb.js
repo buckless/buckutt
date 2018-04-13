@@ -1,4 +1,5 @@
 const axios = require('axios');
+const username = require('../lib/username');
 
 module.exports = ticketNumber => {
     const config = require('../../config').assigner.billetweb;
@@ -14,18 +15,31 @@ module.exports = ticketNumber => {
         version: config.version
     };
 
-    axios.get(url, { params }).then(res => {
-        const ticket = res.data.find(t => t.barcode === ticketNumber);
+    let ticketData;
 
-        if (!ticket) {
-            return Promise.resolve(null);
-        }
+    return axios
+        .get(url, { params })
+        .then(res => {
+            ticket = res.data.find(t => t.barcode === ticketNumber);
 
-        return {
-            firstname: ticket.firstname,
-            lastname: ticket.lastname,
-            credit: 0,
-            ticketId: ticket.barcode
-        };
-    });
+            if (!ticket) {
+                return Promise.resolve(null);
+            }
+
+            return username(ticket.firstname, ticket.name);
+        })
+        .then(username => {
+            if (!username) {
+                return null;
+            }
+
+            return {
+                firstname: ticket.firstname,
+                lastname: ticket.name,
+                mail: ticket.email,
+                username,
+                credit: 0,
+                ticketId: ticket.barcode
+            };
+        });
 };

@@ -119,7 +119,10 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 blocked: false
             })
                 .fetchAll({
-                    withRelated: 'user'
+                    withRelated: [
+                        'user',
+                        { meansOfLogin: query => query.where({ type: 'username' }) }
+                    ]
                 })
                 .then(meansOfLogin =>
                     meansOfLogin.toJSON().filter(meanOfLogin => meanOfLogin.user.id)
@@ -130,6 +133,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 userTickets.push({
                     id: meansOfLogin[i].user.id,
                     fullname: `${meansOfLogin[i].user.firstname} ${meansOfLogin[i].user.lastname}`,
+                    username: (meansOfLogin[i].user.meansOfLogin[0] || {}).data,
                     ticket: meansOfLogin[i].data,
                     credit: meansOfLogin[i].user.credit,
                     hasPaidCard: meansOfLogin[i].user.hasPaidCard

@@ -25,6 +25,7 @@ router.get('/services/assigner', (req, res, next) => {
     let user;
     let userData;
     let pin;
+    let username;
     let ticketId;
 
     MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
@@ -33,7 +34,7 @@ router.get('/services/assigner', (req, res, next) => {
             blocked: false
         })
         .fetch({
-            withRelated: ['user']
+            withRelated: ['user', 'user.meansOfLogin']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
@@ -44,15 +45,21 @@ router.get('/services/assigner', (req, res, next) => {
                         .json({
                             id: mol.user.id,
                             credit: mol.user.credit,
-                            name: `${mol.user.firstname} ${mol.user.lastname}`
+                            name: `${mol.user.firstname} ${mol.user.lastname}`,
+                            username: (
+                                mol.user.meansOfLogin.find(mol => mol.type === 'username') || {}
+                            ).data
                         })
                         .end();
                 }
 
-                return res
-                    .status(404)
-                    .json({})
-                    .end();
+                const err = new APIError(
+                    module,
+                    410,
+                    'Ticket already binded',
+                    req.query.ticketOrMail
+                );
+                return Promise.reject(err);
             }
 
             return fetchFromAPI(ticketOrMail)
@@ -71,10 +78,11 @@ router.get('/services/assigner', (req, res, next) => {
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
                     ticketId = userData_.ticketId;
 
-                    return MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
-                        .where('data', 'in', [ticketId, userData.mail])
-                        .where({ blocked: false })
-                        .fetchAll();
+                    return MeanOfLogin.where({
+                        type: 'ticketId',
+                        data: ticketId,
+                        blocked: false
+                    }).fetchAll();
                 })
                 .then(mols => {
                     if (mols.length > 0) {
@@ -84,27 +92,26 @@ router.get('/services/assigner', (req, res, next) => {
                     }
 
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
+                    username = userData.username;
 
                     userData.password = 'none';
                     userData.pin = bcrypt.hashSync(pin);
                     userData.credit = userData.credit || 0;
                     delete userData.ticketId;
+                    delete userData.username;
 
                     user = new User(userData);
 
                     return user.save();
                 })
                 .then(() => {
-                    if (!config.assigner.sendPINMail) {
-                        return Promise.resolve();
-                    }
-
                     const from = config.askpin.from;
                     const to = user.get('mail');
                     const subject = config.assigner.subject;
                     const { html, text } = template('pinAssign', {
                         pin,
-                        brandname: config.provider.config.merchantName,
+                        username,
+                        brandname: config.assigner.merchantName,
                         link: `${config.urls.managerUrl}`
                     });
 
@@ -131,7 +138,14 @@ router.get('/services/assigner', (req, res, next) => {
                         blocked: false
                     });
 
-                    const initialReload = new Reload({
+                    const usernameMol = new MeanOfLogin({
+                        user_id: user.id,
+                        type: 'username',
+                        data: username,
+                        blocked: false
+                    });
+
+                    let initialReload = new Reload({
                         credit: user.get('credit'),
                         type: 'initial',
                         trace: ticketOrMail,
@@ -140,7 +154,16 @@ router.get('/services/assigner', (req, res, next) => {
                         seller_id: user.id
                     });
 
-                    return Promise.all([mailMol.save(), ticketMol.save(), initialReload.save()]);
+                    if (user.get('credit') === 0) {
+                        initialReload = { save: () => Promise.resolve() };
+                    }
+
+                    return Promise.all([
+                        mailMol.save(),
+                        ticketMol.save(),
+                        usernameMol.save(),
+                        initialReload.save()
+                    ]);
                 })
                 .then(() => {
                     if (req.user) {

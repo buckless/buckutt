@@ -12,7 +12,6 @@ const chooseDivider = (start, end) => {
     const intervals = [5, 15, 30, 60];
     let lessThan = 6;
     let intervalIndex = 0;
-    console.log(diff);
     while (diff > lessThan) {
         lessThan *= 2;
         intervalIndex += 1;
@@ -21,8 +20,6 @@ const chooseDivider = (start, end) => {
             intervals[intervals.length] = intervals[intervals.length - 1] * 2;
         }
     }
-
-    console.log(intervals[intervalIndex]);
 
     return intervals[intervalIndex];
 };
