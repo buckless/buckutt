@@ -78,8 +78,6 @@ export function login({ dispatch, commit }, credentials) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
 
-            console.log(result.user);
-
             dispatch('loadUser');
 
             commit('UPDATELINKEDUSERS', result.linkedUsers);
@@ -100,8 +98,6 @@ export function switchUser({ dispatch, commit }, credentials) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
             dispatch('loadUser');
-
-            // location.reload();
         }
 
         return Promise.reject();
