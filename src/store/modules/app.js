@@ -1,5 +1,6 @@
 const state = {
     loggedUser: null,
+    loggedLinkedUsers: [],
     history: [],
     users: [],
     giftReloads: [],
@@ -10,6 +11,10 @@ const state = {
 const mutations = {
     UPDATELOGGEDUSER(state_, loggedUser) {
         state_.loggedUser = loggedUser;
+    },
+
+    UPDATELINKEDUSERS(state_, linkedUsers) {
+        state_.loggedLinkedUsers = linkedUsers;
     },
 
     SETCARDCOST(state_, cardCost) {

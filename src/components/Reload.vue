@@ -156,4 +156,18 @@ export default {
         line-height: 16px;
     }
 }
+
+@media (max-width: 472px) {
+    .b-reload__boxes {
+        flex-wrap: wrap;
+    }
+
+    .b-reload__boxes > button {
+        width: calc(50% - 20px);
+    }
+
+    .b-reload__boxes > button:nth-child(-n + 2) {
+        margin-bottom: 12px;
+    }
+}
 </style>

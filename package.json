@@ -27,6 +27,7 @@
     "@material/checkbox": "0.29.0",
     "@material/elevation": "^0.28.0",
     "@material/list": "^0.29.0",
+    "@material/menu": "^0.34.0",
     "@material/ripple": "^0.29.0",
     "@material/snackbar": "^0.29.0",
     "@material/textfield": "^0.29.0",

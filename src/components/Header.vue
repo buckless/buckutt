@@ -14,6 +14,8 @@
             <i class="material-icons">power_settings_new</i>
         </router-link>
 
+        <b-switcher v-if="loggedUser" />
+
         <nav class="b-header__navigation" v-if="loggedUser">
             <router-link to="/reload" :class="reloadClass">
                 <i class="material-icons">attach_money</i>
@@ -39,9 +41,14 @@
 </template>
 
 <script>
+import Switcher from './Switcher';
 import { mapState } from 'vuex';
 
 export default {
+    components: {
+        'b-switcher': Switcher
+    },
+
     computed: {
         ...mapState({
             loggedUser: state => state.app.loggedUser,

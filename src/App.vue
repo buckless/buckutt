@@ -42,7 +42,8 @@ export default {
             switch (mutation.type) {
                 case 'UPDATENOTIFY':
                     snackbar.show({
-                        message: mutation.payload.message
+                        message: mutation.payload.message,
+                        timeout: 3000
                     });
                     break;
                 default:
@@ -63,6 +64,7 @@ $mdc-theme-primary: #27ae60;
 @import '@material/textfield/mdc-text-field.scss';
 @import '@material/snackbar/mdc-snackbar.scss';
 @import '@material/checkbox/mdc-checkbox.scss';
+@import '@material/menu/mdc-menu.scss';
 @import './main.css';
 </style>
 
@@ -80,6 +82,7 @@ footer {
     text-align: center;
     color: #757575;
     font-size: 14px;
+    margin-bottom: 24px;
     font-weight: bold;
     opacity: 0.7;
 }

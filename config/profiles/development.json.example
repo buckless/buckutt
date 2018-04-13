@@ -6,5 +6,5 @@
     "footerColor": "\"#fff\"",
     "contactMail": "\"contact@buckless.com\"",
     "assignText": "\"Votre compte devrait être disponible quelques minutes après l'acquisition de votre place.\"",
-    "defaultMol": "\"etuMail\""
+    "defaultMol": "\"mail,username\""
 }

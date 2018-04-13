@@ -9,10 +9,12 @@ import router from './router';
 import PaginatedTable from './components/PaginatedTable.vue';
 
 import './fonts.css';
+import price from './lib/price';
 
 Vue.config.productionTip = false;
 
 Vue.component('b-table', PaginatedTable);
+Vue.filter('price', price);
 
 store.dispatch('autoLoginUser');
 

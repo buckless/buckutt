@@ -20,6 +20,7 @@ export function logoutUser({ dispatch }) {
     dispatch('closeSocket');
     localStorage.removeItem('manager-token', null);
     localStorage.removeItem('manager-user', null);
+    localStorage.removeItem('manager-linkedusers', null);
 }
 
 export function updateLoggedUser({ commit }, loggedUser) {
@@ -36,6 +37,7 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 export function autoLoginUser({ commit, dispatch }) {
     if (localStorage.hasOwnProperty('manager-token')) {
         commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
+        commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
         dispatch('setToken', localStorage.getItem('manager-token'));
         dispatch('loadUser');
     }
@@ -75,9 +77,29 @@ export function login({ dispatch, commit }, credentials) {
         if (result.user) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
-            commit('SETCARDCOST', result.cardCost ? result.cardCost : 0);
+
             dispatch('loadUser');
+
+            commit('UPDATELINKEDUSERS', result.linkedUsers);
+            commit('SETCARDCOST', result.cardCost ? result.cardCost : 0);
+
+            localStorage.setItem('manager-linkedusers', JSON.stringify(result.linkedUsers));
+
             return result.user;
+        }
+
+        return Promise.reject();
+    });
+}
+
+export function switchUser({ dispatch, commit }, credentials) {
+    return post('switchuser', credentials).then(result => {
+        if (result.user) {
+            dispatch('setToken', result.token);
+            dispatch('updateLoggedUser', result.user);
+            dispatch('loadUser');
+
+            return;
         }
 
         return Promise.reject();
