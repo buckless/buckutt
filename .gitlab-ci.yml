@@ -1,10 +1,5 @@
 image: lab.buckless.com:4567/core/docker-node-alpine
 
-# When using dind, it's wise to use the overlayfs driver for
-# improved performance.
-variables:
-  DOCKER_DRIVER: overlay2
-
 services:
   - docker:dind
 
@@ -18,14 +13,20 @@ cache:
 
 build:
   stage: build
+  before_script:
+    - apk update
+    - apk add --no-cache git openssh openssl make gcc g++ python pcsc-lite-dev
   script:
-    - yarn build:docker
-    - docker run -t lab.buckless.com:4567/core/client yarn lint
+    - yarn
+    - cp config/profiles/development.json.example config/profiles/development.json
+    - cp config/profiles/production.json.example config/profiles/production.json
+    - yarn build:browser
 
 push:
   stage: push
   only:
     - master
   script:
-    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" lab.buckless.com:4567
+    - yarn build:docker
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN https://lab.buckless.com:4567
     - docker push lab.buckless.com:4567/core/client
