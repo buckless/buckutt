@@ -48,7 +48,7 @@ router.post('/services/manager/switchuser', (req, res) => {
                 return next(new APIError(module, 401, 'User not found', errDetails));
             }
 
-            user = mol.user;
+            const user = mol.user;
 
             if (req.user.mail !== user.mail) {
                 return next(new APIError(module, 401, 'User not found', errDetails));
