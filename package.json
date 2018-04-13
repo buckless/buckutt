@@ -13,12 +13,11 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "postinstall": "cp config/profiles/development.json.example config/profiles/development.json && cp config/profiles/production.json.example config/profiles/production.json",
     "dev": "node build/dev-server.js",
     "dev:proxy": "cross-env DEV_PROXY=1 node build/dev-server.js",
     "start": "static dist --host-address 0.0.0.0 --port 8083 --gzip --spa --cache 86400",
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\"",
-    "build:docker": "docker build -t buckless/manager .",
+    "build:docker": "docker build -t lab.buckless.com:4567/core/manager .",
     "build": "node build/build.js"
   },
   "dependencies": {
