@@ -77,8 +77,6 @@ export const updateEssentials = (store, force) => {
                     user.credit
                 ]);
 
-                console.log(users);
-
                 promises.push(
                     offlineData.empty('users').then(() => offlineData.insert('users', users))
                 );
