@@ -282,7 +282,7 @@ export default {
                                 users[0].credit,
                                 users[0].name,
                                 users[0].username,
-                                users[0].id
+                                users[0].uid
                             );
                             return;
                         }
