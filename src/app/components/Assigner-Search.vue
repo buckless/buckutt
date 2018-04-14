@@ -124,8 +124,7 @@ export default {
                     user.credit,
                     `${user.firstname} ${user.lastname}`,
                     user.username,
-                    user.id,
-                    user.hasPaidCard
+                    user.id
                 );
             } else {
                 this.$emit(
@@ -133,8 +132,7 @@ export default {
                     user.credit,
                     user.name,
                     user.username,
-                    user.id,
-                    user.hasPaidCard
+                    user.uid
                 );
             }
         }
