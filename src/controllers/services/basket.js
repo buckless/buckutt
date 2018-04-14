@@ -51,7 +51,7 @@ router.post('/services/basket', (req, res, next) => {
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
-            if (!mol || !mol.user.id) {
+            if (!mol || !mol.user || !mol.user.id) {
                 return next(new APIError(module, 400, 'Invalid buyer'));
             }
 

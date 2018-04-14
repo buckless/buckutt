@@ -58,7 +58,7 @@ router.post('/services/login', (req, res, next) => {
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
-            if (!mol || !mol.user.id) {
+            if (!mol || !mol.user || !mol.user.id) {
                 const errDetails = {
                     mol: infos.type,
                     point: req.Point_id
