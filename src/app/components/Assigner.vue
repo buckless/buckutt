@@ -237,9 +237,9 @@ export default {
                         write && this.useCardData
                             ? new Promise(resolve => {
                                   const creditToWrite =
-                                      this.assignModalCredit < nfcCost.amount
+                                      this.assignModalCredit < this.nfcCost.amount
                                           ? this.assignModalCredit
-                                          : this.assignModalCredit - nfcCost.amount;
+                                          : this.assignModalCredit - this.nfcCost.amount;
                                   window.app.$root.$emit('readyToWrite', creditToWrite);
                                   window.app.$root.$on('writeCompleted', () => resolve());
                               })

@@ -33,11 +33,6 @@ export const setGroups = ({ commit }, payload) => {
     commit('SET_GROUPS', payload);
 };
 
-export const setCardCost = ({ commit }, payload) => {
-    window.localStorage.setItem('cardCost', JSON.stringify(payload));
-    commit('SET_CARDCOST', payload);
-};
-
 export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, password }) => {
     commit('SET_DATA_LOADED', false);
     const credentials = {
@@ -73,8 +68,6 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
                 canAssign: res.data.user.canAssign,
                 canControl: res.data.user.canControl
             });
-
-            dispatch('setCardCost', res.data.cardCost);
 
             return dispatch('updateEssentials', true).then(() => dispatch('interfaceLoader'));
         })
