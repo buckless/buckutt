@@ -80,7 +80,7 @@ const mutations = {
     },
 
     SET_EVENT(state, payload) {
-        const keys = ['maxAlcohol', 'maxPerAccount', 'minReload', 'useCardData'];
+        const keys = ['maxAlcohol', 'maxPerAccount', 'minReload', 'useCardData', 'nfc_id'];
 
         keys.forEach(key => {
             state.device.event.config[key] = payload[key];
