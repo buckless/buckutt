@@ -14,8 +14,10 @@ cache:
 build:
   stage: build
   before_script:
-    - apk update
-    - apk add --no-cache git openssh openssl make gcc g++ python vips-dev
+    - apk add --update \
+      --repository http://dl-3.alpinelinux.org/alpine/edge/testing \
+      vips-tools && rm -rf /var/cache/apk/*
+    - apk add --no-cache git openssh openssl make gcc g++ python
   script:
     - yarn
     - yarn test
