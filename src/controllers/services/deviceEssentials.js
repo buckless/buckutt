@@ -144,7 +144,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 userTickets.push({
                     id: meansOfLogin[i].user.id,
                     fullname: `${meansOfLogin[i].user.firstname} ${meansOfLogin[i].user.lastname}`,
-                    username: (meansOfLogin[i].user.meansOfLogin[0] || {}).data,
+                    username: (meansOfLogin[i].user.meansOfLogin[0] || { data: '' }).data,
                     ticket: meansOfLogin[i].data,
                     credit: meansOfLogin[i].user.credit,
                     hasPaidCard: meansOfLogin[i].user.hasPaidCard

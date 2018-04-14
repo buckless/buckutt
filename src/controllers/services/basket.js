@@ -155,7 +155,7 @@ router.post('/services/basket', (req, res, next) => {
     const userRights = rightsDetails(req.user, req.point_id);
 
     const unallowedPurchase =
-        req.body.basket.find(item => typeof item.cost === 'number') && !userRights.sell;
+        req.body.basket.find(item => typeof item.cost === 'number') && !userRights.sell && !userRights.assign;
     const unallowedReload =
         req.body.basket.find(item => typeof item.credit === 'number') && !userRights.reload;
 
