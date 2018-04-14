@@ -8,10 +8,6 @@
                 <section class="mdc-card__supporting-text">
                     Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br />
                     Les opérations en ligne ne sont validées qu'à la suite une transaction sur site.
-                    <template v-if="!loggedUser.hasPaidInitialCard && cardCost > 0">
-                        <br/>
-                        <strong>Un prélèvement de {{ cardCost | price(true) }} sera prélevé au premier rechargement à la demande de l'organisateur.</strong>
-                    </template>
                     <div class="b-reload-gifts" v-if="giftReloads.length > 0">
 
                         <div class="b-reload-gifts__gift" v-for="giftReload in giftReloads">
@@ -78,7 +74,6 @@ export default {
     computed: {
         ...mapState({
             giftReloads: state => state.app.giftReloads,
-            cardCost: state => state.app.cardCost,
             loggedUser: state => state.app.loggedUser
         })
     },

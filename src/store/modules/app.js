@@ -4,8 +4,7 @@ const state = {
     history: [],
     users: [],
     giftReloads: [],
-    pending: 0,
-    cardCost: 0
+    pending: 0
 };
 
 const mutations = {
@@ -15,10 +14,6 @@ const mutations = {
 
     UPDATELINKEDUSERS(state_, linkedUsers) {
         state_.loggedLinkedUsers = linkedUsers;
-    },
-
-    SETCARDCOST(state_, cardCost) {
-        state_.cardCost = cardCost;
     },
 
     ADDHISTORY(state_, data) {

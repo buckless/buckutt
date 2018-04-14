@@ -81,7 +81,6 @@ export function login({ dispatch, commit }, credentials) {
             dispatch('loadUser');
 
             commit('UPDATELINKEDUSERS', result.linkedUsers);
-            commit('SETCARDCOST', result.cardCost ? result.cardCost : 0);
 
             localStorage.setItem('manager-linkedusers', JSON.stringify(result.linkedUsers));
 
