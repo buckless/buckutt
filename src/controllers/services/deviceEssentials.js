@@ -51,10 +51,20 @@ router.get('/services/deviceEssentials', (req, res, next) => {
         }
     ];
 
+    const embedPrices = [
+        {
+            embed: 'period',
+            filters: [['end', '>', now]],
+            required: true
+        }
+    ];
+
     const embedRightsFilters = embedRights.filter(rel => rel.required).map(rel => rel.embed);
     const embedMembershipsFilters = embedMemberships
         .filter(rel => rel.required)
         .map(rel => rel.embed);
+
+    const embedPricesFilters = embedPrices.filter(rel => rel.required).map(rel => rel.embed);
 
     const operators = [];
     const giftReloads = [];
@@ -62,7 +72,8 @@ router.get('/services/deviceEssentials', (req, res, next) => {
     const accesses = [];
     const groups = [];
     const meansOfPayment = [];
-    let device = [];
+    const nfcCosts = [];
+    let device = {};
 
     // Step 1: get operators
     models.Right.where({
@@ -121,7 +132,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 .fetchAll({
                     withRelated: [
                         'user',
-                        { meansOfLogin: query => query.where({ type: 'username' }) }
+                        { 'user.meansOfLogin': query => query.where({ type: 'username' }) }
                     ]
                 })
                 .then(meansOfLogin =>
@@ -167,6 +178,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 groups.push(pick(groups_[i], ['id', 'name']));
             }
 
+            // Step 6: fetch meansOfPayment
             return models.MeanOfPayment.fetchAll().then(meansOfPayment_ =>
                 meansOfPayment_.toJSON()
             );
@@ -176,7 +188,23 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 meansOfPayment.push(pick(meansOfPayment_[i], ['name', 'slug']));
             }
 
-            // Step 7: prepare device
+            // Step 7: fetch nfcCosts
+            return models.Price
+                .where({ article_id: req.event.nfc_id })
+                .fetchAll({
+                    withRelated: embedParser(embedPrices)
+                })
+                .then(prices => embedFilter(embedPricesFilters, prices.toJSON()));
+        })
+        .then(prices => {
+            for (let i = prices.length - 1; i >= 0; i -= 1) {
+                nfcCosts.push({
+                    ...pick(prices[i], ['id', 'amount', 'group_id']),
+                    period: pick(prices[i].period, ['start', 'end'])
+                });
+            }
+
+            // Step 8: prepare device
             device = req.device;
             delete device.wikets;
 
@@ -192,6 +220,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     accesses,
                     groups,
                     meansOfPayment,
+                    nfcCosts,
                     device,
                     event: req.event
                 })

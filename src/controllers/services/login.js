@@ -78,7 +78,6 @@ router.post('/services/login', (req, res, next) => {
         .then(
             match =>
                 new Promise((resolve, reject) => {
-                    console.log(match);
                     if (match) {
                         return resolve();
                     }
@@ -118,7 +117,6 @@ router.post('/services/login', (req, res, next) => {
                 .json({
                     user,
                     linkedUsers: users,
-                    cardCost: req.event.cardCost,
                     token: jwt.sign(
                         {
                             id: user.id,
