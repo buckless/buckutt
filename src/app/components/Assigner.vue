@@ -107,11 +107,14 @@ export default {
             const now = new Date();
             const groupsToCheck = [this.defaultGroup].concat(this.activeGroups);
             const validCosts = this.nfcCosts
-                .filter(nfcCost =>
-                    new Date(nfcCost.period.start) <= now && new Date(nfcCost.period.end) >= now && groupsToCheck.find(group => group.id === nfcCost.group_id)
+                .filter(
+                    nfcCost =>
+                        new Date(nfcCost.period.start) <= now &&
+                        new Date(nfcCost.period.end) >= now &&
+                        groupsToCheck.find(group => group.id === nfcCost.group_id)
                 )
                 .sort((a, b) => a.amount - b.amount);
-            return (validCosts.length === 0) ? { amount: 0 } : validCosts[0];
+            return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
         },
 
         ...mapState({
@@ -120,8 +123,8 @@ export default {
             useCardData: state => state.auth.device.event.config.useCardData,
             nfcId: state => state.auth.device.event.nfc_id,
             nfcCosts: state => state.items.nfcCosts,
-            defaultGroup: state => state.auth.groups
-                .find(group => group.name === state.auth.device.event.name),
+            defaultGroup: state =>
+                state.auth.groups.find(group => group.name === state.auth.device.event.name),
             groups: state =>
                 state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
         }),
@@ -144,20 +147,22 @@ export default {
                 buyer: value,
                 molType: config.buyerMeanOfLogin,
                 date: new Date(),
-                basket: [{
-                    price_id: this.nfcCost.id,
-                    promotion_id: null,
-                    articles: [
-                        {
-                            id: this.nfcId,
-                            vat: 0.2,
-                            price: this.nfcCost.id
-                        }
-                    ],
-                    alcohol: 0,
-                    cost: this.nfcCost.amount,
-                    type: 'purchase'
-                }],
+                basket: [
+                    {
+                        price_id: this.nfcCost.id,
+                        promotion_id: null,
+                        articles: [
+                            {
+                                id: this.nfcId,
+                                vat: 0.2,
+                                price: this.nfcCost.id
+                            }
+                        ],
+                        alcohol: 0,
+                        cost: this.nfcCost.amount,
+                        type: 'purchase'
+                    }
+                ],
                 seller: this.operator.id,
                 localId
             };
@@ -193,7 +198,7 @@ export default {
                                     });
                                 }
                             })
-                    )
+                    );
             } else {
                 initialPromise = initialPromise
                     .then(() =>
@@ -216,7 +221,7 @@ export default {
                             url: `${config.api}/services/basket`,
                             body: transactionToSend
                         })
-                    )
+                    );
             }
 
             initialPromise
@@ -231,12 +236,13 @@ export default {
                     write =>
                         write && this.useCardData
                             ? new Promise(resolve => {
-                                const creditToWrite = (this.assignModalCredit < nfcCost.amount)
-                                    ? this.assignModalCredit
-                                    : this.assignModalCredit - nfcCost.amount;
-                                window.app.$root.$emit('readyToWrite', creditToWrite);
-                                window.app.$root.$on('writeCompleted', () => resolve());
-                            })
+                                  const creditToWrite =
+                                      this.assignModalCredit < nfcCost.amount
+                                          ? this.assignModalCredit
+                                          : this.assignModalCredit - nfcCost.amount;
+                                  window.app.$root.$emit('readyToWrite', creditToWrite);
+                                  window.app.$root.$on('writeCompleted', () => resolve());
+                              })
                             : Promise.resolve()
                 )
                 .then(() => this.ok())
@@ -251,7 +257,12 @@ export default {
                     .get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
                     .then(res => {
                         if (typeof res.data.credit === 'number') {
-                            this.assignModal(res.data.credit, res.data.name, res.data.username, res.data.id);
+                            this.assignModal(
+                                res.data.credit,
+                                res.data.name,
+                                res.data.username,
+                                res.data.id
+                            );
                             return;
                         }
 
@@ -267,7 +278,12 @@ export default {
                     .findByBarcode(value)
                     .then(users => {
                         if (users.length === 1) {
-                            this.assignModal(users[0].credit, users[0].name, users[0].username, users[0].id);
+                            this.assignModal(
+                                users[0].credit,
+                                users[0].name,
+                                users[0].username,
+                                users[0].id
+                            );
                             return;
                         }
 

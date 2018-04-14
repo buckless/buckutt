@@ -36,7 +36,7 @@ export const setGroups = ({ commit }, payload) => {
 export const setCardCost = ({ commit }, payload) => {
     window.localStorage.setItem('cardCost', JSON.stringify(payload));
     commit('SET_CARDCOST', payload);
-}
+};
 
 export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, password }) => {
     commit('SET_DATA_LOADED', false);

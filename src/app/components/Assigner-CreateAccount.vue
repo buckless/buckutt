@@ -60,8 +60,8 @@ export default {
             online: state => state.online.status,
             point: state => state.auth.device.point.id,
             nfcCosts: state => state.items.nfcCosts,
-            defaultGroup: state => state.auth.groups
-                .find(group => group.name === state.auth.device.event.name),
+            defaultGroup: state =>
+                state.auth.groups.find(group => group.name === state.auth.device.event.name),
             groups: state =>
                 state.auth.groups.filter(group => group.name !== state.auth.device.event.name),
             useCardData: state => state.auth.device.event.config.useCardData
@@ -71,11 +71,14 @@ export default {
             const now = new Date();
             const groupsToCheck = [this.defaultGroup].concat(this.activeGroups);
             const validCosts = this.nfcCosts
-                .filter(nfcCost =>
-                    new Date(nfcCost.period.start) <= now && new Date(nfcCost.period.end) >= now && groupsToCheck.find(group => group.id === nfcCost.group_id)
+                .filter(
+                    nfcCost =>
+                        new Date(nfcCost.period.start) <= now &&
+                        new Date(nfcCost.period.end) >= now &&
+                        groupsToCheck.find(group => group.id === nfcCost.group_id)
                 )
                 .sort((a, b) => a.amount - b.amount);
-            return (validCosts.length === 0) ? { amount: 0 } : validCosts[0];
+            return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
         },
 
         ...mapGetters(['tokenHeaders'])

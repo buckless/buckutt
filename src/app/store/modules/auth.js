@@ -11,11 +11,11 @@ const initialState = {
             id: null,
             name: null,
             config: {
-              maxAlcohol: null,
-              maxPerAccount: null,
-              minReload: null,
-              useCardData: null,
-              cardCost: 0
+                maxAlcohol: null,
+                maxPerAccount: null,
+                minReload: null,
+                useCardData: null,
+                cardCost: 0
             }
         },
         config: {
