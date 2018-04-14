@@ -5,7 +5,7 @@ exports.up = function (knex) {
         })
         .table('users', (t) => {
             t.dropColumn('hasPaidCard');
-            t.dropColumn('hasInitialPaidCard');
+            t.dropColumn('hasPaidInitialCard');
         })
         .table('events', (t) => {
             t.dropColumn('cardCost');
