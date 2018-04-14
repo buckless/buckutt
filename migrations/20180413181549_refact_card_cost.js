@@ -11,6 +11,7 @@ exports.up = function (knex) {
             t.dropColumn('cardCost');
             t.uuid('nfc_id').references('articles.id');
         });
+};
 
 exports.down = function (knex) {
     return knex.schema
