@@ -35,12 +35,6 @@ export default {
                     type: 'price',
                     title: 'Solde maximal',
                     content: this.focusedEvent.maxPerAccount
-                },
-                {
-                    icon: 'attach_money',
-                    type: this.focusedEvent.cardCost > 0 ? 'price' : undefined,
-                    title: 'Prix du support NFC',
-                    content: this.focusedEvent.cardCost > 0 ? this.focusedEvent.cardCost : 'Gratuit'
                 }
             ];
         }

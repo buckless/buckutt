@@ -13,7 +13,7 @@
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
                 { action: 'edit', text: 'Modifier' },
-                { action: 'remove', text: 'Supprimer', type: 'confirm' }
+                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.nfc_id } }
             ]"
             route="articles"
             :paging="10"
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
     data() {
@@ -44,7 +44,9 @@ export default {
     computed: {
         ...mapState({
             articles: state => state.objects.articles
-        })
+        }),
+
+        ...mapGetters(['event'])
     }
 };
 </script>
