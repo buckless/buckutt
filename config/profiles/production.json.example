@@ -1,6 +1,7 @@
 {
     "NODE_ENV": "\"production\"",
     "name": "\"Buckless\"",
+    "headerColor": "\"#000\"",
     "color": "\"#34495e\"",
     "footerBackground": "\"#4f6f8f\"",
     "footerColor": "\"#fff\"",
