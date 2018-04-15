@@ -55,7 +55,7 @@ export default {
 </script>
 
 <style lang="scss">
-$mdc-theme-primary: #27ae60;
+$mdc-theme-primary: #27ae60 !default;
 
 @import '@material/ripple/mdc-ripple.scss';
 @import '@material/list/mdc-list.scss';

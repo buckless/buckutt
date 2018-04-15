@@ -46,6 +46,16 @@ exports.cssLoaders = function (options) {
     }
   }
 
+  const mainColor = JSON.parse(process.env.NODE_ENV === 'production'
+    ? config.build.env.color
+    : config.dev.env.color
+  )
+
+  const headerColor = JSON.parse(process.env.NODE_ENV === 'production'
+    ? config.build.env.headerColor
+    : config.dev.env.headerColor
+  )
+
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
   return {
     css: generateLoaders(),
@@ -56,7 +66,8 @@ exports.cssLoaders = function (options) {
         includePaths: [ path.join(__dirname, '..', 'node_modules') ]
     }),
     scss: generateLoaders('sass', {
-        includePaths: [ path.join(__dirname, '..', 'node_modules') ]
+        includePaths: [ path.join(__dirname, '..', 'node_modules') ],
+        data: "$mdc-theme-primary: " + mainColor + ";\n$header-color: " + headerColor + ";"
     }),
     stylus: generateLoaders('stylus'),
     styl: generateLoaders('stylus')

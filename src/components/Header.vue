@@ -83,9 +83,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+$header-color: #34495e !default;
+
 .b-header {
-    background-color: #34495e;
+    background-color: $header-color;
     position: relative;
 
     &.b-header--logged {
