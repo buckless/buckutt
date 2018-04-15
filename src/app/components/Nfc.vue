@@ -195,7 +195,6 @@ export default {
     @add-mixin modal 350px;
 
     font-size: 16px;
-    padding: 30px 0;
     text-align: center;
 }
 

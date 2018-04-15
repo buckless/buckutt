@@ -65,10 +65,7 @@ export default {
     background-color: #fff;
     display: flex;
     flex-direction: column;
-    width: calc(100% - 20px);
-    max-width: 350px;
     min-height: 100px;
-    padding: 20px;
 }
 
 .b-alert__modal__title {
