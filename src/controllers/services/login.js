@@ -99,7 +99,7 @@ router.post('/services/login', (req, res, next) => {
                 firstname: user.firstname,
                 lastname: user.lastname,
                 credit: user.credit,
-                username: user.meansOfLogin.find(mol => mol.type === 'username').data
+                username: (user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
             }));
 
             user.pin = '';
