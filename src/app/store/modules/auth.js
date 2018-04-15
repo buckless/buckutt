@@ -10,20 +10,19 @@ const initialState = {
         event: {
             id: null,
             name: null,
+            nfc_id: null,
             config: {
-              maxAlcohol: null,
-              maxPerAccount: null,
-              minReload: null,
-              useCardData: null,
-              cardCost: 0
+                maxAlcohol: null,
+                maxPerAccount: null,
+                minReload: null,
+                useCardData: null
             }
         },
         config: {
             alcohol: null,
             doubleValidation: null,
             showPicture: null
-        },
-        DefaultGroup_id: null
+        }
     },
     buyer: {
         isAuth: false,
@@ -67,12 +66,6 @@ const mutations = {
         keys.forEach(key => {
             state.device.config[key] = payload[key];
         });
-
-        state.device.DefaultGroup_id = payload.DefaultGroup_id;
-    },
-
-    SET_CARDCOST(state, payload) {
-        state.device.event.config.cardCost = payload;
     },
 
     DISABLE_DOUBLE_VALIDATION(state) {
@@ -85,6 +78,8 @@ const mutations = {
         keys.forEach(key => {
             state.device.event.config[key] = payload[key];
         });
+
+        state.device.event.nfc_id = payload.nfc_id;
     },
 
     ID_SELLER(state, meanOfLogin) {

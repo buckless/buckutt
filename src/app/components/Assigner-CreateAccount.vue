@@ -23,6 +23,11 @@
         <nfc mode="write" @read="assignCard" @cancel="assignModalOpened = false" v-if="assignModalOpened" disableSignCheck>
             <strong>Compte anonyme</strong><br />
             Nouveau crédit: <strong><currency :value="numberCredit" /></strong>
+
+            <template v-if="nfcCost.amount > 0">
+                <br /><br />
+                <strong>Encaisser <currency :value="nfcCost.amount" /> pour payer le support.</strong>
+            </template>
         </nfc>
     </div>
 </template>
@@ -54,10 +59,27 @@ export default {
         ...mapState({
             online: state => state.online.status,
             point: state => state.auth.device.point.id,
-            seller: state => state.auth.seller.id,
-            groups: state => state.auth.groups.filter(group => group.name !== 'Défaut'),
+            nfcCosts: state => state.items.nfcCosts,
+            defaultGroup: state =>
+                state.auth.groups.find(group => group.name === state.auth.device.event.name),
+            groups: state =>
+                state.auth.groups.filter(group => group.name !== state.auth.device.event.name),
             useCardData: state => state.auth.device.event.config.useCardData
         }),
+
+        nfcCost() {
+            const now = new Date();
+            const groupsToCheck = [this.defaultGroup].concat(this.activeGroups);
+            const validCosts = this.nfcCosts
+                .filter(
+                    nfcCost =>
+                        new Date(nfcCost.period.start) <= now &&
+                        new Date(nfcCost.period.end) >= now &&
+                        groupsToCheck.find(group => group.id === nfcCost.group_id)
+                )
+                .sort((a, b) => a.amount - b.amount);
+            return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
+        },
 
         ...mapGetters(['tokenHeaders'])
     },

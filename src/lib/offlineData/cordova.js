@@ -8,7 +8,9 @@ class OfflineData {
 
             this.db.transaction(
                 tx => {
-                    tx.executeSql('create table if not exists users (uid, name, username, barcode, credit, hasPaidCard)');
+                    tx.executeSql(
+                        'create table if not exists users (uid, name, username, barcode, credit)'
+                    );
                     tx.executeSql(
                         'create table if not exists accesses (uid, cardId, groupId, start, end)'
                     );

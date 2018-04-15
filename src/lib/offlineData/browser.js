@@ -9,7 +9,7 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            users: 'uid,name,username,barcode,credit,hasPaidCard',
+            users: 'uid,name,username,barcode,credit',
             accesses: 'id,cardId,group,start,end'
         });
 
@@ -53,14 +53,15 @@ class OfflineData {
             data = data.map(entry => ({
                 uid: entry[0],
                 name: entry[1],
-                barcode: entry[2],
-                credit: entry[3]
+                username: entry[2],
+                barcode: entry[3],
+                credit: entry[4]
             }));
         } else if (table === 'accesses') {
             data = data.map(entry => ({
                 id: entry[0],
                 cardId: entry[1],
-                groupId: entry[2],
+                group: entry[2],
                 start: entry[3],
                 end: entry[4]
             }));

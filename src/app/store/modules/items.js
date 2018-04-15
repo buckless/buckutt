@@ -12,7 +12,8 @@ const initialState = {
             promotions: []
         }
     },
-    giftReloads: []
+    giftReloads: [],
+    nfcCosts: []
 };
 
 const mutations = {
@@ -22,6 +23,10 @@ const mutations = {
 
     SET_GIFTRELOADS(state, payload) {
         state.giftReloads = payload;
+    },
+
+    SET_NFCCOSTS(state, payload) {
+        state.nfcCosts = payload;
     },
 
     SET_ITEMS(state, payload) {
