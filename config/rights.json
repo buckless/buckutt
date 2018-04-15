@@ -45,7 +45,8 @@
           "write": [
               "/meansoflogin",
               "/services/assigner/groups",
-              "/services/assigner/anon"
+              "/services/assigner/anon",
+              "/services/basket"
           ]
       },
       "controller": {

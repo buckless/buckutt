@@ -51,7 +51,7 @@ router.post('/services/basket', (req, res, next) => {
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
-            if (!mol || !mol.user.id) {
+            if (!mol || !mol.user || !mol.user.id) {
                 return next(new APIError(module, 400, 'Invalid buyer'));
             }
 
@@ -155,7 +155,7 @@ router.post('/services/basket', (req, res, next) => {
     const userRights = rightsDetails(req.user, req.point_id);
 
     const unallowedPurchase =
-        req.body.basket.find(item => typeof item.cost === 'number') && !userRights.sell;
+        req.body.basket.find(item => typeof item.cost === 'number') && !userRights.sell && !userRights.assign;
     const unallowedReload =
         req.body.basket.find(item => typeof item.credit === 'number') && !userRights.reload;
 

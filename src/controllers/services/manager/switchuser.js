@@ -43,7 +43,7 @@ router.post('/services/manager/switchuser', (req, res, next) => {
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
-            if (!mol || !mol.user.id) {
+            if (!mol || !mol.user || !mol.user.id) {
                 return next(new APIError(module, 401, 'User not found', errDetails));
             }
 

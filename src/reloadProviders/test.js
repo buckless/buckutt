@@ -9,8 +9,7 @@ module.exports = {
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
-            user_id: data.buyer.id,
-            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
+            user_id: data.buyer.id
         });
 
         return transaction.save().then(() => {
@@ -84,11 +83,6 @@ module.exports = {
                         user_id: transaction.get('user_id'),
                         amount
                     });
-
-                    if (transaction.get('includeCard')) {
-                        transaction.related('user').set('hasPaidInitialCard', true);
-                        transaction.related('user').set('hasPaidCard', true);
-                    }
 
                     return Promise.all([
                         newReload.save(),

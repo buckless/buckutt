@@ -31,8 +31,7 @@ module.exports = {
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
-            user_id: data.buyer.id,
-            includeCard: !data.buyer.hasPaidInitialCard && data.event.cardCost > 0
+            user_id: data.buyer.id
         });
 
         return transaction
@@ -85,21 +84,6 @@ module.exports = {
                         returnUrl: `${config.urls.managerUrl}/reload/success`
                     }
                 };
-
-                if (!data.buyer.hasPaidInitialCard && data.event.cardCost > 0) {
-                    order.order.amountOfMoney.amount += data.event.cardCost;
-                    order.order.shoppingCart.items.push({
-                        amountOfMoney: {
-                            currencyCode: 'EUR',
-                            amount: data.event.cardCost
-                        },
-                        invoiceData: {
-                            description: 'Activation du support',
-                            nrOfItems: '1',
-                            pricePerItem: data.event.cardCost
-                        }
-                    });
-                }
 
                 return connectSdk.hostedcheckouts.create(providerConfig.merchantId, order, null);
             })
@@ -220,11 +204,6 @@ module.exports = {
                             user_id: transaction.get('user_id'),
                             amount: transaction.get('amount')
                         });
-
-                        if (transaction.get('includeCard')) {
-                            transaction.related('user').set('hasPaidInitialCard', true);
-                            transaction.related('user').set('hasPaidCard', true);
-                        }
 
                         return Promise.all([
                             newReload.save(),
