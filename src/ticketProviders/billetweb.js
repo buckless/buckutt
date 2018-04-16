@@ -15,12 +15,22 @@ module.exports = ticketNumber => {
         version: config.version
     };
 
+    let ticket;
+    let credit;
     let ticketData;
 
     return axios
         .get(url, { params })
         .then(res => {
-            ticket = res.data.find(t => t.barcode === ticketNumber);
+            const tickets = res.data.filter(t => t.barcode === ticketNumber);
+
+            ticket = tickets.find(t => t.ticket_id.toString() === config.ticketIdTicket);
+            credit = tickets.find(t => t.ticket_id.toString() === config.ticketIdPreload) || { price: 0 }
+            credit = Math.floor(parseFloat(credit.price) * 100);
+
+            if (!credit) {
+                credit = 0;
+            }
 
             if (!ticket) {
                 return Promise.resolve(null);
@@ -38,7 +48,7 @@ module.exports = ticketNumber => {
                 lastname: ticket.name,
                 mail: ticket.email,
                 username,
-                credit: 0,
+                credit,
                 ticketId: ticket.barcode
             };
         });
