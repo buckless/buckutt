@@ -232,7 +232,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+$mdc-theme-primary: #27ae60 !default;
+
 .b-home__tabs {
     display: flex;
 }
@@ -248,7 +250,7 @@ export default {
 }
 
 .b-home__tabs__tab--active {
-    color: #27ae60;
+    color: $mdc-theme-primary;
     background-color: #fff;
 }
 
