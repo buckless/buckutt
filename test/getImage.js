@@ -11,7 +11,7 @@ const {
     image,
     png,
     webp,
-    bigImage
+    small
 } = require('./testData');
 
 const url = `http://localhost:${config.http.port}/image/${guid}`;
@@ -36,9 +36,9 @@ describe('Image getter', () => {
         }));
 
     it('should resize the image', () => axios
-        .get(url, { params: { width: 200, height: 200 } })
+        .get(url, { params: { width: 10, height: 10 } })
         .then((res) => {
-            assert.equal(res.data.image, bigImage);
+            assert.equal(res.data.image, small);
         }));
 
     it('should refuse request with unknown guid', () => axios
