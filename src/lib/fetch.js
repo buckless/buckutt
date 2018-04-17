@@ -1,3 +1,5 @@
+const uuid = require('uuid')
+
 const authData = {
     headers: {
         Accept: 'application/json',
@@ -57,6 +59,8 @@ export function post(url, data, opts_) {
         },
         opts_
     );
+
+    opts.headers['Idempotency-Key'] = uuid();
 
     return fetch(`api/${url}`, opts).then(
         res => (res.status === 200 ? res.json() : Promise.reject(res))
