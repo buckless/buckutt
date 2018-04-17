@@ -105,23 +105,23 @@ router.get('/services/assigner', (req, res, next) => {
                     return user.save();
                 })
                 .then(() => {
-                    const from = config.askpin.from;
-                    const to = user.get('mail');
-                    const subject = config.assigner.subject;
-                    const { html, text } = template('pinAssign', {
-                        pin,
-                        username,
-                        brandname: config.assigner.merchantName,
-                        link: `${config.urls.managerUrl}`
-                    });
+                    // const from = config.askpin.from;
+                    // const to = user.get('mail');
+                    // const subject = config.assigner.subject;
+                    // const { html, text } = template('pinAssign', {
+                    //     pin,
+                    //     username,
+                    //     brandname: config.assigner.merchantName,
+                    //     link: `${config.urls.managerUrl}`
+                    // });
 
-                    return mailer.sendMail({
-                        from,
-                        to,
-                        subject,
-                        html,
-                        text
-                    });
+                    // return mailer.sendMail({
+                    //     from,
+                    //     to,
+                    //     subject,
+                    //     html,
+                    //     text
+                    // });
                 })
                 .then(() => {
                     const mailMol = new MeanOfLogin({

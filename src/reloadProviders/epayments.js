@@ -155,11 +155,13 @@ module.exports = {
                                 .json({})
                                 .end();
                         } else {
-                            res.redirectTo(`${config.urls.managerUrl}/reload/failed`);
+                            res.redirect(`${config.urls.managerUrl}/reload/failed`);
                         }
 
                         return;
                     }
+
+                    const amount = transaction.get('amount');
 
                     transaction.set(
                         'state',
@@ -175,7 +177,7 @@ module.exports = {
                         transaction.set('deleted_at', new Date());
 
                         const newReload = new Reload({
-                            credit: transaction.get('amount'),
+                            credit: amount,
                             type: 'card',
                             trace: transaction.get('id'),
                             point_id: req.point_id,
@@ -202,7 +204,7 @@ module.exports = {
 
                         const pendingCardUpdate = new PendingCardUpdate({
                             user_id: transaction.get('user_id'),
-                            amount: transaction.get('amount')
+                            amount
                         });
 
                         return Promise.all([
@@ -214,7 +216,7 @@ module.exports = {
                         ]).then(() => {
                             req.app.locals.modelChanges.emit('userCreditUpdate', {
                                 id: transaction.get('user_id'),
-                                pending: transaction.get('amount')
+                                pending: amount
                             });
                         });
                     }
@@ -228,7 +230,7 @@ module.exports = {
                             .json({})
                             .end();
                     } else {
-                        res.redirectTo(`${config.urls.managerUrl}/reload/success`);
+                        res.redirect(`${config.urls.managerUrl}/reload/success`);
                     }
                 })
                 .catch(err => dbCatch(module, err, next));

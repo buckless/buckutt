@@ -92,6 +92,14 @@
             "id": "foo",
             "password": "bar",
             "contractNumber": "1"
+        },
+        "billetweb": {
+            "url": "https://www.billetweb.fr/shop.php?event=cashless-natural-games-2018",
+            "ticket": "197801",
+            "event": "49484",
+            "user": "14522",
+            "key": "",
+            "version": "1"
         }
     }
 }

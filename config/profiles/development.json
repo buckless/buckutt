@@ -77,7 +77,7 @@
         "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
     },
     "provider": {
-        "name": "epayments",
+        "name": "billetweb",
         "etupay": {
             "id": 3,
             "url": "https://etupay.utt.fr/initiate",
@@ -94,6 +94,14 @@
             "id": "foo",
             "password": "bar",
             "contractNumber": "1"
+        },
+        "billetweb": {
+            "url": "https://www.billetweb.fr/shop.php?event=cashless-natural-games-2018",
+            "ticket": "197801",
+            "event": "49484",
+            "user": "14522",
+            "key": "",
+            "version": "1"
         }
     }
 }
