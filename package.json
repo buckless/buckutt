@@ -15,7 +15,7 @@
   "scripts": {
     "start": "node src/app",
     "test": "cross-env nyc --reporter=text-summary --reporter=html --reporter=lcov mocha ./test/bootstrap.js",
-    "build:docker": "docker build -t buckless/server .",
+    "build:docker": "docker build -t lab.buckless.com:4567/core/server .",
     "watch": "nodemon src/app.js",
     "dev": "cross-env NODE_ENV=development npm run watch",
     "seed": "cross-env NODE_ENV=development node scripts/seed",
