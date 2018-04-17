@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4')
+
 const authData = {
     headers: {
         Accept: 'application/json',
@@ -50,13 +52,17 @@ export function get(url, opts_) {
 export function post(url, data, opts_) {
     const opts = Object.assign(
         {},
-        authData,
+        {
+            headers: Object.assign({}, authData.headers)
+        },
         {
             method: 'POST',
             body: JSON.stringify(data)
         },
         opts_
     );
+
+    opts.headers['Idempotency-Key'] = uuid();
 
     return fetch(`api/${url}`, opts).then(
         res => (res.status === 200 ? res.json() : Promise.reject(res))
