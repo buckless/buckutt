@@ -42,6 +42,13 @@ const routes = [
         }
     },
     {
+        path: '/reload/waiting',
+        component: ReloadStatus,
+        props: {
+            status: 'waiting'
+        }
+    },
+    {
         path: '/assign/success',
         component: AssignStatus,
         props: {

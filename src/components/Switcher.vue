@@ -1,5 +1,5 @@
 <template>
-    <div class="b-switcher mdc-menu-anchor">
+    <div class="b-switcher mdc-menu-anchor" v-show="linkedUsers.length > 1">
         <div class="b-switcher__button" @click="toggleMenu">
             <span>{{ activeUser.firstname }} {{ activeUser.lastname }}</span>
             <div class="b-space"></div>

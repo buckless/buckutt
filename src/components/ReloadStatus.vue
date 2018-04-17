@@ -7,10 +7,13 @@
             <section class="mdc-card__supporting-text" v-if="status === 'success'">
                 Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici quelques instants.
             </section>
+            <section class="mdc-card__supporting-text" v-else-if="status === 'waiting'">
+                Votre rechargement est en cours...
+            </section>
             <section class="mdc-card__supporting-text" v-else>
                 Le paiement <strong>n'a pas été pris en compte</strong>. Contactez votre banque si vous ne pensez pas que cela correspond à un fonctionnement normal.
             </section>
-            <section class="mdc-card__actions">
+            <section class="mdc-card__actions" v-if="status !== 'waiting'">
                 <router-link tag="button" to="/" class="mdc-button mdc-button--raised">Retour à l'accueil</router-link>
             </section>
         </div>
@@ -34,6 +37,17 @@ export default {
             const RM = `RETURNMAC=${this.$route.query.RETURNMAC}`;
 
             get(`callback?${hCI}&${RM}&isNotification=1`);
+        }
+
+        if (this.$route.query.form_data) {
+            get(`callback?form_data=${this.$route.query.form_data}`)
+                .then((res) => {
+                    this.$router.push('/reload/success');
+                })
+                .catch((res) => {
+                    this.$router.push('/reload/failed');
+                    throw res;
+                });
         }
     }
 };
