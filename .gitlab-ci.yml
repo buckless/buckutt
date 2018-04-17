@@ -2,6 +2,7 @@ image: node:alpine
 
 services:
   - postgres:latest
+  - redis:latest
 
 stages:
   - test
