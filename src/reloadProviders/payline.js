@@ -189,7 +189,7 @@ module.exports = {
                             .json({})
                             .end();
                     } else {
-                        res.redirectTo(`${config.urls.managerUrl}/#/reload/success`);
+                        res.redirect(`${config.urls.managerUrl}/#/reload/success`);
                     }
                 })
                 .catch(err => dbCatch(module, err, next));
