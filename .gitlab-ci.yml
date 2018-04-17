@@ -8,6 +8,7 @@ variables:
 services:
   - docker:dind
   - postgres:latest
+  - redis:latest
 
 stages:
   - build
