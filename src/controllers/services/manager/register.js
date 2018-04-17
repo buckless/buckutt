@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const randomstring = require('randomstring');
 const { padStart } = require('lodash');
+const username = require('../../../lib/username');
 const mailer = require('../../../lib/mailer');
 const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
@@ -17,6 +18,7 @@ router.post('/services/manager/register', (req, res, next) => {
     const { MeanOfLogin, User } = req.app.locals.models;
 
     let user;
+    let userName;
     let pin;
 
     return MeanOfLogin.where('type', 'in', ['mail'])
@@ -27,6 +29,15 @@ router.post('/services/manager/register', (req, res, next) => {
             if (mols.length > 0) {
                 return Promise.reject(new APIError(module, 404, 'User exists', { body: req.body }));
             }
+
+            return username(req.body.firstname, req.body.lastname);
+        })
+        .then((username_) => {
+            if (!username_) {
+                return Promise.reject(new APIError(module, 500, 'Username can not be generated', { body: req.body }));
+            }
+
+            userName = username_;
 
             pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
 
@@ -51,7 +62,13 @@ router.post('/services/manager/register', (req, res, next) => {
                 user_id: user.id
             });
 
-            return mol.save();
+            const usernameMol = new MeanOfLogin({
+                type: 'username',
+                data: userName,
+                user_id: user.id
+            });
+
+            return Promise.all([mol.save(), usernameMol.save()]);
         })
         .then(() => {
             const from = config.askpin.from;
@@ -59,7 +76,7 @@ router.post('/services/manager/register', (req, res, next) => {
             const subject = config.assigner.subject;
             const { html, text } = template('pinAssign', {
                 pin,
-                brandname: config.provider.config.merchantName,
+                brandname: config.assigner.merchantName,
                 link: `${config.urls.managerUrl}`
             });
 
