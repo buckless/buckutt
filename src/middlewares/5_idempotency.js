@@ -11,11 +11,11 @@ module.exports = async (req, res, next) => {
         return next();
     }
 
-    const cacheKey       = idempotencyKey;
+    const cacheKey       = 'idempotency_' + idempotencyKey;
     const storedResponse = JSON.parse(await redis.getClient().getAsync(cacheKey));
 
     if (!storedResponse) {
-        log.debug(`Request ${idempotencyKey} not in cache`);
+        log.info(`request ${idempotencyKey} not in cache`);
 
         res.once('finish', async () => {
             let headers = {};
@@ -31,13 +31,13 @@ module.exports = async (req, res, next) => {
             });
 
             await redis.getClient().setAsync(cacheKey, responseToStore);
-            console.log('stored response against idempotency key in redis: ', idempotencyKey);
+            log.info(`request ${idempotencyKey} stored in cache`);
         });
 
         return next();
     }
 
-    log.debug(`Request ${idempotencyKey} served from cache`);
+    log.info(`request ${idempotencyKey} served from cache`);
 
     res
         .set(storedResponse.headers)
