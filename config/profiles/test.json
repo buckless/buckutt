@@ -13,7 +13,7 @@
         "secret": "NgWlfDWCbX4mPuxau1FmG3TPLHm7iglEA3mp1f8nrlT7zKDn8ZZAwWQOqUArvQBFfMEbFSAMnUHzgQW1FkczTiZYjPZWqdseNtk2"
     },
     "redis": {
-        "host": "127.0.0.1",
+        "host": "redis",
         "port": 6379
     },
     "db": {

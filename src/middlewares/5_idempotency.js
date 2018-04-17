@@ -2,16 +2,19 @@ const APIError = require('../errors/APIError');
 const config   = require('../../config');
 const redis    = require('../lib/redis');
 const logger   = require('../lib/log');
-
-const log = logger(module);
+const log      = logger(module);
 
 module.exports = async (req, res, next) => {
+    if (req.method !== 'POST') {
+        return next();
+    }
+
     const idempotencyKey = req.get('idempotency-key');
     if (!idempotencyKey) {
         return next();
     }
 
-    const cacheKey = 'idempotency_' + idempotencyKey;
+    const cacheKey = 'idempotency/' + idempotencyKey + req.url;
 
     let storedResponse;
     try {
@@ -21,7 +24,7 @@ module.exports = async (req, res, next) => {
     }
 
     if (!storedResponse) {
-        log.info(`request ${idempotencyKey} not in cache`);
+        log.info(`request ${cacheKey} not in cache`);
 
         res.once('finish', async () => {
             let headers = {};
@@ -42,13 +45,13 @@ module.exports = async (req, res, next) => {
                 return Promise.reject(e);
             }
 
-            log.info(`request ${idempotencyKey} stored in cache`);
+            log.info(`request ${cacheKey} stored in cache`);
         });
 
         return next();
     }
 
-    log.info(`request ${idempotencyKey} served from cache`);
+    log.info(`request ${cacheKey} served from cache`);
 
     res
         .set(storedResponse.headers)
