@@ -1,5 +1,5 @@
 const redis        = require('redis');
-const promisifyAll = require('util-promisifyAll');
+const promisifyAll = require('util-promisifyall');
 const config       = require('../../config');
 const logger       = require('./log');
 const log = logger(module);
@@ -14,18 +14,18 @@ const waitForCache = (interval, retries) => {
             port: 6379,
             retry_strategy: function(options) {
                 if (options.error && options.error.code === 'ECONNREFUSED') {
-                    // End reconnecting on a specific error and flush all commands with 
+                    // End reconnecting on a specific error and flush all commands with
                     // a individual error
                     log.error('The server refused the connection');
                 }
 
                 if (options.attempt > retries) {
-                    // End reconnecting with built in error 
+                    // End reconnecting with built in error
                     return reject(new Error(`Cache unavailable. Retried ${retries} times.`));
                 }
 
                 log.error(`Couldn't connect to cache. Retrying in ${interval} seconds...`);
-                // reconnect after 
+                // reconnect after
                 return interval*1000;
             }
         }));
