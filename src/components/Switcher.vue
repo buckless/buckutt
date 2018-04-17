@@ -25,7 +25,7 @@ export default {
     computed: {
         ...mapState({
             activeUser: state => state.app.loggedUser,
-            linkedUsers: state => state.app.loggedLinkedUsers
+            linkedUsers: state => state.app.loggedLinkedUsers.filter(u => u.username)
         })
     },
 

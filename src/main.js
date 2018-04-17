@@ -17,7 +17,7 @@ Vue.config.productionTip = false;
 
 if (process.env.NODE_ENV === 'production') {
   Raven
-    .config(config.sentry)
+    .config(process.env.sentry)
     .addPlugin(RavenVue, Vue)
     .install()
 }
