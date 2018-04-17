@@ -1,4 +1,4 @@
-const uuid = require('uuid')
+const uuid = require('uuid/v4')
 
 const authData = {
     headers: {
@@ -52,7 +52,9 @@ export function get(url, opts_) {
 export function post(url, data, opts_) {
     const opts = Object.assign(
         {},
-        authData,
+        {
+            headers: Object.assign({}, authData.headers)
+        },
         {
             method: 'POST',
             body: JSON.stringify(data)
