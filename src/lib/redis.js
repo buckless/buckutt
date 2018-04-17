@@ -10,8 +10,8 @@ const waitForCache = (interval, retries) => {
     return new Promise((resolve, reject) => {
         log.info('Connection to cache...');
         client = promisifyAll(redis.createClient({
-            host: 'cache',
-            port: 6379,
+            host: config.redis.host,
+            port: config.redis.port,
             retry_strategy: function(options) {
                 if (options.error && options.error.code === 'ECONNREFUSED') {
                     // End reconnecting on a specific error and flush all commands with
