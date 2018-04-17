@@ -11,8 +11,14 @@ module.exports = async (req, res, next) => {
         return next();
     }
 
-    const cacheKey       = 'idempotency_' + idempotencyKey;
-    const storedResponse = JSON.parse(await redis.getClient().getAsync(cacheKey));
+    const cacheKey = 'idempotency_' + idempotencyKey;
+
+    let storedResponse;
+    try {
+        storedResponse = JSON.parse(await redis.getClient().getAsync(cacheKey));
+    } catch (e) {
+        return Promise.reject(e);
+    }
 
     if (!storedResponse) {
         log.info(`request ${idempotencyKey} not in cache`);
@@ -30,7 +36,12 @@ module.exports = async (req, res, next) => {
                 headers
             });
 
-            await redis.getClient().setAsync(cacheKey, responseToStore);
+            try {
+                await redis.getClient().setAsync(cacheKey, responseToStore);
+            } catch (e) {
+                return Promise.reject(e);
+            }
+
             log.info(`request ${idempotencyKey} stored in cache`);
         });
 
