@@ -12,7 +12,6 @@ const chooseDivider = (start, end) => {
     const intervals = [5, 15, 30, 60];
     let lessThan = 6;
     let intervalIndex = 0;
-    console.log(diff);
     while (diff > lessThan) {
         lessThan *= 2;
         intervalIndex += 1;
@@ -21,8 +20,6 @@ const chooseDivider = (start, end) => {
             intervals[intervals.length] = intervals[intervals.length - 1] * 2;
         }
     }
-
-    console.log(intervals[intervalIndex]);
 
     return intervals[intervalIndex];
 };
@@ -74,12 +71,6 @@ router.get('/services/stats/purchases', (req, res, next) => {
         let filterQuery = baseQuery;
         let price = 'price';
         let pricePeriod = 'price.period';
-
-        if (filter.event) {
-            pricePeriod = {
-                'price.period': q => q.where({ event_id: filter.event })
-            };
-        }
 
         if (filter.point) {
             filterQuery = filterQuery.where({ point_id: filter.point });

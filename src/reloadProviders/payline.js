@@ -6,7 +6,7 @@ const dbCatch = require('../lib/dbCatch');
 const ns = require('../lib/ns');
 const config = require('../../config');
 
-const providerConfig = config.provider.config;
+const providerConfig = config.provider.payline;
 
 const currencies = {
     eur: 978
@@ -26,14 +26,11 @@ const modes = {
 
 const dateFormat = 'DD/MM/YYYY HH:mm';
 
-module.exports = app => {
-    const payline = new Payline(providerConfig.id, providerConfig.password, providerConfig.url);
-    const Transaction = app.locals.models.Transaction;
-    const GiftReload = app.locals.models.GiftReload;
-    const Reload = app.locals.models.Reload;
-    const PendingCardUpdate = app.locals.models.PendingCardUpdate;
+module.exports = {
+    makePayment(app, data) {
+        const payline = new Payline(providerConfig.id, providerConfig.password);
+        const Transaction = app.locals.models.Transaction;
 
-    app.locals.makePayment = data => {
         const transaction = new Transaction({
             state: 'pending',
             amount: data.amount,
@@ -42,8 +39,8 @@ module.exports = app => {
 
         return transaction
             .save()
-            .then(() =>
-                payline.runAction('doWebPayment', {
+            .then(() => {
+                const order = {
                     version: 18,
                     payment: {
                         attributes: ns('payment'),
@@ -53,8 +50,8 @@ module.exports = app => {
                         mode: modes.full,
                         contractNumber: providerConfig.contractNumber
                     },
-                    returnURL: `${config.urls.managerUrl}/#/reload/success`,
-                    cancelURL: `${config.urls.managerUrl}/#/reload/failed`,
+                    returnURL: `${config.urls.managerUrl}/reload/success`,
+                    cancelURL: `${config.urls.managerUrl}/reload/failed`,
                     order: {
                         attributes: ns('order'),
                         ref: transaction.get('id'),
@@ -72,8 +69,10 @@ module.exports = app => {
                         email: data.buyer.email
                     },
                     merchantName: config.merchantName
-                })
-            )
+                };
+
+                return payline.runAction('doWebPayment', order);
+            })
             .then(result => {
                 transaction.set('transactionId', result.token);
 
@@ -82,102 +81,120 @@ module.exports = app => {
                     res: result.redirectURL
                 }));
             });
-    };
+    },
 
-    const router = new express.Router();
+    callback() {
+        const router = new express.Router();
 
-    router.get('/callback', (req, res, next) => {
-        const isNotification =
-            req.query.notificationType && req.query.notificationType === 'webtrs';
-        const token = req.query.token;
+        router.get('/provider/callback', (req, res, next) => {
+            const payline = new Payline(
+                providerConfig.id,
+                providerConfig.password,
+                providerConfig.url
+            );
+            const Transaction = req.app.locals.models.Transaction;
+            const GiftReload = req.app.locals.models.GiftReload;
+            const Reload = req.app.locals.models.Reload;
+            const PendingCardUpdate = req.app.locals.models.PendingCardUpdate;
 
-        if (!token || token.length < 1) {
-            return next(new APIError(module, 400, 'No token provided'));
-        }
+            const isNotification =
+                req.query.notificationType && req.query.notificationType === 'webtrs';
+            const token = req.query.token;
 
-        let paymentDetails;
-        let giftReloads;
+            if (!token || token.length < 1) {
+                return next(new APIError(module, 400, 'No token provided'));
+            }
 
-        GiftReload.fetchAll()
-            .then(
-                giftReloads_ => (giftReloads_ && giftReloads_.length ? giftReloads_.toJSON() : [])
-            )
-            .then(giftReloads_ => {
-                giftReloads = giftReloads_;
+            let paymentDetails;
+            let giftReloads;
 
-                return payline.runAction('getWebPaymentDetailsRequest', {
-                    version: 18,
-                    token
-                });
-            })
-            .then(result => {
-                paymentDetails = result;
+            GiftReload.fetchAll()
+                .then(
+                    giftReloads_ =>
+                        giftReloads_ && giftReloads_.length ? giftReloads_.toJSON() : []
+                )
+                .then(giftReloads_ => {
+                    giftReloads = giftReloads_;
 
-                return Transaction.where({ transactionId: req.query.token }).fetch();
-            })
-            .then(transaction => {
-                transaction.set('state', paymentDetails.result.shortMessage);
-                transaction.set('longState', paymentDetails.result.longMessage);
-
-                const amount = transaction.get('amount');
-
-                if (transaction.get('state') === 'ACCEPTED') {
-                    const newReload = new Reload({
-                        credit: amount,
-                        type: 'card',
-                        trace: transaction.get('id'),
-                        point_id: req.point_id,
-                        buyer_id: transaction.get('user_id'),
-                        seller_id: transaction.get('user_id')
+                    return payline.runAction('getWebPaymentDetailsRequest', {
+                        version: 18,
+                        token
                     });
+                })
+                .then(result => {
+                    paymentDetails = result;
 
-                    const reloadGiftAmount = giftReloads
-                        .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
-                        .reduce((a, b) => a + b, 0);
-
-                    const reloadGift = new Reload({
-                        credit: reloadGiftAmount,
-                        type: 'gift',
-                        trace: `card-${amount}`,
-                        point_id: req.point_id,
-                        buyer_id: transaction.get('user_id'),
-                        seller_id: transaction.get('user_id')
+                    return Transaction.where({ transactionId: req.query.token }).fetch({
+                        withRelated: ['user']
                     });
+                })
+                .then(transaction => {
+                    transaction.set('state', paymentDetails.result.shortMessage);
+                    transaction.set('longState', paymentDetails.result.longMessage);
 
-                    const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
+                    const amount = transaction.get('amount');
 
-                    const pendingCardUpdate = new PendingCardUpdate({
-                        user_id: transaction.get('user_id'),
-                        amount
-                    });
-
-                    return Promise.all([
-                        newReload.save(),
-                        transaction.save(),
-                        pendingCardUpdate.save(),
-                        reloadGiftSave
-                    ]).then(() => {
-                        req.app.locals.modelChanges.emit('userCreditUpdate', {
-                            id: transaction.get('user_id'),
-                            pending: amount
+                    if (transaction.get('state') === 'ACCEPTED') {
+                        const newReload = new Reload({
+                            credit: amount,
+                            type: 'card',
+                            trace: transaction.get('id'),
+                            point_id: req.point_id,
+                            buyer_id: transaction.get('user_id'),
+                            seller_id: transaction.get('user_id')
                         });
-                    });
-                }
 
-                return transaction.save();
-            })
-            .then(() => {
-                if (isNotification) {
-                    res
-                        .status(200)
-                        .json({})
-                        .end();
-                } else {
-                    res.redirectTo(`${config.urls.managerUrl}/#/reload/success`);
-                }
-            })
-            .catch(err => dbCatch(module, err, next));
-    });
+                        const reloadGiftAmount = giftReloads
+                            .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
+                            .reduce((a, b) => a + b, 0);
 
-    app.use('/provider', router);
+                        const reloadGift = new Reload({
+                            credit: reloadGiftAmount,
+                            type: 'gift',
+                            trace: `card-${amount}`,
+                            point_id: req.point_id,
+                            buyer_id: transaction.get('user_id'),
+                            seller_id: transaction.get('user_id')
+                        });
+
+                        const reloadGiftSave = reloadGiftAmount
+                            ? reloadGift.save()
+                            : Promise.resolve();
+
+                        const pendingCardUpdate = new PendingCardUpdate({
+                            user_id: transaction.get('user_id'),
+                            amount
+                        });
+
+                        return Promise.all([
+                            newReload.save(),
+                            transaction.save(),
+                            pendingCardUpdate.save(),
+                            transaction.related('user').save(),
+                            reloadGiftSave
+                        ]).then(() => {
+                            req.app.locals.modelChanges.emit('userCreditUpdate', {
+                                id: transaction.get('user_id'),
+                                pending: amount
+                            });
+                        });
+                    }
+
+                    return transaction.save();
+                })
+                .then(() => {
+                    if (isNotification) {
+                        res
+                            .status(200)
+                            .json({})
+                            .end();
+                    } else {
+                        res.redirectTo(`${config.urls.managerUrl}/#/reload/success`);
+                    }
+                })
+                .catch(err => dbCatch(module, err, next));
+        });
+
+        return router;
+    }
 };

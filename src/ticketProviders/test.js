@@ -7,6 +7,7 @@ module.exports = ticketOrMail => {
         return Promise.resolve({
             firstname: 'Foo',
             lastname: 'Bar',
+            username: 'fbar',
             mail: ticketOrMail,
             credit: 500,
             ticketId: '123123123'
@@ -15,6 +16,7 @@ module.exports = ticketOrMail => {
     return Promise.resolve({
         firstname: 'Foo',
         lastname: 'Bar',
+        username: 'fbar',
         mail: 'foo@bar.com',
         credit: 500,
         ticketId: ticketOrMail

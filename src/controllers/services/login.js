@@ -51,16 +51,14 @@ router.post('/services/login', (req, res, next) => {
     models.MeanOfLogin.query(q =>
         q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
     )
-        .where({
-            type: infos.type,
-            blocked: false
-        })
+        .where('type', 'in', infos.type.split(','))
+        .where({ blocked: false })
         .fetch({
-            withRelated: ['user', 'user.rights', 'user.rights.period']
+            withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
-            if (!mol || !mol.user.id) {
+            if (!mol || !mol.user || !mol.user.id) {
                 const errDetails = {
                     mol: infos.type,
                     point: req.Point_id
@@ -92,7 +90,18 @@ router.post('/services/login', (req, res, next) => {
                     reject(new APIError(module, 401, 'User not found', errDetails));
                 })
         )
-        .then(() => {
+        .then(() =>
+            models.User.where({ mail: user.mail }).fetchAll({ withRelated: ['meansOfLogin'] })
+        )
+        .then(users_ => {
+            const users = users_.toJSON().map(user => ({
+                id: user.id,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                credit: user.credit,
+                username: (user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
+            }));
+
             user.pin = '';
             user.password = '';
 
@@ -107,6 +116,7 @@ router.post('/services/login', (req, res, next) => {
                 .status(200)
                 .json({
                     user,
+                    linkedUsers: users,
                     token: jwt.sign(
                         {
                             id: user.id,
@@ -120,6 +130,10 @@ router.post('/services/login', (req, res, next) => {
                     )
                 })
                 .end();
+        })
+        .catch(err => {
+            console.log(err);
+            return Promise.reject(err);
         })
         .catch(err => dbCatch(module, err, next));
 });

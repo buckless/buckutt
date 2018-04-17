@@ -45,7 +45,8 @@
           "write": [
               "/meansoflogin",
               "/services/assigner/groups",
-              "/services/assigner/anon"
+              "/services/assigner/anon",
+              "/services/basket"
           ]
       },
       "controller": {
@@ -79,6 +80,7 @@
           "/services/manager/transfer",
           "/services/manager/reload",
           "/services/manager/giftReloads",
+          "/services/manager/switchuser",
           "userCredit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]

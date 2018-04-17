@@ -1,6 +1,6 @@
 exports.up = function (knex) {
-    return knex.raw('CREATE INDEX lower_case_data ON meansoflogin(lower(data))')
-        .then(() => knex.raw('CREATE INDEX lower_case_mail ON users(lower(mail))'));
+    return knex.raw('CREATE INDEX meansoflogin_lower_case_data_index ON meansoflogin(lower(data))')
+        .then(() => knex.raw('CREATE INDEX users_lower_case_mail_index ON users(lower(mail))'));
 };
 
 exports.down = function (knex) {

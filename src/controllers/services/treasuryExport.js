@@ -25,12 +25,6 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
         }
     }
 
-    if (req.query.event) {
-        pricePeriod = {
-            'price.period': q => q.where({ event_id: req.query.event })
-        };
-    }
-
     if (req.query.point) {
         initialQuery = initialQuery.where({ point_id: req.query.point });
     }
