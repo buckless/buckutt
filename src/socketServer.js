@@ -53,6 +53,11 @@ module.exports.ioServer = (httpServer, app) => {
 
                 // Make client go through middlewares
                 for (const key of Object.keys(middlewares)) {
+                    // Skip 5_idempotency which is http only
+                    if (key === '5') {
+                        continue;
+                    }
+
                     initialPromise = initialPromise
                         .then(() => marshal(middlewares[key])(controller.route, client, app))
                         .then(result => {
