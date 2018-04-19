@@ -4,9 +4,11 @@ const { knex } = require('./bookshelf');
 function concat(firstname, lastname) {
     firstname = transliterate(firstname)
         .replace(/[\u0250-\ue007]/g, '')
+        .replace(/\s/g, '')
         .toLowerCase();
     lastname = transliterate(lastname)
         .replace(/[\u0250-\ue007]/g, '')
+        .replace(/\s/g, '')
         .toLowerCase();
 
     return firstname.slice(0, 1) + lastname;
