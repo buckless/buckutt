@@ -180,7 +180,7 @@ export default {
                         return this.notify({ message: 'Le compte existe déjà.' });
                     }
 
-                    this.notify({ message: 'Numéro de billet ou mail introuvable.' });
+                    this.notify({ message: 'Numéro de billet introuvable.' });
                 })
                 .then(() => {
                     setTimeout(() => {

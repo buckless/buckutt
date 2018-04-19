@@ -8,7 +8,7 @@ export function searchUsers({ commit }, name) {
     });
 }
 
-export function transfer({ dispatch }, data) {
+export function transfer({ dispatch, state }, data) {
     let message = '';
 
     if (data.currentPin.length !== 4) {
@@ -19,12 +19,17 @@ export function transfer({ dispatch }, data) {
         message = 'Merci de sélectionner un utilisateur';
     }
 
+    data.amount = parseFloat(data.amount);
     if (!data.amount || Number.isNaN(data.amount)) {
-        message = 'Le montant doit être un nombre';
+        message = 'Le montant doit être un nombre supérieur à 0';
+    }
+
+    if (data.user.id === state.app.loggedUser.id) {
+        message = "Impossible de s'envoyer de l'argent";
     }
 
     if (message) {
-        throw new Error(message);
+        return Promise.reject(new Error(message));
     }
 
     const transferData = {
@@ -35,7 +40,7 @@ export function transfer({ dispatch }, data) {
 
     return post('transfer', transferData).then(result => {
         if (!result.newCredit) {
-            throw new Error(result.message);
+            return Promise.reject(new Error(result.message));
         }
 
         // Reload full history
