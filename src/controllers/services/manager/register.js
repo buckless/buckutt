@@ -76,7 +76,7 @@ router.post('/services/manager/register', (req, res, next) => {
             const subject = config.assigner.subject;
             const { html, text } = template('pinAssign', {
                 pin,
-                brandname: config.assigner.merchantName,
+                brandname: config.merchantName,
                 link: `${config.urls.managerUrl}`
             });
 
