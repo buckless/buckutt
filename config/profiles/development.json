@@ -51,7 +51,7 @@
     },
     "askpin": {
         "from": "noreply@buckless.com",
-        "subject": "Buckless — Code PIN oublié",
+        "subject": "Buckless — Code PIN oublié"
     },
     "assigner": {
         "ticketProvider": "billetweb",
