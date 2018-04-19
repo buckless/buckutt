@@ -1,4 +1,5 @@
 {
+    "merchantName": "Buckless",
     "log": {
         "console": {
             "level": "debug"
@@ -54,8 +55,7 @@
     },
     "askpin": {
         "from": "noreply@buckless.com",
-        "subject": "Buckless forgotten PIN",
-        "template": "Hi !\n You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !"
+        "subject": "Buckless — Code PIN oublié"
     },
     "assigner": {
         "ticketProvider": "billetweb",
@@ -70,15 +70,13 @@
         "billetweb": {
             "event": "30783",
             "user": "14522",
-            "key": "c4ca4238a0b923820dcc509a6f75849b",
+            "key": "",
             "ticketIdTicket": "149698",
             "ticketIdPreload": "184062",
             "version": "1"
         },
-        "merchantName": "Buckless",
         "from": "noreply@buckless.com",
-        "subject": "Buckless — Votre code PIN",
-        "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
+        "subject": "Buckless — Votre code PIN"
     },
     "provider": {
         "name": "billetweb",

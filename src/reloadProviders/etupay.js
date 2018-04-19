@@ -18,7 +18,7 @@ module.exports = {
 
         return transaction.save().then(() => {
             const basket = new Basket(
-                `Rechargement ${providerConfig.merchantName}`,
+                `Rechargement ${config.merchantName}`,
                 data.buyer.firstname,
                 data.buyer.lastname,
                 data.buyer.email,
