@@ -1,4 +1,5 @@
 {
+    "merchantName": "Buckless",
     "log": {
         "console": {
             "level": "info"
@@ -40,8 +41,8 @@
             "host": "smtp.mailtrap.io",
             "port": 2525,
             "auth": {
-                "user": "ed37a3f7039a0e",
-                "pass": "d617720e0b2db0"
+                "user": "583285d5a62f63",
+                "pass": "51848dd566e072"
             }
         }
     },
@@ -63,14 +64,13 @@
             "file": null
         },
         "billetweb": {
-            "event": "",
-            "user": "",
+            "event": "30783",
+            "user": "14522",
             "key": "",
             "ticketIdTicket": "149698",
             "ticketIdPreload": "184062",
             "version": "1"
         },
-        "merchantName": "Buckless",
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN",
     },
