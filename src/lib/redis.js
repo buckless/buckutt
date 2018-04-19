@@ -32,8 +32,6 @@ const waitForCache = (interval, retries) => {
 
         client.once('connect', async () => {
             log.info('Connected to cache.');
-            await client.config('set', 'maxmemory', '3gb');
-            await client.config('set', 'maxmemory-policy', 'allkeys-lru');
             resolve();
         });
     });
