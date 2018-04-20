@@ -22,7 +22,7 @@ module.exports = ticketNumber => {
     return axios
         .get(url, { params })
         .then(res => {
-            if (!Array.isArray(res.data) || (!res.data.length)) {
+            if (!Array.isArray(res.data) || !res.data.length) {
                 return Promise.resolve();
             }
 
@@ -30,7 +30,9 @@ module.exports = ticketNumber => {
             console.log(tickets);
 
             ticket = tickets.find(t => t.ticket_id.toString() === config.ticketIdTicket);
-            credit = tickets.find(t => t.ticket_id.toString() === config.ticketIdPreload) || { price: 0 }
+            credit = tickets.find(t => t.ticket_id.toString() === config.ticketIdPreload) || {
+                price: 0
+            };
             credit = Math.floor(parseFloat(credit.price) * 100);
 
             if (!credit) {

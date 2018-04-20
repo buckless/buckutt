@@ -32,9 +32,11 @@ router.post('/services/manager/register', (req, res, next) => {
 
             return username(req.body.firstname, req.body.lastname);
         })
-        .then((username_) => {
+        .then(username_ => {
             if (!username_) {
-                return Promise.reject(new APIError(module, 500, 'Username can not be generated', { body: req.body }));
+                return Promise.reject(
+                    new APIError(module, 500, 'Username can not be generated', { body: req.body })
+                );
             }
 
             userName = username_;

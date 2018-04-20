@@ -189,8 +189,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             }
 
             // Step 7: fetch nfcCosts
-            return models.Price
-                .where({ article_id: req.event.nfc_id })
+            return models.Price.where({ article_id: req.event.nfc_id })
                 .fetchAll({
                     withRelated: embedParser(embedPrices)
                 })

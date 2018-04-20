@@ -1,8 +1,8 @@
 const APIError = require('../errors/APIError');
-const config   = require('../../config');
-const redis    = require('../lib/redis');
-const logger   = require('../lib/log');
-const log      = logger(module);
+const config = require('../../config');
+const redis = require('../lib/redis');
+const logger = require('../lib/log');
+const log = logger(module);
 
 module.exports = async (req, res, next) => {
     if (req.method !== 'POST') {
@@ -28,14 +28,20 @@ module.exports = async (req, res, next) => {
 
         res.once('finish', async () => {
             let headers = {};
-            Object
-                .keys(res._headers)
-                .filter(key => ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'].indexOf(key) > -1)
-                .forEach(key => { headers[key] = res._headers[key] });
+            Object.keys(res._headers)
+                .filter(
+                    key =>
+                        ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'].indexOf(
+                            key
+                        ) > -1
+                )
+                .forEach(key => {
+                    headers[key] = res._headers[key];
+                });
 
             const responseToStore = JSON.stringify({
                 statusCode: res.statusCode,
-                body      : JSON.parse(res.body),
+                body: JSON.parse(res.body),
                 headers
             });
 
@@ -58,4 +64,4 @@ module.exports = async (req, res, next) => {
         .status(storedResponse.statusCode)
         .json(storedResponse.body)
         .end();
-}
+};

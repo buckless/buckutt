@@ -20,11 +20,12 @@ router.get('/services/assigner', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid ticketOrMail'));
     }
 
-    const { MeanOfLogin, User, Reload } = req.app.locals.models;
+    const { MeanOfLogin, User, Reload, PendingCardUpdate } = req.app.locals.models;
 
     let user;
     let userData;
     let pin;
+    let credit;
     let username;
     let ticketId;
 
@@ -75,7 +76,6 @@ router.get('/services/assigner', (req, res, next) => {
                     }
 
                     userData = userData_;
-                    pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
                     ticketId = userData_.ticketId;
 
                     return MeanOfLogin.where({
@@ -93,10 +93,16 @@ router.get('/services/assigner', (req, res, next) => {
 
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
                     username = userData.username;
+                    credit = userData.credit || 0;
 
                     userData.password = 'none';
                     userData.pin = bcrypt.hashSync(pin);
-                    userData.credit = userData.credit || 0;
+
+                    // if no user, create PCU, else directly write
+                    if (!req.user) {
+                        delete userData.credit;
+                    }
+
                     delete userData.ticketId;
                     delete userData.username;
 
@@ -147,7 +153,7 @@ router.get('/services/assigner', (req, res, next) => {
                     });
 
                     let initialReload = new Reload({
-                        credit: user.get('credit'),
+                        credit: credit,
                         type: 'initial',
                         trace: ticketOrMail,
                         point_id: req.point_id,
@@ -155,14 +161,26 @@ router.get('/services/assigner', (req, res, next) => {
                         seller_id: user.id
                     });
 
-                    if (user.get('credit') === 0) {
+                    let pendingCardUpdate = new PendingCardUpdate({
+                        user_id: user.id,
+                        amount: credit
+                    });
+
+                    if (credit === 0) {
                         initialReload = { save: () => Promise.resolve() };
+                        pendingCardUpdate = { save: () => Promise.resolve() };
+                    }
+
+                    // if user do not create pcu
+                    if (req.user) {
+                        pendingCardUpdate = { save: () => Promise.resolve() };
                     }
 
                     return Promise.all([
                         mailMol.save(),
                         ticketMol.save(),
                         usernameMol.save(),
+                        pendingCardUpdate.save(),
                         initialReload.save()
                     ]);
                 })

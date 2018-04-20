@@ -16,12 +16,14 @@ module.exports = {
         });
 
         return transaction.save().then(() => {
-            const formData = JSON.stringify([{
-                1: encodeURIComponent(data.buyer.mail),
-                2: encodeURIComponent(data.buyer.lastname),
-                3: encodeURIComponent(data.buyer.firstname),
-                10037: transaction.get('id')
-            }]);
+            const formData = JSON.stringify([
+                {
+                    1: encodeURIComponent(data.buyer.mail),
+                    2: encodeURIComponent(data.buyer.lastname),
+                    3: encodeURIComponent(data.buyer.firstname),
+                    10037: transaction.get('id')
+                }
+            ]);
 
             const query = [
                 `form_data=${formData}`,
@@ -48,7 +50,10 @@ module.exports = {
             const Reload = req.app.locals.models.Reload;
 
             if (!req.query.form_data) {
-                return res.status(404).json({}).end();
+                return res
+                    .status(404)
+                    .json({})
+                    .end();
             }
 
             let formData;
@@ -63,9 +68,12 @@ module.exports = {
                     throw new Error();
                 }
 
-                formData = formData[0]
+                formData = formData[0];
             } catch (_) {
-                return res.status(404).json({}).end();
+                return res
+                    .status(404)
+                    .json({})
+                    .end();
             }
 
             GiftReload.fetchAll()
@@ -76,7 +84,7 @@ module.exports = {
                 .then(giftReloads_ => {
                     giftReloads = giftReloads_;
 
-                    console.log(formData['10037'])
+                    console.log(formData['10037']);
 
                     return Transaction.where({
                         id: formData['10037']
@@ -89,7 +97,9 @@ module.exports = {
 
                     transaction = transaction_;
 
-                    const url = `https://www.billetweb.fr/api/event/${providerConfig.event}/attendees`;
+                    const url = `https://www.billetweb.fr/api/event/${
+                        providerConfig.event
+                    }/attendees`;
                     const params = {
                         user: providerConfig.user,
                         key: providerConfig.key,
@@ -98,9 +108,11 @@ module.exports = {
 
                     return axios.get(url, { params });
                 })
-                .then((res) => {
+                .then(res => {
                     console.log(res);
-                    const ticket = res.data.find(t => t.custom_order.Transaction === transaction.get('id'));
+                    const ticket = res.data.find(
+                        t => t.custom_order.Transaction === transaction.get('id')
+                    );
                     console.log(ticket);
 
                     if (!ticket) {
@@ -111,10 +123,7 @@ module.exports = {
 
                     transaction.set('amount', Math.floor(ticket.price * 100));
 
-                    transaction.set(
-                        'state',
-                        ticket.order_paid ? 'SUCCESS' : 'FAILED'
-                    );
+                    transaction.set('state', ticket.order_paid ? 'SUCCESS' : 'FAILED');
 
                     if (transaction.get('state') === 'SUCCESS') {
                         transaction.set('active', null);
@@ -168,9 +177,12 @@ module.exports = {
                     return transaction.save();
                 })
                 .then(() => {
-                    return res.status(200).json({}).end();
+                    return res
+                        .status(200)
+                        .json({})
+                        .end();
                 })
-                .catch((err) => {
+                .catch(err => {
                     if (err.message === 'Transaction not found') {
                         return res.redirect(`${config.urls.managerUrl}/reload/failed`);
                     }
