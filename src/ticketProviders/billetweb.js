@@ -22,11 +22,12 @@ module.exports = ticketNumber => {
     return axios
         .get(url, { params })
         .then(res => {
-            if (!Array.isArray(res) || (!res.data.length)) {
+            if (!Array.isArray(res.data) || (!res.data.length)) {
                 return Promise.resolve();
             }
 
             const tickets = res.data.filter(t => t.barcode === ticketNumber);
+            console.log(tickets);
 
             ticket = tickets.find(t => t.ticket_id.toString() === config.ticketIdTicket);
             credit = tickets.find(t => t.ticket_id.toString() === config.ticketIdPreload) || { price: 0 }
