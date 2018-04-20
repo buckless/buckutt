@@ -1,9 +1,10 @@
 <template>
-    <div class="b-switcher mdc-menu-anchor" v-show="linkedUsers.length > 1">
+    <div class="b-switcher mdc-menu-anchor">
         <div class="b-switcher__button" @click="toggleMenu">
             <span>{{ activeUser.firstname }} {{ activeUser.lastname }}</span>
             <div class="b-space"></div>
-            <i class="material-icons">group</i>
+            <i class="material-icons" v-if="linkedUsers.length > 1">group</i>
+            <i class="material-icons" v-else>person</i>
         </div>
         <div class="mdc-menu" tabindex="-1" ref="menu">
             <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
@@ -31,7 +32,9 @@ export default {
 
     methods: {
         toggleMenu() {
-            this.menu.open = !this.menu.open;
+            if (this.linkedUsers.length > 1) {
+                this.menu.open = !this.menu.open;
+            }
         },
 
         changeUser(user) {
