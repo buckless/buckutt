@@ -66,7 +66,7 @@ export default {
 
     computed: {
         ...mapState({
-            mol: state => state.app.loggedUser.meansOfLogin.find(mol => mol.type === 'ticketId')
+            mol: state => state.app.loggedUser.meansOfLogin.find(mol => mol.type === 'username')
         }),
 
         qrcode() {
