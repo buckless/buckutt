@@ -31,6 +31,6 @@ module.exports = (firstname, lastname) => {
         .then(res => {
             count = parseInt(res.rows[0].count, 10);
 
-            return count === 0 ? username : username + (count - 1);
+            return count === 0 ? username : username + count;
         });
 };
