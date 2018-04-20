@@ -43,6 +43,7 @@
                         <span class="mdc-text-field__label">Numéro de billet</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
+                    En cliquant sur Inscription, vous acceptez nos <a target="_blank" href="https://buckless.com/static/cgu.pdf">conditions générales d'utilisation</a>.
                 </section>
                 <section class="mdc-card__actions">
                     <button type="submit" class="mdc-button mdc-button--raised" :disabled="working">Inscription</button>

@@ -41,10 +41,10 @@ export default {
 
         if (this.$route.query.form_data) {
             get(`callback?form_data=${this.$route.query.form_data}`)
-                .then((res) => {
+                .then(res => {
                     this.$router.push('/reload/success');
                 })
-                .catch((res) => {
+                .catch(res => {
                     this.$router.push('/reload/failed');
                     throw res;
                 });

@@ -16,10 +16,9 @@ import price from './lib/price';
 Vue.config.productionTip = false;
 
 if (process.env.NODE_ENV === 'production') {
-  Raven
-    .config(process.env.sentry)
-    .addPlugin(RavenVue, Vue)
-    .install()
+    Raven.config(process.env.sentry)
+        .addPlugin(RavenVue, Vue)
+        .install();
 }
 
 Vue.component('b-table', PaginatedTable);

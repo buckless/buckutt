@@ -43,10 +43,9 @@ export default {
 
             this.working = true;
 
-            this.switchUser({ meanOfLogin: 'username', data: user.username })
-                .then(() => {
-                    this.working = false;
-                });
+            this.switchUser({ meanOfLogin: 'username', data: user.username }).then(() => {
+                this.working = false;
+            });
         },
 
         ...mapActions(['switchUser'])
