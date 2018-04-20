@@ -154,7 +154,7 @@ router.get('/services/assigner', (req, res, next) => {
 
                     let initialReload = new Reload({
                         credit: credit,
-                        type: 'initial',
+                        type: 'Préchargement',
                         trace: ticketOrMail,
                         point_id: req.point_id,
                         buyer_id: user.id,
