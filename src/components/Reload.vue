@@ -89,40 +89,36 @@ export default {
 
             post('reload', { amount: parseInt(amount * 100, 10) })
                 .then(data => {
-                    if (data.status) {
-                        if (data.message.indexOf('Can not reload less than') > -1) {
-                            data.message = data.message.replace(
-                                'Can not reload less than',
-                                'Rechargement minimal'
-                            );
-                        }
-
-                        if (data.message.indexOf('Maximum exceeded') > -1) {
-                            data.message = data.message.replace(
-                                'Maximum exceeded',
-                                'Solde maximal'
-                            );
-                        }
-
-                        this.notify(data);
-
-                        setTimeout(() => {
-                            this.loading = false;
-                        }, 200);
-                    }
-
                     if (data.type === 'url') {
                         window.location.href = data.res;
                     }
                 })
                 .catch(err => {
-                    throw err;
+                    if (err.status) {
+                        err.json().then((data) => {
+                            if (data.message.indexOf('Can not reload less than') > -1) {
+                                data.message = data.message.replace(
+                                    'Can not reload less than',
+                                    'Rechargement minimal'
+                                );
+                            }
+
+                            if (data.message.indexOf('Maximum exceeded') > -1) {
+                                data.message = data.message.replace(
+                                    'Maximum exceeded',
+                                    'Solde maximal'
+                                );
+                            }
+
+                            this.notify(data);
+                        });
+                    }
 
                     setTimeout(() => {
                         this.loading = false;
                     }, 200);
 
-                    // todo: NaN credit / too much / too small
+                    throw err;
                 });
         },
 
