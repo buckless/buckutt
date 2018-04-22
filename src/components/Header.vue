@@ -14,7 +14,7 @@
             <i class="material-icons">power_settings_new</i>
         </router-link>
 
-        <b-switcher />
+        <b-switcher v-if="loggedUser" />
 
         <nav class="b-header__navigation" v-if="loggedUser">
             <router-link to="/reload" :class="reloadClass">
