@@ -32,7 +32,7 @@
                 </form>
             </transition>
         </div>
-        <div class="mdc-card" v-if="mol && mol.data">
+        <div class="mdc-card" v-if="uid">
             <section class="mdc-card__primary" @click="qrPage = !qrPage">
                 <h1 class="mdc-card__title mdc-card__title--large">
                     <i class="material-icons" :active="qrPage">keyboard_arrow_right</i>
@@ -66,12 +66,11 @@ export default {
 
     computed: {
         ...mapState({
-            mol: state => state.app.loggedUser.meansOfLogin.find(mol => mol.type === 'username')
+            uid: state => state.app.loggedUser.id
         }),
 
         qrcode() {
-            return `https://chart.apis.google.com/chart?cht=qr&chs=400x400&chl=${this.mol.data ||
-                ''}`;
+            return `https://chart.apis.google.com/chart?cht=qr&chs=400x400&chl=${this.uid || ''}`;
         }
     },
 
