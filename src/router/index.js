@@ -4,13 +4,13 @@ import Router from 'vue-router';
 import Home from '@/components/Home';
 import GeneratePin from '@/components/GeneratePin';
 
-const History = () => import(/* webpackChunkName: "dashboard" */ '@/components/History');
-const Reload = () => import(/* webpackChunkName: "dashboard" */ '@/components/Reload');
-const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */ '@/components/ReloadStatus');
-const AssignStatus = () => import(/* webpackChunkName: "dashboard" */ '@/components/AssignStatus');
-const Account = () => import(/* webpackChunkName: "dashboard" */ '@/components/Account');
-const Transfer = () => import(/* webpackChunkName: "dashboard" */ '@/components/Transfer');
-const Logout = () => import(/* webpackChunkName: "dashboard" */ '@/components/Logout');
+import History from '@/components/History';
+import Reload from '@/components/Reload';
+import ReloadStatus from '@/components/ReloadStatus';
+import AssignStatus from '@/components/AssignStatus';
+import Account from '@/components/Account';
+import Transfer from '@/components/Transfer';
+import Logout from '@/components/Logout';
 
 Vue.use(Router);
 
