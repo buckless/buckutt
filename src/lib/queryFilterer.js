@@ -4,7 +4,8 @@ const opToSql = {
     ge: '>=',
     le: '<=',
     eq: '=',
-    ne: '<>'
+    ne: '<>',
+    in: 'in'
 };
 
 module.exports = (query, filters) => {
@@ -13,7 +14,7 @@ module.exports = (query, filters) => {
     filters.forEach(filter => {
         const f = filter;
 
-        for (const op of ['gt', 'ne', 'lt', 'ge', 'le', 'eq']) {
+        for (const op of ['gt', 'ne', 'lt', 'ge', 'le', 'eq', 'in']) {
             if (f.hasOwnProperty(op)) {
                 if (f.date) {
                     f[op] = new Date(f[op]);
