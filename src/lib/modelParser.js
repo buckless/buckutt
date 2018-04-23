@@ -24,6 +24,7 @@ const modelsNames = {
     rights: 'Right',
     sets: 'Set',
     transfers: 'Transfer',
+    transactions: 'Transaction',
     users: 'User',
     webservices: 'Webservice'
 };
