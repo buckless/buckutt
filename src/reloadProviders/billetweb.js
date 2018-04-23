@@ -109,19 +109,17 @@ module.exports = {
                     return axios.get(url, { params });
                 })
                 .then(res => {
-                    console.log(res);
                     const ticket = res.data.find(
                         t => t.custom_order.Transaction === transaction.get('id')
                     );
-                    console.log(ticket);
 
                     if (!ticket) {
                         return Promise.reject(new Error('Transaction not found'));
                     }
 
-                    const amount = transaction.get('amount');
-
                     transaction.set('amount', Math.floor(ticket.price * 100));
+
+                    const amount = transaction.get('amount');
 
                     transaction.set('state', ticket.order_paid ? 'SUCCESS' : 'FAILED');
 
