@@ -84,8 +84,6 @@ module.exports = {
                 .then(giftReloads_ => {
                     giftReloads = giftReloads_;
 
-                    console.log(formData['10037']);
-
                     return Transaction.where({
                         id: formData['10037']
                     }).fetch({ withRelated: ['user'] });
