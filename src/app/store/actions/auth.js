@@ -13,6 +13,11 @@ export const setGiftReloads = ({ commit }, payload) => {
     commit('SET_GIFTRELOADS', payload);
 };
 
+export const setNfcCosts = ({ commit }, payload) => {
+    window.localStorage.setItem('nfcCosts', JSON.stringify(payload));
+    commit('SET_NFCCOSTS', payload);
+};
+
 export const setFullDevice = ({ commit }, payload) => {
     window.localStorage.setItem('fullDevice', JSON.stringify(payload));
     commit('SET_FULL_DEVICE', payload);

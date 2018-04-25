@@ -47,7 +47,6 @@ export default {
     display: flex;
     flex-direction: column;
     min-height: 100px;
-    padding: 20px;
 }
 
 .b-error__modal__title {

@@ -12,11 +12,12 @@ $black: #222;
     border-radius: 2px;
     box-shadow: 0 2px 4px rgba(34, 34, 34, .3);
     left: 50%;
-    padding: 0 5px;
+    padding: 20px;
     position: absolute;
     top: 150px;
     transform: translateX(-50%);
-    width: $width;
+    width: calc(100% - 20px);
+    max-width: $width;
     z-index: 10;
 }
 

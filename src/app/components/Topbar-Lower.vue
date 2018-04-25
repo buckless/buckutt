@@ -21,10 +21,6 @@
                 <strong>Point: </strong>
                 <span>{{ point }}</span>
             </div>
-            <div class="b-lower-bar__device__event" v-if="loginState">
-                <strong>Événement: </strong>
-                <span>{{ event }}</span>
-            </div>
         </div>
     </nav>
 </template>
@@ -38,7 +34,6 @@ export default {
     computed: {
         ...mapState({
             point: state => state.auth.device.point.name,
-            event: state => state.auth.device.event.name,
             history: state => state.history.opened,
             seller: state => state.auth.seller,
             buyer: state => state.auth.buyer
@@ -74,8 +69,7 @@ export default {
 }
 
 .b-lower-bar__device__seller,
-.b-lower-bar__device__point,
-.b-lower-bar__device__event {
+.b-lower-bar__device__point {
     height: 100%;
     line-height: 46px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
@@ -96,8 +90,7 @@ export default {
         display: none;
     }
 
-    .b-lower-bar__device__point,
-    .b-lower-bar__device__event {
+    .b-lower-bar__device__point {
         flex: 0;
         border-left: 0;
         line-height: 35px;

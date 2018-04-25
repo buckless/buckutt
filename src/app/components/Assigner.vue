@@ -19,10 +19,26 @@
         <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
         <search v-show="subpage === 'search'" @assign="assignModal"/>
         <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck>
-            <strong>{{ assignModalName }}</strong><br />
-            Nouveau crédit: <strong><currency :value="assignModalCredit" /></strong>
+            <p class="b-assigner-modal__modal__text__head">
+                <strong>{{ assignModalName }}</strong><br />
+                Nom d'utilisateur : <strong>{{ assignModalUsername }}</strong><br/>
+                Nouveau crédit : <strong><currency :value="assignModalCredit" /></strong>
 
-            <h4 v-if="groups.length > 0">Groupes :</h4>
+                <template v-if="nfcCost.amount > 0">
+                    <br /><br />
+                    <strong v-if="assignModalCredit < nfcCost.amount">
+                        Le compte n'a pas assez de crédit pour payer le support, encaisser <currency :value="nfcCost.amount" />.
+                    </strong>
+                    <strong v-else>
+                        <currency :value="nfcCost.amount" />
+                        <template v-if="nfcCost.amount === 100">va être débité</template>
+                        <template v-else>vont être débités</template>
+                        du compte afin de payer le support
+                    </strong>
+                </template>
+
+                <h4 v-if="groups.length > 0">Groupes :</h4>
+            </p>
             <div class="b-assigner-modal__modal__text__groups" v-if="groups.length > 0">
                 <div class="b-assigner-modal__modal__text__groups__group" v-for="group in groups">
                     <input type="checkbox" name="group" class="b--out-of-screen" :id="`chk_${group.id}`" v-model="activeGroups" :value="group">
@@ -37,6 +53,7 @@
 </template>
 
 <script>
+import uniqueId from 'lodash.uniqueid';
 import axios from '@/utils/axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
@@ -61,6 +78,7 @@ export default {
             showOkModal: false,
             assignModalCredit: 0,
             assignModalName: '',
+            assignModalUsername: '',
             assignModalId: '',
             assignModalOpened: false,
             subpage: 'search',
@@ -85,9 +103,28 @@ export default {
             return this.subpage === 'barcode' ? 'b-assigner__home__button--active' : '';
         },
 
+        nfcCost() {
+            const now = new Date();
+            const groupsToCheck = [this.defaultGroup].concat(this.activeGroups);
+            const validCosts = this.nfcCosts
+                .filter(
+                    nfcCost =>
+                        new Date(nfcCost.period.start) <= now &&
+                        new Date(nfcCost.period.end) >= now &&
+                        groupsToCheck.find(group => group.id === nfcCost.group_id)
+                )
+                .sort((a, b) => a.amount - b.amount);
+            return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
+        },
+
         ...mapState({
+            operator: state => state.auth.seller,
             online: state => state.online.status,
             useCardData: state => state.auth.device.event.config.useCardData,
+            nfcId: state => state.auth.device.event.nfc_id,
+            nfcCosts: state => state.items.nfcCosts,
+            defaultGroup: state =>
+                state.auth.groups.find(group => group.name === state.auth.device.event.name),
             groups: state =>
                 state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
         }),
@@ -105,6 +142,31 @@ export default {
                 blocked: false
             };
 
+            const localId = uniqueId(`transaction-id-${window.appId}`);
+            const transactionToSend = {
+                buyer: value,
+                molType: config.buyerMeanOfLogin,
+                date: new Date(),
+                basket: [
+                    {
+                        price_id: this.nfcCost.id,
+                        promotion_id: null,
+                        articles: [
+                            {
+                                id: this.nfcId,
+                                vat: 0.2,
+                                price: this.nfcCost.id
+                            }
+                        ],
+                        alcohol: 0,
+                        cost: this.nfcCost.amount,
+                        type: 'purchase'
+                    }
+                ],
+                seller: this.operator.id,
+                localId
+            };
+
             let initialPromise = Promise.resolve();
 
             if (this.online) {
@@ -119,6 +181,23 @@ export default {
                             },
                             this.tokenHeaders
                         )
+                    )
+                    .then(() =>
+                        axios
+                            .post(
+                                `${config.api}/services/basket`,
+                                transactionToSend,
+                                this.tokenHeaders
+                            )
+                            .catch(() => {
+                                // if useCardData: it has to work
+                                if (this.useCardData) {
+                                    return this.addPendingRequest({
+                                        url: `${config.api}/services/basket`,
+                                        body: transactionToSend
+                                    });
+                                }
+                            })
                     );
             } else {
                 initialPromise = initialPromise
@@ -136,6 +215,12 @@ export default {
                                 groups: this.activeGroups.map(g => g.id)
                             }
                         })
+                    )
+                    .then(() =>
+                        this.addPendingRequest({
+                            url: `${config.api}/services/basket`,
+                            body: transactionToSend
+                        })
                     );
             }
 
@@ -151,7 +236,11 @@ export default {
                     write =>
                         write && this.useCardData
                             ? new Promise(resolve => {
-                                  window.app.$root.$emit('readyToWrite', this.assignModalCredit);
+                                  const creditToWrite =
+                                      this.assignModalCredit < this.nfcCost.amount
+                                          ? this.assignModalCredit
+                                          : this.assignModalCredit - this.nfcCost.amount;
+                                  window.app.$root.$emit('readyToWrite', creditToWrite);
                                   window.app.$root.$on('writeCompleted', () => resolve());
                               })
                             : Promise.resolve()
@@ -168,7 +257,12 @@ export default {
                     .get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
                     .then(res => {
                         if (typeof res.data.credit === 'number') {
-                            this.assignModal(res.data.credit, res.data.name, res.data.id);
+                            this.assignModal(
+                                res.data.credit,
+                                res.data.name,
+                                res.data.username,
+                                res.data.id
+                            );
                             return;
                         }
 
@@ -184,7 +278,12 @@ export default {
                     .findByBarcode(value)
                     .then(users => {
                         if (users.length === 1) {
-                            this.assignModal(users[0].credit, users[0].name, users[0].id);
+                            this.assignModal(
+                                users[0].credit,
+                                users[0].name,
+                                users[0].username,
+                                users[0].uid
+                            );
                             return;
                         }
 
@@ -199,6 +298,7 @@ export default {
             this.assignModalOpened = false;
             this.assignModalCredit = 0;
             this.assignModalName = '';
+            this.assignModalUsername = '';
             this.assignModalId = '';
         },
 
@@ -222,10 +322,11 @@ export default {
             }
         },
 
-        assignModal(credit, name, id) {
+        assignModal(credit, name, username, id) {
             this.assignModalOpened = true;
             this.assignModalCredit = credit;
             this.assignModalName = name;
+            this.assignModalUsername = username;
             this.assignModalId = id;
         },
 
@@ -298,6 +399,10 @@ export default {
         text-transform: uppercase;
         color: rgba(0, 0, 0, 0.6);
     }
+}
+
+.b-assigner-modal__modal__text__head {
+    padding: 0px 10px;
 }
 
 .b-assigner-modal__modal__text__groups {
