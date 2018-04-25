@@ -4,6 +4,8 @@
             <input type="checkbox"
                  :id="id"
                  :value="value"
+                 @change="blur"
+                 ref="checkbox"
                  v-model="model"
                  class="mdc-checkbox__native-control"/>
             <div class="mdc-checkbox__background">
@@ -41,6 +43,12 @@ export default {
         },
 
         checked: [Array, Boolean]
+    },
+
+    methods: {
+        blur() {
+            this.$refs.checkbox.blur()
+        }
     },
 
     computed: {
