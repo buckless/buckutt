@@ -5,41 +5,39 @@
 import { get, put } from '../../lib/fetch';
 
 export function changePin({ dispatch }, pins) {
-    return new Promise((resolve, reject) => {
-        let message = null;
+    let message = null;
 
-        if (pins.pin !== pins.confirmedPin) {
-            message = 'Les deux codes PIN ne sont pas identiques';
+    if (pins.pin !== pins.confirmedPin) {
+        message = 'Les deux codes PIN ne sont pas identiques';
+    }
+
+    if (pins.currentPin === pins.pin) {
+        message = "L'ancien et le nouveau code PIN rentrés sont identiques";
+    }
+
+    if (pins.pin.length !== 4) {
+        message = 'Le nouveau code PIN ne fait pas la bonne longueur';
+    }
+
+    if (pins.currentPin.length !== 4) {
+        message = "L'ancien code est faux";
+    }
+
+    if (message) {
+        return Promise.reject(new Error(message));
+    }
+
+    return put('changepin', {
+        currentPin: pins.currentPin,
+        pin: pins.pin
+    }).then(result => {
+        if (!result.changed) {
+            return reject(new Error("L'ancien code est faux"));
         }
 
-        if (pins.currentPin === pins.pin) {
-            message = "L'ancien et le nouveau code PIN rentrés sont identiques";
-        }
+        dispatch('updateLoggedUserField', { field: 'pin', value: true });
 
-        if (pins.pin.length !== 4) {
-            message = 'Le nouveau code PIN ne fait pas la bonne longueur';
-        }
-
-        if (pins.currentPin.length !== 4) {
-            message = "L'ancien code est faux";
-        }
-
-        if (message) {
-            return reject(new Error(message));
-        }
-
-        put('changepin', {
-            currentPin: pins.currentPin,
-            pin: pins.pin
-        }).then(result => {
-            if (!result.changed) {
-                return reject(new Error("L'ancien code est faux"));
-            }
-
-            dispatch('updateLoggedUserField', { field: 'pin', value: true });
-
-            resolve({ message: 'Le code PIN a bien été changé' });
-        });
+        return { message: 'Le code PIN a bien été changé' };
     });
 }
 
@@ -56,7 +54,7 @@ export function askPin(_, mail) {
 
             return { message: "Un mail vient de vous être envoyé à l'adresse indiquée" };
         })
-        .catch(() => Promise.reject(new Error('Une erreur inconnue a eu lieu')));
+        .catch(() => Promise.reject(new Error('Cette adresse mail est inconnue')));
 }
 
 export function generatePin(_, pins) {
@@ -86,6 +84,6 @@ export function generatePin(_, pins) {
 
                 resolve({ message: 'Le code PIN a bien été changé' });
             })
-            .catch(() => reject(new Error('Impossible de changer le code PIN')));
+            .catch(() => reject(new Error('Impossible de changer le code PIN.')));
     });
 }

@@ -7,9 +7,9 @@ import { get, post, updateBearer } from '../../lib/fetch';
 export function setToken(_, token) {
     updateBearer(token);
     if (token) {
-        localStorage.setItem('token', token);
+        localStorage.setItem('manager-token', token);
     } else {
-        localStorage.removeItem('token');
+        localStorage.removeItem('manager-token');
     }
 }
 
@@ -18,11 +18,13 @@ export function logoutUser({ dispatch }) {
     dispatch('setToken');
     dispatch('updateLoggedUser');
     dispatch('closeSocket');
-    localStorage.clear();
+    localStorage.removeItem('manager-token', null);
+    localStorage.removeItem('manager-user', null);
+    localStorage.removeItem('manager-linkedusers', null);
 }
 
 export function updateLoggedUser({ commit }, loggedUser) {
-    localStorage.setItem('user', JSON.stringify(loggedUser));
+    localStorage.setItem('manager-user', JSON.stringify(loggedUser));
     commit('UPDATELOGGEDUSER', loggedUser);
 }
 
@@ -33,9 +35,10 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 }
 
 export function autoLoginUser({ commit, dispatch }) {
-    if (localStorage.hasOwnProperty('token')) {
-        commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('user')));
-        dispatch('setToken', localStorage.getItem('token'));
+    if (localStorage.hasOwnProperty('manager-token')) {
+        commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
+        commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
+        dispatch('setToken', localStorage.getItem('manager-token'));
         dispatch('loadUser');
     }
 }
@@ -58,7 +61,7 @@ export function clearHistory({ commit }) {
 }
 
 export function loadUser({ dispatch }) {
-    dispatch('initSocket', localStorage.getItem('token'));
+    dispatch('initSocket', localStorage.getItem('manager-token'));
     dispatch('loadHistory');
     dispatch('loadGiftReloads');
 }
@@ -69,13 +72,33 @@ export function loadGiftReloads({ commit }) {
     });
 }
 
-export function login({ dispatch }, credentials) {
+export function login({ dispatch, commit }, credentials) {
     return post('login', credentials).then(result => {
         if (result.user) {
             dispatch('setToken', result.token);
             dispatch('updateLoggedUser', result.user);
+
             dispatch('loadUser');
+
+            commit('UPDATELINKEDUSERS', result.linkedUsers);
+
+            localStorage.setItem('manager-linkedusers', JSON.stringify(result.linkedUsers));
+
             return result.user;
+        }
+
+        return Promise.reject();
+    });
+}
+
+export function switchUser({ dispatch, commit }, credentials) {
+    return post('switchuser', credentials).then(result => {
+        if (result.user) {
+            dispatch('setToken', result.token);
+            dispatch('updateLoggedUser', result.user);
+            dispatch('loadUser');
+
+            return;
         }
 
         return Promise.reject();

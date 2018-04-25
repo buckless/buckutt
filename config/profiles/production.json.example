@@ -1,10 +1,12 @@
 {
     "NODE_ENV": "\"production\"",
     "name": "\"Buckless\"",
+    "headerColor": "\"#000\"",
     "color": "\"#34495e\"",
     "footerBackground": "\"#4f6f8f\"",
     "footerColor": "\"#fff\"",
     "contactMail": "\"contact@buckless.com\"",
     "assignText": "\"Votre compte devrait être disponible quelques minutes après l'acquisition de votre place.\"",
-    "defaultMol": "\"mail\""
+    "defaultMol": "\"mail,username\"",
+    "sentry": "\"https://7b5113afbe3d47309041a20dce3ac041@sentry.buckless.com//2\""
 }

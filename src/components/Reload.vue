@@ -41,7 +41,7 @@
                         <input
                             type="number"
                             class="mdc-text-field__input"
-                            max="100" min="5" step="0.10" pattern="[0-9]*(\.[0-9]+)?"
+                            step="0.10" pattern="[0-9]*(\.[0-9]+)?"
                             error="Veuillez entrer un montant correct"
                             v-model="amount">
                         <span class="mdc-text-field__label">Montant personnalisé</span>
@@ -73,7 +73,8 @@ export default {
 
     computed: {
         ...mapState({
-            giftReloads: state => state.app.giftReloads
+            giftReloads: state => state.app.giftReloads,
+            loggedUser: state => state.app.loggedUser
         })
     },
 
@@ -86,19 +87,39 @@ export default {
         reload(amount) {
             this.loading = true;
 
-            post('reload', { amount: parseInt(amount * 100, 10) }).then(data => {
-                if (data.status) {
-                    this.notify(data.message);
+            post('reload', { amount: parseInt(amount * 100, 10) })
+                .then(data => {
+                    if (data.type === 'url') {
+                        window.location.href = data.res;
+                    }
+                })
+                .catch(err => {
+                    if (err.status) {
+                        err.json().then((data) => {
+                            if (data.message.indexOf('Can not reload less than') > -1) {
+                                data.message = data.message.replace(
+                                    'Can not reload less than',
+                                    'Rechargement minimal'
+                                );
+                            }
+
+                            if (data.message.indexOf('Maximum exceeded') > -1) {
+                                data.message = data.message.replace(
+                                    'Maximum exceeded',
+                                    'Solde maximal'
+                                );
+                            }
+
+                            this.notify(data);
+                        });
+                    }
 
                     setTimeout(() => {
                         this.loading = false;
                     }, 200);
-                }
 
-                if (data.type === 'url') {
-                    window.location.href = data.res;
-                }
-            });
+                    throw err;
+                });
         },
 
         ...mapActions(['notify'])
@@ -124,6 +145,20 @@ export default {
         font-size: 16px;
         margin: 0px 10px;
         line-height: 16px;
+    }
+}
+
+@media (max-width: 472px) {
+    .b-reload__boxes {
+        flex-wrap: wrap;
+    }
+
+    .b-reload__boxes > button {
+        width: calc(50% - 20px);
+    }
+
+    .b-reload__boxes > button:nth-child(-n + 2) {
+        margin-bottom: 12px;
     }
 }
 </style>

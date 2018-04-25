@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4');
+
 const authData = {
     headers: {
         Accept: 'application/json',
@@ -29,8 +31,8 @@ export function get(url, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts)
-        .then(res => res.json())
+    return fetch(`/api/${url}`, opts)
+        .then(res => (res.status === 200 ? res.json() : Promise.reject(res)))
         .then(results => {
             if (Array.isArray(results)) {
                 return results.filter(r => !r.isRemoved);
@@ -50,7 +52,9 @@ export function get(url, opts_) {
 export function post(url, data, opts_) {
     const opts = Object.assign(
         {},
-        authData,
+        {
+            headers: Object.assign({}, authData.headers)
+        },
         {
             method: 'POST',
             body: JSON.stringify(data)
@@ -58,7 +62,11 @@ export function post(url, data, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts).then(res => res.json());
+    opts.headers['Idempotency-Key'] = uuid();
+
+    return fetch(`api/${url}`, opts).then(
+        res => (res.status === 200 ? res.json() : Promise.reject(res))
+    );
 }
 
 /**
@@ -79,7 +87,9 @@ export function put(url, data, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts).then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(
+        res => (res.status === 200 ? res.json() : Promise.reject(res))
+    );
 }
 
 /**
@@ -98,5 +108,7 @@ export function del(url, opts_) {
         opts_
     );
 
-    return fetch(`api/${url}`, opts).then(res => res.json());
+    return fetch(`/api/${url}`, opts).then(
+        res => (res.status === 200 ? res.json() : Promise.reject(res))
+    );
 }

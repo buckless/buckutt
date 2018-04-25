@@ -4,12 +4,13 @@ import Router from 'vue-router';
 import Home from '@/components/Home';
 import GeneratePin from '@/components/GeneratePin';
 
-const History = () => import(/* webpackChunkName: "dashboard" */ '@/components/History');
-const Reload = () => import(/* webpackChunkName: "dashboard" */ '@/components/Reload');
-const ReloadStatus = () => import(/* webpackChunkName: "dashboard" */ '@/components/ReloadStatus');
-const ChangePin = () => import(/* webpackChunkName: "dashboard" */ '@/components/ChangePin');
-const Transfer = () => import(/* webpackChunkName: "dashboard" */ '@/components/Transfer');
-const Logout = () => import(/* webpackChunkName: "dashboard" */ '@/components/Logout');
+import History from '@/components/History';
+import Reload from '@/components/Reload';
+import ReloadStatus from '@/components/ReloadStatus';
+import AssignStatus from '@/components/AssignStatus';
+import Account from '@/components/Account';
+import Transfer from '@/components/Transfer';
+import Logout from '@/components/Logout';
 
 Vue.use(Router);
 
@@ -41,8 +42,29 @@ const routes = [
         }
     },
     {
-        path: '/pin',
-        component: ChangePin
+        path: '/reload/waiting',
+        component: ReloadStatus,
+        props: {
+            status: 'waiting'
+        }
+    },
+    {
+        path: '/assign/success',
+        component: AssignStatus,
+        props: {
+            status: 'success'
+        }
+    },
+    {
+        path: '/assign/failed',
+        component: AssignStatus,
+        props: {
+            status: 'failed'
+        }
+    },
+    {
+        path: '/account',
+        component: Account
     },
     {
         path: '/forgot-pin',
@@ -66,7 +88,9 @@ const router = new Router({
 router.beforeEach((route, from, next) => {
     const logged = !!router.app.$store.state.app.loggedUser;
 
-    if (route.path !== '/' && route.path !== '/forgot-pin' && !logged) {
+    const unloggedUrls = ['/', '/forgot-pin', '/assign/success', '/assign/failed'];
+
+    if (unloggedUrls.indexOf(route.path) === -1 && !logged) {
         next('/');
     } else if (route.path === '/' && logged) {
         next('/history');

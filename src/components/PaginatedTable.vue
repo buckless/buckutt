@@ -62,7 +62,6 @@
 import lodget from 'lodash.get';
 import fuzzy from 'fuzzy';
 import sortOrder from '../lib/sortOrder';
-import '../lib/price';
 import '../lib/date';
 
 export default {

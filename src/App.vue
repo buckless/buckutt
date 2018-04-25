@@ -3,6 +3,7 @@
         <b-header />
         <main class="mdl-layout__content" :class="{ 'b-forcedMain': !logged }">
             <router-view></router-view>
+            <footer class="b-cgu">&copy; Studio Async — <a href="https://buckless.com/static/cgu.pdf">Conditions</a></footer>
         </main>
 
         <div class="mdc-snackbar"
@@ -41,7 +42,8 @@ export default {
             switch (mutation.type) {
                 case 'UPDATENOTIFY':
                     snackbar.show({
-                        message: mutation.payload.message
+                        message: mutation.payload.message,
+                        timeout: 3000
                     });
                     break;
                 default:
@@ -53,13 +55,16 @@ export default {
 </script>
 
 <style lang="scss">
-$mdc-theme-primary: #27ae60;
+$mdc-theme-primary: #27ae60 !default;
 
+@import '@material/ripple/mdc-ripple.scss';
 @import '@material/list/mdc-list.scss';
 @import '@material/button/mdc-button.scss';
 @import '@material/card/mdc-card.scss';
 @import '@material/textfield/mdc-text-field.scss';
 @import '@material/snackbar/mdc-snackbar.scss';
+@import '@material/checkbox/mdc-checkbox.scss';
+@import '@material/menu/mdc-menu.scss';
 @import './main.css';
 </style>
 
@@ -71,5 +76,18 @@ main.mdl-layout__content {
 .b-forcedMain {
     width: 100%;
     margin-left: 0px !important;
+}
+
+footer {
+    text-align: center;
+    color: #757575;
+    font-size: 14px;
+    margin-bottom: 24px;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+footer > a {
+    color: #757575;
 }
 </style>
