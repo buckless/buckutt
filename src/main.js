@@ -42,8 +42,6 @@ Vue.component('b-list', List);
 Vue.component('b-navbar', Navbar);
 Vue.component('b-table', PaginatedTable);
 
-const withoutEventRoutes = ['', 'logout', 'events', 'treasury', 'account'];
-
 const router = new VueRouter({ routes });
 
 router.beforeEach((route, from, next) => {
@@ -53,10 +51,7 @@ router.beforeEach((route, from, next) => {
             const routePath = route.path.split('/');
             const path = routePath[1];
 
-            if (
-                (path !== '' && !store.getters.logged) ||
-                (withoutEventRoutes.indexOf(path) === -1 && !store.state.app.currentEvent)
-            ) {
+            if (path !== '' && !store.getters.logged) {
                 // The administrator isn't logged, redirection to the login
                 store.dispatch('clearFocusedElements');
                 next('/');
@@ -86,7 +81,7 @@ const Admin = Vue.extend({
     template: '<App></App>',
     methods: {
         goBack() {
-            router.push(`/${store.state.route.path.split('/')[1]}`);
+            router.push(`/${store.state.route.path.split('/')[1].replace('points', 'wikets')}`);
         }
     }
 });

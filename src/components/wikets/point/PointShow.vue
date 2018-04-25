@@ -1,5 +1,5 @@
 <template>
-    <div class="b-participants b-page">
+    <div class="b-wikets b-page">
         <div class="mdl-card mdl-shadow--2dp">
             <b-navbar
                 :title="title"
@@ -14,32 +14,32 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
     computed: {
         ...mapState({
-            focusedParticipant: state => state.app.focusedElements[0],
-            currentEvent: state => state.app.currentEvent
+            focusedPoint: state => state.app.focusedElements[0]
         }),
+
+        ...mapGetters(['event']),
+
+        title() {
+            return `Guichet ${this.focusedPoint.name}`;
+        },
 
         displayedTabs() {
             const tabs = [
                 { route: '', name: 'Détails', exact: true },
-                { route: 'rights', name: 'Droits' }
+                { route: 'edit', name: 'Édition' },
+                { route: 'assign', name: 'Assigner des équipements' }
             ];
 
-            if (this.currentEvent.useGroups) {
-                tabs.push({ route: 'groups', name: 'Groupes' });
+            if (this.event.useGroups) {
+                tabs.push({ route: 'preferences', name: 'Préférences' });
             }
 
             return tabs;
-        },
-
-        title() {
-            return `Privilèges de ${this.focusedParticipant.firstname} ${
-                this.focusedParticipant.lastname
-            }`;
         }
     }
 };

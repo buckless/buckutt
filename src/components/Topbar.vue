@@ -6,17 +6,17 @@
                     <i class="material-icons">devices</i><br />
                     Équipements
                 </router-link>
-                <router-link to="/points" class="mdl-navigation__link">
-                    <i class="material-icons">view_comfy</i><br />
-                    Guichets
-                </router-link>
-                <router-link to="/fundations" class="mdl-navigation__link">
-                    <i class="material-icons">local_atm</i><br />
-                    Fondations
+                <router-link to="/periods" class="mdl-navigation__link" v-if="event.usePeriods">
+                    <i class="material-icons">alarm</i><br />
+                    Périodes
                 </router-link>
                 <router-link to="/categories" class="mdl-navigation__link">
                     <i class="material-icons">format_list_numbered</i><br />
                     Catégories
+                </router-link>
+                <router-link to="/fundations" class="mdl-navigation__link" v-if="event.useFundations">
+                    <i class="material-icons">local_atm</i><br />
+                    Fondations
                 </router-link>
                 <router-link to="/articles" class="mdl-navigation__link">
                     <i class="material-icons">free_breakfast</i><br />
@@ -25,14 +25,6 @@
                 <router-link to="/promotions" class="mdl-navigation__link">
                     <i class="material-icons">stars</i><br />
                     Formules
-                </router-link>
-                <router-link to="/users" class="mdl-navigation__link">
-                    <i class="material-icons">person</i><br />
-                    Utilisateurs
-                </router-link>
-                <router-link to="/groups" class="mdl-navigation__link">
-                    <i class="material-icons">group</i><br />
-                    Groupes
                 </router-link>
             </template>
         </nav>
@@ -59,7 +51,7 @@ export default {
             loggedUser: state => state.app.loggedUser
         }),
 
-        ...mapGetters(['logged'])
+        ...mapGetters(['logged', 'event'])
     }
 };
 </script>

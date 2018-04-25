@@ -5,31 +5,6 @@ import routeToRelation from '../../lib/routeToRelation';
  * Global actions
  */
 
-export function updateCurrentEvent({ dispatch }, currentEvent) {
-    const embedEvents = routeToRelation('events');
-
-    return get(`events/${currentEvent.id}?embed=${embedEvents}`).then(result => {
-        if (result.periods) {
-            result.periods = result.periods.filter(period => !period.isRemoved);
-        }
-
-        return dispatch('changeCurrentEvent', result);
-    });
-}
-
-export function changeCurrentEvent({ commit }, currentEvent) {
-    return new Promise(resolve => {
-        localStorage.setItem('event', JSON.stringify(currentEvent));
-        commit('UPDATECURRENTEVENT', currentEvent);
-        resolve();
-    });
-}
-
-export function unselectCurrentEvent({ commit }) {
-    localStorage.removeItem('event');
-    commit('UPDATECURRENTEVENT', null);
-}
-
 export function updateLoggedUser({ commit }, loggedUser) {
     commit('UPDATELOGGEDUSER', loggedUser);
 }
@@ -61,11 +36,9 @@ export function load({ state, dispatch }) {
 
     const objectsToFetch = routes.map(route => dispatch('fetchObjects', { route }));
 
-    Promise.all(objectsToFetch).then(() => {
-        if (state.objects.events.length === 1) {
-            dispatch('updateCurrentEvent', state.objects.events[0]);
-        }
-    });
+    Promise.all(objectsToFetch).then(() =>
+        dispatch('fetchObjectsAndRelations', { route: 'events' })
+    );
 
     dispatch('registerModels', routes);
 }
@@ -81,10 +54,6 @@ export function checkAndCreateNeededRouterData({ state, commit, dispatch }) {
         commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('user')));
         dispatch('setToken', localStorage.getItem('token'));
         dispatch('load');
-    }
-
-    if (localStorage.hasOwnProperty('event')) {
-        actions.push(dispatch('updateCurrentEvent', JSON.parse(localStorage.getItem('event'))));
     }
 
     return Promise.all(actions)

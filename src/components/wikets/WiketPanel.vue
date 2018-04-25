@@ -2,49 +2,44 @@
     <div class="b-wiketpanel">
         <div class="b-wiketpanel__add">
             <i class="material-icons">note_add</i>
-            <h6>Ajouter un guichet</h6>
+            <h6>Créer un guichet</h6>
         </div>
         <div class="b-wiketpanel__addwiket">
-            <form @submit.prevent="redirect(chosenPoint)" v-if="remainingPoints.length > 0">
-                <b-inputselect label="Guichet" id="point-select" :options="remainingPoints" v-model="chosenPoint"></b-inputselect>
-                <mdl-button raised colored>Ajouter</mdl-button>
+            <form @submit.prevent="createPoint(newPoint)">
+                <mdl-textfield floating-label="Nom" v-model="newPoint.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
+                <mdl-button colored raised>Créer</mdl-button>
             </form>
-            <p v-else>Il n'y a aucun guichet à ajouter.</p>
         </div>
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     data() {
         return {
-            chosenPoint: null
+            newPoint: {
+                name: ''
+            }
         };
     },
 
     methods: {
-        redirect(point) {
-            if (point) {
-                this.$router.push(`/wikets/${point.id}/assign`);
-            }
-        }
-    },
+        ...mapActions(['createObject', 'notify', 'notifyError']),
 
-    computed: {
-        ...mapGetters(['pointOptions']),
-
-        pointsWikets() {
-            return this.$parent.pointsWikets;
-        },
-
-        remainingPoints() {
-            return this.pointOptions.filter(
-                pointOption =>
-                    pointOption.name !== 'Internet' &&
-                    !(this.pointsWikets || []).some(point => point.id === pointOption.value.id)
-            );
+        createPoint(point) {
+            this.createObject({ route: 'points', value: point })
+                .then(createdPoint => {
+                    this.notify({ message: 'Le guichet a bien été créé' });
+                    this.newPoint.name = '';
+                })
+                .catch(err =>
+                    this.notifyError({
+                        message: 'Une erreur a eu lieu lors de la création du guichet',
+                        full: err
+                    })
+                );
         }
     }
 };

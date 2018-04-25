@@ -12,36 +12,42 @@
                 </h6>
             </div>
             <div class="mdl-card__supporting-text">
-                Équipements:
-                <div v-for="(wiket, index) in point.wikets">
-                    <span>
-                        <i class="material-icons">devices</i> {{ wiket.device.name }}
-                    </span>
-                    <span v-if="currentEvent.usePeriods">
-                        <i class="material-icons">alarm</i> {{ wiket.period.name }}
-                    </span>
-                    <template v-else-if="wiket.period.id !== currentEvent.defaultPeriod_id">
-                        <mdl-tooltip :target="`point_${point.id}_${index}`" class="b--uncapitalize">
-                            Une période autre que<br />celle par défaut est utilisée.
-                        </mdl-tooltip>
-                        <i :id="`point_${point.id}_${index}`" class="material-icons">warning</i>
-                    </template>
-                </div>
+                <template v-if="point.wikets.length > 0">
+                    Équipements:
+                    <div v-for="(wiket, index) in point.wikets">
+                        <span>
+                            <i class="material-icons">devices</i> {{ wiket.device.name }}
+                        </span>
+                        <span v-if="event.usePeriods">
+                            <i class="material-icons">alarm</i> {{ wiket.period.name }}
+                        </span>
+                        <template v-else-if="wiket.period.id !== event.defaultPeriod_id">
+                            <mdl-tooltip :target="`point_${point.id}_${index}`" class="b--uncapitalize">
+                                Une période autre que<br />celle par défaut est utilisée.
+                            </mdl-tooltip>
+                            <i :id="`point_${point.id}_${index}`" class="material-icons">warning</i>
+                        </template>
+                    </div>
+                </template>
+                <template v-else>Aucun équipement n'est encore assigné à ce guichet.</template>
             </div>
         </div>
         <div class="mdl-card__actions mdl-card--border">
-            <router-link :to="`/wikets/${point.id}/assign`">
-                <mdl-button colored>Gérer les équipements</mdl-button>
+            <router-link :to="`/points/${point.id}`">
+                <mdl-button colored>Gérer le guichet</mdl-button>
             </router-link>
             <router-link :to="`/wikets/${point.id}`">
                 <mdl-button colored>Modifier les articles</mdl-button>
             </router-link>
+            <b-confirm class="b--inline" @confirm="removeObject({ route: 'points', value: point })">
+                <mdl-button icon="remove_circle_outline" class="b--error"></mdl-button>
+            </b-confirm>
         </div>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     props: {
@@ -58,9 +64,11 @@ export default {
     },
 
     computed: {
-        ...mapState({
-            currentEvent: state => state.app.currentEvent
-        })
+        ...mapGetters(['event'])
+    },
+
+    methods: {
+        ...mapActions(['removeObject'])
     }
 };
 </script>

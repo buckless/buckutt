@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h5>Listes des périodes de "{{ currentEvent.name }}"</h5>
+        <h5>Listes des périodes</h5>
         <div class="b-table-search">
             <i class="material-icons">search</i>
             <mdl-textfield floating-label="Nom de la période" v-model="name"></mdl-textfield>
@@ -16,8 +16,8 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'end', order: 'DESC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNotIn', value: protectedPeriodsIds } },
-                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNotIn', value: protectedPeriodsIds } }
+                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id } },
+                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id } }
             ]"
             route="periods"
             :paging="10"
@@ -53,16 +53,13 @@ export default {
 
     computed: {
         ...mapState({
-            currentEvent: state => state.app.currentEvent,
             periods: state => state.objects.periods
         }),
 
-        ...mapGetters(['protectedPeriodsIds', 'currentPeriods']),
+        ...mapGetters(['event', 'currentPeriods']),
 
         displayedPeriods() {
-            const selectedPeriods = this.displayOutdated ? this.periods : this.currentPeriods;
-
-            return selectedPeriods.filter(period => period.event_id === this.currentEvent.id);
+            return this.displayOutdated ? this.periods : this.currentPeriods;
         }
     }
 };

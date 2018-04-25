@@ -2,8 +2,8 @@
     <div class="b-events b-page">
         <div class="mdl-card mdl-shadow--2dp">
             <b-navbar
-                :title="title"
-                :tabs="[{ route: '', name: 'Détails', exact: true }, { route: 'edit', name: 'Édition' }, { route: 'config', name: 'Configuration' }]"
+                title="Options de l'événement"
+                :tabs="[{ route: '', name: 'Détails', exact: true }, { route: 'edit', name: 'Édition' }, { route: 'config', name: 'Configuration' }, { route: nfcLink, name: 'Support NFC' }]"
                 :inCard="true"
                 :goBack="false"
                 :level="2">
@@ -22,8 +22,8 @@ export default {
             focusedEvent: state => state.app.focusedElements[0]
         }),
 
-        title() {
-            return `Évenement ${this.focusedEvent.name}`;
+        nfcLink() {
+            return `nfc/${this.focusedEvent.nfc_id}`;
         }
     }
 };

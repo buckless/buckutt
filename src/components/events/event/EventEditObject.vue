@@ -2,7 +2,6 @@
     <div>
         <h5>Modifier l'évenement</h5>
         <form @submit.prevent="updateEvent(focusedEvent)">
-            <mdl-textfield floating-label="Nom" :value="focusedEvent.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })"></mdl-textfield required="required" error="Le nom doit contenir au moins un caractère"><br />
             <b-datetime-picker
                 :value="new Date(defaultPeriod.start)"
                 @input="updateDeepestFocusedElement({ field: 'defaultPeriod.start', value: $event })"
@@ -47,26 +46,13 @@ export default {
         ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateEvent(event) {
-            const fields = ['id', 'name', 'minReload', 'maxPerAccount', 'maxAlcohol'];
-            const defaultPeriodFields = ['id', 'name', 'start', 'end'];
-            event.defaultPeriod.name = event.name;
+            const fields = ['id', 'minReload', 'maxPerAccount', 'maxAlcohol'];
+            const defaultPeriodFields = ['id', 'start', 'end'];
 
             this.updateObject({
                 route: 'periods',
                 value: pick(event.defaultPeriod, defaultPeriodFields)
             })
-                .then(() =>
-                    this.updateObject({
-                        route: 'fundations',
-                        value: { id: event.defaultFundation.id, name: event.name }
-                    })
-                )
-                .then(() =>
-                    this.updateObject({
-                        route: 'groups',
-                        value: { id: event.defaultGroup.id, name: event.name }
-                    })
-                )
                 .then(() => this.updateObject({ route: 'events', value: pick(event, fields) }))
                 .then(() => this.notify({ message: "L'événement a bien été modifié" }))
                 .catch(err =>
