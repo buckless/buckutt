@@ -10,12 +10,13 @@ const http = require('http');
 const https = require('https');
 const randomstring = require('randomstring');
 const config = require('../config');
-const reloadProvider = require('./reloadProviders');
 const controllers = require('./controllers');
 const socketServer = require('./socketServer');
 const purchaseWebservices = require('./lib/purchaseWebservices');
 const logger = require('./lib/log');
 const bookshelf = require('./lib/bookshelf');
+const redis = require('./lib/redis');
+const exposeResBody = require('./lib/exposeResBody');
 const APIError = require('./errors/APIError');
 const sslConfig = require('../scripts/sslConfig');
 const { addDevice } = require('../scripts/addDevice');
@@ -44,15 +45,12 @@ app.use(bodyParser.msgpack({ limit: '5mb' }));
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(cookieParser());
 app.use(compression());
+app.use(exposeResBody);
 
 /**
  * Routes
  */
 app.use(controllers);
-reloadProvider(app).catch(() => {
-    console.error('No reload provider provided');
-    process.exit(1);
-});
 
 /**
  * Error handling
@@ -88,9 +86,12 @@ app.start = () => {
         ca: './ssl/certificates/ca/ca-crt.pem'
     };
 
-    let startingQueue = bookshelf
-        .waitForDb(2, 15) // 15 retries, one every 2 seconds
-        .then(() => bookshelf.sync());
+    // todo : promise.all
+    // todo : abort on catch
+    let startingQueue = Promise.all([
+        bookshelf.waitForDb(2, 15).then(() => bookshelf.sync()),
+        redis.waitForCache(2, 15)
+    ]); // 15 retries, one every 2 seconds
 
     /* istanbul ignore if */
     if (

@@ -1,4 +1,5 @@
 const express = require('express');
+const { makePayment } = require('../../../reloadProviders');
 const logger = require('../../../lib/log');
 const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
@@ -18,13 +19,24 @@ router.post('/services/manager/reload', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid amount', { receiver: req.reciever_id }));
     }
 
-    req.app.locals
-        .makePayment({
-            buyer: req.user,
-            amount: parseInt(req.body.amount, 10),
-            // Used by test reloadProvider
-            point: req.point_id
-        })
+    const amount = parseInt(req.body.amount, 10);
+
+    if (req.event.maxPerAccount && req.user.credit + amount > req.event.maxPerAccount) {
+        const max = (req.event.maxPerAccount / 100).toFixed(2);
+        return next(new APIError(module, 400, `Maximum exceeded : ${max}€`, { user: req.user.id }));
+    }
+
+    if (req.event.minReload && amount < req.event.minReload) {
+        const min = (req.event.minReload / 100).toFixed(2);
+        return next(new APIError(module, 400, `Can not reload less than : ${min}€`));
+    }
+
+    makePayment(req.app, {
+        buyer: req.user,
+        amount,
+        // Used by test reloadProvider
+        point: req.point_id
+    })
         .then(result => {
             res
                 .status(200)

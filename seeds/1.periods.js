@@ -8,8 +8,7 @@ exports.seed = function (knex) {
                     id   : period_id,
                     name : 'Défaut',
                     start: new Date(0),
-                    end  : new Date(21474000000000),
-                    event_id
+                    end  : new Date(21474000000000)
                 })
             ])
         )

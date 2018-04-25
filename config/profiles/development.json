@@ -1,4 +1,5 @@
 {
+    "merchantName": "Buckless",
     "log": {
         "console": {
             "level": "debug"
@@ -15,6 +16,10 @@
     "app": {
         "name": "buckless_server",
         "secret": "NgWlfDWCbX4mPuxau1FmG3TPLHm7iglEA3mp1f8nrlT7zKDn8ZZAwWQOqUArvQBFfMEbFSAMnUHzgQW1FkczTiZYjPZWqdseNtk2"
+    },
+    "redis": {
+        "host": "127.0.0.1",
+        "port": 6379
     },
     "db": {
         "client": "pg",
@@ -40,21 +45,20 @@
             "host": "smtp.mailtrap.io",
             "port": 2525,
             "auth": {
-                "user": "ed37a3f7039a0e",
-                "pass": "d617720e0b2db0"
+                "user": "583285d5a62f63",
+                "pass": "51848dd566e072"
             }
         }
     },
     "urls": {
-        "managerUrl": "https://b.inst.buckless.com"
+        "managerUrl": "http://localhost:8083"
     },
     "askpin": {
         "from": "noreply@buckless.com",
-        "subject": "Buckless forgotten PIN",
-        "template": "Hi !\n You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !"
+        "subject": "Buckless — Code PIN oublié"
     },
     "assigner": {
-        "ticketProvider": "csv",
+        "ticketProvider": "billetweb",
         "csv": {
             "url": {
                 "url": "",
@@ -63,18 +67,43 @@
             },
             "file": null
         },
-        "sendPINMail": false,
+        "billetweb": {
+            "event": "30783",
+            "user": "14522",
+            "key": "",
+            "ticketIdTicket": "149698",
+            "ticketIdPreload": "184062",
+            "version": "1"
+        },
         "from": "noreply@buckless.com",
-        "subject": "Buckless — Votre code PIN",
-        "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
+        "subject": "Buckless — Votre code PIN"
     },
     "provider": {
-        "name": "etupay",
-        "config": {
-            "id": 16,
-            "key": "foo",
+        "name": "billetweb",
+        "etupay": {
+            "id": 3,
             "url": "https://etupay.utt.fr/initiate",
-            "merchantName": ""
+            "key": "foobar"
+        },
+        "epayments": {
+            "apiKeyId": "3c05301f77ceba9e",
+            "secretApiKey": "",
+            "merchantId": "1812",
+            "variant": "default",
+            "urlPrefix": "https://buckless"
+        },
+        "payline": {
+            "id": "foo",
+            "password": "bar",
+            "contractNumber": "1"
+        },
+        "billetweb": {
+            "url": "https://www.billetweb.fr/shop.php?event=cashless-natural-games-2018",
+            "ticket": "197801",
+            "event": "49484",
+            "user": "14522",
+            "key": "",
+            "version": "1"
         }
     }
 }

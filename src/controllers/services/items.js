@@ -44,8 +44,7 @@ router.get('/services/items', (req, res, next) => {
                 {
                     'user.memberships.period': query =>
                         query.where('start', '<=', now).where('end', '>=', now)
-                },
-                'user.memberships.period.event'
+                }
             ]
         })
         .then(mol => (mol ? mol.toJSON() : null))
@@ -61,7 +60,7 @@ router.get('/services/items', (req, res, next) => {
             req.buyer.password = '';
 
             req.groups = req.buyer.memberships
-                .filter(membership => membership.period.id && membership.period.event.id)
+                .filter(membership => membership.period.id)
                 .map(membership => membership.group_id);
 
             if (req.groups.length === 0) {
@@ -94,7 +93,6 @@ router.get('/services/items', (req, res, next) => {
                 {
                     period: query => query.where('start', '<=', now).where('end', '>=', now)
                 },
-                'period.event',
                 'point',
                 'fundation',
                 'promotion',

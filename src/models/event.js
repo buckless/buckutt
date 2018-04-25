@@ -18,8 +18,8 @@ module.exports = bookshelf => {
             return this.belongsTo('Period', 'defaultPeriod_id');
         },
 
-        periods() {
-            return this.hasMany('Period');
+        nfc() {
+            return this.belongsTo('Article', 'nfc_id');
         }
     });
 

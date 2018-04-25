@@ -4,6 +4,7 @@ module.exports = {
     event_id    : 'a28a9a52-79a8-4115-91cc-9833edab39d9',
     group_id    : 'c18fb66b-339e-4ea7-9f56-640bce0e2002',
     fundation_id: '499b2ff0-583f-4c23-a78f-7b0d153327fe',
+    nfc_id      : '44d07229-ff52-4afb-91dc-d84eddbd8248',
     item        : obj => Object.assign(obj, {
         created_at: new Date(),
         updated_at: new Date(),

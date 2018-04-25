@@ -84,8 +84,8 @@ exports.down = function (knex) {
         .table('memberships', (t) => {
             t.dropForeign('user_id');
             t.dropForeign('group_id');
-            t.dropForeign('defaultPeriod_id');
-            t.dropColumn('period_id');
+            t.dropForeign('period_id');
+            t.dropColumn('user_id');
             t.dropColumn('group_id');
             t.dropColumn('period_id');
         })

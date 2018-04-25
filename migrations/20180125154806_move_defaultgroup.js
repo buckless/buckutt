@@ -1,4 +1,4 @@
-exports.up = function(knex) {
+exports.up = function (knex) {
     return knex.schema
         .table('devices', (t) => {
             t.dropForeign('defaultGroup_id');
@@ -12,7 +12,7 @@ exports.up = function(knex) {
         });
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
     return knex.schema
         .table('devices', (t) => {
             t.uuid('defaultGroup_id').references('groups.id');

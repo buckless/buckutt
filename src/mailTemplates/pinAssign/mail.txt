@@ -1,6 +1,6 @@
 Bonjour,
 
-Vous venez de recevoir votre nouveau code PIN cashless {{=it.brandname}}. Il vous permet de vous connecter à votre interface de gestion cashless. Votre code PIN est : {{=it.pin}}. Vous pourrez le modifier une fois connecté sur votre interface.
+Voici vos identifiants pour votre espace cashless {{=it.brandname}}. Il vous permet de vous connecter à votre interface de gestion. Votre identifiant est {{=it.username}} (vous pouvez aussi utiliser votre email {{=it.email}}) et votre code PIN est : {{=it.pin}}. Vous pourrez le modifier une fois connecté sur votre interface.
 
 Cliquez ici pour vous connecter : {{=it.link}}.
 

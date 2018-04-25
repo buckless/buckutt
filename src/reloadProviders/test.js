@@ -1,13 +1,42 @@
+const express = require('express');
 const uuid = require('uuid');
 const config = require('../../config');
 
-module.exports = app => {
-    const Transaction = app.locals.models.Transaction;
-    const GiftReload = app.locals.models.GiftReload;
-    const Reload = app.locals.models.Reload;
-    const PendingCardUpdate = app.locals.models.PendingCardUpdate;
+module.exports = {
+    makePayment(app, data) {
+        const Transaction = app.locals.models.Transaction;
 
-    const validatePayment = (id, data) => {
+        const transaction = new Transaction({
+            state: 'pending',
+            amount: data.amount,
+            user_id: data.buyer.id
+        });
+
+        return transaction.save().then(() => {
+            setTimeout(() => module.exports.fakeCallback(app, transaction.get('id'), data), 1000);
+
+            return {
+                type: 'url',
+                res: `${config.urls.managerUrl}/reload/success`
+            };
+        });
+    },
+
+    callback() {
+        return new express.Router();
+    },
+
+    fakeCallback(app, id, data) {
+        if (!app || !id || !data) {
+            // disable callback as a router (called from controllers)
+            return () => {};
+        }
+
+        const Transaction = app.locals.models.Transaction;
+        const GiftReload = app.locals.models.GiftReload;
+        const Reload = app.locals.models.Reload;
+        const PendingCardUpdate = app.locals.models.PendingCardUpdate;
+
         let giftReloads;
 
         return GiftReload.fetchAll()
@@ -17,7 +46,7 @@ module.exports = app => {
             .then(giftReloads_ => {
                 giftReloads = giftReloads_;
 
-                return Transaction.where({ id }).fetch();
+                return Transaction.where({ id }).fetch({ withRelated: ['user'] });
             })
             .then(transaction => {
                 transaction.set('transactionId', uuid());
@@ -59,6 +88,7 @@ module.exports = app => {
                         newReload.save(),
                         transaction.save(),
                         pendingCardUpdate.save(),
+                        transaction.related('user').save(),
                         reloadGiftSave
                     ]).then(() => {
                         app.locals.modelChanges.emit('userCreditUpdate', {
@@ -70,22 +100,5 @@ module.exports = app => {
 
                 return transaction.save();
             });
-    };
-
-    app.locals.makePayment = data => {
-        const transaction = new Transaction({
-            state: 'pending',
-            amount: data.amount,
-            user_id: data.buyer.id
-        });
-
-        return transaction.save().then(() => {
-            setTimeout(() => validatePayment(transaction.get('id'), data), 1000);
-
-            return {
-                type: 'url',
-                res: `${config.urls.managerUrl}/#/reload/success`
-            };
-        });
-    };
+    }
 };

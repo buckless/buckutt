@@ -11,6 +11,12 @@ const router = new express.Router('/');
  * Use every middlewares
  */
 for (const key of Object.keys(middlewares)) {
+    // Skip 5_idempotency which is http only
+    if (key === '5') {
+        router.use(middlewares[key]);
+        continue;
+    }
+
     router.use(marshal(middlewares[key]));
 }
 
@@ -40,6 +46,8 @@ fs
     .readdirSync(path.join(__dirname, 'services'))
     .filter(f => f.slice(-3) === '.js' && f.slice(0, -3) !== 'index')
     .forEach(f => router.use(require(path.join(__dirname, 'services', f))));
+
+router.use(require('../reloadProviders').callback());
 
 fs
     .readdirSync(path.join(__dirname))

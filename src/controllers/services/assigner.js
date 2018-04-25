@@ -20,11 +20,13 @@ router.get('/services/assigner', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid ticketOrMail'));
     }
 
-    const { MeanOfLogin, User, Reload } = req.app.locals.models;
+    const { MeanOfLogin, User, Reload, PendingCardUpdate } = req.app.locals.models;
 
     let user;
     let userData;
     let pin;
+    let credit;
+    let username;
     let ticketId;
 
     MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
@@ -33,7 +35,7 @@ router.get('/services/assigner', (req, res, next) => {
             blocked: false
         })
         .fetch({
-            withRelated: ['user']
+            withRelated: ['user', 'user.meansOfLogin']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
@@ -44,15 +46,21 @@ router.get('/services/assigner', (req, res, next) => {
                         .json({
                             id: mol.user.id,
                             credit: mol.user.credit,
-                            name: `${mol.user.firstname} ${mol.user.lastname}`
+                            name: `${mol.user.firstname} ${mol.user.lastname}`,
+                            username: (
+                                mol.user.meansOfLogin.find(mol => mol.type === 'username') || {}
+                            ).data
                         })
                         .end();
                 }
 
-                return res
-                    .status(404)
-                    .json({})
-                    .end();
+                const err = new APIError(
+                    module,
+                    410,
+                    'Ticket already binded',
+                    req.query.ticketOrMail
+                );
+                return Promise.reject(err);
             }
 
             return fetchFromAPI(ticketOrMail)
@@ -68,13 +76,13 @@ router.get('/services/assigner', (req, res, next) => {
                     }
 
                     userData = userData_;
-                    pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
                     ticketId = userData_.ticketId;
 
-                    return MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
-                        .where('data', 'in', [ticketId, userData.mail])
-                        .where({ blocked: false })
-                        .fetchAll();
+                    return MeanOfLogin.where({
+                        type: 'ticketId',
+                        data: ticketId,
+                        blocked: false
+                    }).fetchAll();
                 })
                 .then(mols => {
                     if (mols.length > 0) {
@@ -84,27 +92,33 @@ router.get('/services/assigner', (req, res, next) => {
                     }
 
                     pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
+                    username = userData.username;
+                    credit = userData.credit || 0;
 
                     userData.password = 'none';
                     userData.pin = bcrypt.hashSync(pin);
-                    userData.credit = userData.credit || 0;
+
+                    // if no user, create PCU, else directly write
+                    if (!req.user) {
+                        delete userData.credit;
+                    }
+
                     delete userData.ticketId;
+                    delete userData.username;
 
                     user = new User(userData);
 
                     return user.save();
                 })
                 .then(() => {
-                    if (!config.assigner.sendPINMail) {
-                        return Promise.resolve();
-                    }
-
                     const from = config.askpin.from;
                     const to = user.get('mail');
                     const subject = config.assigner.subject;
                     const { html, text } = template('pinAssign', {
                         pin,
-                        brandname: config.provider.config.merchantName,
+                        username,
+                        email: to,
+                        brandname: config.merchantName,
                         link: `${config.urls.managerUrl}`
                     });
 
@@ -131,16 +145,44 @@ router.get('/services/assigner', (req, res, next) => {
                         blocked: false
                     });
 
-                    const initialReload = new Reload({
-                        credit: user.get('credit'),
-                        type: 'initial',
+                    const usernameMol = new MeanOfLogin({
+                        user_id: user.id,
+                        type: 'username',
+                        data: username,
+                        blocked: false
+                    });
+
+                    let initialReload = new Reload({
+                        credit: credit,
+                        type: 'Préchargement',
                         trace: ticketOrMail,
                         point_id: req.point_id,
                         buyer_id: user.id,
                         seller_id: user.id
                     });
 
-                    return Promise.all([mailMol.save(), ticketMol.save(), initialReload.save()]);
+                    let pendingCardUpdate = new PendingCardUpdate({
+                        user_id: user.id,
+                        amount: credit
+                    });
+
+                    if (credit === 0) {
+                        initialReload = { save: () => Promise.resolve() };
+                        pendingCardUpdate = { save: () => Promise.resolve() };
+                    }
+
+                    // if user do not create pcu
+                    if (req.user) {
+                        pendingCardUpdate = { save: () => Promise.resolve() };
+                    }
+
+                    return Promise.all([
+                        mailMol.save(),
+                        ticketMol.save(),
+                        usernameMol.save(),
+                        pendingCardUpdate.save(),
+                        initialReload.save()
+                    ]);
                 })
                 .then(() => {
                     if (req.user) {
