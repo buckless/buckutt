@@ -32,6 +32,18 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
+                    class="b-menu__actions__action"
+                    @click="syncPendingRequests">
+                    <i class="b-icon">sync</i>
+                    <template v-if="syncing">
+                        Synchronisation en cours
+                    </template>
+                    <template v-else>
+                        Resynchroniser manuellement
+                    </template>
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
                     v-if="displayLogout"
                     class="b-menu__actions__action"
                     @click="close(routeLogout)">
@@ -56,7 +68,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     props: {
@@ -76,7 +88,11 @@ export default {
     computed: {
       hasActions() {
         return this.isSellerMode || this.isReloaderMode || this.displayLogout
-      }
+      },
+
+      ...mapState({
+        syncing: state => state.online.syncing
+      })
     },
 
     methods: {
@@ -85,7 +101,7 @@ export default {
             action();
         },
 
-        ...mapActions(['openReloadModal', 'toggleHistory', 'clearBasket', 'logout'])
+        ...mapActions(['openReloadModal', 'toggleHistory', 'clearBasket', 'logout', 'syncPendingRequests'])
     }
 }
 </script>
@@ -160,6 +176,7 @@ export default {
     padding: 12px 14px;
     display: flex;
     align-items: center;
+    cursor: pointer;
 
     &:first-child {
         border-top-left-radius: 4px;
