@@ -66,3 +66,7 @@ input, textarea, keygen, select, button {
     left: -9999px;
     opacity: 0;
 }
+
+.b-space {
+  flex: 1;
+}

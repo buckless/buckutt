@@ -19,7 +19,6 @@
         <disconnect-warning />
         <error />
         <alert v-if="alert" />
-        <offline />
         <ticket v-if="lastUser.display && isCashMode" :user="lastUser" />
     </div>
 </template>
@@ -39,7 +38,6 @@ import Login from './components/Login';
 import Loading from './components/Loading';
 import Error from './components/Error';
 import Alert from './components/Alert';
-import Offline from './components/Offline';
 import Assigner from './components/Assigner';
 import Controller from './components/Controller';
 import AlcoholWarning from './components/AlcoholWarning';
@@ -59,7 +57,6 @@ export default {
         Loading,
         Error,
         Alert,
-        Offline,
         Assigner,
         Controller,
         AlcoholWarning,

@@ -57,7 +57,7 @@ export default {
     align-items: center;
     background-color: $green;
     border: 0;
-    color: #000;
+    color: #fff;
     cursor: pointer;
     display: flex;
     height: 55px;
@@ -85,10 +85,13 @@ export default {
 
 @media (max-width: 768px) {
     .b-sidebar-validate {
-        bottom: 0;
-        left: 0;
+        bottom: 24px;
+        right: 24px;
         position: fixed;
-        width: 100%;
+        justify-content: flex-start;
+        padding: 0 24px;
+        border-radius: 55px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.3);
     }
 }
 </style>
