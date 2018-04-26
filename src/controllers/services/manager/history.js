@@ -86,7 +86,6 @@ router.get('/services/manager/history', (req, res) => {
 
     pendingCardUpdatesQuery()
         .then(pendingCardUpdates => {
-            console.log(req.history.user);
             if (pendingCardUpdates) {
                 pending = pendingCardUpdates
                     .toJSON()

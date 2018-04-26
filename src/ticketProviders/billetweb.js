@@ -27,7 +27,6 @@ module.exports = ticketNumber => {
             }
 
             const tickets = res.data.filter(t => t.barcode === ticketNumber);
-            console.log(tickets);
 
             ticket = tickets.find(t => t.ticket_id.toString() === config.ticketIdTicket);
             credit = tickets.find(t => t.ticket_id.toString() === config.ticketIdPreload) || {

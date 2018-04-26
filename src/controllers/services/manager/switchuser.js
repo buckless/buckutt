@@ -82,7 +82,6 @@ router.post('/services/manager/switchuser', (req, res, next) => {
                 .end();
         })
         .catch(err => {
-            console.log(err);
             return Promise.reject(err);
         })
         .catch(err => dbCatch(module, err, next));
