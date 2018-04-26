@@ -2,8 +2,11 @@
     <div>
         <h5>Génération du certificat SSL</h5>
         <form @submit.prevent="generateCert(focusedDevice, password)">
-            <mdl-textfield type="password" floating-label="Mot de passe souhaité" v-model="password"></mdl-textfield>
-            <mdl-button colored raised>Générer</mdl-button>
+            <mdl-textfield :disabled="working" type="password" floating-label="Mot de passe souhaité" v-model="password"></mdl-textfield>
+            <mdl-button :disabled="working" colored raised>Générer</mdl-button>
+            <p v-show="working">
+                Génération du certificat en cours...
+            </p>
         </form>
     </div>
 </template>
@@ -16,6 +19,7 @@ import { download } from '../../../lib/fetch';
 export default {
     data() {
         return {
+            working: false,
             password: ''
         };
     },
@@ -24,6 +28,8 @@ export default {
         ...mapActions(['notify', 'notifyError']),
 
         generateCert(device, password) {
+            this.working = true
+
             download(`services/certificate?deviceId=${device.id}&password=${password}`)
                 .then(result => {
                     this.notify({ message: 'Le téléchargement du certificat va démarrer...' });
@@ -34,7 +40,10 @@ export default {
                         message: 'Une erreur a eu lieu lors de la génération du certificat',
                         full: err
                     })
-                );
+                )
+                .then(() => {
+                    this.working = false;
+                });
         }
     },
 
