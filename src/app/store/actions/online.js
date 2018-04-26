@@ -116,9 +116,12 @@ export const syncPendingRequests = store => {
     });
 
     return promise.then(() => store.dispatch('sendValidCancellations')).then(() => {
-        store.commit('SET_SYNCING', false);
-        store.dispatch('setPendingRequests', failedRequests);
-        lock = false;
+        // wait for 200ms before unlocking (for menu action)
+        setTimeout(() => {
+            store.commit('SET_SYNCING', false);
+            store.dispatch('setPendingRequests', failedRequests);
+            lock = false;
+        }, 200);
     });
 };
 
