@@ -8,7 +8,7 @@
             <form @submit.prevent="log(lmail, pin)" v-show="tab === 'connect'">
                 <section class="mdc-card__supporting-text">
                     <label class="mdc-text-field" ref="lmail">
-                        <input type="text" class="mdc-text-field__input" autofocus required v-model="lmail">
+                        <input type="text" class="mdc-text-field__input" :autofocus="!isInFrame" required v-model="lmail">
                         <span class="mdc-text-field__label">Mail ou nom d'utilisateur</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
@@ -103,7 +103,8 @@ export default {
             ticketNumber: '',
             pin: '',
             tab: 'connect',
-            working: false
+            working: false,
+            isInFrame: window != window.top
         };
     },
 
