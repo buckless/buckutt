@@ -12,6 +12,8 @@ RUN apk update && \
 
 COPY package.json /usr/src/buckless-server/
 COPY yarn.lock /usr/src/buckless-server/
+COPY config/profiles/development.json.example /usr/src/buckless-manager/config/profiles/development.json
+COPY config/profiles/production.json.example /usr/src/buckless-manager/config/profiles/production.json
 
 RUN yarn
 
