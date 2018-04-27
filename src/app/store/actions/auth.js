@@ -91,7 +91,6 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
 export const logout = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
-        store.dispatch('setupSocket');
         return store.dispatch('clearBasket').then(() => store.dispatch('interfaceLoader'));
     } else if (store.state.auth.seller.isAuth) {
         store.commit('FIRST_LOGOUT_SELLER');
@@ -110,7 +109,8 @@ export const pursueLogout = ({ commit, dispatch }) => {
 
     return dispatch('clearBasket')
         .then(() => dispatch('updateEssentials', true))
-        .then(() => dispatch('clearInterface'));
+        .then(() => dispatch('clearInterface'))
+        .then(() => dispatch('setupSocket'));
 };
 
 export const cancelLogout = ({ commit }) => {

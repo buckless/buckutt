@@ -46,7 +46,7 @@
                 <div
                     v-if="displayLogout"
                     class="b-menu__actions__action"
-                    @click="close(routeLogout)">
+                    @click="close(logout)">
                     <i class="b-icon">eject</i>
                     Déconnexion
                 </div>
@@ -87,11 +87,11 @@ export default {
 
     computed: {
       hasActions() {
-        return this.isSellerMode || this.isReloaderMode || this.displayLogout
+            return this.isSellerMode || this.isReloaderMode || this.displayLogout;
       },
 
       ...mapState({
-        syncing: state => state.online.syncing
+            syncing: state => state.online.syncing
       })
     },
 
