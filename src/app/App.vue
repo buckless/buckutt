@@ -3,9 +3,10 @@
         <topbar />
         <main class="b-main">
             <login v-if="loginState" ref="login" />
-            <history v-if="isSellerMode && history" ref="history" />
-            <items v-if="isSellerMode && !history" />
-            <sidebar v-if="isSellerMode && !history" />
+            <history v-if="isSellerMode && history && !treasury" ref="history" />
+            <treasury v-if="(isSellerMode || isReloaderMode) && treasury && !history" ref="treasury" />
+            <items v-if="isSellerMode && !history && !treasury" />
+            <sidebar v-if="isSellerMode && !history && !treasury" />
             <controller v-if="isControllerMode" ref="controller" />
             <assigner v-if="isAssignerMode" ref="assign" />
         </main>
@@ -44,6 +45,7 @@ import AlcoholWarning from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
 import Ticket from './components/Ticket';
 import History from './components/History';
+import Treasury from './components/Treasury';
 
 export default {
     name: 'App',
@@ -62,7 +64,8 @@ export default {
         AlcoholWarning,
         DisconnectWarning,
         Ticket,
-        History
+        History,
+        Treasury
     },
 
     computed: {
@@ -76,6 +79,7 @@ export default {
             useCardData: state => state.auth.device.event.config.useCardData,
             online: state => state.online.status,
             history: state => state.history.opened,
+            treasury: state => state.treasury.opened,
             alert: state => state.auth.alert
         }),
 

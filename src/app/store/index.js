@@ -13,6 +13,7 @@ import ui from './modules/ui';
 import basket from './modules/basket';
 import online from './modules/online';
 import history from './modules/history';
+import treasury from './modules/treasury';
 
 Vue.use(Vuex);
 
@@ -34,7 +35,8 @@ const store = new Vuex.Store({
         ui,
         basket,
         online,
-        history
+        history,
+        treasury
     },
     strict: debug,
     plugins: debug ? [createLogger()] : []

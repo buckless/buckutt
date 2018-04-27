@@ -20,7 +20,8 @@
               :isReloaderMode="isReloaderMode"
               :displayLogout="displayLogout"
               :onlyLogout="onlyLogout"
-              :history="history"/>
+              :history="history"
+              :treasury="treasury"/>
         </div>
     </div>
 </template>
@@ -46,6 +47,7 @@ export default {
 
         ...mapState({
             history: state => state.history.opened,
+            treasury: state => state.treasury.opened,
             seller: state => state.auth.seller,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
             buyer: state => state.auth.buyer
