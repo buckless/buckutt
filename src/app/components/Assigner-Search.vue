@@ -124,13 +124,7 @@ export default {
                     user.id
                 );
             } else {
-                this.$emit(
-                    'assign',
-                    user.credit,
-                    user.name,
-                    user.username,
-                    user.uid
-                );
+                this.$emit('assign', user.credit, user.name, user.username, user.uid);
             }
         }
     }

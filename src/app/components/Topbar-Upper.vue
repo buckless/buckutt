@@ -32,7 +32,7 @@ import { mapState, mapGetters } from 'vuex';
 import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
 import Offline from './Offline';
-import Menu from './Topbar-Upper-Menu'
+import Menu from './Topbar-Upper-Menu';
 
 export default {
     components: {
@@ -64,7 +64,7 @@ export default {
 @import '../main.css';
 
 .b-upper-bar {
-  padding: 0 6px;
+    padding: 0 6px;
 }
 
 .b-upper-bar__buyer-name,
@@ -80,19 +80,19 @@ export default {
 .b-upper-bar__buyer-name,
 .b-upper-bar__date,
 .b-upper-bar__menu {
-  margin: 0 6px;
+    margin: 0 6px;
 }
 
 .b-upper-bar__buyer-name {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .b-upper-bar__buyer-credit {
-  position: absolute;
-  top: 50%;
-  left : 50%;
-  transform: translate(-50%, -50%);
-  font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
 }
 
 .b-upper-bar {

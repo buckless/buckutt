@@ -12,7 +12,15 @@ export const setHistory = ({ commit }, payload) => {
 
 export const addToHistory = ({ commit }, payload) => {
     commit('ADD_HISTORY_TRANSACTION', payload);
-    return window.database.insert('history', [[payload.localId, payload.cardNumber, payload.basketToSend, payload.date, payload.transactionIds]]);
+    return window.database.insert('history', [
+        [
+            payload.localId,
+            payload.cardNumber,
+            payload.basketToSend,
+            payload.date,
+            payload.transactionIds
+        ]
+    ]);
 };
 
 export const removeFromHistory = ({ commit }, payload) => {
@@ -28,7 +36,9 @@ export const updateOfflineEntry = (store, payload) => {
         JSON.stringify(store.state.history.pendingCancellations)
     );
 
-    const updatedHistory = store.state.history.history.find(entry => payload.localId === entry.localId);
+    const updatedHistory = store.state.history.history.find(
+        entry => payload.localId === entry.localId
+    );
     return window.database.update('history', payload.localId, updatedHistory);
 };
 

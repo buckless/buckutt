@@ -91,7 +91,7 @@ export default {
         justify-content: flex-start;
         padding: 0 24px;
         border-radius: 55px;
-        box-shadow: 0 2px 4px rgba(0,0,0,.3);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 }
 </style>

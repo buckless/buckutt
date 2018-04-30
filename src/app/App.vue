@@ -155,7 +155,9 @@ export default {
         }
 
         if (window.localStorage.getItem('pendingCancellations')) {
-            this.setPendingCancellations(JSON.parse(window.localStorage.getItem('pendingCancellations')));
+            this.setPendingCancellations(
+                JSON.parse(window.localStorage.getItem('pendingCancellations'))
+            );
         }
 
         let nfc = {
@@ -173,7 +175,8 @@ export default {
         window.nfc = nfc;
         window.appId = Date.now();
         window.database = new OfflineData();
-        window.database.init()
+        window.database
+            .init()
             .then(() => window.database.getHistory())
             .then(history => this.setHistory(history));
     }

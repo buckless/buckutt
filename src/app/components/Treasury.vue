@@ -62,12 +62,14 @@ export default {
                 entry.basketToSend.forEach(transaction => {
                     if (transaction.credit) {
                         singleReloads.push({
-                            name: this.meansOfPayment.find(mop => mop.slug === transaction.type).name,
+                            name: this.meansOfPayment.find(mop => mop.slug === transaction.type)
+                                .name,
                             amount: transaction.credit
                         });
                     } else {
                         const name = transaction.promotion_id
-                            ? this.items.promotions.find(p => p.id === transaction.promotion_id).name
+                            ? this.items.promotions.find(p => p.id === transaction.promotion_id)
+                                  .name
                             : this.items.items.find(i => i.id === transaction.articles[0].id).name;
 
                         singlePurchases.push({
@@ -84,11 +86,19 @@ export default {
             const purchases = [];
 
             Object.keys(groupedReloads).forEach(group => {
-                reloads.push({ name: group, amount: sumBy(groupedReloads[group], 'amount'), count: groupedReloads[group].length });
+                reloads.push({
+                    name: group,
+                    amount: sumBy(groupedReloads[group], 'amount'),
+                    count: groupedReloads[group].length
+                });
             });
 
             Object.keys(groupedPurchases).forEach(group => {
-                purchases.push({ name: group, amount: sumBy(groupedPurchases[group], 'amount'), count: groupedPurchases[group].length });
+                purchases.push({
+                    name: group,
+                    amount: sumBy(groupedPurchases[group], 'amount'),
+                    count: groupedPurchases[group].length
+                });
             });
 
             return {
@@ -132,9 +142,11 @@ export default {
             border-collapse: collapse;
             font-size: 14px;
 
-            & > thead, & > tbody {
+            & > thead,
+            & > tbody {
                 & > tr {
-                    & > th, & > td {
+                    & > th,
+                    & > td {
                         padding: 10px;
                         border-bottom: 1px solid #e0e0e0;
                     }

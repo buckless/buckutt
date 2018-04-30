@@ -101,13 +101,13 @@ export default {
     },
 
     computed: {
-      hasActions() {
+        hasActions() {
             return this.isSellerMode || this.isReloaderMode || this.displayLogout;
-      },
+        },
 
-      ...mapState({
+        ...mapState({
             syncing: state => state.online.syncing
-      })
+        })
     },
 
     methods: {
@@ -116,9 +116,16 @@ export default {
             action();
         },
 
-        ...mapActions(['openReloadModal', 'toggleHistory', 'toggleTreasury', 'clearBasket', 'logout', 'syncPendingRequests'])
+        ...mapActions([
+            'openReloadModal',
+            'toggleHistory',
+            'toggleTreasury',
+            'clearBasket',
+            'logout',
+            'syncPendingRequests'
+        ])
     }
-}
+};
 </script>
 
 <style>
@@ -167,7 +174,7 @@ export default {
     bottom: -16px;
     transform: translateY(100%);
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.4);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     width: 165px;
     z-index: 4;
 }

@@ -9,7 +9,8 @@ export const updateEssentials = (store, force) => {
 
     lock = true;
 
-    return axios.get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders)
+    return axios
+        .get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders)
         .then(res => {
             if (!store.state.auth.device.point.id || store.state.auth.seller.canAssign || force) {
                 return store
@@ -71,7 +72,9 @@ export const updateEssentials = (store, force) => {
                 ]);
 
                 promises.push(
-                    window.database.empty('users').then(() => window.database.insert('users', users))
+                    window.database
+                        .empty('users')
+                        .then(() => window.database.insert('users', users))
                 );
             }
 
