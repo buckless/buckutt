@@ -6,6 +6,10 @@ export const toggleHistory = ({ commit }) => {
     commit('TOGGLE_HISTORY');
 };
 
+export const setHistory = ({ commit }, payload) => {
+    commit('SET_HISTORY', payload);
+};
+
 export const addToHistory = ({ commit }, payload) => {
     commit('ADD_HISTORY_TRANSACTION', payload);
     return window.database.insert('history', [[payload.localId, payload.cardNumber, payload.basketToSend, payload.date, payload.transactionIds]]);

@@ -9,6 +9,10 @@ const mutations = {
         state.history.push(payload);
     },
 
+    SET_HISTORY(state, payload) {
+        state.history = payload;
+    },
+
     ADD_PENDING_CANCELLATION(state, payload) {
         state.pendingCancellations.push(payload);
     },

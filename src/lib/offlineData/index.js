@@ -48,12 +48,8 @@ class OfflineData {
         return this.db.accesses.filter(access => access.cardId === cardId).toArray();
     }
 
-    replaceHistoryEntry(localId, data) {
-        return this.db.history.update(localId, )
-    }
-
-    removeHistoryEntry(localId) {
-        return this.db.history.delete(localId);
+    getHistory() {
+        return this.db.history.toArray();
     }
 
     insert(table, data) {
