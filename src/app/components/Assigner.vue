@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import uniqueId from 'lodash.uniqueid';
 import axios from '@/utils/axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
@@ -142,7 +141,7 @@ export default {
                 blocked: false
             };
 
-            const localId = uniqueId(`transaction-id-${window.appId}`);
+            const localId = `transaction-id-${window.appId}-${Date.now()}`;
             const transactionToSend = {
                 buyer: value,
                 molType: config.buyerMeanOfLogin,

@@ -1,7 +1,6 @@
 /* eslint-disable */
 
 import axios from '@/utils/axios';
-import uniqueId from 'lodash.uniqueid';
 
 export const addItemToBasket = ({ commit }, item) => {
     commit('ADD_ITEM', item);
@@ -124,7 +123,7 @@ export const sendBasket = (store, payload = {}) => {
         });
     });
 
-    const localId = uniqueId(`transaction-id-${window.appId}`);
+    const localId = `transaction-id-${window.appId}-${Date.now()}`;
     const transactionToSend = {
         buyer: cardNumber,
         molType: config.buyerMeanOfLogin,
