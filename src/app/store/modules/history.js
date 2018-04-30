@@ -11,10 +11,6 @@ const mutations = {
 
     ADD_PENDING_CANCELLATION(state, payload) {
         state.pendingCancellations.push(payload);
-        window.localStorage.setItem(
-            'pendingCancellations',
-            JSON.stringify(state.pendingCancellations)
-        );
     },
 
     SET_PENDING_CANCELLATIONS(state, payload) {
@@ -37,18 +33,10 @@ const mutations = {
         );
 
         state.pendingCancellations.splice(index, 1);
-
-        window.localStorage.setItem(
-            'pendingCancellations',
-            JSON.stringify(state.pendingCancellations)
-        );
     },
 
     UPDATE_HISTORY_ENTRY(state, payload) {
         const historyIndex = state.history.findIndex(entry => payload.localId === entry.localId);
-        const pendingIndex = state.pendingCancellations.findIndex(
-            entry => payload.localId === entry.localId
-        );
 
         if (historyIndex > -1) {
             state.history.splice(historyIndex, 1, {
@@ -56,17 +44,18 @@ const mutations = {
                 transactionIds: payload.basketData.transactionIds
             });
         }
+    },
+
+    UPDATE_PENDING_CANCELLATIONS_ENTRY(state, payload) {
+        const pendingIndex = state.pendingCancellations.findIndex(
+            entry => payload.localId === entry.localId
+        );
 
         if (pendingIndex > -1) {
             state.pendingCancellations.splice(pendingIndex, 1, {
                 ...state.pendingCancellations[pendingIndex],
                 transactionIds: payload.basketData.transactionIds
             });
-
-            window.localStorage.setItem(
-                'pendingCancellations',
-                JSON.stringify(state.pendingCancellations)
-            );
         }
     },
 

@@ -10,6 +10,24 @@ export const removeFromHistory = ({ commit }, payload) => {
     commit('REMOVE_FROM_HISTORY', payload);
 };
 
+export const addPendingCancellation = (store, payload) => {
+    store.commit('ADD_PENDING_CANCELLATION', payload);
+
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
+};
+
+export const removePendingCancellation = (store, payload) => {
+    store.commit('REMOVE_PENDING_CANCELLATION', payload);
+
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
+};
+
 export const setPendingCancellations = (store, payload) => {
     if (payload.length > 0) {
         store.commit('SET_PENDING_CANCELLATIONS', payload);
@@ -29,7 +47,7 @@ export const cancelEntry = (store, payload) => {
     ).transactionIds;
 
     if (!payload.transactionIds) {
-        store.commit('ADD_PENDING_CANCELLATION', payload);
+        store.dispatch('addPendingCancellation', payload);
     } else {
         // request made online
 
@@ -94,7 +112,16 @@ export const sendValidCancellations = store => {
         store.state.history.pendingCancellations
             .filter(pending => pending.transactionIds)
             .forEach(pending => {
-                store.commit('REMOVE_PENDING_CANCELLATION', pending);
+                store.dispatch('removePendingCancellation', pending);
             });
     });
+};
+
+export const updateOfflineEntry = (store, payload) => {
+    store.commit('UPDATE_HISTORY_ENTRY', payload);
+    store.commit('UPDATE_PENDING_CANCELLATIONS_ENTRY', payload);
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
 };
