@@ -104,6 +104,7 @@ export default {
             'setEvent',
             'setDefaultItems',
             'setPendingRequests',
+            'setPendingCancellations',
             'setGiftReloads',
             'updateEssentials',
             'periodicSync'
@@ -149,6 +150,10 @@ export default {
 
         if (window.localStorage.getItem('pendingRequests')) {
             this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));
+        }
+
+        if (window.localStorage.getItem('pendingCancellations')) {
+            this.setPendingCancellations(JSON.parse(window.localStorage.getItem('pendingCancellations')));
         }
 
         let nfc = {

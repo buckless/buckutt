@@ -10,6 +10,19 @@ export const removeFromHistory = ({ commit }, payload) => {
     commit('REMOVE_FROM_HISTORY', payload);
 };
 
+export const setPendingCancellations = (store, payload) => {
+    if (payload.length > 0) {
+        store.commit('SET_PENDING_CANCELLATIONS', payload);
+    } else {
+        store.commit('CLEAR_PENDING_CANCELLATIONS');
+    }
+
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
+};
+
 export const cancelEntry = (store, payload) => {
     payload.transactionIds = store.state.history.history.find(
         entry => entry.localId === payload.localId

@@ -17,6 +17,14 @@ const mutations = {
         );
     },
 
+    SET_PENDING_CANCELLATIONS(state, payload) {
+        state.pendingCancellations = payload;
+    },
+
+    CLEAR_PENDING_CANCELLATIONS(state) {
+        state.pendingCancellations = [];
+    },
+
     REMOVE_FROM_HISTORY(state, payload) {
         const index = state.history.findIndex(entry => entry.localId === payload.localId);
 
