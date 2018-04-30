@@ -47,13 +47,10 @@ import { mapGetters, mapState } from 'vuex';
 import debounce from 'lodash.debounce';
 import axios from '@/utils/axios';
 
-import OfflineData from '@/../lib/offlineData';
-
 export default {
     data() {
         return {
             searchBy: 'name',
-            db: null,
             searchInput: '',
             matches: []
         };
@@ -108,8 +105,8 @@ export default {
             } else {
                 const searchMethod =
                     this.searchBy === 'name'
-                        ? this.db.findByName.bind(this.db)
-                        : this.db.findByBarcode.bind(this.db);
+                        ? window.database.findByName.bind(window.database)
+                        : window.database.findByBarcode.bind(window.database);
 
                 searchMethod(this.searchInput).then(users => {
                     this.matches = users;
@@ -136,11 +133,6 @@ export default {
                 );
             }
         }
-    },
-
-    mounted() {
-        this.db = new OfflineData();
-        this.db.init();
     }
 };
 </script>

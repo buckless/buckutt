@@ -180,7 +180,7 @@ export const sendBasket = (store, payload = {}) => {
         })
         .then(lastBuyer => {
             // store last lastBuyer + transactionIds
-            store.commit('ADD_HISTORY_TRANSACTION', {
+            store.dispatch('addToHistory', {
                 cardNumber,
                 basketToSend,
                 date: new Date(),

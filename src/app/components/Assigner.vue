@@ -57,7 +57,6 @@ import axios from '@/utils/axios';
 import { mapGetters, mapState, mapActions } from 'vuex';
 
 import barcode from '@/../lib/barcode';
-import OfflineData from '@/../lib/offlineData';
 import CreateAccount from './Assigner-CreateAccount';
 import Search from './Assigner-Search';
 import Ok from './Ok';
@@ -73,7 +72,6 @@ export default {
 
     data() {
         return {
-            db: null,
             showOkModal: false,
             assignModalCredit: 0,
             assignModalName: '',
@@ -273,7 +271,7 @@ export default {
                     })
                     .then(() => this.$store.commit('SET_DATA_LOADED', true));
             } else {
-                this.db
+                window.database
                     .findByBarcode(value)
                     .then(users => {
                         if (users.length === 1) {
@@ -342,9 +340,6 @@ export default {
     },
 
     mounted() {
-        this.db = new OfflineData();
-        this.db.init();
-
         window.mock.barcode = b => this.onBarcode(b, true);
     }
 };

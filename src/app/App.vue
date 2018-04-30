@@ -30,6 +30,7 @@ import 'normalize.css';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 import hasEssentials from './utils/offline/hasEssentials';
+import OfflineData from '@/../lib/offlineData';
 
 import Items from './components/Items';
 import Topbar from './components/Topbar';
@@ -170,6 +171,8 @@ export default {
 
         window.nfc = nfc;
         window.appId = Date.now();
+        window.database = new OfflineData();
+        window.database.init();
     }
 };
 </script>

@@ -1,6 +1,4 @@
 import axios from '@/utils/axios';
-import hasEssentials from '@/utils/offline/hasEssentials';
-import OfflineData from '@/../lib/offlineData';
 
 let lock = false;
 
@@ -10,13 +8,8 @@ export const updateEssentials = (store, force) => {
     }
 
     lock = true;
-    const offlineData = new OfflineData();
 
-    return offlineData
-        .init()
-        .then(() =>
-            axios.get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders)
-        )
+    return axios.get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders)
         .then(res => {
             if (!store.state.auth.device.point.id || store.state.auth.seller.canAssign || force) {
                 return store
@@ -78,7 +71,7 @@ export const updateEssentials = (store, force) => {
                 ]);
 
                 promises.push(
-                    offlineData.empty('users').then(() => offlineData.insert('users', users))
+                    window.database.empty('users').then(() => window.database.insert('users', users))
                 );
             }
 
@@ -92,18 +85,15 @@ export const updateEssentials = (store, force) => {
                 ]);
 
                 promises.push(
-                    offlineData
+                    window.database
                         .empty('accesses')
-                        .then(() => offlineData.insert('accesses', accesses))
+                        .then(() => window.database.insert('accesses', accesses))
                 );
             }
 
             return Promise.all(promises);
         })
-        .then(() => {
-            window.db = offlineData;
-            console.log('Offline data updated');
-        })
+        .then(() => console.log('Offline data updated'))
         .catch(err => console.log(err))
         .then(() => {
             lock = false;
