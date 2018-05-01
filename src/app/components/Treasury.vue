@@ -67,13 +67,8 @@ export default {
                             amount: transaction.credit
                         });
                     } else {
-                        const name = transaction.promotion_id
-                            ? this.items.promotions.find(p => p.id === transaction.promotion_id)
-                                  .name
-                            : this.items.items.find(i => i.id === transaction.articles[0].id).name;
-
                         singlePurchases.push({
-                            name,
+                            name: transaction.name,
                             amount: transaction.cost
                         });
                     }
@@ -109,7 +104,6 @@ export default {
 
         ...mapState({
             history: state => state.history.history,
-            items: state => state.items,
             meansOfPayment: state => state.reload.meansOfPayment
         })
     }

@@ -78,6 +78,7 @@ export const sendBasket = (store, payload = {}) => {
         basketToSend.push({
             price_id: article.price.id,
             promotion_id: null,
+            name: article.name,
             articles: [
                 {
                     id: article.id,
@@ -108,6 +109,7 @@ export const sendBasket = (store, payload = {}) => {
         basketToSend.push({
             price_id: promotion.price.id,
             promotion_id: promotion.id,
+            name: promotion.name,
             articles: articlesInside,
             cost: promotion.price.amount,
             type: 'purchase',

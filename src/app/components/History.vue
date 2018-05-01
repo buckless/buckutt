@@ -74,8 +74,7 @@ export default {
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
             buyer: state => state.auth.buyer,
-            history: state => state.history.history,
-            items: state => state.items
+            history: state => state.history.history
         })
     },
 
@@ -143,16 +142,10 @@ export default {
         },
 
         resume(entry) {
-            const items = entry.basketToSend.filter(e => e.cost).map(e => {
-                const name = e.promotion_id
-                    ? this.items.promotions.find(p => p.id === e.promotion_id).name
-                    : this.items.items.find(i => i.id === e.articles[0].id).name;
-
-                return {
-                    name,
-                    cost: e.cost
-                };
-            });
+            const items = entry.basketToSend.filter(e => e.cost).map(e => ({
+                name: e.name,
+                cost: e.cost
+            }));
 
             const cost = items.map(e => e.cost).reduce((a, b) => a + b, 0);
             const reload = entry.basketToSend
