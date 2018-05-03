@@ -1,5 +1,6 @@
 const express = require('express');
 const { flatten } = require('lodash');
+const dbCatch = require('../../../lib/dbCatch');
 const logger = require('../../../lib/log');
 
 const log = logger(module);
@@ -14,7 +15,7 @@ router.get('/services/manager/history', (req, res, next) => {
         right => right.name === 'admin' && right.end > new Date()
     );
 
-    if (adminRight) {
+    if (adminRight && req.query.buyer) {
         return req.app.locals.models.User.where({ id: req.query.buyer })
             .fetch()
             .then(user => {
@@ -24,7 +25,8 @@ router.get('/services/manager/history', (req, res, next) => {
                 };
 
                 next();
-            });
+            })
+            .catch(err => dbCatch(module, err, next));
     }
 
     req.history = {
@@ -207,7 +209,8 @@ router.get('/services/manager/history', (req, res) => {
                     history
                 })
                 .end();
-        });
+        })
+        .catch(err => dbCatch(module, err, next));
 });
 
 module.exports = router;
