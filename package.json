@@ -29,6 +29,17 @@
     "dev:browser": "cross-env TARGET=browser NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js",
     "dev:electron": "cross-env TARGET=electron NODE_ENV=development webpack-dev-server --inline --config build/webpack.dev.conf.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "prettier --single-quote --print-width 100 --tab-width 4 --write",
+      "git add"
+    ]
+  },
   "dependencies": {
     "@buckless/signed-number": "^1.2.1",
     "@pokusew/pcsclite": "^0.4.18",
@@ -74,6 +85,8 @@
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.30.1",
+    "husky": "^1.0.0-rc.2",
+    "lint-staged": "^7.0.5",
     "node-notifier": "^5.1.2",
     "node-static": "^0.7.10",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
