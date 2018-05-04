@@ -6,8 +6,71 @@ export const toggleHistory = ({ commit }) => {
     commit('TOGGLE_HISTORY');
 };
 
+export const setHistory = ({ commit }, payload) => {
+    commit('SET_HISTORY', payload);
+};
+
+export const addToHistory = ({ commit }, payload) => {
+    commit('ADD_HISTORY_TRANSACTION', payload);
+    return window.database.insert('history', [
+        [
+            payload.localId,
+            payload.cardNumber,
+            payload.basketToSend,
+            payload.date,
+            payload.transactionIds
+        ]
+    ]);
+};
+
 export const removeFromHistory = ({ commit }, payload) => {
     commit('REMOVE_FROM_HISTORY', payload);
+    return window.database.delete('history', payload.localId);
+};
+
+export const updateOfflineEntry = (store, payload) => {
+    store.commit('UPDATE_HISTORY_ENTRY', payload);
+    store.commit('UPDATE_PENDING_CANCELLATIONS_ENTRY', payload);
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
+
+    const updatedHistory = store.state.history.history.find(
+        entry => payload.localId === entry.localId
+    );
+    return window.database.update('history', payload.localId, updatedHistory);
+};
+
+export const addPendingCancellation = (store, payload) => {
+    store.commit('ADD_PENDING_CANCELLATION', payload);
+
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
+};
+
+export const removePendingCancellation = (store, payload) => {
+    store.commit('REMOVE_PENDING_CANCELLATION', payload);
+
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
+};
+
+export const setPendingCancellations = (store, payload) => {
+    if (payload.length > 0) {
+        store.commit('SET_PENDING_CANCELLATIONS', payload);
+    } else {
+        store.commit('CLEAR_PENDING_CANCELLATIONS');
+    }
+
+    window.localStorage.setItem(
+        'pendingCancellations',
+        JSON.stringify(store.state.history.pendingCancellations)
+    );
 };
 
 export const cancelEntry = (store, payload) => {
@@ -16,7 +79,7 @@ export const cancelEntry = (store, payload) => {
     ).transactionIds;
 
     if (!payload.transactionIds) {
-        store.commit('ADD_PENDING_CANCELLATION', payload);
+        store.dispatch('addPendingCancellation', payload);
     } else {
         // request made online
 
@@ -81,7 +144,7 @@ export const sendValidCancellations = store => {
         store.state.history.pendingCancellations
             .filter(pending => pending.transactionIds)
             .forEach(pending => {
-                store.commit('REMOVE_PENDING_CANCELLATION', pending);
+                store.dispatch('removePendingCancellation', pending);
             });
     });
 };

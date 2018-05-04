@@ -1,7 +1,6 @@
 /* eslint-disable */
 
 import axios from '@/utils/axios';
-import uniqueId from 'lodash.uniqueid';
 
 export const addItemToBasket = ({ commit }, item) => {
     commit('ADD_ITEM', item);
@@ -79,6 +78,7 @@ export const sendBasket = (store, payload = {}) => {
         basketToSend.push({
             price_id: article.price.id,
             promotion_id: null,
+            name: article.name,
             articles: [
                 {
                     id: article.id,
@@ -109,6 +109,7 @@ export const sendBasket = (store, payload = {}) => {
         basketToSend.push({
             price_id: promotion.price.id,
             promotion_id: promotion.id,
+            name: promotion.name,
             articles: articlesInside,
             cost: promotion.price.amount,
             type: 'purchase',
@@ -124,7 +125,7 @@ export const sendBasket = (store, payload = {}) => {
         });
     });
 
-    const localId = uniqueId(`transaction-id-${window.appId}`);
+    const localId = `transaction-id-${window.appId}-${Date.now()}`;
     const transactionToSend = {
         buyer: cardNumber,
         molType: config.buyerMeanOfLogin,
@@ -181,7 +182,7 @@ export const sendBasket = (store, payload = {}) => {
         })
         .then(lastBuyer => {
             // store last lastBuyer + transactionIds
-            store.commit('ADD_HISTORY_TRANSACTION', {
+            store.dispatch('addToHistory', {
                 cardNumber,
                 basketToSend,
                 date: new Date(),

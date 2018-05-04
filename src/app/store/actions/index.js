@@ -7,3 +7,4 @@ export * from './auth';
 export * from './online';
 export * from './updateEssentials';
 export * from './history';
+export * from './treasury';

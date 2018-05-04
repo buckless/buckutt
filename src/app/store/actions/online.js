@@ -97,7 +97,7 @@ export const syncPendingRequests = store => {
                 if (request.body.localId) {
                     const localId = request.body.localId;
 
-                    store.commit('UPDATE_HISTORY_ENTRY', {
+                    store.dispatch('updateOfflineEntry', {
                         localId,
                         basketData: res.data
                     });

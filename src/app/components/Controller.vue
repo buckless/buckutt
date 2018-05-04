@@ -23,7 +23,6 @@ import axios from '@/utils/axios';
 
 import Chooser from './Controller-Chooser';
 import Ok from './Ok';
-import OfflineData from '@/../lib/offlineData';
 
 export default {
     components: {
@@ -63,7 +62,7 @@ export default {
                     .get(`${config.api}/services/controller?user=${cardId}`, this.tokenHeaders)
                     .then(res => res.data);
             } else {
-                initialPromise = this.db.cardAccesses(cardId);
+                initialPromise = window.database.cardAccesses(cardId);
             }
 
             initialPromise.then(accesses => {
@@ -108,11 +107,6 @@ export default {
         },
 
         ...mapActions(['updateEssentials', 'addPendingRequest'])
-    },
-
-    mounted() {
-        this.db = new OfflineData();
-        this.db.init();
     }
 };
 </script>

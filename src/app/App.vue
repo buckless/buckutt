@@ -3,9 +3,10 @@
         <topbar />
         <main class="b-main">
             <login v-if="loginState" ref="login" />
-            <history v-if="isSellerMode && history" ref="history" />
-            <items v-if="isSellerMode && !history" />
-            <sidebar v-if="isSellerMode && !history" />
+            <history v-if="isSellerMode && history && !treasury" ref="history" />
+            <treasury v-if="(isSellerMode || isReloaderMode) && treasury && !history" ref="treasury" />
+            <items v-if="isSellerMode && !history && !treasury" />
+            <sidebar v-if="isSellerMode && !history && !treasury" />
             <controller v-if="isControllerMode" ref="controller" />
             <assigner v-if="isAssignerMode" ref="assign" />
         </main>
@@ -29,6 +30,7 @@ import 'normalize.css';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 import hasEssentials from './utils/offline/hasEssentials';
+import OfflineData from '@/../lib/offlineData';
 
 import Items from './components/Items';
 import Topbar from './components/Topbar';
@@ -44,6 +46,7 @@ import AlcoholWarning from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
 import Ticket from './components/Ticket';
 import History from './components/History';
+import Treasury from './components/Treasury';
 
 export default {
     name: 'App',
@@ -62,7 +65,8 @@ export default {
         AlcoholWarning,
         DisconnectWarning,
         Ticket,
-        History
+        History,
+        Treasury
     },
 
     computed: {
@@ -76,6 +80,7 @@ export default {
             useCardData: state => state.auth.device.event.config.useCardData,
             online: state => state.online.status,
             history: state => state.history.opened,
+            treasury: state => state.treasury.opened,
             alert: state => state.auth.alert
         }),
 
@@ -100,6 +105,8 @@ export default {
             'setEvent',
             'setDefaultItems',
             'setPendingRequests',
+            'setHistory',
+            'setPendingCancellations',
             'setGiftReloads',
             'updateEssentials',
             'periodicSync'
@@ -147,6 +154,12 @@ export default {
             this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));
         }
 
+        if (window.localStorage.getItem('pendingCancellations')) {
+            this.setPendingCancellations(
+                JSON.parse(window.localStorage.getItem('pendingCancellations'))
+            );
+        }
+
         let nfc = {
             on() {}
         };
@@ -161,6 +174,11 @@ export default {
 
         window.nfc = nfc;
         window.appId = Date.now();
+        window.database = new OfflineData();
+        window.database
+            .init()
+            .then(() => window.database.getHistory())
+            .then(history => this.setHistory(history));
     }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="b-menu-wrapper" v-if="hasActions">
-        <div class="b-menu__drop" v-if="showMenu && !history && !onlyLogout" @click="showMenu = false"></div>
-        <div class="b-menu" v-if="!history && !onlyLogout">
+        <div class="b-menu__drop" v-if="showMenu && !history && !treasury && !onlyLogout" @click="showMenu = false"></div>
+        <div class="b-menu" v-if="!history && !treasury && !onlyLogout">
             <div class="b-menu__icon" @click="showMenu = !showMenu">
                 <i class="b-icon">menu</i>
                 <span>Menu</span>
@@ -32,6 +32,14 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
+                    v-if="(isReloaderMode || isSellerMode) && !history"
+                    class="b-menu__actions__action"
+                    @click="close(toggleTreasury)">
+                    <i class="b-icon">account_balance</i>
+                    Trésorerie
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
                     class="b-menu__actions__action"
                     @click="syncPendingRequests">
                     <i class="b-icon">sync</i>
@@ -52,13 +60,19 @@
                 </div>
             </div>
         </div>
+        <div class="b-menu" @click="close(toggleTreasury)" v-else-if="treasury && !onlyLogout">
+            <div class="b-menu__icon">
+                <i class="b-icon">close</i>
+                <span>Fermer</span>
+            </div>
+        </div>
         <div class="b-menu" @click="close(toggleHistory)" v-else-if="history && !onlyLogout">
             <div class="b-menu__icon">
                 <i class="b-icon">close</i>
                 <span>Fermer</span>
             </div>
         </div>
-        <div class="b-menu" @click="close(logout)" v-else="!history && onlyLogout">
+        <div class="b-menu" @click="close(logout)" v-else="onlyLogout">
             <div class="b-menu__icon">
                 <i class="b-icon">close</i>
                 <span>Fermer</span>
@@ -76,7 +90,8 @@ export default {
         isReloaderMode: Boolean,
         displayLogout: Boolean,
         onlyLogout: Boolean,
-        history: Boolean
+        history: Boolean,
+        treasury: Boolean
     },
 
     data() {
@@ -86,13 +101,13 @@ export default {
     },
 
     computed: {
-      hasActions() {
+        hasActions() {
             return this.isSellerMode || this.isReloaderMode || this.displayLogout;
-      },
+        },
 
-      ...mapState({
+        ...mapState({
             syncing: state => state.online.syncing
-      })
+        })
     },
 
     methods: {
@@ -101,9 +116,16 @@ export default {
             action();
         },
 
-        ...mapActions(['openReloadModal', 'toggleHistory', 'clearBasket', 'logout', 'syncPendingRequests'])
+        ...mapActions([
+            'openReloadModal',
+            'toggleHistory',
+            'toggleTreasury',
+            'clearBasket',
+            'logout',
+            'syncPendingRequests'
+        ])
     }
-}
+};
 </script>
 
 <style>
@@ -152,7 +174,7 @@ export default {
     bottom: -16px;
     transform: translateY(100%);
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.4);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     width: 165px;
     z-index: 4;
 }
