@@ -2,6 +2,13 @@
 node_modules
 /dist
 
+# cordova
+cordova/platforms
+cordova/plugins
+cordova/www
+!cordova/www/.gitkeep
+
+
 # local env files
 .env.local
 .env.*.local
