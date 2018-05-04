@@ -11,21 +11,21 @@ export default {
         return {
             appName: process.env.VUE_APP_NAME,
             isHome: this.$route.path === '/'
-        }
+        };
     },
 
     methods: {
         home() {
-            this.$router.push('/')
+            this.$router.push('/');
         }
     },
 
     watch: {
         '$route.path'() {
-            this.isHome = this.$route.path === '/'
+            this.isHome = this.$route.path === '/';
         }
     }
-}
+};
 </script>
 
 <style scoped>

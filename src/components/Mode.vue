@@ -10,11 +10,10 @@
     max-width: calc(100% - 20px);
     cursor: pointer;
     background-color: #fff;
-    border: 1px solid rgba(0,0,0,.24);
-    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+    border: 1px solid rgba(0, 0, 0, 0.24);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
     border-radius: 3px;
-    transition: .1s ease border-color,
-                .1s ease box-shadow;
+    transition: 0.1s ease border-color, 0.1s ease box-shadow;
 }
 
 .mode:hover {
@@ -30,6 +29,6 @@
 .mode > p {
     margin: 0;
     font-size: 14px;
-    color: rgba(0,0,0,.6);
+    color: rgba(0, 0, 0, 0.6);
 }
 </style>

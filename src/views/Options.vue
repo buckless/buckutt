@@ -26,9 +26,9 @@
 </template>
 
 <script>
-import vueSlider from 'vue-slider-component/src/vue2-slider.vue'
+import vueSlider from 'vue-slider-component/src/vue2-slider.vue';
 
-import Mode from '@/components/Mode'
+import Mode from '@/components/Mode';
 
 export default {
     components: {
@@ -37,35 +37,35 @@ export default {
     },
 
     data() {
-        const articles = JSON.parse(process.env.VUE_APP_ARTICLES)
+        const articles = JSON.parse(process.env.VUE_APP_ARTICLES);
 
         return {
             articles,
             values: articles.map(article => 0),
-            selectedArticles: [
-
-            ]
-        }
+            selectedArticles: []
+        };
     },
 
     methods: {
         toggle(article) {
-            const index = this.isActive(article)
+            const index = this.isActive(article);
 
             if (index > -1) {
-                this.values[this.articles.indexOf(article)] = 0
-                this.selectedArticles.splice(index, 1)
+                this.values[this.articles.indexOf(article)] = 0;
+                this.selectedArticles.splice(index, 1);
             } else {
-                this.values[this.articles.indexOf(article)] = article.maxNumber
-                setTimeout(() => this.selectedArticles.push(article))
+                this.values[this.articles.indexOf(article)] = article.maxNumber;
+                setTimeout(() => this.selectedArticles.push(article));
             }
         },
 
         isActive(article) {
-            return this.selectedArticles.findIndex(selectedArticle => selectedArticle.id === article.id)
+            return this.selectedArticles.findIndex(
+                selectedArticle => selectedArticle.id === article.id
+            );
         }
     }
-}
+};
 </script>
 
 <style scoped>
@@ -91,15 +91,13 @@ p {
     margin-top: 12px;
     padding: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12),
-          inset 0 0 0 2px transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 0 0 2px transparent;
 }
 
 .toggle[active] {
     height: auto;
     border-color: #1abc9c;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12),
-          inset 0 0 0 2px #1abc9c;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 0 0 2px #1abc9c;
 }
 
 .vue-slider-component {

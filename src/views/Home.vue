@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Mode from '@/components/Mode'
+import Mode from '@/components/Mode';
 
 export default {
     components: {
@@ -25,18 +25,18 @@ export default {
 
     methods: {
         initializeSupport() {
-            this.$router.push('/initialize')
+            this.$router.push('/initialize');
         },
 
         anonSupport() {
-            this.$router.push('/anon')
+            this.$router.push('/anon');
         },
 
         options() {
-            this.$router.push('/options')
+            this.$router.push('/options');
         }
     }
-}
+};
 </script>
 
 <style scoped>
