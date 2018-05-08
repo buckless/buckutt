@@ -102,7 +102,7 @@ export default {
                     try {
                         credit = nfc.dataToCredit(
                             data.toLowerCase ? data.toLowerCase() : data,
-                            config.signingKey
+                            this.inputValue + config.signingKey
                         );
                         console.log('nfc-data', credit);
                         this.onCard(credit);
@@ -140,7 +140,7 @@ export default {
             }
 
             nfc
-                .write(nfc.creditToData(this.dataToWrite, config.signingKey))
+                .write(nfc.creditToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
                     this.success = true;
                     this.$root.$emit('writeCompleted');
