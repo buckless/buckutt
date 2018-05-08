@@ -14,6 +14,7 @@ const state = {
     reloads: [],
     refunds: [],
     purchases: [],
+    withdrawals: [],
     meansofpayment: [],
     rights: [],
     webservices: [],

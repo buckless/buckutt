@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="b-treasuryExport">
         <h5>Recherche</h5>
         <form @submit.prevent="exportPurchases()">
             <div>
@@ -32,9 +32,14 @@
                     class="b--limitsize b--inline"></b-datetime-picker>
             </div>
             <h6>Options</h6>
-            <div>
-                <strong>Format:</strong><br />
-                <mdl-radio checked="checked" val="csv" value="csv">CSV</mdl-radio>
+            <div class="b-treasuryExport__options">
+                <div>
+                    <b-inputselect label="Données à exporter" id="data-select" :options="dataChoices" v-model="data"></b-inputselect>
+                </div>
+                <div>
+                    <strong>Format:</strong><br />
+                    <mdl-radio checked="checked" val="csv" value="csv">CSV</mdl-radio>
+                </div>
             </div>
             <mdl-button colored raised>Exporter</mdl-button>
         </form>
@@ -58,7 +63,8 @@ const fieldsPattern = {
 export default {
     data() {
         return {
-            fields: Object.assign({}, fieldsPattern)
+            fields: Object.assign({}, fieldsPattern),
+            data: 'purchases'
         };
     },
 
@@ -83,6 +89,13 @@ export default {
             fundations.unshift({ name: 'Toutes', value: null });
 
             return fundations;
+        },
+
+        dataChoices() {
+            return [
+                { name: 'Ventes', value: 'purchases' },
+                { name: 'Catering', value: 'withdrawals' }
+            ];
         }
     },
 
@@ -109,11 +122,11 @@ export default {
 
             const qString = treasuryQueryString(inputFields);
 
-            download(`services/treasury/csv/purchases?${qString}`)
+            download(`services/treasury/csv/${this.data}?${qString}`)
                 .then(result => {
                     const currentTime = Math.floor(Date.now() / 1000);
                     this.notify({ message: 'Le téléchargement du document va commencer...' });
-                    saveAs(result, `treasury-purchases-${currentTime}.csv`);
+                    saveAs(result, `treasury-${this.data}-${currentTime}.csv`);
                 })
                 .catch(err =>
                     this.notifyError({
@@ -132,3 +145,13 @@ export default {
     }
 };
 </script>
+
+<style>
+.b-treasuryExport__options {
+    display: flex;
+
+    & > div {
+        margin-right: 15px;
+    }
+}
+</style>
