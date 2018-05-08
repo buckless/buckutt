@@ -29,7 +29,9 @@ module.exports = ticketNumber => {
             const tickets = res.data.filter(t => t.barcode === ticketNumber);
 
             ticket = tickets.find(t => config.ticketIdTicket.indexOf(t.ticket_id.toString()) > -1);
-            credit = tickets.find(t => config.ticketIdPreload.indexOf(t.ticket_id.toString()) > -1) || {
+            credit = tickets.find(
+                t => config.ticketIdPreload.indexOf(t.ticket_id.toString()) > -1
+            ) || {
                 price: 0
             };
             credit = Math.floor(parseFloat(credit.price) * 100);

@@ -60,7 +60,8 @@ router.post('/services/basket', (req, res, next) => {
             req.buyer.password = '';
 
             next();
-        });
+        })
+        .catch(err => dbCatch(module, err, next));
 });
 
 router.post('/services/basket', (req, res, next) => {
@@ -94,7 +95,8 @@ router.post('/services/basket', (req, res, next) => {
                 return purchase;
             });
         })
-        .then(() => next());
+        .then(() => next())
+        .catch(err => dbCatch(module, err, next));
 });
 
 router.post('/services/basket', (req, res, next) => {

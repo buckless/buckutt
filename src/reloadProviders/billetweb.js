@@ -83,7 +83,6 @@ module.exports = {
                         giftReloads_ && giftReloads_.length ? giftReloads_.toJSON() : []
                 )
                 .then(giftReloads_ => {
-
                     giftReloads = giftReloads_;
 
                     return Transaction.where({
@@ -91,7 +90,6 @@ module.exports = {
                     }).fetch({ withRelated: ['user'] });
                 })
                 .then(transaction_ => {
-
                     if (!transaction_) {
                         return Promise.reject(new Error('Transaction not found'));
                     }
@@ -182,12 +180,15 @@ module.exports = {
                 })
                 .catch(err => {
                     if (err.message === 'Transaction not found') {
-                        return res.status(302).header('Location', `${config.urls.managerUrl}/reload/failed`).end()
+                        return res
+                            .status(302)
+                            .header('Location', `${config.urls.managerUrl}/reload/failed`)
+                            .end();
                     }
 
                     return Promise.reject(err);
                 })
-                .catch(err => dbCatch(module, err, next) );
+                .catch(err => dbCatch(module, err, next));
         });
 
         return router;
