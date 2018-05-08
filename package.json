@@ -41,7 +41,7 @@
     ]
   },
   "dependencies": {
-    "@buckless/signed-number": "^1.2.1",
+    "@buckless/signed-data": "^2.1.2",
     "@pokusew/pcsclite": "^0.4.18",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",

@@ -3,10 +3,11 @@
         <topbar />
         <main class="b-main">
             <login v-if="loginState" ref="login" />
-            <history v-if="isSellerMode && history && !treasury" ref="history" />
-            <treasury v-if="(isSellerMode || isReloaderMode) && treasury && !history" ref="treasury" />
-            <items v-if="isSellerMode && !history && !treasury" />
-            <sidebar v-if="isSellerMode && !history && !treasury" />
+            <history v-if="isSellerMode && history && !treasury && !catering" ref="history" />
+            <treasury v-if="(isSellerMode || isReloaderMode) && treasury && !history && !catering" ref="treasury" />
+            <catering v-if="isSellerMode && catering && !history && !treasury" ref="catering" />
+            <items v-if="isSellerMode && !history && !treasury && !catering" />
+            <sidebar v-if="isSellerMode && !history && !treasury && !catering" />
             <controller v-if="isControllerMode" ref="controller" />
             <assigner v-if="isAssignerMode" ref="assign" />
         </main>
@@ -47,6 +48,7 @@ import DisconnectWarning from './components/DisconnectWarning';
 import Ticket from './components/Ticket';
 import History from './components/History';
 import Treasury from './components/Treasury';
+import Catering from './components/Catering';
 
 export default {
     name: 'App',
@@ -66,7 +68,8 @@ export default {
         DisconnectWarning,
         Ticket,
         History,
-        Treasury
+        Treasury,
+        Catering
     },
 
     computed: {
@@ -81,6 +84,7 @@ export default {
             online: state => state.online.status,
             history: state => state.history.opened,
             treasury: state => state.treasury.opened,
+            catering: state => state.catering.opened,
             alert: state => state.auth.alert
         }),
 

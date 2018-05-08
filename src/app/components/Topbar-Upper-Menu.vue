@@ -1,14 +1,14 @@
 <template>
     <div class="b-menu-wrapper" v-if="hasActions">
-        <div class="b-menu__drop" v-if="showMenu && !history && !treasury && !onlyLogout" @click="showMenu = false"></div>
-        <div class="b-menu" v-if="!history && !treasury && !onlyLogout">
+        <div class="b-menu__drop" v-if="showMenu && !history && !treasury && !catering && !onlyLogout" @click="showMenu = false"></div>
+        <div class="b-menu" v-if="!history && !treasury && !catering && !onlyLogout">
             <div class="b-menu__icon" @click="showMenu = !showMenu">
                 <i class="b-icon">menu</i>
                 <span>Menu</span>
             </div>
             <div class="b-menu__actions" v-if="showMenu">
                 <div
-                    v-if="isSellerMode && !history"
+                    v-if="isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(clearBasket)">
                     <i class="b-icon">delete_forever</i>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="isSellerMode && !history"
+                    v-if="isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(toggleHistory)">
                     <i class="b-icon">history</i>
@@ -24,7 +24,15 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="isReloaderMode && isSellerMode && !history"
+                    v-if="isSellerMode && useCardData"
+                    class="b-menu__actions__action"
+                    @click="close(toggleCatering)">
+                    <i class="b-icon">shopping_basket</i>
+                    Catering
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
+                    v-if="isReloaderMode && isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(openReloadModal)">
                     <i class="b-icon">attach_money</i>
@@ -72,7 +80,13 @@
                 <span>Fermer</span>
             </div>
         </div>
-        <div class="b-menu" @click="close(logout)" v-else="onlyLogout">
+        <div class="b-menu" @click="close(toggleCatering)" v-else-if="catering && !onlyLogout">
+            <div class="b-menu__icon">
+                <i class="b-icon">close</i>
+                <span>Fermer</span>
+            </div>
+        </div>
+        <div class="b-menu" @click="close(logout)" v-else>
             <div class="b-menu__icon">
                 <i class="b-icon">close</i>
                 <span>Fermer</span>
@@ -91,7 +105,9 @@ export default {
         displayLogout: Boolean,
         onlyLogout: Boolean,
         history: Boolean,
-        treasury: Boolean
+        treasury: Boolean,
+        catering: Boolean,
+        useCardData: Boolean
     },
 
     data() {
@@ -120,6 +136,7 @@ export default {
             'openReloadModal',
             'toggleHistory',
             'toggleTreasury',
+            'toggleCatering',
             'clearBasket',
             'logout',
             'syncPendingRequests'

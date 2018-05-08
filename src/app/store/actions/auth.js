@@ -117,7 +117,7 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
+export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
     const token = store.getters.tokenHeaders;
     const onlyAuth = isOnlyAuth || false;
 
@@ -189,7 +189,7 @@ export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
         initialPromise = initialPromise.then(
             () =>
                 new Promise(resolve => {
-                    window.app.$root.$emit('readyToWrite', store.state.ui.lastUser.credit);
+                    window.app.$root.$emit('readyToWrite', store.state.ui.lastUser.credit, options);
                     window.app.$root.$on('writeCompleted', () => resolve());
                 })
         );

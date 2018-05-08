@@ -1,6 +1,6 @@
 const { EventEmitter } = require('events');
 const rusha = require('rusha');
-const { encode, decode } = require('@buckless/signed-number');
+const signedData = require('../signedData');
 
 module.exports = class NFC extends EventEmitter {
     constructor() {
@@ -13,10 +13,10 @@ module.exports = class NFC extends EventEmitter {
             actualCard: ''
         };
 
-        window.mock.addCard = (name, cardId, cardValue) => {
-            // do not store cardValue as buffer because it can't be restored as a buffer
-            if (typeof cardValue !== 'number') {
-                throw new Error('cardValue should not be passed into nfc.creditToData');
+        window.mock.addCard = (name, cardId, credit) => {
+            // do not store credit as buffer because it can't be restored as a buffer
+            if (typeof credit !== 'number') {
+                throw new Error('credit should not be passed into nfc.cardToData');
             }
 
             if (cardId.length === 0) {
@@ -27,7 +27,7 @@ module.exports = class NFC extends EventEmitter {
                 throw new Error('name should bet set');
             }
 
-            console.warn(`Writing card ${name} to local storage : ${cardId}(${cardValue})`);
+            console.warn(`Writing card ${name} to local storage : ${cardId}(${credit})`);
 
             const cards = localStorage.hasOwnProperty('mocked-cards')
                 ? JSON.parse(localStorage.getItem('mocked-cards'))
@@ -35,7 +35,19 @@ module.exports = class NFC extends EventEmitter {
 
             cards[name] = {
                 cardId,
-                cardValue
+                cardValue: {
+                    credit,
+                    options: {
+                        assignedCard: 1,
+                        catering: [
+                            {
+                                id: 0,
+                                balance: 2,
+                                validity: [true, true, true, true]
+                            }
+                        ]
+                    }
+                }
             };
 
             localStorage.setItem('mocked-cards', JSON.stringify(cards));
@@ -60,7 +72,7 @@ module.exports = class NFC extends EventEmitter {
 
             // do not store cardValue as buffer because it can't be restored as a buffer
             // we create the buffer directly on read
-            cards[name].cardValue = nfc.creditToData(cards[name].cardValue, cards[name].cardId + config.signingKey);
+            cards[name].cardValue = nfc.cardToData(cards[name].cardValue, cards[name].cardId + config.signingKey);
 
             this.emit('uid', cards[name].cardId);
             this.emit('atr', '0');
@@ -91,9 +103,11 @@ module.exports = class NFC extends EventEmitter {
         }
 
         // do not store cardValue as buffer because it can't be restored as a buffer
-        cards[mock.actualCard].cardValue = nfc.dataToCredit(data, cards[mock.actualCard].cardId + config.signingKey);
+        cards[mock.actualCard].cardValue = nfc.dataToCard(data, cards[mock.actualCard].cardId + config.signingKey);
 
-        const debugData = `${cards[mock.actualCard].cardId}(${cards[mock.actualCard].cardValue})`;
+        const debugData = `${cards[mock.actualCard].cardId}(${
+            cards[mock.actualCard].cardValue.credit
+        })`;
         console.warn(`Writing card to local storage : ${debugData}`);
 
         localStorage.setItem('mocked-cards', JSON.stringify(cards));
@@ -101,11 +115,11 @@ module.exports = class NFC extends EventEmitter {
         return Promise.resolve();
     }
 
-    dataToCredit(data, signingKey) {
-        return decode(data, signingKey, rusha.createHash);
+    dataToCard(data, signingKey) {
+        return signedData.key(signingKey).decode(data);
     }
 
-    creditToData(credit, signingKey) {
-        return encode(credit, signingKey, 7, rusha.createHash);
+    cardToData(data, signingKey) {
+        return signedData.key(signingKey).encode(data);
     }
 };

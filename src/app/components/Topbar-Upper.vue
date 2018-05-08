@@ -21,7 +21,9 @@
               :displayLogout="displayLogout"
               :onlyLogout="onlyLogout"
               :history="history"
-              :treasury="treasury"/>
+              :treasury="treasury"
+              :catering="catering"
+              :useCardData="useCardData"/>
         </div>
     </div>
 </template>
@@ -48,6 +50,8 @@ export default {
         ...mapState({
             history: state => state.history.opened,
             treasury: state => state.treasury.opened,
+            catering: state => state.catering.opened,
+            useCardData: state => state.auth.device.event.config.useCardData,
             seller: state => state.auth.seller,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
             buyer: state => state.auth.buyer

@@ -130,18 +130,18 @@ export default {
     },
 
     methods: {
-        assignCard(value) {
+        assignCard(cardId, _, options) {
             this.$store.commit('SET_DATA_LOADED', false);
             const mol = {
                 user_id: this.assignModalId,
                 type: 'cardId',
-                data: value,
+                data: cardId,
                 blocked: false
             };
 
             const localId = `transaction-id-${window.appId}-${Date.now()}`;
             const transactionToSend = {
-                buyer: value,
+                buyer: cardId,
                 molType: config.buyerMeanOfLogin,
                 date: new Date(),
                 basket: [
@@ -165,6 +165,11 @@ export default {
             };
 
             let initialPromise = Promise.resolve();
+
+            if (options.assignedCard) {
+                this.$store.commit('SET_DATA_LOADED', true);
+                return this.$store.commit('ERROR', { message: 'Card already assigned' });
+            }
 
             if (this.online) {
                 initialPromise = initialPromise
@@ -237,7 +242,10 @@ export default {
                                       this.assignModalCredit < this.nfcCost.amount
                                           ? this.assignModalCredit
                                           : this.assignModalCredit - this.nfcCost.amount;
-                                  window.app.$root.$emit('readyToWrite', creditToWrite);
+                                  window.app.$root.$emit('readyToWrite', creditToWrite, {
+                                      assignedCard: true,
+                                      catering: options.catering
+                                  });
                                   window.app.$root.$on('writeCompleted', () => resolve());
                               })
                             : Promise.resolve()
@@ -299,24 +307,12 @@ export default {
             this.assignModalId = '';
         },
 
-        onBarcode(value, isFromBarcode) {
+        onBarcode(value) {
             if (!value) {
                 return;
             }
 
-            if (this.subpage === 'create') {
-                this.$refs.create.assignCard(value);
-                return;
-            }
-
-            if (this.assignModalOpened) {
-                this.assignCard(value);
-                return;
-            }
-
-            if (isFromBarcode) {
-                this.ticketScanned(value);
-            }
+            this.ticketScanned(value);
         },
 
         assignModal(credit, name, username, id) {
@@ -328,7 +324,7 @@ export default {
         },
 
         barcode() {
-            barcode().then(value => this.onBarcode(value, true));
+            barcode().then(value => this.onBarcode(value));
         },
 
         ok() {
@@ -340,7 +336,7 @@ export default {
     },
 
     mounted() {
-        window.mock.barcode = b => this.onBarcode(b, true);
+        window.mock.barcode = b => this.onBarcode(b);
     }
 };
 </script>

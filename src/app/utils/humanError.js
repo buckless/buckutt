@@ -24,6 +24,10 @@ export default (state, error) => {
         return 'Client introuvable';
     }
 
+    if (error.message === 'Card already assigned') {
+        return 'Carte déjà assignée';
+    }
+
     if (error.message === 'Different card used') {
         return 'Une carte différente de la carte initiale a été utilisée.';
     }
@@ -60,6 +64,14 @@ export default (state, error) => {
 
     if (error.message === 'Not enough credit') {
         return `Pas assez de crédit: ${(credit(state) / 100).toFixed(2)}€`;
+    }
+
+    if (error.message === 'Catering not available today') {
+        return "Aucun catering disponible aujourd'hui.";
+    }
+
+    if (error.message === 'Insufficient balance for today') {
+        return "Le solde de cet article est épuisé pour aujourd'hui.";
     }
 
     return error.message;

@@ -1,7 +1,6 @@
 const { EventEmitter } = require('events');
-const rusha = require('rusha');
 const NFCReader = require('./nfc');
-const { encode, decode } = require('@buckless/signed-number');
+const signedData = require('../signedData');
 
 module.exports = class NFC extends EventEmitter {
     constructor() {
@@ -22,13 +21,11 @@ module.exports = class NFC extends EventEmitter {
         return this.nfc.write(data);
     }
 
-    dataToCredit(data, signingKey) {
-        console.log(data);
-        console.log(signingKey);
-        return decode(data, signingKey, rusha.createHash);
+    dataToCard(data, signingKey) {
+        return signedData.key(signingKey).decode(data);
     }
 
-    creditToData(credit, signingKey) {
-        return encode(credit, signingKey, 7, rusha.createHash);
+    cardToData(data, signingKey) {
+        return signedData.key(signingKey).encode(data);
     }
 };

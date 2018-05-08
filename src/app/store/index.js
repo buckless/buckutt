@@ -14,6 +14,7 @@ import basket from './modules/basket';
 import online from './modules/online';
 import history from './modules/history';
 import treasury from './modules/treasury';
+import catering from './modules/catering';
 
 Vue.use(Vuex);
 
@@ -36,7 +37,8 @@ const store = new Vuex.Store({
         basket,
         online,
         history,
-        treasury
+        treasury,
+        catering
     },
     strict: debug,
     plugins: debug ? [createLogger()] : []

@@ -48,7 +48,10 @@ export default {
             isCordova: process.env.TARGET === 'cordova',
             rewrite: false,
             success: false,
-            dataToWrite: null
+            dataToWrite: {
+                credit: null,
+                options: null
+            }
         };
     },
 
@@ -59,11 +62,11 @@ export default {
             }
         },
 
-        onCard(credit = null) {
+        onCard(credit = null, options = {}) {
             if (this.rewrite) {
                 this.write();
             } else {
-                this.$emit('read', this.inputValue, credit);
+                this.$emit('read', this.inputValue, credit, options);
             }
         },
 
@@ -87,7 +90,10 @@ export default {
 
             this.success = false;
             this.rewrite = false;
-            this.dataToWrite = null;
+            this.dataToWrite = {
+                credit: null,
+                options: null
+            };
 
             const nfc = window.nfc;
 
@@ -97,21 +103,22 @@ export default {
                 });
 
                 nfc.on('data', data => {
-                    let credit;
+                    let card;
 
                     try {
-                        credit = nfc.dataToCredit(
+                        card = nfc.dataToCard(
                             data.toLowerCase ? data.toLowerCase() : data,
                             this.inputValue + config.signingKey
                         );
-                        console.log('nfc-data', credit);
-                        this.onCard(credit);
+
+                        console.log('nfc-data', card);
+                        this.onCard(card.credit, card.options);
                     } catch (err) {
                         console.log(err);
                         if (!this.disableSignCheck) {
                             this.$store.commit('ERROR', { message: 'Invalid card' });
                         } else {
-                            this.onCard(0);
+                            this.onCard(0, {});
                         }
                     }
                 });
@@ -126,8 +133,8 @@ export default {
                 console.error(err);
             });
 
-            this.$root.$on('readyToWrite', credit => {
-                this.dataToWrite = credit;
+            this.$root.$on('readyToWrite', (credit, options) => {
+                this.dataToWrite = { credit, options };
                 this.write();
             });
         },
@@ -140,7 +147,7 @@ export default {
             }
 
             nfc
-                .write(nfc.creditToData(this.dataToWrite, this.inputValue + config.signingKey))
+                .write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
                     this.success = true;
                     this.$root.$emit('writeCompleted');
