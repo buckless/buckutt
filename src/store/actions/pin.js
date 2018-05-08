@@ -15,14 +15,6 @@ export function changePin({ dispatch }, pins) {
         message = "L'ancien et le nouveau code PIN rentrés sont identiques";
     }
 
-    if (pins.pin.length !== 4) {
-        message = 'Le nouveau code PIN ne fait pas la bonne longueur';
-    }
-
-    if (pins.currentPin.length !== 4) {
-        message = "L'ancien code est faux";
-    }
-
     if (message) {
         return Promise.reject(new Error(message));
     }
@@ -58,32 +50,20 @@ export function askPin(_, mail) {
 }
 
 export function generatePin(_, pins) {
-    return new Promise((resolve, reject) => {
-        let message = null;
+    if (pins.pin !== pins.confirmedPin) {
+        return Promise.reject(new Error('Les deux codes PIN ne sont pas identiques'));
+    }
 
-        if (pins.pin !== pins.confirmedPin) {
-            message = 'Les deux codes PIN ne sont pas identiques';
-        }
+    return put('generatepin', {
+        key: pins.key,
+        pin: pins.pin
+    })
+        .then(result => {
+            if (!result.success) {
+                return reject(new Error('Impossible de changer le code PIN.'));
+            }
 
-        if (pins.pin.length !== 4) {
-            message = 'Le nouveau code PIN ne fait pas la bonne longueur';
-        }
-
-        if (message) {
-            return reject(new Error(message));
-        }
-
-        put('generatepin', {
-            key: pins.key,
-            pin: pins.pin
+            return { message: 'Le code PIN a bien été changé' };
         })
-            .then(result => {
-                if (!result.success) {
-                    return reject(new Error('Impossible de changer le code PIN.'));
-                }
-
-                resolve({ message: 'Le code PIN a bien été changé' });
-            })
-            .catch(() => reject(new Error('Impossible de changer le code PIN.')));
-    });
+        .catch(() => reject(new Error('Impossible de changer le code PIN.')));
 }

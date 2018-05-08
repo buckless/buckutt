@@ -11,21 +11,17 @@ export function searchUsers({ commit }, name) {
 export function transfer({ dispatch, state }, data) {
     let message = '';
 
-    if (data.currentPin.length !== 4) {
-        message = "L'ancien code est faux";
-    }
-
-    if (!data.user) {
+    if (!data.user || !data.user.id) {
         message = 'Merci de sélectionner un utilisateur';
-    }
+    } else {
+        data.amount = parseFloat(data.amount);
+        if (!data.amount || Number.isNaN(data.amount)) {
+            message = 'Le montant doit être un nombre supérieur à 0';
+        }
 
-    data.amount = parseFloat(data.amount);
-    if (!data.amount || Number.isNaN(data.amount)) {
-        message = 'Le montant doit être un nombre supérieur à 0';
-    }
-
-    if (data.user.id === state.app.loggedUser.id) {
-        message = "Impossible de s'envoyer de l'argent";
+        if (data.user.id === state.app.loggedUser.id) {
+            message = "Impossible de s'envoyer de l'argent";
+        }
     }
 
     if (message) {

@@ -10,18 +10,19 @@
             <transition name="slide">
                 <form class="b-changepin" @submit.prevent="change(currentPin, pin, confirmedPin)" v-show="pinPage">
                     <section class="mdc-card__supporting-text">
+                        Le nouveau code PIN doit exclusivement être composé de 4 chiffres.
                         <label class="mdc-text-field" ref="currentPin">
-                            <input type="password" class="mdc-text-field__input" required minlength="4" v-model="currentPin">
+                            <input type="password" class="mdc-text-field__input" required pattern="\d{4}" v-model="currentPin">
                             <span class="mdc-text-field__label">Code PIN actuel</span>
                             <div class="mdc-text-field__bottom-line"></div>
                         </label>
                         <label class="mdc-text-field" ref="pin">
-                            <input type="password" class="mdc-text-field__input" required minlength="4" v-model="pin">
+                            <input type="password" class="mdc-text-field__input" required pattern="\d{4}" v-model="pin">
                             <span class="mdc-text-field__label">Nouveau code PIN</span>
                             <div class="mdc-text-field__bottom-line"></div>
                         </label>
                         <label class="mdc-text-field" ref="confirmedPin">
-                            <input type="password" class="mdc-text-field__input" required minlength="4" v-model="confirmedPin">
+                            <input type="password" class="mdc-text-field__input" required pattern="\d{4}" v-model="confirmedPin">
                             <span class="mdc-text-field__label">Confirmation</span>
                             <div class="mdc-text-field__bottom-line"></div>
                         </label>
