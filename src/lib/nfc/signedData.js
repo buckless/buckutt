@@ -1,7 +1,7 @@
 import { SignedData } from '@buckless/signed-data';
 import rusha from 'rusha';
 
-const duration = process.env.VUE_APP_CATERING_DAYS;
+const duration = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
 const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
     (a, b) => a.id - b.id
 );
@@ -44,7 +44,6 @@ export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 8, rusha.createHas
 
             // Set the first bit depending on the card assignation
             let data = options.assignedCard ? '1' : '0';
-
             articles.forEach(article => {
                 const userCatering = options.catering.find(entry => entry.id === article.id);
 
