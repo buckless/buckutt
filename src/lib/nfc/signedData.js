@@ -1,7 +1,7 @@
 const { SignedData } = require('@buckless/signed-data');
 const rusha = require('rusha');
 
-const duration = config.catering.duration;
+const duration = parseInt(config.catering.duration, 10);
 const articles = Object.values(config.catering.articles).sort((a, b) => a.id - b.id);
 
 // The first bit is used by assignedCard parameter
