@@ -90,8 +90,6 @@ export default {
         },
 
         writeOptions(_, credit, options) {
-            console.log('read writeoptions called', options);
-
             const assignedCard = options.assignedCard;
 
             const catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({

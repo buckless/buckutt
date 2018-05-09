@@ -110,7 +110,6 @@ export default {
                         this.inputValue + process.env.VUE_APP_SIGNINGKEY
                     );
 
-                    console.log('nfc-data', card);
                     this.onCard(card.credit, card.options);
                 } catch (err) {
                     console.log(err);
@@ -134,7 +133,6 @@ export default {
         },
 
         write() {
-            console.log('nfcvue-write', this.dataToWrite.options);
             nfc
                 .write(
                     nfc.cardToData(

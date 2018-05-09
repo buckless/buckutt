@@ -54,7 +54,6 @@ export default {
 
     methods: {
         initializeSupport() {
-            console.log('read init called');
             window.app.$root.$emit('readyToWrite', 0, {
                 assignedCard: false,
                 catering: []
@@ -62,7 +61,6 @@ export default {
         },
 
         anonSupport() {
-            console.log('read anon call');
             window.app.$root.$emit('readyToWrite', 0, {
                 assignedCard: true,
                 catering: []

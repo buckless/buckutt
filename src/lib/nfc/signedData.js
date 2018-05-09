@@ -28,7 +28,6 @@ export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 8, rusha.createHas
         default: '00'.repeat(byteNumber),
         size: byteNumber,
         encode: options => {
-            console.log('signeddata-encode', options);
             /**
              * {
              *   assignedCard: Boolean,
