@@ -13,9 +13,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env TARGET=web NODE_ENV=development vue-cli-service serve --open",
+    "dev": "cross-env TARGET=browser NODE_ENV=development vue-cli-service serve --open",
     "dev:android": "cross-env TARGET=cordova NODE_ENV=development vue-cli-service build",
-    "build": "cross-env TARGET=web vue-cli-service build",
+    "build": "cross-env TARGET=browser vue-cli-service build",
     "build:android": "cross-env TARGET=cordova vue-cli-service build",
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\""
   },
@@ -29,6 +29,8 @@
     ]
   },
   "dependencies": {
+    "@buckless/signed-data": "^2.1.2",
+    "rusha": "^0.8.13",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vue-slider-component": "^2.6.2",

@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const PostCompile = require('post-compile-webpack-plugin')
 const shell = require('shelljs')
 
@@ -14,6 +15,12 @@ module.exports = {
             : '/'
 
         config.watch = (env === 'development' && target === 'cordova')
+
+        config.plugins.push(
+            new webpack.EnvironmentPlugin({
+                TARGET: target
+            })
+        );
 
         if (target === 'cordova') {
             const command = (env === 'development')

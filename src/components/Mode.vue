@@ -7,7 +7,7 @@
 <style scoped>
 .mode {
     padding: 12px;
-    max-width: calc(100% - 20px);
+    max-width: 300px;
     cursor: pointer;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.24);

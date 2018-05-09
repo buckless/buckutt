@@ -1,10 +1,10 @@
 <template>
     <div class="home">
-        <Mode @click.native="initializeSupport">
+        <Mode @click.native="initialize = true">
             <h2>Initialiser un support</h2>
             <p>Créer un support qui sera ré-assignable par la suite</p>
         </Mode>
-        <Mode @click.native="anonSupport">
+        <Mode @click.native="anon = true">
             <h2>Assigner un support anonyme</h2>
             <p>Créer un support qui <strong>ne sera pas</strong> ré-assignable par la suite</p>
         </Mode>
@@ -12,24 +12,61 @@
             <h2>Gérer les options d'une carte</h2>
             <p>Gère les options (propres à votre évènement) d'une carte</p>
         </Mode>
+
+        <nfc
+            mode="write"
+            @read="initializeSupport"
+            @cancel="initialize = false"
+            successText="Carte initialisée"
+            v-if="initialize"
+            key="initialize">
+            Mode: initialisation
+        </nfc>
+
+        <nfc
+            mode="write"
+            @read="anonSupport"
+            @cancel="anon = false"
+            successText="Carte anonyme crée"
+            v-if="anon"
+            key="anon">
+            Mode: carte anonyme
+        </nfc>
     </div>
 </template>
 
 <script>
 import Mode from '@/components/Mode';
+import Nfc from '@/components/Nfc';
 
 export default {
     components: {
-        Mode
+        Mode,
+        Nfc
+    },
+
+    data() {
+        return {
+            initialize: false,
+            anon: false
+        };
     },
 
     methods: {
         initializeSupport() {
-            this.$router.push('/initialize');
+            console.log('read init called');
+            window.app.$root.$emit('readyToWrite', 0, {
+                assignedCard: false,
+                catering: []
+            });
         },
 
         anonSupport() {
-            this.$router.push('/anon');
+            console.log('read anon call');
+            window.app.$root.$emit('readyToWrite', 0, {
+                assignedCard: true,
+                catering: []
+            });
         },
 
         options() {
