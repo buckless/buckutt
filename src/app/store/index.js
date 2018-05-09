@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VuexPersistence from 'vuex-persist';
+import localForage from 'localforage';
 
 import createLogger from 'vuex/dist/logger';
 
@@ -20,13 +22,20 @@ Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV === 'development';
 
+const vuexPersist = new VuexPersistence({
+    strictMode: debug,
+    storage: localForage
+});
+
 const store = new Vuex.Store({
     state: {
         isReloadOpen: false,
         meanOfPayment: 'card',
         paymentStatus: 'WAITING'
     },
-
+    mutations: {
+        RESTORE_MUTATION: vuexPersist.RESTORE_MUTATION
+    },
     actions,
     getters,
     modules: {
@@ -41,7 +50,7 @@ const store = new Vuex.Store({
         catering
     },
     strict: debug,
-    plugins: debug ? [createLogger()] : []
+    plugins: debug ? [createLogger(), vuexPersist.plugin] : [vuexPersist.plugin]
 });
 
 if (module.hot) {

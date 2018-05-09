@@ -1,5 +1,4 @@
 import { credit } from '../store/getters/items';
-import hasEssentials from '@/utils/offline/hasEssentials';
 
 export default (state, error) => {
     if (!error) {
@@ -47,11 +46,7 @@ export default (state, error) => {
     }
 
     if (error.message === 'Server not reacheable') {
-        if (!hasEssentials()) {
-            return 'Cet équipement ne possède pas les données minimum pour fonctionner hors-ligne.';
-        }
-
-        return 'Connexion au serveur perdue';
+        return 'Cet équipement ne peut pas fonctionner sans connexion Internet.';
     }
 
     if (error.message.startsWith('Can not reload less than')) {

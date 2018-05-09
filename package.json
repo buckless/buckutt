@@ -45,9 +45,11 @@
     "@pokusew/pcsclite": "^0.4.18",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
+    "circular-json": "^0.5.3",
     "dexie": "^2.0.2",
     "electron": "^1.8.3",
     "inquirer": "^5.1.0",
+    "localforage": "^1.7.1",
     "lodash.clonedeep": "^4.5.0",
     "lodash.countby": "^4.6.0",
     "lodash.debounce": "^4.0.8",
@@ -63,7 +65,8 @@
     "socket.io-client": "^2.0.4",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persist": "^1.2.2"
   },
   "devDependencies": {
     "autoprefixer": "^8.1.0",

@@ -30,7 +30,6 @@
 import 'normalize.css';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
-import hasEssentials from './utils/offline/hasEssentials';
 import OfflineData from '@/../lib/offlineData';
 
 import Items from './components/Items';
@@ -99,70 +98,15 @@ export default {
     },
 
     methods: {
-        ...mapActions([
-            'setupSocket',
-            'setSellers',
-            'setPoint',
-            'setGroups',
-            'setMeansOfPayment',
-            'setFullDevice',
-            'setEvent',
-            'setDefaultItems',
-            'setPendingRequests',
-            'setHistory',
-            'setPendingCancellations',
-            'setGiftReloads',
-            'updateEssentials',
-            'periodicSync'
-        ])
+        ...mapActions(['setupSocket', 'updateEssentials', 'periodicSync'])
     },
 
     mounted() {
         this.setupSocket();
-
-        if (hasEssentials()) {
-            this.setPoint(JSON.parse(window.localStorage.getItem('headers')));
-            this.setSellers(JSON.parse(window.localStorage.getItem('sellers')));
-
-            if (window.localStorage.hasOwnProperty('groups')) {
-                this.setGroups(JSON.parse(window.localStorage.getItem('groups')));
-            }
-
-            if (window.localStorage.hasOwnProperty('meansOfPayment')) {
-                this.setMeansOfPayment(JSON.parse(window.localStorage.getItem('meansOfPayment')));
-            }
-
-            if (window.localStorage.hasOwnProperty('fullDevice')) {
-                this.setFullDevice(JSON.parse(window.localStorage.getItem('fullDevice')));
-            }
-
-            if (window.localStorage.hasOwnProperty('event')) {
-                this.setEvent(JSON.parse(window.localStorage.getItem('event')));
-            }
-
-            if (window.localStorage.hasOwnProperty('defaultItems')) {
-                this.setDefaultItems(JSON.parse(window.localStorage.getItem('defaultItems')));
-            }
-
-            if (window.localStorage.hasOwnProperty('giftReloads')) {
-                this.setGiftReloads(JSON.parse(window.localStorage.getItem('giftReloads')));
-            }
-        }
-
         this.updateEssentials();
         this.periodicSync();
 
         setInterval(() => this.updateEssentials(!this.seller.isAuth), 60000);
-
-        if (window.localStorage.getItem('pendingRequests')) {
-            this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));
-        }
-
-        if (window.localStorage.getItem('pendingCancellations')) {
-            this.setPendingCancellations(
-                JSON.parse(window.localStorage.getItem('pendingCancellations'))
-            );
-        }
 
         let nfc = {
             on() {}
@@ -179,10 +123,7 @@ export default {
         window.nfc = nfc;
         window.appId = Date.now();
         window.database = new OfflineData();
-        window.database
-            .init()
-            .then(() => window.database.getHistory())
-            .then(history => this.setHistory(history));
+        window.database.init();
     }
 };
 </script>

@@ -30,6 +30,5 @@ export const removeReloads = ({ commit }) => {
 };
 
 export const setMeansOfPayment = ({ commit }, meansOfPayment) => {
-    window.localStorage.setItem('meansOfPayment', JSON.stringify(meansOfPayment));
     commit('SET_MEANS_OF_PAYMENT', meansOfPayment);
 };

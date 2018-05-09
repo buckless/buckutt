@@ -12,52 +12,23 @@ export const setHistory = ({ commit }, payload) => {
 
 export const addToHistory = ({ commit }, payload) => {
     commit('ADD_HISTORY_TRANSACTION', payload);
-    return window.database.insert('history', [
-        [
-            payload.localId,
-            payload.cardNumber,
-            payload.basketToSend,
-            payload.date,
-            payload.transactionIds
-        ]
-    ]);
 };
 
 export const removeFromHistory = ({ commit }, payload) => {
     commit('REMOVE_FROM_HISTORY', payload);
-    return window.database.delete('history', payload.localId);
 };
 
 export const updateOfflineEntry = (store, payload) => {
     store.commit('UPDATE_HISTORY_ENTRY', payload);
     store.commit('UPDATE_PENDING_CANCELLATIONS_ENTRY', payload);
-    window.localStorage.setItem(
-        'pendingCancellations',
-        JSON.stringify(store.state.history.pendingCancellations)
-    );
-
-    const updatedHistory = store.state.history.history.find(
-        entry => payload.localId === entry.localId
-    );
-    return window.database.update('history', payload.localId, updatedHistory);
 };
 
 export const addPendingCancellation = (store, payload) => {
     store.commit('ADD_PENDING_CANCELLATION', payload);
-
-    window.localStorage.setItem(
-        'pendingCancellations',
-        JSON.stringify(store.state.history.pendingCancellations)
-    );
 };
 
 export const removePendingCancellation = (store, payload) => {
     store.commit('REMOVE_PENDING_CANCELLATION', payload);
-
-    window.localStorage.setItem(
-        'pendingCancellations',
-        JSON.stringify(store.state.history.pendingCancellations)
-    );
 };
 
 export const setPendingCancellations = (store, payload) => {
@@ -66,11 +37,6 @@ export const setPendingCancellations = (store, payload) => {
     } else {
         store.commit('CLEAR_PENDING_CANCELLATIONS');
     }
-
-    window.localStorage.setItem(
-        'pendingCancellations',
-        JSON.stringify(store.state.history.pendingCancellations)
-    );
 };
 
 export const cancelEntry = (store, payload) => {

@@ -26,7 +26,6 @@ module.exports = new SignedData(config.signingKey, 8, rusha.createHash, [
         default: '00'.repeat(byteNumber),
         size: byteNumber,
         encode: options => {
-            console.log(options);
             /**
              * {
              *   assignedCard: Boolean,
@@ -91,8 +90,6 @@ module.exports = new SignedData(config.signingKey, 8, rusha.createHash, [
                 });
                 articleIndex += articleSize;
             });
-
-            console.log(options);
 
             return options;
         }

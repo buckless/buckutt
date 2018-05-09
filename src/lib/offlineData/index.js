@@ -10,8 +10,7 @@ class OfflineData {
     init() {
         this.db.version(1).stores({
             users: 'uid,name,username,barcode,credit',
-            accesses: 'id,cardId,group,start,end',
-            history: 'localId,cardNumber,basketToSend,date,transactionIds'
+            accesses: 'id,cardId,group,start,end'
         });
 
         return Promise.resolve();
@@ -48,10 +47,6 @@ class OfflineData {
         return this.db.accesses.filter(access => access.cardId === cardId).toArray();
     }
 
-    getHistory() {
-        return this.db.history.toArray();
-    }
-
     insert(table, data) {
         // dexie wants object and not array, restore from table schema (todo: send objects at first)
         if (table === 'users') {
@@ -69,14 +64,6 @@ class OfflineData {
                 group: entry[2],
                 start: entry[3],
                 end: entry[4]
-            }));
-        } else if (table === 'history') {
-            data = data.map(entry => ({
-                localId: entry[0],
-                cardNumber: entry[1],
-                basketToSend: entry[2],
-                date: entry[3],
-                transactionIds: entry[4]
             }));
         }
 

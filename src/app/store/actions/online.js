@@ -126,12 +126,10 @@ export const syncPendingRequests = store => {
 };
 
 export const setSellers = (store, payload) => {
-    window.localStorage.setItem('sellers', JSON.stringify(payload));
     store.commit('SET_SELLERS', payload);
 };
 
 export const setDefaultItems = (store, payload) => {
-    window.localStorage.setItem('defaultItems', JSON.stringify(payload));
     store.commit('SET_DEFAULT_ITEMS', payload);
 };
 
@@ -139,11 +137,6 @@ export const addPendingRequest = (store, payload) => {
     payload.body.created_at = new Date();
 
     store.commit('ADD_PENDING_REQUEST', payload);
-
-    window.localStorage.setItem(
-        'pendingRequests',
-        JSON.stringify(store.state.online.pendingRequests)
-    );
 };
 
 export const setPendingRequests = (store, payload) => {
@@ -152,9 +145,4 @@ export const setPendingRequests = (store, payload) => {
     } else {
         store.commit('CLEAR_PENDING_REQUESTS');
     }
-
-    window.localStorage.setItem(
-        'pendingRequests',
-        JSON.stringify(store.state.online.pendingRequests)
-    );
 };

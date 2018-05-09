@@ -79,7 +79,7 @@ export default {
     },
 
     methods: {
-        onCard(value, credit) {
+        onCard(value, credit, options) {
             if (this.cardNumber.length === 0) {
                 this.$store.commit('SET_DATA_LOADED', false);
                 return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value }).then(
@@ -121,7 +121,7 @@ export default {
 
                     if (this.useCardData) {
                         return new Promise(resolve => {
-                            window.app.$root.$emit('readyToWrite', newCredit);
+                            window.app.$root.$emit('readyToWrite', newCredit, options);
                             window.app.$root.$on('writeCompleted', () => resolve());
                         });
                     }

@@ -4,32 +4,26 @@ import q from '../../utils/q';
 import offlineLogin from '../../utils/offline/login';
 
 export const setPoint = ({ commit }, payload) => {
-    window.localStorage.setItem('headers', JSON.stringify(payload));
     commit('SET_DEVICE', payload);
 };
 
 export const setGiftReloads = ({ commit }, payload) => {
-    window.localStorage.setItem('giftReloads', JSON.stringify(payload));
     commit('SET_GIFTRELOADS', payload);
 };
 
 export const setNfcCosts = ({ commit }, payload) => {
-    window.localStorage.setItem('nfcCosts', JSON.stringify(payload));
     commit('SET_NFCCOSTS', payload);
 };
 
 export const setFullDevice = ({ commit }, payload) => {
-    window.localStorage.setItem('fullDevice', JSON.stringify(payload));
     commit('SET_FULL_DEVICE', payload);
 };
 
 export const setEvent = ({ commit }, payload) => {
-    window.localStorage.setItem('event', JSON.stringify(payload));
     commit('SET_EVENT', payload);
 };
 
 export const setGroups = ({ commit }, payload) => {
-    window.localStorage.setItem('groups', JSON.stringify(payload));
     commit('SET_GROUPS', payload);
 };
 
