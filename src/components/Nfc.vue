@@ -97,37 +97,30 @@ export default {
 
             const nfc = window.nfc;
 
-            if (this.useCardData) {
-                nfc.on('uid', data => {
-                    this.inputValue = data.toString();
-                });
+            nfc.on('uid', data => {
+                this.inputValue = data.toString();
+            });
 
-                nfc.on('data', data => {
-                    let card;
+            nfc.on('data', data => {
+                let card;
 
-                    try {
-                        card = nfc.dataToCard(
-                            data.toLowerCase ? data.toLowerCase() : data,
-                            this.inputValue + process.env.VUE_APP_SIGNINGKEY
-                        );
+                try {
+                    card = nfc.dataToCard(
+                        data.toLowerCase ? data.toLowerCase() : data,
+                        this.inputValue + process.env.VUE_APP_SIGNINGKEY
+                    );
 
-                        console.log('nfc-data', card);
-                        this.onCard(card.credit, card.options);
-                    } catch (err) {
-                        console.log(err);
-                        if (!this.disableSignCheck) {
-                            this.$store.commit('ERROR', { message: 'Invalid card' });
-                        } else {
-                            this.onCard(0, {});
-                        }
+                    console.log('nfc-data', card);
+                    this.onCard(card.credit, card.options);
+                } catch (err) {
+                    console.log(err);
+                    if (!this.disableSignCheck) {
+                        this.$store.commit('ERROR', { message: 'Invalid card' });
+                    } else {
+                        this.onCard(0, {});
                     }
-                });
-            } else {
-                nfc.on('uid', data => {
-                    this.inputValue = data;
-                    this.onCard();
-                });
-            }
+                }
+            });
 
             nfc.on('error', err => {
                 console.error(err);

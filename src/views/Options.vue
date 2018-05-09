@@ -1,7 +1,10 @@
 <template>
     <div class="options">
         <h2>Gérer les options d'une carte</h2>
-        <p>Choisissez les options souhaitées, puis scannez une carte</p>
+        <p>Choisissez les options souhaitées de la carte</p>
+
+        <button @click="writeModal = true">Valider</button>
+
         <div class="toggles">
             <Mode
                 v-for="(article, i) in articles"
@@ -10,9 +13,11 @@
                 :key="i"
                 @click.native="toggle(article)">
                 <strong>{{ article.name }}</strong>
+                <br/>
+                <br/>
                 <vue-slider
                     ref="slider"
-                    v-model="values[i]"
+                    v-model="balances[i]"
                     :max="article.maxNumber"
                     :tooltip="false"
                     :piecewise="true"
@@ -20,28 +25,47 @@
                     :clickable="false"
                     :speed="0.1"
                     tooltip-dir="bottom"></vue-slider>
+                <br/>
+                Jours :
+                <Days v-model="validities[i]"></Days>
             </Mode>
         </div>
+
+        <nfc
+            mode="write"
+            @read="writeOptions"
+            @cancel="writeModal = false"
+            successText="Options écrites"
+            v-if="writeModal"
+            key="validate" />
     </div>
 </template>
 
 <script>
 import vueSlider from 'vue-slider-component/src/vue2-slider.vue';
 
+import Days from '@/components/Days';
 import Mode from '@/components/Mode';
+import Nfc from '@/components/Nfc';
 
 export default {
     components: {
+        Days,
         Mode,
+        Nfc,
         vueSlider
     },
 
     data() {
         const articles = JSON.parse(process.env.VUE_APP_ARTICLES);
+        const days = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
 
         return {
+            writeModal: false,
+            days,
             articles,
-            values: articles.map(article => 0),
+            balances: articles.map(article => 0),
+            validities: articles.map(article => Array(days).fill(false)),
             selectedArticles: []
         };
     },
@@ -51,10 +75,10 @@ export default {
             const index = this.isActive(article);
 
             if (index > -1) {
-                this.values[this.articles.indexOf(article)] = 0;
+                this.balances[this.articles.indexOf(article)] = 0;
                 this.selectedArticles.splice(index, 1);
             } else {
-                this.values[this.articles.indexOf(article)] = article.maxNumber;
+                this.balances[this.articles.indexOf(article)] = article.maxNumber;
                 setTimeout(() => this.selectedArticles.push(article));
             }
         },
@@ -63,6 +87,23 @@ export default {
             return this.selectedArticles.findIndex(
                 selectedArticle => selectedArticle.id === article.id
             );
+        },
+
+        writeOptions(_, credit, options) {
+            console.log('read writeoptions called', options);
+
+            const assignedCard = options.assignedCard;
+
+            const catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
+                id: article.id,
+                balance: this.balances[i],
+                validity: this.validities[i]
+            }));
+
+            window.app.$root.$emit('readyToWrite', credit, {
+                assignedCard,
+                catering
+            });
         }
     }
 };
@@ -74,9 +115,14 @@ h2 {
 }
 
 p {
-    margin-bottom: 0;
+    margin: 1em auto 0 auto;
     padding: 0 12px;
     text-align: justify;
+    max-width: 320px;
+}
+
+button {
+    margin: 6px auto;
 }
 
 .toggles {
@@ -89,7 +135,7 @@ p {
     width: 100%;
     height: 45px;
     margin-top: 12px;
-    padding: 16px;
+    padding: 12px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 0 0 2px transparent;
 }
