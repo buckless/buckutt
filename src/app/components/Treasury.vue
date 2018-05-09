@@ -2,17 +2,17 @@
     <div class="b-treasury">
         <div>
             <h3>Achats</h3>
-            <table class="b-treasury-table" v-if="treasury.purchases.length > 0">
+            <table class="b-treasury__table" v-if="treasury.purchases.length > 0">
               <thead>
                 <tr>
-                  <th class="b-treasury-table__cell--non-numeric">Article</th>
+                  <th class="b-treasury__table__cell--non-numeric">Article</th>
                   <th>Quantité</th>
                   <th>Total TTC</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="purchase in treasury.purchases">
-                  <td class="b-treasury-table__cell--non-numeric">{{ purchase.name }}</td>
+                  <td class="b-treasury__table__cell--non-numeric">{{ purchase.name }}</td>
                   <td>{{ purchase.count }}</td>
                   <td><currency :value="purchase.amount" /></td>
                 </tr>
@@ -21,28 +21,32 @@
             <p v-else>Aucun achat à afficher.</p>
 
             <h3>Rechargements</h3>
-            <table class="b-treasury-table" v-if="treasury.reloads.length > 0">
+            <table class="b-treasury__table" v-if="treasury.reloads.length > 0">
               <thead>
                 <tr>
-                  <th class="b-treasury-table__cell--non-numeric">Moyen de paiement</th>
+                  <th class="b-treasury__table__cell--non-numeric">Moyen de paiement</th>
                   <th>Quantité</th>
                   <th>Total TTC</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="reload in treasury.reloads">
-                  <td class="b-treasury-table__cell--non-numeric">{{ reload.name }}</td>
+                  <td class="b-treasury__table__cell--non-numeric">{{ reload.name }}</td>
                   <td>{{ reload.count }}</td>
                   <td><currency :value="reload.amount" /></td>
                 </tr>
               </tbody>
             </table>
             <p v-else>Aucun rechargement à afficher.</p>
+
+            <h3>Options</h3>
+            <div class="b-treasury__export" @click="historyExport">Exporter au format JSON</div>
         </div>
     </div>
 </template>
 
 <script>
+import { saveAs } from 'file-saver';
 import groupBy from 'lodash.groupby';
 import sumBy from 'lodash.sumby';
 import { mapState } from 'vuex';
@@ -106,6 +110,16 @@ export default {
             history: state => state.history.history,
             meansOfPayment: state => state.reload.meansOfPayment
         })
+    },
+
+    methods: {
+        historyExport() {
+            const currentTime = Math.floor(Date.now() / 1000);
+            const dataToSave = new Blob([JSON.stringify(this.history)], {
+                type: 'application/json'
+            });
+            saveAs(dataToSave, `history-${currentTime}.json`);
+        }
     }
 };
 </script>
@@ -126,7 +140,7 @@ export default {
             font-size: 15px;
         }
 
-        & > .b-treasury-table {
+        & > .b-treasury__table {
             background-color: #fff;
             border-radius: 3px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
@@ -149,11 +163,23 @@ export default {
                         color: #979797;
                     }
 
-                    & > .b-treasury-table__cell--non-numeric {
+                    & > .b-treasury__table__cell--non-numeric {
                         text-align: left;
                     }
                 }
             }
+        }
+
+        & > .b-treasury__export {
+            background-color: #fff;
+            box-shadow: 0 0 2px color($black a(0.25)), 0 2px 3px color($black a(0.25));
+            border-radius: 2px;
+            cursor: pointer;
+            width: 180px;
+            height: 30px;
+            margin: auto;
+            line-height: 30px;
+            font-size: 13px;
         }
     }
 }

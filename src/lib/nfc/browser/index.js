@@ -72,7 +72,10 @@ module.exports = class NFC extends EventEmitter {
 
             // do not store cardValue as buffer because it can't be restored as a buffer
             // we create the buffer directly on read
-            cards[name].cardValue = nfc.cardToData(cards[name].cardValue, cards[name].cardId + config.signingKey);
+            cards[name].cardValue = nfc.cardToData(
+                cards[name].cardValue,
+                cards[name].cardId + config.signingKey
+            );
 
             this.emit('uid', cards[name].cardId);
             this.emit('atr', '0');
@@ -103,7 +106,10 @@ module.exports = class NFC extends EventEmitter {
         }
 
         // do not store cardValue as buffer because it can't be restored as a buffer
-        cards[mock.actualCard].cardValue = nfc.dataToCard(data, cards[mock.actualCard].cardId + config.signingKey);
+        cards[mock.actualCard].cardValue = nfc.dataToCard(
+            data,
+            cards[mock.actualCard].cardId + config.signingKey
+        );
 
         const debugData = `${cards[mock.actualCard].cardId}(${
             cards[mock.actualCard].cardValue.credit
