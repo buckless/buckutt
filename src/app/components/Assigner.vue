@@ -139,31 +139,6 @@ export default {
                 blocked: false
             };
 
-            const localId = `transaction-id-${window.appId}-${Date.now()}`;
-            const transactionToSend = {
-                buyer: cardId,
-                molType: config.buyerMeanOfLogin,
-                date: new Date(),
-                basket: [
-                    {
-                        price_id: this.nfcCost.id,
-                        promotion_id: null,
-                        articles: [
-                            {
-                                id: this.nfcId,
-                                vat: 0.2,
-                                price: this.nfcCost.id
-                            }
-                        ],
-                        alcohol: 0,
-                        cost: this.nfcCost.amount,
-                        type: 'purchase'
-                    }
-                ],
-                seller: this.operator.id,
-                localId
-            };
-
             let initialPromise = Promise.resolve();
 
             if (options.assignedCard) {
@@ -184,8 +159,37 @@ export default {
                             this.tokenHeaders
                         )
                     )
-                    .then(() =>
-                        axios
+                    .then(() => {
+                        if (this.nfcCost.amount === 0) {
+                            return Promise.resolve();
+                        }
+
+                        const localId = `transaction-id-${window.appId}-${Date.now()}`;
+                        const transactionToSend = {
+                            buyer: cardId,
+                            molType: config.buyerMeanOfLogin,
+                            date: new Date(),
+                            basket: [
+                                {
+                                    price_id: this.nfcCost.id,
+                                    promotion_id: null,
+                                    articles: [
+                                        {
+                                            id: this.nfcId,
+                                            vat: 0.2,
+                                            price: this.nfcCost.id
+                                        }
+                                    ],
+                                    alcohol: 0,
+                                    cost: this.nfcCost.amount,
+                                    type: 'purchase'
+                                }
+                            ],
+                            seller: this.operator.id,
+                            localId
+                        };
+
+                        return axios
                             .post(
                                 `${config.api}/services/basket`,
                                 transactionToSend,
@@ -199,8 +203,8 @@ export default {
                                         body: transactionToSend
                                     });
                                 }
-                            })
-                    );
+                            });
+                    });
             } else {
                 initialPromise = initialPromise
                     .then(() =>
