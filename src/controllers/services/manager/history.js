@@ -37,7 +37,7 @@ router.get('/services/manager/history', (req, res, next) => {
     next();
 });
 
-router.get('/services/manager/history', (req, res) => {
+router.get('/services/manager/history', (req, res, next) => {
     log.info(`Get history for user ${req.history.user}`, req.details);
 
     const models = req.app.locals.models;

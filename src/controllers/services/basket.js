@@ -1,6 +1,7 @@
 const express = require('express');
 const { countBy } = require('lodash');
 const APIError = require('../../errors/APIError');
+const createUser = require('../../lib/createUser');
 const logger = require('../../lib/log');
 const vat = require('../../lib/vat');
 const { bookshelf } = require('../../lib/bookshelf');
@@ -12,7 +13,7 @@ const log = logger(module);
 const getPriceAmount = (Price, priceId) =>
     Price.where({ id: priceId })
         .fetch()
-        .then(price => price.get('amount'));
+        .then(price => price ? price.get('amount') : 0);
 
 /**
  * Basket controller. Handles purchases and reloads
@@ -41,24 +42,44 @@ router.post('/services/basket', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid buyer'));
     }
 
-    req.app.locals.models.MeanOfLogin.where({
+    const molToCheck = {
         type: req.molType,
         data: req.buyer,
         blocked: false
-    })
+    };
+
+    req.app.locals.models.MeanOfLogin.where(molToCheck)
         .fetch({
             withRelated: ['user']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
             if (!mol || !mol.user || !mol.user.id) {
-                return next(new APIError(module, 400, 'Invalid buyer'));
+                // Don't create a new account if the card was already assigned
+                if (!req.event.useCardData || req.body.assignedCard) {
+                    return next(new APIError(module, 400, 'Invalid buyer'));
+                }
+
+                return createUser(
+                    req.app.locals.models,
+                    req.event,
+                    req.user,
+                    req.point,
+                    {},
+                    [],
+                    [molToCheck],
+                    [req.event.defaultGroup_id],
+                    false,
+                    true
+                );
             }
 
-            req.buyer = mol.user;
+            return Promise.resolve(mol.user);
+        })
+        .then(user => {
+            req.buyer = user;
             req.buyer.pin = '';
             req.buyer.password = '';
-
             next();
         })
         .catch(err => dbCatch(module, err, next));
