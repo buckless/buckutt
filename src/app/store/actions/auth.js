@@ -140,7 +140,7 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
             shouldChangeBuyer = true;
-            shouldCheckPending = store.state.online.status;
+            shouldCheckPending = store.state.online.status && options.assignedCard;
             shouldWriteCredit = store.state.auth.device.event.config.useCardData;
         } else {
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
@@ -151,7 +151,7 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             shouldClearBasket = true;
             shouldChangeBuyer = true;
         } else {
-            shouldCheckPending = store.state.online.status;
+            shouldCheckPending = store.state.online.status && options.assignedCard;
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
         }
     }
@@ -174,12 +174,15 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
         }
 
-        initialPromise = initialPromise.then(() => store.dispatch('sendBasket', { cardNumber }));
+        initialPromise = initialPromise.then(() =>
+            store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard })
+        );
     } else {
         initialPromise = initialPromise.then(() => store.commit('SET_BUYER_MOL', cardNumber));
     }
 
     if (shouldWriteCredit) {
+        options.assignedCard = true;
         initialPromise = initialPromise.then(
             () =>
                 new Promise(resolve => {

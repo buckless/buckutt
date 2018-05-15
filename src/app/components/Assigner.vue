@@ -166,6 +166,7 @@ export default {
 
                         const localId = `transaction-id-${window.appId}-${Date.now()}`;
                         const transactionToSend = {
+                            assignedCard: true,
                             buyer: cardId,
                             molType: config.buyerMeanOfLogin,
                             date: new Date(),

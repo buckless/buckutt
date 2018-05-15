@@ -42,7 +42,8 @@ export default {
         validate(e) {
             e.currentTarget.blur();
 
-            this.sendBasket();
+            // set to true for !useCardData events
+            this.sendBasket({ assignedCard: true });
         },
 
         ...mapActions(['sendBasket', 'clearBasket'])
