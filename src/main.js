@@ -16,7 +16,7 @@ import price from './lib/price';
 Vue.config.productionTip = false;
 
 if (process.env.NODE_ENV === 'production') {
-    Raven.config('https://66b3d1a9d79c4658a1a054b5eba1798e@sentry.io/1207649')
+    Raven.config(process.env.sentry)
         .addPlugin(RavenVue, Vue)
         .install();
 }

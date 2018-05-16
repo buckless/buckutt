@@ -7,5 +7,6 @@
     "footerColor": "\"#fff\"",
     "contactMail": "\"contact@buckless.com\"",
     "assignText": "\"Votre compte devrait être disponible quelques minutes après l'acquisition de votre place.\"",
-    "defaultMol": "\"mail,username\""
+    "defaultMol": "\"mail,username\"",
+    "sentry": "\"https://66b3d1a9d79c4658a1a054b5eba1798e@sentry.io/1207649\""
 }
