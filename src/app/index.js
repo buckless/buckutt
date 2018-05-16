@@ -12,7 +12,7 @@ function init() {
     Vue.component('nfc', Nfc);
 
     if (process.env.NODE_ENV === 'production') {
-        Raven.config('https://28b38832484d4f22994e50c24d5d6a6a@sentry.io/1207636')
+        Raven.config(config.sentry)
             .addPlugin(RavenVue, Vue)
             .install();
     }
