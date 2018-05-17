@@ -78,7 +78,6 @@ module.exports = function token(connector) {
             if (!user) {
                 return Promise.reject(new APIError(module, 500, 'User has been deleted'));
             }
-
             connector.user = user;
 
             connector.point_id = point.id;

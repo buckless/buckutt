@@ -18,6 +18,11 @@ module.exports = (req, res, next) => {
         try {
             res.body = Buffer.concat(chunks).toString('utf8');
         } catch(err) {
+            req.details.error = {
+                chunks
+            };
+
+            res.body = JSON.stringify({});
             log.error(err, req.details);
         }
 

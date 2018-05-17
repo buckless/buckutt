@@ -13,7 +13,7 @@ const config = require('../config');
 const controllers = require('./controllers');
 const socketServer = require('./socketServer');
 const purchaseWebservices = require('./lib/purchaseWebservices');
-const log = require('./lib/log')(module);
+const logger = require('./lib/log');
 const bookshelf = require('./lib/bookshelf');
 const redis = require('./lib/redis');
 const exposeResBody = require('./lib/exposeResBody');
@@ -21,6 +21,8 @@ const APIError = require('./errors/APIError');
 const sslConfig = require('../scripts/sslConfig');
 const { addDevice } = require('../scripts/addDevice');
 const { unmarshal } = require('./middlewares/connectors/http');
+
+const log = logger(module);
 
 const LOCK_FILE = path.join(__dirname, '..', 'ready.lock');
 
