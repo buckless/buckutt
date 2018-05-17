@@ -1,4 +1,5 @@
 const { modelsNames } = require('../../lib/modelParser');
+const log = require('../../lib/log')(module);
 
 const broadcast = (clients, action, model, data) => {
     Object.keys(clients)

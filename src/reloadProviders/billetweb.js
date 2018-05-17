@@ -2,9 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const dbCatch = require('../lib/dbCatch');
 const config = require('../../config');
-const logger = require('../lib/log');
+const log = require('../lib/log')(module);
 
-const log = logger(module);
 const providerConfig = config.provider.billetweb;
 
 module.exports = {

@@ -1,11 +1,9 @@
 const express = require('express');
 const { countBy } = require('lodash');
 const APIError = require('../../errors/APIError');
-const logger = require('../../lib/log');
+const log = require('../../lib/log')(module);
 const { bookshelf } = require('../../lib/bookshelf');
 const dbCatch = require('../../lib/dbCatch');
-
-const log = logger(module);
 
 /**
  * Basket controller. Handles purchases and reloads
@@ -14,8 +12,6 @@ const router = new express.Router();
 
 // Get the buyer
 router.post('/services/catering', (req, res, next) => {
-    log.info(`Processing catering ${JSON.stringify(req.body)}`, req.details);
-
     if (
         !req.body.buyer ||
         !req.body.molType ||
@@ -24,6 +20,8 @@ router.post('/services/catering', (req, res, next) => {
     ) {
         return next(new APIError(module, 400, 'Invalid catering'));
     }
+
+    req.details.buyer = req.body.buyer;
 
     req.app.locals.models.MeanOfLogin.where({
         type: req.body.molType,
@@ -51,6 +49,8 @@ router.post('/services/catering', (req, res, next) => {
 router.post('/services/catering', (req, res, next) => {
     const models = req.app.locals.models;
 
+    req.details.body = req.body;
+
     new models.Withdrawal({
         seller_id: req.user.id,
         buyer_id: req.buyer.id,
@@ -61,12 +61,14 @@ router.post('/services/catering', (req, res, next) => {
         updated_at: req.body.created_at || new Date()
     })
         .save()
-        .then(() =>
+        .then(() => {
+            log.info(`Processing catering`, req.details);
+
             res
                 .status(200)
                 .json({})
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

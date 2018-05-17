@@ -1,10 +1,8 @@
 const express = require('express');
 const idParser = require('../lib/idParser');
-const logger = require('../lib/log');
+const log = require('../lib/log')(module);
 const modelParser = require('../lib/modelParser');
 const dbCatch = require('../lib/dbCatch');
-
-const log = logger(module);
 
 /**
  * Update controller. Handles updating one element.

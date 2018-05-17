@@ -1,10 +1,8 @@
 const express = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
-const logger = require('../../lib/log');
+const log = require('../../lib/log')(module);
 const dbCatch = require('../../lib/dbCatch');
 const APIError = require('../../errors/APIError');
-
-const log = logger(module);
 
 /**
  * Pending Card Update controller. Handle pending card updates
@@ -32,13 +30,13 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
             }
 
             req.buyer = mol.user;
+            req.details.buyer = mol.user.id;
 
             next();
         });
 });
 
 router.get('/services/pendingCardUpdate', (req, res, next) => {
-    log.info(`Processing pendingCardUpdate ${req.buyer.id}`, req.details);
     let amount;
 
     return bookshelf
@@ -65,6 +63,8 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
                 pending: 0,
                 credit
             });
+
+            log.info(`Processing pendingCardUpdate ${req.buyer.id}`, req.details);
 
             return res
                 .status(200)

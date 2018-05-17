@@ -3,6 +3,7 @@ const { groupBy, sumBy } = require('lodash');
 const APIError = require('../../errors/APIError');
 const { isUUID } = require('../../lib/idParser');
 const dbCatch = require('../../lib/dbCatch');
+const log = require('../../lib/log')(module);
 
 const router = new express.Router();
 
@@ -25,11 +26,19 @@ router.get('/services/treasury/purchases', (req, res, next) => {
         }
     }
 
+    let logString = 'Get purchases';
+
     if (req.query.point) {
+        req.details.queryPoint = req.query.point;
+        logString += ' on point ' + req.query.point;
+
         initialQuery = initialQuery.where({ point_id: req.query.point });
     }
 
     if (req.query.fundation) {
+        req.details.queryFundation = req.query.fundation;
+        logString += ' for fundation ' + req.query.fundation;
+
         price = {
             price: q => q.where({ fundation_id: req.query.fundation })
         };
@@ -58,6 +67,8 @@ router.get('/services/treasury/purchases', (req, res, next) => {
                     name: p[0].price.article ? p[0].price.article.name : p[0].price.promotion.name
                 }))
                 .sort((a, b) => a.name.localeCompare(b.name));
+
+            log.info(logString, req.details);
 
             res
                 .status(200)
@@ -116,8 +127,13 @@ router.get('/services/treasury/reloads', (req, res, next) => {
 
     let initialQuery = models.Reload;
 
+    let logString = 'Get reloads';
+
     if (req.query.point) {
         if (isUUID(req.query.point)) {
+            req.details.queryPoint = req.query.point;
+            logString += ' on point ' + req.query.point;
+
             initialQuery = initialQuery.where({ point_id: req.query.point });
         }
     }
@@ -144,6 +160,8 @@ router.get('/services/treasury/reloads', (req, res, next) => {
         )
         .fetchAll()
         .then(credits => {
+            log.info(logString, req.details);
+
             res
                 .status(200)
                 .json(credits.toJSON())
@@ -179,6 +197,8 @@ router.get('/services/treasury/refunds', (req, res, next) => {
         )
         .fetchAll()
         .then(amounts => {
+            log.info('Get refunds', req.details);
+
             res
                 .status(200)
                 .json(amounts.toJSON())

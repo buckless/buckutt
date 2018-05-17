@@ -3,6 +3,7 @@ const { bookshelf } = require('../../lib/bookshelf');
 const dbCatch = require('../../lib/dbCatch');
 const { embedParser, embedFilter } = require('../../lib/embedParser');
 const APIError = require('../../errors/APIError');
+const log = require('../../lib/log')(module);
 
 /**
  * Assigner controller. Handles cards assignment
@@ -60,6 +61,8 @@ router.get('/services/controller', (req, res, next) => {
                 }
             }
 
+            log.info(`Get accesses for user ${req.user.id}`, req.details);
+
             return res
                 .status(200)
                 .json(accesses)
@@ -68,7 +71,10 @@ router.get('/services/controller', (req, res, next) => {
         .catch(err => dbCatch(module, err, next));
 });
 
-router.post('/services/controller', (req, res, next) =>
+router.post('/services/controller', (req, res, next) => {
+    req.details.mol = req.body.cardId.toLowerCase().trim();
+    req.details.point = req.Point_id;
+
     req.app.locals.models.MeanOfLogin.query(q =>
         q.where(bookshelf.knex.raw('lower(data)'), '=', req.body.cardId.toLowerCase().trim())
     )
@@ -80,12 +86,7 @@ router.post('/services/controller', (req, res, next) =>
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
             if (!mol) {
-                const errDetails = {
-                    mol: req.body.cardId.toLowerCase().trim(),
-                    point: req.Point_id
-                };
-
-                return next(new APIError(module, 401, 'User not found', errDetails));
+                return next(new APIError(module, 401, 'User not found'));
             }
 
             const access = new req.app.locals.models.Access({
@@ -98,13 +99,15 @@ router.post('/services/controller', (req, res, next) =>
 
             return access.save();
         })
-        .then(() =>
+        .then(() => {
+            log.info(`Create access for ${req.details.mol} on wiket ${req.body.wiket_id}`, req.details);
+
             res
                 .status(200)
                 .json({})
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next))
-);
+});
 
 module.exports = router;

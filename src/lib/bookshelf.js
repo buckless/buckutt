@@ -1,12 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../../config');
-const logger = require('./log');
+const log = require('./log')(module);
 
 const knex = require('knex')(config.db);
 const bookshelf = require('bookshelf')(knex);
-
-const log = logger(module);
 
 const modelsPath = path.join(__dirname, '..', 'models');
 const models = {};

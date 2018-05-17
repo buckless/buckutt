@@ -433,7 +433,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@^3.1.1, bluebird@^3.4.3, bluebird@^3.4.6, bluebird@^3.4.7:
+bluebird@^3.4.3, bluebird@^3.4.6, bluebird@^3.4.7:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
@@ -3057,11 +3057,11 @@ lodash@^3.10.1, lodash@~3.10:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.11.1, lodash@^4.13.1, lodash@^4.3.0, lodash@^4.6.0, lodash@^4.7.0:
+lodash@^4.13.1, lodash@^4.3.0, lodash@^4.6.0, lodash@^4.7.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
-lodash@^4.17.4, lodash@^4.17.5, lodash@^4.6.1:
+lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.6.1:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
@@ -3293,7 +3293,11 @@ moment-round@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/moment-round/-/moment-round-1.0.1.tgz#5baf2b752e85d0f6a227c0a16f6fbe107c2a2d39"
 
-moment@^2.11.0, moment@^2.20.1:
+moment@^2.11.0:
+  version "2.22.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.1.tgz#529a2e9bf973f259c9643d237fda84de3a26e8ad"
+
+moment@^2.20.1:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
@@ -5121,13 +5125,13 @@ uuid@^3.0.0, uuid@^3.1.0, uuid@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 
+uws@0.14.5, uws@~0.14.4:
+  version "0.14.5"
+  resolved "https://registry.yarnpkg.com/uws/-/uws-0.14.5.tgz#67aaf33c46b2a587a5f6666d00f7691328f149dc"
+
 uws@^9.14.0:
   version "9.14.0"
   resolved "https://registry.yarnpkg.com/uws/-/uws-9.14.0.tgz#fac8386befc33a7a3705cbd58dc47b430ca4dd95"
-
-uws@~0.14.4:
-  version "0.14.5"
-  resolved "https://registry.yarnpkg.com/uws/-/uws-0.14.5.tgz#67aaf33c46b2a587a5f6666d00f7691328f149dc"
 
 v8flags@^3.0.0:
   version "3.0.1"
@@ -5212,11 +5216,10 @@ window-size@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.1.4.tgz#f8e1aa1ee5a53ec5bf151ffa09742a6ad7697876"
 
-winston-tcp-graylog@^1.0.10:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/winston-tcp-graylog/-/winston-tcp-graylog-1.0.13.tgz#ad3efe5feba5e38ed629fde38c82747f24a94404"
+winston-tcp-graylog@PymZor/winston-tcp-graylog#refact-native-js:
+  version "1.0.12"
+  resolved "https://codeload.github.com/PymZor/winston-tcp-graylog/tar.gz/ecbb6ba8e12d8d9dca44540abee2e5cae171f998"
   dependencies:
-    bluebird "^3.1.1"
     clear-require "^1.0.1"
     debug "^2.2.0"
     gelf-pro "^0.2.0"
@@ -5225,6 +5228,7 @@ winston-tcp-graylog@^1.0.10:
     moment "^2.11.0"
     pkginfo "^0.3.1"
     simple-debugger "^1.0.3"
+    util-promisifyall "^1.0.3"
 
 winston@^2.1.1:
   version "2.4.0"

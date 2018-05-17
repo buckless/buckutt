@@ -2,9 +2,7 @@ const express = require('express');
 const leven = require('leven');
 const { bookshelf } = require('../../../lib/bookshelf');
 const rightsDetails = require('../../../lib/rightsDetails');
-const logger = require('../../../lib/log');
-
-const log = logger(module);
+const log = require('../../../lib/log')(module);
 
 /**
  * SearchUser controller.

@@ -1,4 +1,5 @@
 const express = require('express');
+const log = require('../../lib/log')(module);
 const createUser = require('../../lib/createUser');
 const dbCatch = require('../../lib/dbCatch');
 const fetchFromAPI = require('../../ticketProviders');
@@ -31,6 +32,8 @@ router.get('/services/assigner', (req, res, next) => {
         .then(mol => {
             if (mol && mol.user.id) {
                 if (req.user) {
+                    log.info(``, req.details);
+
                     return res
                         .status(200)
                         .json({
@@ -50,6 +53,7 @@ router.get('/services/assigner', (req, res, next) => {
                     'Ticket already binded',
                     req.query.ticketOrMail
                 );
+
                 return Promise.reject(err);
             }
 
@@ -117,6 +121,10 @@ router.get('/services/assigner', (req, res, next) => {
                     })
                     .then(user => {
                         if (req.user) {
+                            req.details.credit = user.credit;
+
+                            log.info(`Assign ${user.id} with ${credit} credit`, req.details);
+
                             return res
                                 .status(200)
                                 .json({
@@ -126,6 +134,8 @@ router.get('/services/assigner', (req, res, next) => {
                                 })
                                 .end();
                         }
+
+                        log.info(`Already assigned`, req.details);
 
                         return res
                             .status(200)
@@ -137,9 +147,14 @@ router.get('/services/assigner', (req, res, next) => {
         .catch(err => dbCatch(module, err, next));
 });
 
+
 router.post('/services/assigner/groups', (req, res, next) => {
     const userId = req.body.user;
     const groups = req.body.groups;
+
+    req.details.userId = userId;
+    req.details.groups = groups;
+
 
     if (!userId || userId.length === 0) {
         return next(new APIError(module, 400, 'Invalid user'));
@@ -160,12 +175,14 @@ router.post('/services/assigner/groups', (req, res, next) => {
     );
 
     Promise.all(memberships)
-        .then(() =>
+        .then(() => {
+            log.info(`Create ${memberships.length} memberships for user ${userId}`, req.details);
+
             res
                 .status(200)
                 .json({})
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next));
 });
 
@@ -173,6 +190,10 @@ router.post('/services/assigner/anon', (req, res, next) => {
     const credit = req.body.credit;
     const groups = req.body.groups;
     const cardId = req.body.cardId;
+
+    req.details.groups = groups;
+    req.details.cardId = cardId;
+    req.details.credit = credit;
 
     if (!cardId || cardId.length === 0) {
         return next(new APIError(module, 400, 'Invalid cardId'));
@@ -204,13 +225,16 @@ router.post('/services/assigner/anon', (req, res, next) => {
         false,
         true
     )
-        .then(() =>
+        .then(user => {
+            log.info(`Create anon user ${user.id} with ${groups.length} memberships and ${credit} credit`, req.details);
+
             res
                 .status(200)
                 .json({})
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next));
 });
+
 
 module.exports = router;

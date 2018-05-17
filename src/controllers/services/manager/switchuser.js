@@ -1,13 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const config = require('../../../../config');
-const logger = require('../../../lib/log');
+const log = require('../../../lib/log')(module);
 const rightsDetails = require('../../../lib/rightsDetails');
 const dbCatch = require('../../../lib/dbCatch');
 const { bookshelf } = require('../../../lib/bookshelf');
 const APIError = require('../../../errors/APIError');
-
-const log = logger(module);
 
 /**
  * SearchUser controller.
@@ -20,7 +18,6 @@ const tokenOptions = {
 
 router.post('/services/manager/switchuser', (req, res, next) => {
     const infos = { type: req.body.meanOfLogin.toString(), data: req.body.data.toString() };
-    log.info(`Switch to user ${infos.type}(${infos.data})`, infos);
 
     const errDetails = {
         mol: infos.type,
@@ -62,6 +59,8 @@ router.post('/services/manager/switchuser', (req, res, next) => {
             user.canReload = userRights.reload;
             user.canAssign = userRights.assign;
             user.canControl = userRights.control;
+
+            log.info(`User ${req.user.id} switched to user ${user.id}`, infos);
 
             return res
                 .status(200)

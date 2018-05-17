@@ -1,3 +1,5 @@
+const log = require('../lib/log')(module);
+
 module.exports = (req, res, next) => {
     const original_write = res.write;
     const original_end = res.end;
@@ -13,7 +15,12 @@ module.exports = (req, res, next) => {
             chunks.push(chunk);
         }
 
-        res.body = Buffer.concat(chunks).toString('utf8');
+        try {
+            res.body = Buffer.concat(chunks).toString('utf8');
+        } catch(err) {
+            log.error(err, req.details);
+        }
+
         original_end.apply(res, arguments);
     };
 

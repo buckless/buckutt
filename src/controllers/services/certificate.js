@@ -2,9 +2,7 @@ const express = require('express');
 const dbCatch = require('../../lib/dbCatch');
 const APIError = require('../../errors/APIError');
 const addDevice = require('../../../scripts/addDevice');
-const logger = require('../../lib/log');
-
-const log = logger(module);
+const log = require('../../lib/log')(module);
 
 const regexPassword = /^([a-zA-ZÀ-ÿ0-9$%!#]){8,}$/;
 
@@ -29,8 +27,6 @@ router.get('/services/certificate', (req, res, next) => {
         );
     }
 
-    log.info(`Generation certificate for device ${deviceId} password ${password}`, req.details);
-
     let device;
     let fileName;
 
@@ -47,7 +43,13 @@ router.get('/services/certificate', (req, res, next) => {
 
             return device.save();
         })
-        .then(() => res.download(fileName))
+        .then(() => {
+            req.details.deviceId = deviceId;
+
+            log.info(`Generation certificate for device ${deviceId}`, req.details);
+
+            res.download(fileName)
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

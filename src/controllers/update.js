@@ -1,11 +1,9 @@
 const express = require('express');
 const idParser = require('../lib/idParser');
-const logger = require('../lib/log');
+const log = require('../lib/log')(module);
 const modelParser = require('../lib/modelParser');
 const { embedParser, embedFilter } = require('../lib/embedParser');
 const dbCatch = require('../lib/dbCatch');
-
-const log = logger(module);
 
 /**
  * Update controller. Handles updating one element.
@@ -13,10 +11,9 @@ const log = logger(module);
 const router = new express.Router();
 
 router.put('/:model/:id', (req, res, next) => {
-    log.info(
-        `Update ${req.params.model}(${req.params.id}) with ${JSON.stringify(req.body)}`,
-        req.details
-    );
+    req.details.model = req.params.model;
+    req.details.modelId = req.params.id;
+    req.details.body = req.body;
 
     // First, get the model
     req.Model.where({ id: req.params.id })
@@ -51,6 +48,8 @@ router.put('/:model/:id', (req, res, next) => {
             const embedFilters = req.query.embed
                 ? req.query.embed.filter(rel => rel.required).map(rel => rel.embed)
                 : [];
+
+            log.info(`Update ${req.params.model}(${req.params.id})`, req.details);
 
             res
                 .status(200)

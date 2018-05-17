@@ -1,17 +1,35 @@
-const bcrypt_ = require('bcryptjs');
+const promisifyAll = require('util-promisifyall');
+const bcrypt = promisifyAll(require('bcryptjs'));
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const Promise = require('bluebird');
+const log = require('../../lib/log')(module);
 const config = require('../../../config');
-const logger = require('../../lib/log');
 const rightsDetails = require('../../lib/rightsDetails');
 const dbCatch = require('../../lib/dbCatch');
 const { bookshelf } = require('../../lib/bookshelf');
 const APIError = require('../../errors/APIError');
 
-const log = logger(module);
+function validate(body) {
+    if (!body.meanOfLogin) {
+        throw new APIError(module, 401, 'Login error: No meanOfLogin provided');
+    }
 
-const bcrypt = Promise.promisifyAll(bcrypt_);
+    if (!body.data) {
+        throw new APIError(module, 401, 'Login error: No (meanOfLogin) data provided');
+    }
+
+    if (!body.password && !body.pin) {
+        throw new APIError(module, 401, 'Login error: No password nor pin provided');
+    }
+
+    if (body.password && body.pin) {
+        throw new APIError(module, 401, 'Login error: Password and pin provided');
+    }
+
+    if (!(body.hasOwnProperty('pin') ^ body.hasOwnProperty('password'))) {
+        throw new APIError(module, 401, 'Login error: Wrong connect type (must be either pin or password)');
+    }
+}
 
 /**
  * Login controller. Connects a user
@@ -22,119 +40,115 @@ const tokenOptions = {
     expiresIn: '30d' // 30 days token
 };
 
-router.post('/services/login', (req, res, next) => {
+router.post('/services/login', async (req, res, next) => {
+    try {
+        validate(req.body)
+    } catch (err) {
+        return next(err);
+    }
+
     const secret = config.app.secret;
     const models = req.app.locals.models;
 
-    if (!req.body.meanOfLogin) {
-        return next(new APIError(module, 401, 'No meanOfLogin provided'));
-    }
-
-    if (!req.body.data) {
-        return next(new APIError(module, 401, 'No (meanOfLogin) data provided'));
-    }
-
-    if (!req.body.password && !req.body.pin) {
-        return next(new APIError(module, 401, 'No password nor pin provided'));
-    }
-
-    if (req.body.password && req.body.pin) {
-        return next(new APIError(module, 401, 'Password and pin provided'));
-    }
-
     const connectType = req.body.hasOwnProperty('pin') ? 'pin' : 'password';
+    const infos = {
+        meanOfLogin: req.body.meanOfLogin.toString(),
+        data: req.body.data.toString().toLowerCase().trim(),
+        connectType
+    };
+
+    req.details.infos = infos;
+
     let user;
+    let meanOfLogin;
 
-    const infos = { type: req.body.meanOfLogin.toString(), data: req.body.data.toString() };
-    log.info(`Login with mol ${infos.type}(${infos.data})`, infos);
+    try {
+        meanOfLogin = await models.MeanOfLogin.query(
+                q => q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data)
+            )
+            .where('type', 'in', infos.meanOfLogin.split(','))
+            .where({ blocked: false })
+            .fetch({
+                withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
+            })
+            .then(mol => (mol ? mol.toJSON() : null));
+    } catch (err) {
+        return dbCatch(module, err, next);
+    }
 
-    models.MeanOfLogin.query(q =>
-        q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
-    )
-        .where('type', 'in', infos.type.split(','))
-        .where({ blocked: false })
-        .fetch({
-            withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
+    if (!meanOfLogin || !meanOfLogin.user || !meanOfLogin.user.id) {
+        return next(new APIError(module, 401, 'Login error: Wrong credentials'));
+    }
+
+    user = meanOfLogin.user;
+
+    let match = false;
+
+    if (connectType === 'pin') {
+        try {
+            match = await bcrypt.compareAsync(req.body.pin.toString(), user.pin);
+        } catch(err) {
+            return next(new APIError(module, 401, 'Login error: Wrong credentials', err));
+        }
+    } else if (connectType === 'password') {
+        try {
+            match = await bcrypt.compareAsync(req.body.password, user.password);
+        } catch(err) {
+            return next(new APIError(module, 401, 'Login error: Wrong credentials', err));
+        }
+    }
+
+    if (!match) {
+        return next(new APIError(module, 401, 'Login error: Wrong credentials'));
+    }
+
+    let users_;
+    try {
+        // fetch linked users (same mail)
+        users_ = await models.User.where({ mail: user.mail }).fetchAll({ withRelated: ['meansOfLogin'] });
+    } catch (err) {
+        return dbCatch(module, err, next);
+    }
+
+    const users = users_.toJSON().map(user => ({
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        credit: user.credit,
+        username: (user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
+    }));
+    console.log(users)
+
+    user.pin = '';
+    user.password = '';
+
+    const userRights = rightsDetails(user, req.point_id);
+
+    user.canSell = userRights.sell;
+    user.canReload = userRights.reload;
+    user.canAssign = userRights.assign;
+    user.canControl = userRights.control;
+
+    log.info(`Login with mol ${infos.meanOfLogin}(${infos.data}) and ${infos.connectType}`, req.details);
+
+    return res
+        .status(200)
+        .json({
+            user,
+            linkedUsers: users,
+            token: jwt.sign(
+                {
+                    id: user.id,
+                    point: req.point,
+                    event: req.event,
+                    // Will be used by middleware (else how could middleware know if pin or password ?)
+                    connectType
+                },
+                secret,
+                tokenOptions
+            )
         })
-        .then(mol => (mol ? mol.toJSON() : null))
-        .then(mol => {
-            if (!mol || !mol.user || !mol.user.id) {
-                const errDetails = {
-                    mol: infos.type,
-                    point: req.Point_id
-                };
-
-                return next(new APIError(module, 401, 'User not found', errDetails));
-            }
-
-            user = mol.user;
-
-            if (connectType === 'pin') {
-                return bcrypt.compareAsync(req.body.pin.toString(), user.pin);
-            }
-
-            return bcrypt.compareAsync(req.body.password, user.password);
-        })
-        .then(
-            match =>
-                new Promise((resolve, reject) => {
-                    if (match) {
-                        return resolve();
-                    }
-
-                    const errDetails = {
-                        mol: infos.type,
-                        point: req.Point_id
-                    };
-
-                    reject(new APIError(module, 401, 'User not found', errDetails));
-                })
-        )
-        .then(() =>
-            models.User.where({ mail: user.mail }).fetchAll({ withRelated: ['meansOfLogin'] })
-        )
-        .then(users_ => {
-            const users = users_.toJSON().map(user => ({
-                id: user.id,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                credit: user.credit,
-                username: (user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
-            }));
-
-            user.pin = '';
-            user.password = '';
-
-            const userRights = rightsDetails(user, req.point_id);
-
-            user.canSell = userRights.sell;
-            user.canReload = userRights.reload;
-            user.canAssign = userRights.assign;
-            user.canControl = userRights.control;
-
-            return res
-                .status(200)
-                .json({
-                    user,
-                    linkedUsers: users,
-                    token: jwt.sign(
-                        {
-                            id: user.id,
-                            point: req.point,
-                            event: req.event,
-                            // Will be used by middleware (else how could middleware know if pin or password ?)
-                            connectType
-                        },
-                        secret,
-                        tokenOptions
-                    )
-                })
-                .end();
-        })
-        .catch(err => {
-            return Promise.reject(err);
-        })
-        .catch(err => dbCatch(module, err, next));
+        .end();
 });
 
 module.exports = router;

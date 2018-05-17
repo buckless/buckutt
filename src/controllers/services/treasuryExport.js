@@ -2,6 +2,7 @@ const express = require('express');
 const APIError = require('../../errors/APIError');
 const { isUUID } = require('../../lib/idParser');
 const dbCatch = require('../../lib/dbCatch');
+const log = require('../../lib/log')(module);
 
 const router = new express.Router();
 
@@ -24,11 +25,19 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
         }
     }
 
+    let logString = 'Export purchases';
+
     if (req.query.point) {
+        req.details.queryPoint = req.query.point;
+        logString += ' on point ' + req.query.point;
+
         initialQuery = initialQuery.where({ point_id: req.query.point });
     }
 
     if (req.query.fundation) {
+        req.details.queryFundation = req.query.fundation;
+        logString += ' for fundation ' + req.query.fundation;
+
         price = {
             price: q => q.where({ fundation_id: req.query.fundation })
         };
@@ -80,6 +89,8 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
                     ].join(',');
                 })
                 .join('\n');
+
+            log.info(logString, req.details);
 
             return res
                 .status(200)
@@ -145,7 +156,12 @@ router.get('/services/treasury/csv/reloads', (req, res, next) => {
 
     let initialQuery = models.Reload.query('orderBy', 'created_at', 'DESC');
 
+    let logString = 'Export reloads';
+
     if (req.query.point) {
+        req.details.queryPoint = req.query.point;
+        logString += ' on point ' + req.query.point;
+
         if (isUUID(req.query.point)) {
             initialQuery = initialQuery.where({ point_id: req.query.point });
         }
@@ -192,6 +208,8 @@ router.get('/services/treasury/csv/reloads', (req, res, next) => {
                 )
                 .join('\n');
 
+            log.info(logString, req.details);
+
             res
                 .status(200)
                 .send(`${header.join(',')}\n${csv}`)
@@ -237,6 +255,8 @@ router.get('/services/treasury/csv/refunds', (req, res, next) => {
                     ].join(',')
                 )
                 .join('\n');
+
+            log.info('Export refunds', req.details);
 
             res
                 .status(200)

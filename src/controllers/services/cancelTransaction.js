@@ -2,10 +2,8 @@ const express = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
 const APIError = require('../../errors/APIError');
 const rightsDetails = require('../../lib/rightsDetails');
-const logger = require('../../lib/log');
+const log = require('../../lib/log')(module);
 const dbCatch = require('../../lib/dbCatch');
-
-const log = logger(module);
 
 const getPriceAmount = (Price, priceId) =>
     Price.where({ id: priceId })
@@ -20,8 +18,6 @@ const getUserInst = (User, userId) => User.where({ id: userId }).fetch();
 const router = new express.Router();
 
 router.post('/services/cancelTransaction', (req, res, next) => {
-    log.info(`Canceling ${req.body.rawType} ${req.body.id}`, req.details);
-
     const transactionModels = {
         transfer: 'Transfer',
         reload: 'Reload',
@@ -167,12 +163,17 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                 { patch: true }
             );
         })
-        .then(() =>
+        .then(() => {
+            req.details.rawType = req.body.rawType;
+            req.details.objectId = req.body.id;
+
+            log.info(`Canceling ${req.body.rawType} ${req.body.id}`, req.details);
+
             res
                 .status(200)
                 .json({})
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

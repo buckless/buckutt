@@ -1,6 +1,7 @@
 const express = require('express');
 const createUser = require('../../../lib/createUser');
 const dbCatch = require('../../../lib/dbCatch');
+const log = require('../../../lib/log')(module);
 const APIError = require('../../../errors/APIError');
 
 /**
@@ -37,12 +38,22 @@ router.post('/services/manager/register', (req, res, next) => {
                 false
             );
         })
-        .then(() =>
+        .then(() => {
+            user = user.toJSON();
+            req.details.date = user.created_at;
+            req.details.user = {
+                firstname: user.firstname,
+                lastname: user.lastname,
+                mail: user.mail
+            };
+
+            log.info(`Register user ${user.firstname} ${user.lastname}`, req.details);
+
             res
                 .status(200)
                 .json({})
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

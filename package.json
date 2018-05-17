@@ -1,6 +1,6 @@
 {
   "name": "buckless-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "buckless-server",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
@@ -59,7 +59,7 @@
     "jsonwebtoken": "^8.1.1",
     "knex": "^0.14.2",
     "leven": "^2.1.0",
-    "lodash": "^4.11.1",
+    "lodash": "^4.17.10",
     "mkdirp": "^0.5.1",
     "moment": "^2.20.1",
     "moment-round": "^1.0.1",
@@ -79,7 +79,7 @@
     "uuid": "^3.2.1",
     "uws": "^9.14.0",
     "winston": "^2.1.1",
-    "winston-tcp-graylog": "^1.0.10"
+    "winston-tcp-graylog": "PymZor/winston-tcp-graylog#refact-native-js"
   },
   "devDependencies": {
     "connect-sdk-nodejs": "^2.15.0",

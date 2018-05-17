@@ -2,11 +2,9 @@ const express = require('express');
 const connectSdk = require('connect-sdk-nodejs');
 const { promisify } = require('util');
 const APIError = require('../errors/APIError');
-const logger = require('../lib/log');
+const log = require('../lib/log')(module);
 const dbCatch = require('../lib/dbCatch');
 const config = require('../../config');
-
-const log = logger(module);
 
 connectSdk.hostedcheckouts.create = promisify(connectSdk.hostedcheckouts.create);
 connectSdk.hostedcheckouts.get = promisify(connectSdk.hostedcheckouts.get);

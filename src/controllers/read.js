@@ -2,14 +2,12 @@ const express = require('express');
 const qs = require('qs');
 const url = require('url');
 const idParser = require('../lib/idParser');
-const logger = require('../lib/log');
+const log = require('../lib/log')(module);
 const modelParser = require('../lib/modelParser');
 const { embedParser, embedFilter } = require('../lib/embedParser');
 const queryFilterer = require('../lib/queryFilterer');
 const dbCatch = require('../lib/dbCatch');
 const APIError = require('../errors/APIError');
-
-const log = logger(module);
 
 /**
  * Read controller. Handles reading one element, or multiple.
@@ -20,8 +18,7 @@ router.get('/:model', (req, res, next) => {
     // List instances
     let request = req.Model;
 
-    const info = `Read ${req.params.model} ${JSON.stringify(req.query) || ''}`;
-    log.info(info, req.details);
+    req.details.query = req.query;
 
     // Order
     if (req.query.orderBy) {
@@ -61,12 +58,14 @@ router.get('/:model', (req, res, next) => {
 
     request
         .fetchAll({ withRelated })
-        .then(results =>
+        .then(results => {
+            log.info(`Read ${req.params.model}`, req.details);
+
             res
                 .status(200)
                 .json(embedFilter(embedFilters, results.toJSON()))
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

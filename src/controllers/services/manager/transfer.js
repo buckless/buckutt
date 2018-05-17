@@ -1,22 +1,18 @@
 const bcrypt_ = require('bcryptjs');
 const express = require('express');
-const Promise = require('bluebird');
-const logger = require('../../../lib/log');
+const promisifyAll = require('util-promisifyall');
+const log = require('../../../lib/log')(module);
 const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
-
-const log = logger(module);
 
 /**
  * Transfer controller. Handles transfer between accounts
  */
-const bcrypt = Promise.promisifyAll(bcrypt_);
+const bcrypt = promisifyAll(bcrypt_);
 const router = new express.Router();
 
 // Get the reciever user
 router.post('/services/manager/transfer', (req, res, next) => {
-    log.info(`Transfer from ${req.user.id} to ${req.body.reciever_id} by ${req.body.amount}`);
-
     req.reciever_id = req.body.reciever_id;
 
     if (!req.reciever_id) {
@@ -114,6 +110,11 @@ router.post('/services/manager/transfer', (req, res, next) => {
                 id: req.recieverUser.id,
                 pending: amount
             });
+
+            req.details.user1 = req.user.id;
+            req.details.user2 = req.body.reciever_id;
+            req.details.amount = amount;
+            log.info(`User ${req.user.id} transferred ${amount} to ${req.body.reciever_id}`, req.details);
 
             return res
                 .status(200)

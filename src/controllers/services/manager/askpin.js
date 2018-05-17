@@ -3,12 +3,10 @@ const randomstring = require('randomstring');
 const APIError = require('../../../errors/APIError');
 const mailer = require('../../../lib/mailer');
 const dbCatch = require('../../../lib/dbCatch');
-const logger = require('../../../lib/log');
+const log = require('../../../lib/log')(module);
 const { bookshelf } = require('../../../lib/bookshelf');
 const template = require('../../../mailTemplates');
 const config = require('../../../../config');
-
-const log = logger(module);
 
 /**
  * Generate mail to send
@@ -40,8 +38,6 @@ function generateMessage(mail, key) {
 const router = new express.Router();
 
 router.get('/services/manager/askpin', (req, res, next) => {
-    log.info(`Ask pin for mail ${req.query.mail}`);
-
     const mail = req.query.mail;
     const models = req.app.locals.models;
 
@@ -63,12 +59,18 @@ router.get('/services/manager/askpin', (req, res, next) => {
             return user.save();
         })
         .then(() => mailer.sendMail(generateMessage(mail, user.get('recoverKey'))))
-        .then(() =>
+        .then(() => {
+            req.details.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            req.details.mail = mail;
+            req.details.user = user.id;
+
+            log.info(`IP ${req.details.ip} asked pin reset for user ${user.id}`, req.details);
+
             res
                 .status(200)
                 .json({ success: true })
                 .end()
-        )
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

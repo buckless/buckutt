@@ -27,14 +27,15 @@ module.exports = moduleToUse => {
     let path;
 
     if (typeof moduleToUse === 'string') {
-        path = moduleToUse;
+        path = moduleToUse
     } else {
         path = moduleToUse.filename
-            .split('/')
+    }
+
+    path = path.split('/')
             .slice(-2)
             .join('/')
             .split('.js')[0];
-    }
 
     const transports = [];
 
@@ -72,6 +73,10 @@ module.exports = moduleToUse => {
     // Graylog2
     /* istanbul ignore if */
     if (config.log.graylog && config.log.graylog.gelfPro) {
+        config.log.graylog.baseMsg = {
+            host: config.app.name
+        };
+
         const graylogTransport = new WinstonTcpGraylog(config.log.graylog);
 
         // Debouce disconnect errors

@@ -1,4 +1,7 @@
+const log = require('../../lib/log')(module);
+
 const send = (clients, userId, credit) => {
+    console.log(clients)
     const client = Object.keys(clients)
         .map(id => clients[id])
         .filter(c => c.userCredit)
