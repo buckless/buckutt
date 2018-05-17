@@ -38,8 +38,7 @@ router.post('/services/manager/register', (req, res, next) => {
                 false
             );
         })
-        .then(() => {
-            user = user.toJSON();
+        .then(user => {
             req.details.date = user.created_at;
             req.details.user = {
                 firstname: user.firstname,
