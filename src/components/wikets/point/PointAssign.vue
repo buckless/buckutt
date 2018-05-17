@@ -43,7 +43,7 @@ export default {
         createWiket(wiket) {
             wiket.point = this.focusedPoint;
             wiket.period = this.event.usePeriods ? wiket.period : this.event.defaultPeriod;
-            wiket.defaultPeriod = this.event.useGroups
+            wiket.defaultGroup = this.event.useGroups
                 ? wiket.defaultGroup
                 : this.event.defaultGroup;
 
