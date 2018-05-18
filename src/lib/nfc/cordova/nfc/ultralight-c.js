@@ -26,8 +26,10 @@ export const ATR = Buffer.from([
 export default class UltralightC extends EventEmitter {
     constructor() {
         super();
+        console.log('lib-nfc-cordova-nfc-ultralight-c-constructor');
 
         document.addEventListener('mifareTagDiscovered', tag => {
+            console.log('lib-nfc-cordova-nfc-ultralight-c-constructor EVENT');
             this.emit('uid', tag.tag.map(dec => dec.toString(16)).join(''));
             this.emit('log', tag.tag.map(dec => dec.toString(16)).join(''));
             this.emit('atr', ATR);

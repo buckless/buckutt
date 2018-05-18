@@ -12,7 +12,10 @@
     "cordova": {
         "platforms": [
             "android"
-        ]
+        ],
+        "plugins": {
+            "cordova-plugin-mifare-ultralight": {}
+        }
     },
     "dependencies": {
         "cordova-android": "^6.4.0",

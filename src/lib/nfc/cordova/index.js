@@ -6,6 +6,8 @@ export default class NFC extends EventEmitter {
     constructor() {
         super();
 
+        console.log('lib-nfc-cordova-index-constructor');
+
         this.nfc = new NFCReader();
 
         this.nfc.on('log', log => this.emit('log', log));

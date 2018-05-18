@@ -5,6 +5,8 @@ export default class NFCReader extends EventEmitter {
     constructor() {
         super();
 
+        console.log('lib-nfc-cordova-nfc-index-constructor');
+
         this.ultralightC = new UltralightC();
 
         this.ultralightC.on('uid', uid => this.emit('uid', uid));
