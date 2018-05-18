@@ -117,7 +117,6 @@ router.post('/services/login', async (req, res, next) => {
         credit: user.credit,
         username: (user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
     }));
-    console.log(users)
 
     user.pin = '';
     user.password = '';
