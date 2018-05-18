@@ -1,5 +1,28 @@
 import EventEmitter from 'events';
 
+export const ATR = Buffer.from([
+    0x3b,
+    0x8f,
+    0x80,
+    0x01,
+    0x80,
+    0x4f,
+    0x0c,
+    0xa0,
+    0x00,
+    0x00,
+    0x03,
+    0x06,
+    0x03,
+    0x00,
+    0x03,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x68
+]);
+
 export default class UltralightC extends EventEmitter {
     constructor() {
         super();
@@ -7,7 +30,7 @@ export default class UltralightC extends EventEmitter {
         document.addEventListener('mifareTagDiscovered', tag => {
             this.emit('uid', tag.tag.map(dec => dec.toString(16)).join(''));
             this.emit('log', tag.tag.map(dec => dec.toString(16)).join(''));
-            this.emit('atr', module.exports.ATR);
+            this.emit('atr', ATR);
             this.emit('cardType', 'ultralightC');
 
             console.time('NFC Write');
@@ -143,26 +166,3 @@ export default class UltralightC extends EventEmitter {
         });
     }
 }
-
-module.exports.ATR = Buffer.from([
-    0x3b,
-    0x8f,
-    0x80,
-    0x01,
-    0x80,
-    0x4f,
-    0x0c,
-    0xa0,
-    0x00,
-    0x00,
-    0x03,
-    0x06,
-    0x03,
-    0x00,
-    0x03,
-    0x00,
-    0x00,
-    0x00,
-    0x00,
-    0x68
-]);
