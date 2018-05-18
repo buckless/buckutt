@@ -1,5 +1,5 @@
 <template>
-    <div class="b-pricesEditor">
+    <div class="b-pricesEditor" v-if="item">
         <div class="b-pricesEditor__item b-item">
             <div class="b-item__image">
                 <img :src="image" draggable="false" height="100%" width="100%" v-if="isArticle" />
@@ -107,7 +107,7 @@ export default {
 
             const $name = this.$refs.name;
 
-            if (!$name) {
+            if (!$name || !this.item) {
                 return;
             }
 
