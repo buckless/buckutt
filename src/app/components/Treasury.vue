@@ -114,6 +114,13 @@ export default {
 
     methods: {
         historyExport() {
+            if (process.env.TARGET === 'cordova') {
+                window.plugins.socialsharing.shareWithOptions({
+                    message: this.history
+                });
+                return;
+            }
+
             const currentTime = Math.floor(Date.now() / 1000);
             const dataToSave = new Blob([JSON.stringify(this.history)], {
                 type: 'application/json'

@@ -31,5 +31,6 @@
         <variable name="ANDROID_SUPPORT_VERSION" value="25.+" />
     </plugin>
     <plugin name="cordova-plugin-mifare-ultralight" spec="^1.0.2" />
+    <plugin name="cordova-plugin-x-socialsharing" spec="^5.4.0" />
     <engine name="android" spec="^6.4.0" />
 </widget>
