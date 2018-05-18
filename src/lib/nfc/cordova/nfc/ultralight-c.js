@@ -40,7 +40,10 @@ export default class UltralightC extends EventEmitter {
             this.connect()
                 .then(() => this.read())
                 .then(data => {
-                    this.emit('data', data.slice(0, process.env.VUE_APP_ULTRALIGHT_CREDITSIZE));
+                    this.emit(
+                        'data',
+                        data.slice(0, parseInt(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE, 10))
+                    );
                 })
                 .catch(err => {
                     console.log(err);
@@ -75,9 +78,9 @@ export default class UltralightC extends EventEmitter {
     }
 
     read() {
-        const firstWritablePage = process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE;
-        const cardLength = process.env.VUE_APP_ULTRALIGHT_CARDLENGTH;
-        const creditSize = process.env.VUE_APP_ULTRALIGHT_CREDITSIZE;
+        const firstWritablePage = parseInt(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE, 10);
+        const cardLength = parseInt(process.env.VUE_APP_ULTRALIGHT_CARDLENGTH, 10);
+        const creditSize = parseInt(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE, 10);
 
         const repeat = Math.ceil(cardLength / 4);
 
@@ -109,8 +112,8 @@ export default class UltralightC extends EventEmitter {
 
     write(data) {
         const dataLength =
-            process.env.VUE_APP_ULTRALIGHT_CARDLENGTH -
-            process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE * 4;
+            parseInt(process.env.VUE_APP_ULTRALIGHT_CARDLENGTH, 10) -
+            parseInt(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE, 10) * 4;
 
         const buf = Buffer.from(data);
         const newBuf = Buffer.alloc(dataLength, 0);
@@ -148,7 +151,7 @@ export default class UltralightC extends EventEmitter {
                 .then(() => {
                     return new Promise((resolve, reject) => {
                         window.mifare.write(
-                            i + process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE,
+                            i + parseInt(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE, 10),
                             Array.from(page).map(int => int.toString(16)),
                             res => resolve(res),
                             err => {
