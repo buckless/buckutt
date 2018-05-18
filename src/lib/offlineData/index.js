@@ -10,10 +10,19 @@ class OfflineData {
     init() {
         this.db.version(1).stores({
             users: 'uid,name,username,barcode,credit',
-            accesses: 'id,cardId,group,start,end'
+            accesses: 'id,cardId,group,start,end',
+            images: 'id,blob'
         });
 
         return Promise.resolve();
+    }
+
+    setImage(id, blob) {
+        return this.db.images.put({ id, blob });
+    }
+
+    getImage(id) {
+        return this.db.images.get(id);
     }
 
     close() {

@@ -22,5 +22,11 @@
     "certificate": {
         "path": "\"./buckless-certificate.p12\"",
         "password": "\"foo\""
-    }
+    },
+    "catering": {
+       "dayOne": "\"2018-06-02T00:00:00.000Z\"",
+       "days": "1",
+       "articles": [
+       ]
+   }
 }
