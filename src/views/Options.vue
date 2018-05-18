@@ -37,7 +37,8 @@
             @cancel="writeModal = false"
             successText="Options écrites"
             v-if="writeModal"
-            key="validate" />
+            key="validate"
+            disableSignCheck />
     </div>
 </template>
 

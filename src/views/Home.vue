@@ -19,7 +19,8 @@
             @cancel="initialize = false"
             successText="Carte initialisée"
             v-if="initialize"
-            key="initialize">
+            key="initialize"
+            disableSignCheck>
             Mode: initialisation
         </nfc>
 
@@ -27,9 +28,10 @@
             mode="write"
             @read="anonSupport"
             @cancel="anon = false"
-            successText="Carte anonyme crée"
+            successText="Carte anonyme créée"
             v-if="anon"
-            key="anon">
+            key="anon"
+            disableSignCheck>
             Mode: carte anonyme
         </nfc>
     </div>
