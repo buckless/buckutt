@@ -2,10 +2,7 @@
     <div class="b-menu-wrapper" v-if="hasActions">
         <div class="b-menu__drop" v-if="showMenu && !history && !treasury && !catering && !onlyLogout" @click="showMenu = false"></div>
         <div class="b-menu" v-if="!history && !treasury && !catering && !onlyLogout">
-            <div class="b-menu__icon" @click="showMenu = !showMenu">
-                <i class="b-icon">menu</i>
-                <span>Menu</span>
-            </div>
+            <div class="b-menu__icon b-icon" @click="showMenu = !showMenu">menu</div>
             <div class="b-menu__actions" v-if="showMenu">
                 <div
                     v-if="isSellerMode"
@@ -69,28 +66,16 @@
             </div>
         </div>
         <div class="b-menu" @click="close(toggleTreasury)" v-else-if="treasury && !onlyLogout">
-            <div class="b-menu__icon">
-                <i class="b-icon">close</i>
-                <span>Fermer</span>
-            </div>
+            <div class="b-menu__icon b-icon">close</div>
         </div>
         <div class="b-menu" @click="close(toggleHistory)" v-else-if="history && !onlyLogout">
-            <div class="b-menu__icon">
-                <i class="b-icon">close</i>
-                <span>Fermer</span>
-            </div>
+            <div class="b-menu__icon b-icon">close</div>
         </div>
         <div class="b-menu" @click="close(toggleCatering)" v-else-if="catering && !onlyLogout">
-            <div class="b-menu__icon">
-                <i class="b-icon">close</i>
-                <span>Fermer</span>
-            </div>
+            <div class="b-menu__icon b-icon">close</div>
         </div>
         <div class="b-menu" @click="close(logout)" v-else>
-            <div class="b-menu__icon">
-                <i class="b-icon">close</i>
-                <span>Fermer</span>
-            </div>
+            <div class="b-menu__icon b-icon">close</div>
         </div>
     </div>
 </template>
@@ -170,16 +155,6 @@ export default {
     height: 28px;
     padding: 6px 8px;
     position: relative;
-
-    & > span {
-        display: block;
-        height: 12px;
-        line-height: 14px;
-    }
-
-    & > .b-icon {
-        margin-right: 4px;
-    }
 }
 
 .b-menu__actions {
