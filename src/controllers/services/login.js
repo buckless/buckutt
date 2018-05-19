@@ -27,7 +27,11 @@ function validate(body) {
     }
 
     if (!(body.hasOwnProperty('pin') ^ body.hasOwnProperty('password'))) {
-        throw new APIError(module, 401, 'Login error: Wrong connect type (must be either pin or password)');
+        throw new APIError(
+            module,
+            401,
+            'Login error: Wrong connect type (must be either pin or password)'
+        );
     }
 }
 
@@ -42,7 +46,7 @@ const tokenOptions = {
 
 router.post('/services/login', async (req, res, next) => {
     try {
-        validate(req.body)
+        validate(req.body);
     } catch (err) {
         return next(err);
     }
@@ -53,7 +57,10 @@ router.post('/services/login', async (req, res, next) => {
     const connectType = req.body.hasOwnProperty('pin') ? 'pin' : 'password';
     const infos = {
         meanOfLogin: req.body.meanOfLogin.toString(),
-        data: req.body.data.toString().toLowerCase().trim(),
+        data: req.body.data
+            .toString()
+            .toLowerCase()
+            .trim(),
         connectType
     };
 
@@ -63,9 +70,9 @@ router.post('/services/login', async (req, res, next) => {
     let meanOfLogin;
 
     try {
-        meanOfLogin = await models.MeanOfLogin.query(
-                q => q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data)
-            )
+        meanOfLogin = await models.MeanOfLogin.query(q =>
+            q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data)
+        )
             .where('type', 'in', infos.meanOfLogin.split(','))
             .where({ blocked: false })
             .fetch({
@@ -76,7 +83,7 @@ router.post('/services/login', async (req, res, next) => {
         return dbCatch(module, err, next);
     }
 
-    if (!meanOfLogin || !meanOfLogin.user || !meanOfLogin.user.id) {
+    if (!meanOfLogin || !meanOfLogin.user || !meanOfLogin.user.id) {
         return next(new APIError(module, 401, 'Login error: Wrong credentials'));
     }
 
@@ -87,13 +94,13 @@ router.post('/services/login', async (req, res, next) => {
     if (connectType === 'pin') {
         try {
             match = await bcrypt.compareAsync(req.body.pin.toString(), user.pin);
-        } catch(err) {
+        } catch (err) {
             return next(new APIError(module, 401, 'Login error: Wrong credentials', err));
         }
     } else if (connectType === 'password') {
         try {
             match = await bcrypt.compareAsync(req.body.password, user.password);
-        } catch(err) {
+        } catch (err) {
             return next(new APIError(module, 401, 'Login error: Wrong credentials', err));
         }
     }
@@ -105,7 +112,9 @@ router.post('/services/login', async (req, res, next) => {
     let users_;
     try {
         // fetch linked users (same mail)
-        users_ = await models.User.where({ mail: user.mail }).fetchAll({ withRelated: ['meansOfLogin'] });
+        users_ = await models.User.where({ mail: user.mail }).fetchAll({
+            withRelated: ['meansOfLogin']
+        });
     } catch (err) {
         return dbCatch(module, err, next);
     }
@@ -128,7 +137,10 @@ router.post('/services/login', async (req, res, next) => {
     user.canAssign = userRights.assign;
     user.canControl = userRights.control;
 
-    log.info(`Login with mol ${infos.meanOfLogin}(${infos.data}) and ${infos.connectType}`, req.details);
+    log.info(
+        `Login with mol ${infos.meanOfLogin}(${infos.data}) and ${infos.connectType}`,
+        req.details
+    );
 
     return res
         .status(200)

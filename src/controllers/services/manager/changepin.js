@@ -45,7 +45,7 @@ router.put('/services/manager/changepin', (req, res, next) => {
             res
                 .status(200)
                 .json({ changed: true })
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });

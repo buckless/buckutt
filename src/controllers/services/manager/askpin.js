@@ -69,7 +69,7 @@ router.get('/services/manager/askpin', (req, res, next) => {
             res
                 .status(200)
                 .json({ success: true })
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });

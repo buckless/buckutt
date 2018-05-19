@@ -27,15 +27,16 @@ module.exports = moduleToUse => {
     let path;
 
     if (typeof moduleToUse === 'string') {
-        path = moduleToUse
+        path = moduleToUse;
     } else {
-        path = moduleToUse.filename
+        path = moduleToUse.filename;
     }
 
-    path = path.split('/')
-            .slice(-2)
-            .join('/')
-            .split('.js')[0];
+    path = path
+        .split('/')
+        .slice(-2)
+        .join('/')
+        .split('.js')[0];
 
     const transports = [];
 

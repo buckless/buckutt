@@ -100,14 +100,17 @@ router.post('/services/controller', (req, res, next) => {
             return access.save();
         })
         .then(() => {
-            log.info(`Create access for ${req.details.mol} on wiket ${req.body.wiket_id}`, req.details);
+            log.info(
+                `Create access for ${req.details.mol} on wiket ${req.body.wiket_id}`,
+                req.details
+            );
 
             res
                 .status(200)
                 .json({})
-                .end()
+                .end();
         })
-        .catch(err => dbCatch(module, err, next))
+        .catch(err => dbCatch(module, err, next));
 });
 
 module.exports = router;

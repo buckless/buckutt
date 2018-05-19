@@ -94,13 +94,16 @@ router.post('/:model/:id/:submodel/:subId', (req, res, next) => {
             return left[submodel]().attach(right);
         })
         .then(() => {
-            log.info(`Create relative ${req.params.submodel}(${req.params.subId}) of
-                ${req.params.model}(${req.params.id})`, req.details);
+            log.info(
+                `Create relative ${req.params.submodel}(${req.params.subId}) of
+                ${req.params.model}(${req.params.id})`,
+                req.details
+            );
 
             res
                 .status(200)
                 .json({})
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });
@@ -161,8 +164,11 @@ router.delete('/:model/:id/:submodel/:subId', (req, res, next) => {
             //     { from: null, to: right }
             // );
 
-            log.info(`Delete relative ${req.params.submodel}(${req.params.subId}) of
-                ${req.params.model}(${req.params.id})`, req.details);
+            log.info(
+                `Delete relative ${req.params.submodel}(${req.params.subId}) of
+                ${req.params.model}(${req.params.id})`,
+                req.details
+            );
 
             res
                 .status(200)

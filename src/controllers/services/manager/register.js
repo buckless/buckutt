@@ -51,7 +51,7 @@ router.post('/services/manager/register', (req, res, next) => {
             res
                 .status(200)
                 .json({})
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });

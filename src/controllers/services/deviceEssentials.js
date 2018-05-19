@@ -226,7 +226,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     device,
                     event: req.event
                 })
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });

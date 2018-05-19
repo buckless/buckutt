@@ -64,7 +64,7 @@ router.get('/:model', (req, res, next) => {
             res
                 .status(200)
                 .json(embedFilter(embedFilters, results.toJSON()))
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });

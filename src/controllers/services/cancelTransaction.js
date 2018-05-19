@@ -172,7 +172,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
             res
                 .status(200)
                 .json({})
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });

@@ -114,7 +114,10 @@ router.post('/services/manager/transfer', (req, res, next) => {
             req.details.user1 = req.user.id;
             req.details.user2 = req.body.reciever_id;
             req.details.amount = amount;
-            log.info(`User ${req.user.id} transferred ${amount} to ${req.body.reciever_id}`, req.details);
+            log.info(
+                `User ${req.user.id} transferred ${amount} to ${req.body.reciever_id}`,
+                req.details
+            );
 
             return res
                 .status(200)

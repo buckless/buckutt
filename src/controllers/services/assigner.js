@@ -57,96 +57,93 @@ router.get('/services/assigner', (req, res, next) => {
                 return Promise.reject(err);
             }
 
-            return (
-                fetchFromAPI(ticketOrMail)
-                    .then(userData_ => {
-                        if (!userData_) {
-                            const err = new APIError(
-                                module,
-                                404,
-                                "Couldn't find ticket",
-                                req.query.ticketOrMail
-                            );
-                            return Promise.reject(err);
-                        }
-
-                        userData = userData_;
-
-                        return MeanOfLogin.where({
-                            type: 'ticketId',
-                            data: userData.ticketId,
-                            blocked: false
-                        }).fetchAll();
-                    })
-                    .then(mols => {
-                        if (mols.length > 0) {
-                            return Promise.reject(
-                                new APIError(module, 404, 'Already assigned', { userData })
-                            );
-                        }
-
-                        const newUser = {
-                            firstname: userData.firstname,
-                            lastname: userData.lastname,
-                            mail: userData.mail,
-                            credit: 0, // Pass it to reloads to have a custom trace
-                            username: userData.username
-                        };
-
-                        return createUser(
-                            req.app.locals.models,
-                            req.event,
-                            req.user,
-                            req.point,
-                            newUser,
-                            [
-                                {
-                                    credit: userData.credit || 0,
-                                    type: 'Préchargement',
-                                    trace: ticketOrMail
-                                }
-                            ],
-                            [
-                                {
-                                    type: 'ticketId',
-                                    data: userData.ticketId,
-                                    blocked: false
-                                }
-                            ],
-                            [req.event.defaultGroup_id],
-                            true,
-                            // if no user, create PCU, else directly write
-                            !!req.user
+            return fetchFromAPI(ticketOrMail)
+                .then(userData_ => {
+                    if (!userData_) {
+                        const err = new APIError(
+                            module,
+                            404,
+                            "Couldn't find ticket",
+                            req.query.ticketOrMail
                         );
-                    })
-                    .then(user => {
-                        if (req.user) {
-                            req.details.credit = user.credit;
+                        return Promise.reject(err);
+                    }
 
-                            log.info(`Assign ${user.id} with ${credit} credit`, req.details);
+                    userData = userData_;
 
-                            return res
-                                .status(200)
-                                .json({
-                                    id: user.id,
-                                    credit: user.credit,
-                                    name: `${user.firstname} ${user.lastname}`
-                                })
-                                .end();
-                        }
+                    return MeanOfLogin.where({
+                        type: 'ticketId',
+                        data: userData.ticketId,
+                        blocked: false
+                    }).fetchAll();
+                })
+                .then(mols => {
+                    if (mols.length > 0) {
+                        return Promise.reject(
+                            new APIError(module, 404, 'Already assigned', { userData })
+                        );
+                    }
 
-                        log.info(`Already assigned`, req.details);
+                    const newUser = {
+                        firstname: userData.firstname,
+                        lastname: userData.lastname,
+                        mail: userData.mail,
+                        credit: 0, // Pass it to reloads to have a custom trace
+                        username: userData.username
+                    };
+
+                    return createUser(
+                        req.app.locals.models,
+                        req.event,
+                        req.user,
+                        req.point,
+                        newUser,
+                        [
+                            {
+                                credit: userData.credit || 0,
+                                type: 'Préchargement',
+                                trace: ticketOrMail
+                            }
+                        ],
+                        [
+                            {
+                                type: 'ticketId',
+                                data: userData.ticketId,
+                                blocked: false
+                            }
+                        ],
+                        [req.event.defaultGroup_id],
+                        true,
+                        // if no user, create PCU, else directly write
+                        !!req.user
+                    );
+                })
+                .then(user => {
+                    if (req.user) {
+                        req.details.credit = user.credit;
+
+                        log.info(`Assign ${user.id} with ${credit} credit`, req.details);
 
                         return res
                             .status(200)
-                            .json({})
+                            .json({
+                                id: user.id,
+                                credit: user.credit,
+                                name: `${user.firstname} ${user.lastname}`
+                            })
                             .end();
-                    })
-            );
+                    }
+
+                    log.info(`Already assigned`, req.details);
+
+                    return res
+                        .status(200)
+                        .json({})
+                        .end();
+                });
         })
         .catch(err => dbCatch(module, err, next));
 });
-
 
 router.post('/services/assigner/groups', (req, res, next) => {
     const userId = req.body.user;
@@ -154,7 +151,6 @@ router.post('/services/assigner/groups', (req, res, next) => {
 
     req.details.userId = userId;
     req.details.groups = groups;
-
 
     if (!userId || userId.length === 0) {
         return next(new APIError(module, 400, 'Invalid user'));
@@ -181,7 +177,7 @@ router.post('/services/assigner/groups', (req, res, next) => {
             res
                 .status(200)
                 .json({})
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });
@@ -226,15 +222,19 @@ router.post('/services/assigner/anon', (req, res, next) => {
         true
     )
         .then(user => {
-            log.info(`Create anon user ${user.id} with ${groups.length} memberships and ${credit} credit`, req.details);
+            log.info(
+                `Create anon user ${user.id} with ${
+                    groups.length
+                } memberships and ${credit} credit`,
+                req.details
+            );
 
             res
                 .status(200)
                 .json({})
-                .end()
+                .end();
         })
         .catch(err => dbCatch(module, err, next));
 });
-
 
 module.exports = router;

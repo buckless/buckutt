@@ -48,7 +48,7 @@ router.get('/services/certificate', (req, res, next) => {
 
             log.info(`Generation certificate for device ${deviceId}`, req.details);
 
-            res.download(fileName)
+            res.download(fileName);
         })
         .catch(err => dbCatch(module, err, next));
 });

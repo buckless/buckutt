@@ -11,7 +11,7 @@ const dbCatch = require('../../lib/dbCatch');
 const getPriceAmount = (Price, priceId) =>
     Price.where({ id: priceId })
         .fetch()
-        .then(price => price ? price.get('amount') : 0);
+        .then(price => (price ? price.get('amount') : 0));
 
 /**
  * Basket controller. Handles purchases and reloads

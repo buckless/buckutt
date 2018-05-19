@@ -73,7 +73,7 @@ module.exports.ioServer = (httpServer, app) => {
 
                         try {
                             controller.client(clients, client, ...args);
-                        } catch(e) {
+                        } catch (e) {
                             log.error(e.stack || e, client.details);
                         }
 
