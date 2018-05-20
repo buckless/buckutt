@@ -46,10 +46,13 @@ class OfflineData {
     findByBarcode(barcode) {
         const reg = new RegExp(`${barcode}(.*)`, 'i');
 
-        return this.db.users
-            .filter(user => reg.test(user.barcode))
-            .limit(5)
-            .toArray();
+        return (
+            this.db.users
+                // user.username === barcode is when user scan their manager qrcode
+                .filter(user => reg.test(user.barcode) || user.username === barcode)
+                .limit(5)
+                .toArray()
+        );
     }
 
     cardAccesses(cardId) {
