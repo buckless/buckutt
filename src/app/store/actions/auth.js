@@ -182,11 +182,19 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
     }
 
     if (shouldWriteCredit) {
-        options.assignedCard = true;
+        const newOptions = {
+            assignedCard: true,
+            ...options.catering
+        };
+
         initialPromise = initialPromise.then(
             () =>
                 new Promise(resolve => {
-                    window.app.$root.$emit('readyToWrite', store.state.ui.lastUser.credit, options);
+                    window.app.$root.$emit(
+                        'readyToWrite',
+                        store.state.ui.lastUser.credit,
+                        newOptions
+                    );
                     window.app.$root.$on('writeCompleted', () => resolve());
                 })
         );
