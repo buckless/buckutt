@@ -60,12 +60,27 @@ router.get('/services/deviceEssentials', (req, res, next) => {
         }
     ];
 
+    const embedPendingCardUpdates = [
+        {
+            embed: 'user',
+            required: true
+        },
+        {
+            embed: 'user.meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
+            required: true
+        }
+    ];
+
     const embedRightsFilters = embedRights.filter(rel => rel.required).map(rel => rel.embed);
     const embedMembershipsFilters = embedMemberships
         .filter(rel => rel.required)
         .map(rel => rel.embed);
 
     const embedPricesFilters = embedPrices.filter(rel => rel.required).map(rel => rel.embed);
+    const embedPendingCardUpdatesFilters = embedPendingCardUpdates
+        .filter(rel => rel.required)
+        .map(rel => rel.embed);
 
     const operators = [];
     const giftReloads = [];
@@ -74,6 +89,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
     const groups = [];
     const meansOfPayment = [];
     const nfcCosts = [];
+    const pendingCardUpdates = [];
     let device = {};
 
     // Step 1: get operators
@@ -204,7 +220,23 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 });
             }
 
-            // Step 8: prepare device
+            // Step 8: get pendingCardUpdates
+            return models.PendingCardUpdate.fetchAll({
+                withRelated: embedParser(embedPendingCardUpdates)
+            }).then(pendingCardUpdates_ =>
+                embedFilter(embedPendingCardUpdatesFilters, pendingCardUpdates_.toJSON())
+            );
+        })
+        .then(pendingCardUpdates_ => {
+            let pendingId;
+            for (let i = pendingCardUpdates_.length - 1; i >= 0; i -= 1) {
+                pendingId = pendingCardUpdates_[i].user.meansOfLogin[0].data;
+                if (pendingCardUpdates.indexOf(pendingId) === -1) {
+                    pendingCardUpdates.push(pendingId);
+                }
+            }
+
+            // Step 9: prepare device
             device = req.device;
             delete device.wikets;
 
@@ -223,6 +255,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     groups,
                     meansOfPayment,
                     nfcCosts,
+                    pendingCardUpdates,
                     device,
                     event: req.event
                 })

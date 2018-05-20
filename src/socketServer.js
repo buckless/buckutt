@@ -62,12 +62,14 @@ module.exports.ioServer = (httpServer, app) => {
                             if (result.err) {
                                 return Promise.reject(result.err);
                             }
+
+                            return unmarshal(socket);
                         });
                 }
 
                 initialPromise = initialPromise
                     .then(() => {
-                        let user = socket.user;
+                        const user = socket.user;
 
                         clients[client.id] = { client, user };
 
