@@ -20,7 +20,7 @@ router.get('/services/assigner', (req, res, next) => {
     const MeanOfLogin = req.app.locals.models.MeanOfLogin;
     let userData;
 
-    MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
+    MeanOfLogin.where('type', 'in', ['ticketId', 'username', 'mail'])
         .where({
             data: ticketOrMail,
             blocked: false
