@@ -62,6 +62,10 @@ export const updateEssentials = (store, force) => {
                 promises.push(store.dispatch('setNfcCosts', res.data.nfcCosts));
             }
 
+            if (res.data.pendingCardUpdates) {
+                promises.push(store.dispatch('setPendingCardUpdates', res.data.pendingCardUpdates));
+            }
+
             if (res.data.userTickets) {
                 const users = res.data.userTickets.map(user => [
                     user.id,

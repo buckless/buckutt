@@ -140,7 +140,10 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
             shouldChangeBuyer = true;
-            shouldCheckPending = store.state.online.status && options.assignedCard;
+            shouldCheckPending =
+                store.state.online.status &&
+                options.assignedCard &&
+                store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1;
             shouldWriteCredit = store.state.auth.device.event.config.useCardData;
         } else {
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
@@ -151,7 +154,10 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             shouldClearBasket = true;
             shouldChangeBuyer = true;
         } else {
-            shouldCheckPending = store.state.online.status && options.assignedCard;
+            shouldCheckPending =
+                store.state.online.status &&
+                options.assignedCard &&
+                store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1;
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
         }
     }
@@ -166,17 +172,17 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             .catch(() => Promise.resolve({ data: { amount: 0 } }))
             .then(res => {
                 cardCredit += res.data.amount;
+                return store.dispatch('removePendingCardUpdate', cardNumber);
             });
     }
 
     if (shouldSendBasket) {
-        if (typeof cardCredit === 'number') {
-            store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
-        }
-
-        initialPromise = initialPromise.then(() =>
-            store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard })
-        );
+        initialPromise = initialPromise.then(() => {
+            if (typeof cardCredit === 'number') {
+                store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
+            }
+            return store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard });
+        });
     } else {
         initialPromise = initialPromise.then(() => store.commit('SET_BUYER_MOL', cardNumber));
     }

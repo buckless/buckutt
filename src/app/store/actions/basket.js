@@ -2,6 +2,14 @@
 
 import axios from '@/utils/axios';
 
+export const setPendingCardUpdates = ({ commit }, payload) => {
+    commit('SET_PENDINGCARDUPDATES', payload);
+};
+
+export const removePendingCardUpdate = ({ commit }, cardId) => {
+    commit('REMOVE_PENDINGCARDUPDATE', cardId);
+};
+
 export const addItemToBasket = ({ commit }, item) => {
     commit('ADD_ITEM', item);
 };
