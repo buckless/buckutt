@@ -6,6 +6,7 @@ const mailer = require('./mailer');
 const username = require('./username');
 const template = require('../mailTemplates');
 const config = require('../../config');
+const log = require('./log')(module);
 
 module.exports = function createUser(
     models,
@@ -131,28 +132,35 @@ module.exports = function createUser(
             );
         })
         .then(() => {
-            if (!sendMail) {
-                return Promise.resolve();
+            if (sendMail) {
+                const from = config.askpin.from;
+                const to = newUser.get('mail');
+                const subject = config.assigner.subject;
+                const { html, text } = template('pinAssign', {
+                    pin,
+                    username: userName,
+                    email: newUser.get('mail'),
+                    brandname: config.merchantName,
+                    link: `${config.urls.managerUrl}`
+                });
+
+                mailer
+                    .sendMail({
+                        from,
+                        to,
+                        subject,
+                        html,
+                        text
+                    })
+                    .catch(err => {
+                        const error = new Error('sendMail failed');
+                        error.stack += `\nCaused by:\n${err.stack}`;
+
+                        log.error(error);
+                    });
             }
 
-            const from = config.askpin.from;
-            const to = newUser.get('mail');
-            const subject = config.assigner.subject;
-            const { html, text } = template('pinAssign', {
-                pin,
-                userName,
-                email: newUser.get('mail'),
-                brandname: config.merchantName,
-                link: `${config.urls.managerUrl}`
-            });
-
-            return mailer.sendMail({
-                from,
-                to,
-                subject,
-                html,
-                text
-            });
+            return Promise.resolve();
         })
         .then(() => newUser.toJSON());
 };
