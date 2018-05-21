@@ -1,4 +1,5 @@
 const faker = require('faker/locale/fr');
+const uuid = require('uuid');
 const computeUsername = require('../lib/username');
 
 module.exports = ticketOrMail => {
@@ -20,7 +21,7 @@ module.exports = ticketOrMail => {
             username: username,
             mail: ticketOrMail,
             credit: 500,
-            ticketId: '123123123'
+            ticketId: uuid()
         });
     }
 
