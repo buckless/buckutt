@@ -230,6 +230,10 @@ router.get('/services/deviceEssentials', (req, res, next) => {
         .then(pendingCardUpdates_ => {
             let pendingId;
             for (let i = pendingCardUpdates_.length - 1; i >= 0; i -= 1) {
+                if (!pendingCardUpdates_[i].user.meansOfLogin.length) {
+                    continue;
+                }
+
                 pendingId = pendingCardUpdates_[i].user.meansOfLogin[0].data;
                 if (pendingCardUpdates.indexOf(pendingId) === -1) {
                     pendingCardUpdates.push(pendingId);
