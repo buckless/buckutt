@@ -1,25 +1,23 @@
-import axios from '@/utils/axios';
-
 export const interfaceLoader = (store, credentials) => {
-    const token = store.getters.tokenHeaders;
     let params = '';
 
     if (credentials) {
         params = `?buyer=${credentials.mol.trim()}&molType=${credentials.type}`;
     }
 
-    const initialPromise = !store.getters.isDegradedModeActive
-        ? axios.get(`${config.api}/services/items${params}`, token)
-        : Promise.resolve({
-              data: {
-                  ...store.state.online.offline.defaultItems,
-                  buyer: {
-                      credit: credentials ? credentials.credit : null
-                  }
-              }
-          });
-
-    return initialPromise
+    store
+        .dispatch('sendRequest', {
+            url: `/services/items${params}`,
+            offlineAnswer: {
+                data: {
+                    ...store.state.online.offline.defaultItems,
+                    buyer: {
+                        credit: credentials ? credentials.credit : null
+                    }
+                }
+            },
+            noQueue: true
+        })
         .then(res => {
             if (credentials && res.data.buyer && typeof res.data.buyer.credit === 'number') {
                 store.commit('ID_BUYER', {

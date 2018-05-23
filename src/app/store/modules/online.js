@@ -1,7 +1,6 @@
 const initialState = {
     status: false,
     syncing: false,
-    pendingRequests: [],
     offline: {
         sellers: [],
         defaultItems: {
@@ -30,18 +29,6 @@ const mutations = {
 
     SET_DEFAULT_ITEMS(state, payload) {
         state.offline.defaultItems = payload;
-    },
-
-    ADD_PENDING_REQUEST(state, payload) {
-        state.pendingRequests.push(payload);
-    },
-
-    SET_PENDING_REQUESTS(state, payload) {
-        state.pendingRequests = payload;
-    },
-
-    CLEAR_PENDING_REQUESTS(state) {
-        state.pendingRequests = [];
     }
 };
 

@@ -16,6 +16,13 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
+"@buckless/offline-queue@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@buckless/offline-queue/-/offline-queue-0.5.0.tgz#81bc3f3b1552904590eb818c362770297a0ccb46"
+  dependencies:
+    eventemitter3 "^3.0.1"
+    is-promise "^2.1.0"
+
 "@buckless/signed-data@^2.1.2":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@buckless/signed-data/-/signed-data-2.1.2.tgz#2c312e493211aa316febf35bed804c45a20e3989"
@@ -2794,6 +2801,10 @@ event-lite@^0.1.1:
 eventemitter3@1.x.x:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+
+eventemitter3@^3.0.1:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
 
 events@^1.0.0, events@~1.1.0:
   version "1.1.1"

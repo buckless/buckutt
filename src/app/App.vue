@@ -98,13 +98,13 @@ export default {
     },
 
     methods: {
-        ...mapActions(['setupSocket', 'updateEssentials', 'periodicSync'])
+        ...mapActions(['setupSocket', 'updateEssentials', 'initQueue'])
     },
 
     mounted() {
         this.setupSocket();
+        this.initQueue();
         this.updateEssentials();
-        this.periodicSync();
 
         setInterval(() => this.updateEssentials(!this.seller.isAuth), 60000);
 

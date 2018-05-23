@@ -46,7 +46,7 @@
                 <div class="b-menu__actions__separator"></div>
                 <div
                     class="b-menu__actions__action"
-                    @click="syncPendingRequests">
+                    @click="syncQueue">
                     <i class="b-icon">sync</i>
                     <template v-if="syncing">
                         Synchronisation en cours
@@ -124,7 +124,7 @@ export default {
             'toggleCatering',
             'clearBasket',
             'logout',
-            'syncPendingRequests'
+            'syncQueue'
         ])
     }
 };

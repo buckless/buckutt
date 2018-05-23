@@ -9,3 +9,4 @@ export * from './updateEssentials';
 export * from './history';
 export * from './treasury';
 export * from './catering';
+export * from './queue';

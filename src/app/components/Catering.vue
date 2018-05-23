@@ -11,8 +11,7 @@
 </template>
 
 <script>
-import axios from '@/utils/axios';
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     data() {
@@ -27,7 +26,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['addPendingRequest']),
+        ...mapActions(['sendRequest']),
 
         toggleNfc(article) {
             this.selectedArticle = article;
@@ -86,22 +85,14 @@ export default {
                 buyer: cardId
             };
 
-            const cateringPromise = this.online
-                ? axios.post(`${config.api}/services/catering`, cateringToSend, this.tokenHeaders)
-                : this.addPendingRequest({
-                      url: `${config.api}/services/catering`,
-                      body: cateringToSend
-                  });
-
-            cateringPromise
+            this.sendRequest({
+                method: 'post',
+                url: 'services/catering',
+                data: cateringToSend
+            })
                 .catch(err => {
                     // We always use card data for catering: it has to work
                     console.error(err);
-                    this.addPendingRequest({
-                        url: `${config.api}/services/catering`,
-                        body: cateringToSend
-                    });
-
                     return Promise.resolve();
                 })
                 .then(
@@ -123,11 +114,8 @@ export default {
 
     computed: {
         ...mapState({
-            operator: state => state.auth.seller,
-            online: state => state.online.status
+            operator: state => state.auth.seller
         }),
-
-        ...mapGetters(['tokenHeaders']),
 
         articles() {
             return Object.values(config.catering.articles).sort((a, b) => a.name - b.name);

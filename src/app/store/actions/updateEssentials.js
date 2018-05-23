@@ -1,16 +1,17 @@
-import axios from '@/utils/axios';
-
 let lock = false;
 
 export const updateEssentials = (store, force) => {
-    if (lock || store.getters.isDegradedModeActive) {
+    if (lock) {
         return Promise.resolve();
     }
 
     lock = true;
 
-    return axios
-        .get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders)
+    return store
+        .dispatch('sendRequest', {
+            url: 'services/deviceEssentials',
+            noQueue: true
+        })
         .then(res => {
             if (!store.state.auth.device.point.id || store.state.auth.seller.canAssign || force) {
                 return store

@@ -28,12 +28,6 @@
                 <div
                     class="b-assigner-search__results__result"
                     v-for="match in matches"
-                    v-if="matches[0].firstname"
-                    @click="selectUser(match)">{{ match.firstname }} {{ match.lastname }}</div>
-                <div
-                    class="b-assigner-search__results__result"
-                    v-for="match in matches"
-                    v-if="matches[0].name"
                     @click="selectUser(match)">{{ match.name }}</div>
             </div>
             <p v-else-if="searchInput.length <= 2">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
@@ -43,9 +37,8 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import debounce from 'lodash.debounce';
-import axios from '@/utils/axios';
 
 export default {
     data() {
@@ -54,14 +47,6 @@ export default {
             searchInput: '',
             matches: []
         };
-    },
-
-    computed: {
-        ...mapState({
-            online: state => state.online.status
-        }),
-
-        ...mapGetters(['tokenHeaders'])
     },
 
     methods: {
@@ -74,59 +59,53 @@ export default {
                 return;
             }
 
-            if (this.online) {
-                if (this.searchBy === 'name') {
-                    axios
-                        .get(
-                            `${config.api}/services/manager/searchuser?name=${this.searchInput}`,
-                            this.tokenHeaders
-                        )
-                        .then(res => {
-                            this.matches = res.data;
-                        });
-                } else {
-                    const filterRel = [
-                        {
-                            embed: 'meansOfLogin',
-                            filters: [
-                                ['type', '=', 'ticketId'],
-                                ['data', 'like', `${this.searchInput}%`]
-                            ],
-                            required: true
-                        }
-                    ];
-
-                    const embed = encodeURIComponent(JSON.stringify(filterRel));
-
-                    axios.get(`${config.api}/users?embed=${embed}`, this.tokenHeaders).then(res => {
-                        this.matches = res.data;
-                    });
-                }
+            let searchPromise;
+            if (this.searchBy === 'name') {
+                searchPromise = this.sendRequest({
+                    url: `services/manager/searchuser?name=${this.searchInput}`,
+                    noQueue: true,
+                    offlineAnswer: window.database.findByName(this.searchInput)
+                });
             } else {
-                const searchMethod =
-                    this.searchBy === 'name'
-                        ? window.database.findByName.bind(window.database)
-                        : window.database.findByBarcode.bind(window.database);
+                const filterRel = [
+                    {
+                        embed: 'meansOfLogin',
+                        filters: [
+                            ['type', '=', 'ticketId'],
+                            ['data', 'like', `${this.searchInput}%`]
+                        ],
+                        required: true
+                    }
+                ];
 
-                searchMethod(this.searchInput).then(users => {
-                    this.matches = users;
+                const embed = encodeURIComponent(JSON.stringify(filterRel));
+
+                searchPromise = this.sendRequest({
+                    url: `users?embed=${embed}`,
+                    noQueue: true,
+                    offlineAnswer: window.database.findByBarcode(this.searchInput)
                 });
             }
+
+            searchPromise
+                .then(res =>
+                    (res.data || res).map(user => {
+                        if (user.firstname) {
+                            user.name = `${user.firstname} ${user.lastname}`;
+                        }
+                        return user;
+                    })
+                )
+                .then(users => {
+                    this.matches = users;
+                });
         }, 500),
 
         selectUser(user) {
-            if (this.online) {
-                this.$emit(
-                    'assign',
-                    user.credit,
-                    `${user.firstname} ${user.lastname}`,
-                    user.username,
-                    user.id
-                );
-            } else {
-                this.$emit('assign', user.credit, user.name, user.username, user.uid);
-            }
-        }
+            this.$emit('assign', user.credit, user.name, user.username, user.uid);
+        },
+
+        ...mapActions(['sendRequest'])
     }
 };
 </script>

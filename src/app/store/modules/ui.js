@@ -7,6 +7,7 @@ const initialState = {
     lastUser: {
         display: false,
         name: null,
+        localId: null,
         bought: 0,
         reload: 0,
         credit: 0

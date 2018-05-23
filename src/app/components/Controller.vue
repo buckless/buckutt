@@ -18,8 +18,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
-import axios from '@/utils/axios';
+import { mapActions, mapState } from 'vuex';
 
 import Chooser from './Controller-Chooser';
 import Ok from './Ok';
@@ -41,11 +40,9 @@ export default {
 
     computed: {
         ...mapState({
-            online: state => state.online.status,
             wiket: state => state.auth.device.wiket,
             seller: state => state.auth.seller.id
-        }),
-        ...mapGetters(['tokenHeaders'])
+        })
     },
 
     methods: {
@@ -55,58 +52,51 @@ export default {
         },
 
         onCard(cardId) {
-            let initialPromise = Promise.resolve();
+            this.sendRequest({
+                url: `services/controller?user=${cardId}`,
+                noQueue: true,
+                offlineAnswer: window.database.cardAccesses(cardId)
+            })
+                .then(res => res.data || res)
+                .then(accesses => {
+                    let match = false;
 
-            if (this.online) {
-                initialPromise = axios
-                    .get(`${config.api}/services/controller?user=${cardId}`, this.tokenHeaders)
-                    .then(res => res.data);
-            } else {
-                initialPromise = window.database.cardAccesses(cardId);
-            }
+                    for (let i = accesses.length - 1; i >= 0; i--) {
+                        // check if group matches one of currentGroups
+                        if (!this.currentGroups.find(group => group.id === accesses[i].groupId)) {
+                            continue;
+                        }
 
-            initialPromise.then(accesses => {
-                let match = false;
+                        const now = new Date();
+                        const start = new Date(accesses[i].start);
+                        const end = new Date(accesses[i].end);
 
-                for (let i = accesses.length - 1; i >= 0; i--) {
-                    // check if group matches one of currentGroups
-                    if (!this.currentGroups.find(group => group.id === accesses[i].groupId)) {
-                        continue;
+                        // check if now is between [start, end]
+                        if (now - start >= 0 && end - now >= 0) {
+                            match = true;
+                        }
                     }
 
-                    const now = new Date();
-                    const start = new Date(accesses[i].start);
-                    const end = new Date(accesses[i].end);
+                    if (match) {
+                        const access = {
+                            operator_id: this.seller,
+                            wiket_id: this.wiket,
+                            cardId
+                        };
 
-                    // check if now is between [start, end]
-                    if (now - start >= 0 && end - now >= 0) {
-                        match = true;
-                    }
-                }
-
-                if (match) {
-                    const access = {
-                        operator_id: this.seller,
-                        wiket_id: this.wiket,
-                        cardId
-                    };
-
-                    if (this.online) {
-                        axios.post(`${config.api}/services/controller`, access, this.tokenHeaders);
-                    } else {
-                        this.addPendingRequest({
-                            url: `${config.api}/services/controller`,
-                            body: access
+                        this.sendRequest({
+                            method: 'post',
+                            url: 'services/controller',
+                            data: access
                         });
                     }
-                }
 
-                this.okModalStatus = match;
-                this.showOkModal = true;
-            });
+                    this.okModalStatus = match;
+                    this.showOkModal = true;
+                });
         },
 
-        ...mapActions(['updateEssentials', 'addPendingRequest'])
+        ...mapActions(['updateEssentials', 'sendRequest'])
     }
 };
 </script>

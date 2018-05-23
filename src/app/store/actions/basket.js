@@ -1,7 +1,3 @@
-/* eslint-disable */
-
-import axios from '@/utils/axios';
-
 export const setPendingCardUpdates = ({ commit }, payload) => {
     commit('SET_PENDINGCARDUPDATES', payload);
 };
@@ -144,41 +140,23 @@ export const sendBasket = (store, payload = {}) => {
         localId
     };
 
-    let initialPromise;
-    const offlineBasketAnswer = {
-        data: {
-            transactionIds: null,
-            credit: store.getters.credit
-        }
-    };
-
-    if (store.getters.isDegradedModeActive) {
-        store.dispatch('addPendingRequest', {
-            url: `${config.api}/services/basket?offline=1`,
-            body: transactionToSend
-        });
-
-        initialPromise = Promise.resolve(offlineBasketAnswer);
-    } else {
-        initialPromise = axios.post(
-            `${config.api}/services/basket`,
-            transactionToSend,
-            store.getters.tokenHeaders
-        );
-    }
-
-    return initialPromise
-        .catch(err => {
-            console.log(err);
-            // if useCardData: it has to work
-            if (store.state.auth.device.event.config.useCardData) {
-                store.dispatch('addPendingRequest', {
-                    url: `${config.api}/services/basket?offline=1`,
-                    body: transactionToSend
-                });
-                return Promise.resolve(offlineBasketAnswer);
+    store
+        .dispatch('sendRequest', {
+            method: 'post',
+            url: 'services/basket',
+            data: transactionToSend,
+            offlineAnswer: {
+                data: {
+                    transactionIds: null,
+                    credit: store.getters.credit,
+                    firstname: store.state.auth.buyer.firstname,
+                    lastname: store.state.auth.buyer.lastname
+                }
             }
-
+        })
+        .catch(err => {
+            // Catch used if !useCardData
+            console.log(err);
             store.commit('SET_BASKET_STATUS', 'ERROR');
 
             if (err.message === 'Network Error') {
@@ -201,9 +179,7 @@ export const sendBasket = (store, payload = {}) => {
 
             store.commit('ID_BUYER', {
                 id: lastBuyer.data.id,
-                credit: store.state.auth.device.event.config.useCardData
-                    ? store.getters.credit
-                    : lastBuyer.data.credit,
+                credit: lastBuyer.data.credit,
                 firstname: lastBuyer.data.firstname,
                 lastname: lastBuyer.data.lastname
             });
@@ -216,7 +192,8 @@ export const sendBasket = (store, payload = {}) => {
                     : null,
                 credit: store.state.auth.buyer.credit,
                 reload: reloaded,
-                bought
+                bought,
+                localId
             });
 
             if (store.state.auth.device.config.doubleValidation) {

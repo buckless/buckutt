@@ -1,4 +1,3 @@
-import axios from '@/utils/axios';
 import cloneDeep from 'lodash.clonedeep';
 import q from '../../utils/q';
 import offlineLogin from '../../utils/offline/login';
@@ -35,11 +34,13 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         pin: password
     };
 
-    const initialPromise = !getters.isDegradedModeActive
-        ? axios.post(`${config.api}/services/login`, credentials)
-        : offlineLogin(state.online.offline.sellers, credentials);
-
-    return initialPromise
+    dispatch('sendRequest', {
+        method: 'post',
+        url: 'services/login',
+        data: credentials,
+        offlineAnswer: offlineLogin(state.online.offline.sellers, credentials),
+        noQueue: true
+    })
         .then(res => {
             if (
                 !res.data.user.canSell &&
@@ -141,7 +142,6 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
             shouldChangeBuyer = true;
             shouldCheckPending =
-                store.state.online.status &&
                 options.assignedCard &&
                 store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1;
             shouldWriteCredit = store.state.auth.device.event.config.useCardData;
@@ -155,7 +155,6 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             shouldChangeBuyer = true;
         } else {
             shouldCheckPending =
-                store.state.online.status &&
                 options.assignedCard &&
                 store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1;
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
@@ -163,14 +162,22 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
     }
 
     if (shouldCheckPending) {
-        const pendingUrl = `${config.api}/services/pendingCardUpdate?molType=${
+        const pendingUrl = `services/pendingCardUpdate?molType=${
             config.buyerMeanOfLogin
         }&buyer=${cardNumber}`;
 
         initialPromise = initialPromise
-            .then(() => axios.get(pendingUrl, store.getters.tokenHeaders))
-            .catch(() => Promise.resolve({ data: { amount: 0 } }))
+            .then(() =>
+                store.dispatch('sendRequest', {
+                    url: pendingUrl,
+                    noQueue: true,
+                    offlineAnswer: { fake: true }
+                })
+            )
             .then(res => {
+                if (res.fake) {
+                    return Promise.resolve();
+                }
                 cardCredit += res.data.amount;
                 return store.dispatch('removePendingCardUpdate', cardNumber);
             });
@@ -202,7 +209,7 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
         initialPromise = initialPromise.then(() => store.dispatch('clearBasket'));
     }
 
-    initialPromise = initialPromise
+    return initialPromise
         .then(() => store.dispatch('interfaceLoader', interfaceLoaderCredentials))
         .then(() => {
             if (
@@ -231,8 +238,6 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             store.commit('SET_DATA_LOADED', true);
             store.commit('SET_WRITING', false);
         });
-
-    return initialPromise;
 };
 
 export const sellerId = ({ commit }, meanOfLogin) => {
