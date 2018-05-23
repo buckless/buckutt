@@ -70,7 +70,7 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         .catch(err => {
             console.error(err);
 
-            commit('ID_SELLER', '');
+            dispatch('pursueLogout');
             commit('SET_DATA_LOADED', null);
 
             if (err.message === 'Network Error') {
