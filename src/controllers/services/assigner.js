@@ -10,8 +10,8 @@ const APIError = require('../../errors/APIError');
  */
 const router = new express.Router();
 
-router.get('/services/assigner', (req, res, next) => {
-    const ticketOrMail = req.query.ticketOrMail;
+router.post('/services/assigner', (req, res, next) => {
+    const ticketOrMail = req.body.ticketOrMail;
 
     if (!ticketOrMail || ticketOrMail.length === 0) {
         return next(new APIError(module, 400, 'Invalid ticketOrMail'));
@@ -51,7 +51,7 @@ router.get('/services/assigner', (req, res, next) => {
                     module,
                     410,
                     'Ticket already binded',
-                    req.query.ticketOrMail
+                    req.body.ticketOrMail
                 );
 
                 return Promise.reject(err);
@@ -64,7 +64,7 @@ router.get('/services/assigner', (req, res, next) => {
                             module,
                             404,
                             "Couldn't find ticket",
-                            req.query.ticketOrMail
+                            req.body.ticketOrMail
                         );
                         return Promise.reject(err);
                     }
