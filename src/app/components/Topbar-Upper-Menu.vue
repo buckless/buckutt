@@ -59,7 +59,7 @@
                 <div
                     v-if="displayLogout"
                     class="b-menu__actions__action"
-                    @click="close(logout)">
+                    @click="close(logoutSeller)">
                     <i class="b-icon">eject</i>
                     Déconnexion
                 </div>
@@ -74,7 +74,7 @@
         <div class="b-menu" @click="close(toggleCatering)" v-else-if="catering && !onlyLogout">
             <div class="b-menu__icon b-icon">close</div>
         </div>
-        <div class="b-menu" @click="close(logout)" v-else>
+        <div class="b-menu" @click="close(logoutSeller)" v-else>
             <div class="b-menu__icon b-icon">close</div>
         </div>
     </div>
@@ -117,13 +117,21 @@ export default {
             action();
         },
 
+        logoutSeller() {
+            this.$store.commit('LOGOUT_BUYER');
+
+            return this.$store
+                .dispatch('clearBasket')
+                .then(() => this.$store.dispatch('interfaceLoader'))
+                .then(() => this.$store.dispatch('pursueLogout'));
+        },
+
         ...mapActions([
             'openReloadModal',
             'toggleHistory',
             'toggleTreasury',
             'toggleCatering',
             'clearBasket',
-            'logout',
             'syncPendingRequests'
         ])
     }
