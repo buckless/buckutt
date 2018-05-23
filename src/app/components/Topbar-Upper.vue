@@ -2,6 +2,9 @@
     <div class="b-upper-bar">
         <offline />
         <div class="b-upper-bar__buyer-name" v-if="buyer.isAuth">
+            <div class="b-upper-bar__buyer-logout">
+                <span class="b-icon" @click="logout">eject</span>
+            </div>
             <span class="b--capitalized">{{ buyer.firstname }}</span>&nbsp;
             <span class="b--capitalized">{{ buyer.lastname }}</span>
         </div>
@@ -11,7 +14,7 @@
             </span>
         </div>
         <div class="b-space"></div>
-        <div class="b-upper-bar__date">
+        <div class="b-upper-bar__date" v-if="!buyer.isAuth">
             <live-time></live-time>
         </div>
         <div class="b-upper-bar__menu">
@@ -29,7 +32,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 
 import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
@@ -60,6 +63,10 @@ export default {
         onlyLogout() {
             return this.displayLogout && this.seller.isAuth === false;
         }
+    },
+
+    methods: {
+        ...mapActions(['logout'])
     }
 };
 </script>
@@ -85,6 +92,22 @@ export default {
 .b-upper-bar__date,
 .b-upper-bar__menu {
     margin: 0 6px;
+}
+
+.b-upper-bar__buyer-logout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    color: #222;
+    border-radius: 50%;
+    margin-right: 4px;
+    height: 20px;
+    width: 20px;
+
+    .b-icon {
+        font-size: 18px;
+    }
 }
 
 .b-upper-bar__buyer-name {
@@ -145,6 +168,12 @@ export default {
         padding-left: 10px;
         justify-content: flex-end;
         padding-bottom: 5px;
+    }
+
+    .b-upper-bar__buyer-credit {
+        left: unset;
+        right: 40px;
+        font-size: 22px;
     }
 
     .b-upper-bar__date {
