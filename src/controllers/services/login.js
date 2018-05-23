@@ -150,8 +150,7 @@ router.post('/services/login', async (req, res, next) => {
             token: jwt.sign(
                 {
                     id: user.id,
-                    point: req.point,
-                    event: req.event,
+                    point: req.point.id,
                     // Will be used by middleware (else how could middleware know if pin or password ?)
                     connectType
                 },
