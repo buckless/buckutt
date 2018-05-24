@@ -90,6 +90,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
     const meansOfPayment = [];
     const nfcCosts = [];
     const pendingCardUpdates = [];
+    const blockedCards = [];
     let device = {};
 
     // Step 1: get operators
@@ -240,7 +241,19 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 }
             }
 
-            // Step 9: prepare device
+            // Step 9: get blocked cards
+            return models.MeanOfLogin.where({
+                type: 'cardId',
+                blocked: true
+            }).fetchAll();
+        })
+        .then(blockedCards_ => blockedCards_.toJSON().map(blockedCard => blockedCard.data))
+        .then(blockedCards_ => {
+            for (let i = blockedCards_.length - 1; i >= 0; i -= 1) {
+                blockedCards.push(blockedCards_[i]);
+            }
+
+            // Step 10: prepare device
             device = req.device;
             delete device.wikets;
 
@@ -260,6 +273,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     meansOfPayment,
                     nfcCosts,
                     pendingCardUpdates,
+                    blockedCards,
                     device,
                     event: req.event
                 })
