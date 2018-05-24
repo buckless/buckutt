@@ -120,6 +120,10 @@ export default {
         logoutSeller() {
             this.$store.commit('LOGOUT_BUYER');
 
+            if (this.onlyLogout) {
+                return this.$store.dispatch('pursueLogout');
+            }
+
             return this.$store
                 .dispatch('clearBasket')
                 .then(() => this.$store.dispatch('interfaceLoader'))
