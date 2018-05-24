@@ -1,7 +1,7 @@
 <template>
     <div class="b-items">
         <item
-            v-for="item in tabsItems"
+            v-for="item in tabItems"
             :item="item"
             :key="item.id"></item>
         <nfc mode="read" @read="validate" v-if="!buyer.isAuth && isWaiting && !isWriting" key="read" />
@@ -20,7 +20,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['tabsItems']),
+        ...mapGetters(['tabItems']),
 
         ...mapState({
             buyer: state => state.auth.buyer,

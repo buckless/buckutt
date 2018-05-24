@@ -2,7 +2,6 @@ const initialState = {
     dataLoaded: null,
     inputStream: [],
     tabs: [],
-    currentTab: 0,
     currentTabId: null,
     lastUser: {
         display: false,
@@ -28,12 +27,7 @@ const mutations = {
         state.inputStream = [];
     },
 
-    SET_TABS(state, payload) {
-        state.tabs = payload;
-    },
-
-    CHANGE_TAB(state, { tab, index }) {
-        state.currentTab = index;
+    CHANGE_TAB(state, tab) {
         state.currentTabId = tab;
     },
 

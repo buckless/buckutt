@@ -2,7 +2,7 @@
     <div
         class="b-tab"
         :class="{ 'b-tab--selected': selected }"
-        @click="selectTab({ index, tab: id })">
+        @click="selectTab(id)">
         {{ name }}
     </div>
 </template>
@@ -12,18 +12,17 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
     props: {
-        index: { type: Number, required: true },
         name: { type: String, required: true },
         id: { type: String, required: true }
     },
 
     computed: {
         selected() {
-            return this.tab === this.index;
+            return this.tab === this.id;
         },
 
         ...mapState({
-            tab: state => state.ui.currentTab
+            tab: state => state.ui.currentTabId
         })
     },
 

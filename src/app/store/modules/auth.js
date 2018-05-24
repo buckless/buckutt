@@ -11,6 +11,7 @@ const initialState = {
             id: null,
             name: null,
             nfc_id: null,
+            defaultGroup_id: null,
             config: {
                 maxAlcohol: null,
                 maxPerAccount: null,
@@ -30,7 +31,7 @@ const initialState = {
         credit: 0,
         firstname: null,
         lastname: null,
-        groups: [],
+        memberships: [],
         purchases: [],
         meanOfLogin: ''
     },
@@ -80,6 +81,7 @@ const mutations = {
         });
 
         state.device.event.nfc_id = payload.nfc_id;
+        state.device.event.defaultGroup_id = payload.defaultGroup_id;
     },
 
     ID_SELLER(state, meanOfLogin) {
@@ -118,7 +120,7 @@ const mutations = {
         state.buyer.credit = payload.credit;
         state.buyer.firstname = payload.firstname;
         state.buyer.lastname = payload.lastname;
-        state.buyer.groups = payload.groups;
+        state.buyer.memberships = payload.memberships;
         state.buyer.purchases = payload.purchases;
     },
 

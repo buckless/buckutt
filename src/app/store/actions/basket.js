@@ -1,3 +1,5 @@
+import promotions from '../../utils/promotions';
+
 export const setPendingCardUpdates = ({ commit }, payload) => {
     commit('SET_PENDINGCARDUPDATES', payload);
 };
@@ -6,12 +8,21 @@ export const removePendingCardUpdate = ({ commit }, cardId) => {
     commit('REMOVE_PENDINGCARDUPDATE', cardId);
 };
 
-export const addItemToBasket = ({ commit }, item) => {
+export const addItemToBasket = ({ commit, dispatch }, item) => {
     commit('ADD_ITEM', item);
+    dispatch('refreshPromotions');
 };
 
-export const removeItemFromBasket = ({ commit }, item) => {
+export const removeItemFromBasket = ({ commit, dispatch }, item) => {
     commit('REMOVE_ITEM', item);
+    dispatch('refreshPromotions');
+};
+
+export const refreshPromotions = ({ state, getters, commit }) => {
+    commit(
+        'SET_SIDEBAR',
+        promotions(state.items.basket.itemList.slice(), getters.wiketItems.promotions.slice())
+    );
 };
 
 export const clearBasket = ({ commit }) => {
