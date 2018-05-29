@@ -13,7 +13,7 @@ const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
 
 const byteNumber = optionsLength / 8;
 
-module.exports = new SignedData(config.signingKey, 8, rusha.createHash, [
+module.exports = new SignedData(config.signingKey, 12, rusha.createHash, [
     {
         name: 'credit',
         default: '000000',
