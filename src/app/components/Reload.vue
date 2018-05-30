@@ -165,7 +165,7 @@ export default {
     & .b-reload__modal {
         transform: translateX(-50%);
         transform-origin: top center;
-        z-index: 4;
+        z-index: 3;
     }
 }
 
@@ -248,7 +248,7 @@ export default {
         & .b-reload__modal {
             transform: translateX(-50%);
             top: 90px;
-            z-index: 4;
+            z-index: 3;
 
             &.b-reload__modal--fromtop {
                 top: 150px;

@@ -6,7 +6,7 @@
                 <span class="b-icon" @click="logout">eject</span>
             </div>
             <span class="b--capitalized">{{ buyer.firstname }}</span>&nbsp;
-            <span class="b--capitalized">{{ buyer.lastname }}</span>
+            <span class="b--capitalized">{{ buyer.lastname || 'Anonyme' }}</span>
         </div>
         <div class="b-upper-bar__buyer-credit" v-if="buyer.isAuth">
             <span :class="{ 'b-upper-bar__buyer__credit--negative': credit < 0 }">
