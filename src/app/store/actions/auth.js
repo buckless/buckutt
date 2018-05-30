@@ -82,14 +82,11 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         });
 };
 
-export const logout = store => {
+export const logoutBuyer = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
+
         return store.dispatch('clearBasket').then(() => store.dispatch('interfaceLoader'));
-    } else if (store.state.auth.seller.isAuth) {
-        store.commit('FIRST_LOGOUT_SELLER');
-    } else {
-        return store.dispatch('pursueLogout');
     }
 
     return Promise.resolve();
@@ -101,7 +98,8 @@ export const pursueLogout = ({ commit, dispatch }) => {
     // Remove disconnect warning
     commit('REMOVE_LOGOUT_WARNING');
 
-    return dispatch('clearBasket')
+    return dispatch('logoutBuyer')
+        .then(() => dispatch('clearBasket'))
         .then(() => dispatch('updateEssentials', true))
         .then(() => dispatch('clearInterface'))
         .then(() => dispatch('setupSocket'));
