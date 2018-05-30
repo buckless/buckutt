@@ -128,10 +128,11 @@ export default {
             initialPromise.then(() => this.closeReload());
         },
 
-        validate(cardNumber, credit) {
+        validate(cardNumber, credit, options) {
             this.buyer({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
+                options,
                 isOnlyAuth: this.isWaiting && !this.isWriting
             });
         },
@@ -139,6 +140,7 @@ export default {
         cancelReload() {
             this.$store.commit('SET_WRITING', false);
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
+            this.removeReloads();
         },
 
         ...mapActions([
