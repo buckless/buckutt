@@ -1,5 +1,3 @@
-import axios from '@/utils/axios';
-
 export const openReloadModal = ({ commit }) => {
     commit('OPEN_RELOAD_MODAL');
 };

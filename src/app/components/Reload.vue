@@ -27,7 +27,13 @@
             </div>
             <div v-show="reloadState === 'opened' || reloadOnly">
                 <div class="b-reload__modal__numerical-input">
+                    <unit-input
+                        v-if="meanOfPayment === 'returned'"
+                        v-model="reloadAmount"
+                        @validate="confirmReloadModal"
+                        ref="input"></unit-input>
                     <numerical-input
+                        v-else
                         @changed="updateCurrency"
                         @validate="confirmReloadModal"
                         ref="input"></numerical-input>
@@ -51,6 +57,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Currency from './Currency';
 import Methods from './Reload-Methods';
 import NumericalInput from './NumericalInput';
+import UnitInput from './UnitInput';
 
 export default {
     props: {
@@ -60,7 +67,8 @@ export default {
     components: {
         Currency,
         Methods,
-        NumericalInput
+        NumericalInput,
+        UnitInput
     },
 
     data() {
@@ -75,7 +83,8 @@ export default {
             reloadState: state => state.reload.reloadState,
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing,
-            giftReloads: state => state.items.giftReloads
+            giftReloads: state => state.items.giftReloads,
+            meanOfPayment: state => state.reload.meanOfPayment
         }),
 
         ...mapGetters(['reloadSum']),
@@ -106,7 +115,7 @@ export default {
         reload() {
             this.addReload({
                 amount: this.reloadAmount,
-                type: this.$store.state.reload.meanOfPayment,
+                type: this.meanOfPayment,
                 trace: ''
             });
 
@@ -114,7 +123,7 @@ export default {
                 this.addReload({
                     amount: this.reloadGiftAmount,
                     type: 'gift',
-                    trace: `${this.$store.state.reload.meanOfPayment}-${this.reloadAmount}`
+                    trace: `${this.meanOfPayment}-${this.reloadAmount}`
                 });
             }
 
