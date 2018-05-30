@@ -1,6 +1,5 @@
 <template>
     <div
-        v-if="reloadState !== 'closed' || reloadOnly"
         class="b-reload"
         :class="{ 'b-reload--reloadOnly': reloadOnly }">
         <div
@@ -167,7 +166,7 @@ export default {
     & .b-reload__modal {
         transform: translateX(-50%);
         transform-origin: top center;
-        z-index: -1;
+        z-index: 3;
     }
 }
 

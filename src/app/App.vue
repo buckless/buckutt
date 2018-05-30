@@ -12,8 +12,8 @@
             <assigner v-if="isAssignerMode" ref="assign" />
         </main>
         <reload
-            v-if="isReloaderMode"
-            :reloadOnly="!isSellerMode && isReloaderMode" />
+            v-if="isReloaderMode && (reloadState !== 'closed' || (reloadOnly && !history && !treasury))"
+            :reloadOnly="reloadOnly" />
         <transition name="b--fade">
             <loading v-if="loaded === false" />
         </transition>
@@ -84,6 +84,7 @@ export default {
             history: state => state.history.opened,
             treasury: state => state.treasury.opened,
             catering: state => state.catering.opened,
+            reloadState: state => state.reload.reloadState,
             alert: state => state.auth.alert
         }),
 
@@ -94,7 +95,11 @@ export default {
             'isReloaderMode',
             'isControllerMode',
             'isCashMode'
-        ])
+        ]),
+
+        reloadOnly() {
+            return !this.isSellerMode && this.isReloaderMode;
+        }
     },
 
     methods: {
