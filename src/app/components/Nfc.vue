@@ -115,7 +115,7 @@ export default {
                         this.onCard(card.credit, card.options);
                     } catch (err) {
                         console.log(err);
-                        if (!this.disableSignCheck) {
+                        if (!this.checkDisabled) {
                             this.$store.commit('ERROR', { message: 'Invalid card' });
                         } else {
                             this.onCard(0, {});
@@ -179,6 +179,10 @@ export default {
         successTextUpdated() {
             return this.successText || 'Transaction effectuée';
         }
+    },
+
+    checkDisabled() {
+        return this.disableSignCheck || this.rewrite;
     },
 
     mounted() {
