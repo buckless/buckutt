@@ -82,15 +82,16 @@ export default {
         onCard(value, credit, options) {
             if (this.cardNumber.length === 0) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value }).then(
-                    () => {
+                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value })
+                    .then(() => {
                         if (typeof credit === 'number') {
                             this.$store.commit('OVERRIDE_BUYER_CREDIT', credit);
                         }
+
                         this.$store.commit('SET_DATA_LOADED', true);
                         this.localCardNumber = value;
-                    }
-                );
+                    })
+                    .catch(() => this.$store.commit('SET_DATA_LOADED', true));
             } else if (this.cardNumber !== value) {
                 this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
@@ -138,6 +139,10 @@ export default {
                     setTimeout(() => {
                         this.selectedEntry = null;
                     }, 1500);
+                })
+                .catch(err => {
+                    this.$store.commit('ERROR', err.response.data);
+                    this.$store.commit('SET_DATA_LOADED', true);
                 });
         },
 

@@ -71,7 +71,7 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
             console.error(err);
 
             dispatch('pursueLogout');
-            commit('SET_DATA_LOADED', null);
+            commit('SET_DATA_LOADED', true);
 
             if (err.message === 'Network Error') {
                 commit('ERROR', { message: 'Server not reacheable' });
