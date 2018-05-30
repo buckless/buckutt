@@ -13,7 +13,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="isSellerMode"
+                    v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(toggleHistory)">
                     <i class="b-icon">history</i>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="(isReloaderMode || isSellerMode) && !history"
+                    v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(toggleTreasury)">
                     <i class="b-icon">account_balance</i>
