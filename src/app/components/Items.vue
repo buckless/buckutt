@@ -4,7 +4,7 @@
             v-for="item in tabsItems"
             :item="item"
             :key="item.id"></item>
-        <nfc mode="read" @read="validate" v-if="!buyer.isAuth && isWaiting && !isWriting" key="read" />
+        <nfc mode="read" @read="validate" v-if="!buyer.isAuth && isWaiting && !isWriting" :useCardData="useCardData" key="read" />
         <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
     </div>
 </template>
@@ -23,6 +23,7 @@ export default {
         ...mapGetters(['tabsItems']),
 
         ...mapState({
+            useCardData: state => state.auth.device.event.config.useCardData,
             buyer: state => state.auth.buyer,
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing

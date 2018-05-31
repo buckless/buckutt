@@ -39,7 +39,8 @@ export default {
     props: {
         mode: String,
         successText: String,
-        disableSignCheck: Boolean
+        disableSignCheck: Boolean,
+        useCardData: Boolean
     },
 
     data() {
@@ -104,7 +105,6 @@ export default {
 
                 nfc.on('data', data => {
                     let card;
-
                     try {
                         card = nfc.dataToCard(
                             data.toLowerCase ? data.toLowerCase() : data,
@@ -172,7 +172,6 @@ export default {
 
     computed: {
         ...mapState({
-            useCardData: state => state.auth.device.event.config.useCardData,
             dataLoaded: state => state.ui.dataLoaded
         }),
 
@@ -191,6 +190,13 @@ export default {
 
     beforeDestroy() {
         this.destroyListeners();
+    },
+
+    watch: {
+        useCardData() {
+            this.destroyListeners();
+            this.setListeners();
+        }
     }
 };
 </script>
