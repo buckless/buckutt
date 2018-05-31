@@ -6,7 +6,8 @@
                 @click="cancel"></div>
             <div class="b-writer__modal">
                 <div class="b-writer__modal__text" v-if="!success">
-                    <span v-if="rewrite" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
+                    <span v-if="rewrite && cardToRewrite === inputData" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
+                    <span v-if="rewrite && cardToRewrite !== inputData" class="b-writer__modal__text__error">La carte scannée est différente de l'originale</span>
                     <span v-else class="b-writer__modal__text__card">Approchez la carte cashless</span>
                     Gardez le contact jusqu'à la validation du paiement
                     <br /><br />
@@ -45,6 +46,7 @@ export default {
     data() {
         return {
             inputValue: '',
+            cardToRewrite: '',
             isCordova: process.env.TARGET === 'cordova',
             rewrite: false,
             success: false,
@@ -87,13 +89,6 @@ export default {
                 setTimeout(this.setListeners, 1000);
                 return;
             }
-
-            this.success = false;
-            this.rewrite = false;
-            this.dataToWrite = {
-                credit: null,
-                options: null
-            };
 
             const nfc = window.nfc;
 
@@ -145,6 +140,12 @@ export default {
                 this.$store.commit('SET_DATA_LOADED', true);
             }
 
+            if (this.rewrite && this.cardToRewrite !== this.inputValue) {
+                return Promise.reject();
+            }
+
+            this.cardToRewrite = this.inputValue;
+
             nfc
                 .write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
@@ -185,6 +186,13 @@ export default {
     },
 
     mounted() {
+        this.success = false;
+        this.rewrite = false;
+        this.dataToWrite = {
+            credit: null,
+            options: null
+        };
+
         this.setListeners();
     },
 
