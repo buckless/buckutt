@@ -39,8 +39,7 @@ export default {
     props: {
         mode: String,
         successText: String,
-        disableSignCheck: Boolean,
-        useCardData: Boolean
+        disableSignCheck: Boolean
     },
 
     data() {
@@ -172,6 +171,7 @@ export default {
 
     computed: {
         ...mapState({
+            useCardData: state => state.auth.device.event.config.useCardData,
             dataLoaded: state => state.ui.dataLoaded
         }),
 
