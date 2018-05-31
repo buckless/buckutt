@@ -21,7 +21,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="isSellerMode && useCardData"
+                    v-if="isSellerMode && useCardData && displayCatering"
                     class="b-menu__actions__action"
                     @click="close(toggleCatering)">
                     <i class="b-icon">shopping_basket</i>
@@ -104,6 +104,10 @@ export default {
     computed: {
         hasActions() {
             return this.isSellerMode || this.isReloaderMode || this.displayLogout;
+        },
+
+        displayCatering() {
+            return config.catering.articles.length > 0;
         },
 
         ...mapState({
