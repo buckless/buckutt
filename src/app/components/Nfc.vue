@@ -6,9 +6,10 @@
                 @click="cancel"></div>
             <div class="b-writer__modal">
                 <div class="b-writer__modal__text" v-if="!success">
-                    <span v-if="rewrite && cardToRewrite === inputData" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
-                    <span v-if="rewrite && cardToRewrite !== inputData" class="b-writer__modal__text__error">La carte scannée est différente de l'originale</span>
+                    <span v-if="rewrite && cardToRewrite === inputValue" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
+                    <span v-else-if="rewrite && cardToRewrite !== inputValue" class="b-writer__modal__text__error">La carte scannée est différente de l'originale</span>
                     <span v-else class="b-writer__modal__text__card">Approchez la carte cashless</span>
+                    <span v-if="rewrite" class="b-writer__modal__text__card">Fermeture possible dans {{ timer }} secondes<br /><br /></span>
                     Gardez le contact jusqu'à la validation du paiement
                     <br /><br />
                     <slot></slot>
@@ -53,11 +54,29 @@ export default {
             dataToWrite: {
                 credit: null,
                 options: null
-            }
+            },
+            timer: 15,
+            currentTimer: null
         };
     },
 
     methods: {
+        resetTimer() {
+            this.timer = 15;
+            if (this.currentTimer) {
+                clearTimeout(this.currentTimer);
+            }
+            setTimeout(() => this.tickTimer(), 1000);
+        },
+
+        tickTimer() {
+            this.timer = Math.max(0, this.timer - 1);
+
+            if (this.timer > 0) {
+                this.currentTimer = setTimeout(() => this.tickTimer(), 1000);
+            }
+        },
+
         focus() {
             if (this.$refs.input) {
                 this.$refs.input.focus();
@@ -73,7 +92,7 @@ export default {
         },
 
         cancel() {
-            if (!this.rewrite) {
+            if (!this.rewrite || this.timer === 0) {
                 this.$emit('cancel');
             }
         },
@@ -141,6 +160,7 @@ export default {
             }
 
             if (this.rewrite && this.cardToRewrite !== this.inputValue) {
+                this.resetTimer();
                 return Promise.reject();
             }
 
@@ -157,6 +177,7 @@ export default {
                 })
                 .catch(() => {
                     this.rewrite = true;
+                    this.resetTimer();
                     this.$store.commit('SET_DATA_LOADED', true);
                 });
         },
