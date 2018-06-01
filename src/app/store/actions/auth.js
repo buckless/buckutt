@@ -172,9 +172,18 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
         }
 
-        initialPromise = initialPromise.then(() =>
-            store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard })
-        );
+        initialPromise = initialPromise
+            .then(() =>
+                store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard })
+            )
+            .catch((...args) => {
+                // if reload only and basket fail, clear basket
+                if (!store.getters.isSellerMode && store.getters.isReloaderMode) {
+                    store.commit('REMOVE_RELOADS');
+                }
+
+                return Promise.reject(...args);
+            });
     } else {
         initialPromise = initialPromise.then(() => store.commit('SET_BUYER_MOL', cardNumber));
     }
