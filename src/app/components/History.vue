@@ -77,7 +77,7 @@ export default {
         onCard(value, credit, options) {
             if (!this.buyer.isAuth) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value })
+                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value, credit })
                     .then(() => {
                         if (typeof credit === 'number') {
                             this.$store.commit('OVERRIDE_BUYER_CREDIT', credit);
