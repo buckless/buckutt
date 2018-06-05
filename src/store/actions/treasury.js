@@ -10,16 +10,23 @@ import routeToRelation from '../../lib/routeToRelation';
 export function getPurchases({ commit, dispatch }, fields) {
     const qString = treasuryQueryString(fields);
 
-    return get(`services/treasury/purchases?${qString}`).then(purchases => {
-        commit('CLEAROBJECT', 'purchases');
-        const purchasesWT = purchases.map(purchase => {
-            const newPurchase = Object.assign({}, purchase);
-            newPurchase.totalWT = newPurchase.totalTI - newPurchase.totalVAT;
+    return get(`services/treasury/purchases?${qString}`)
+        .then(purchases => {
+            commit('CLEAROBJECT', 'purchases');
+            const purchasesWT = purchases.map(purchase => {
+                const newPurchase = Object.assign({}, purchase);
+                newPurchase.totalWT = newPurchase.totalTI - newPurchase.totalVAT;
 
-            return newPurchase;
+                return newPurchase;
+            });
+            dispatch('checkAndAddObjects', { route: 'purchases', objects: purchasesWT });
+
+            return get(`services/treasury/withdrawals?${qString}`)
+        })
+        .then(withdrawals => {
+            commit('CLEAROBJECT', 'withdrawals');
+            dispatch('checkAndAddObjects', { route: 'withdrawals', objects: withdrawals });
         });
-        dispatch('checkAndAddObjects', { route: 'purchases', objects: purchasesWT });
-    });
 }
 
 /**

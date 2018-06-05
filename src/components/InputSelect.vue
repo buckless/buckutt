@@ -1,18 +1,22 @@
 <template>
-    <div class="b-inputselect mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select" ref="textfield">
+    <div
+        class="b-inputselect mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select"
+        @keydown.up.prevent.stop="up()"
+        @keydown.down.prevent.stop="down()"
+        @keydown.enter.prevent.stop="select(suggestions[activeIndex].original)"
+        @keydown.tab.prevent.stop="select(suggestions[activeIndex].original)"
+        @keydown="$refs.realInput.focus()"
+        ref="textfield">
         <input
             type="text"
             class="mdl-textfield__input b-inputselect__field"
             :id="id"
             v-model="content"
-            @input="changeInput(content)"
             @focus="displayInput = true"
             @blur="displayInput = false"
-            @keydown.up.prevent.stop="up()"
-            @keydown.down.prevent.stop="down()"
-            @keydown.enter.prevent.stop="select(suggestions[activeIndex].original)"
             ref="input"
-            autocomplete="off" />
+            autocomplete="off"
+            readonly="readonly" />
         <label :for="id">
             <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
         </label>
@@ -23,6 +27,17 @@
                 class="b-completelist mdl-shadow--2dp"
                 ref="menu"
                 v-if="displayInput">
+                <li class="b-completelist__search">
+                    <i class="material-icons">search</i>
+                    <input
+                    type="text"
+                    class="mdl-textfield__input"
+                    v-model="filter"
+                    @focus="displayInput = true"
+                    @blur="displayInput = false"
+                    autocomplete="off"
+                    ref="realInput" />
+                </li>
                 <li
                     v-for="(suggestion, index) in suggestions"
                     @mousedown="select(suggestion.original)"
@@ -69,9 +84,9 @@ export default {
     data() {
         return {
             content: '',
+            filter: '',
             displayInput: false,
-            activeIndex: 0,
-            ignoreNextUpdate: false
+            activeIndex: 0
         };
     },
 
@@ -81,8 +96,8 @@ export default {
             const db = this.convertOptions(this.database);
             const opts = this.convertOptions(this.options);
 
-            return this.content
-                ? fuzzy.filter(this.content, db, strongify)
+            return this.filter
+                ? fuzzy.filter(this.filter, db, strongify)
                 : opts.map(entry => ({ original: entry, string: entry.name }));
         },
 
@@ -95,28 +110,12 @@ export default {
         select(suggestion) {
             this.$refs.textfield.MaterialTextfield.change(suggestion.name);
             this.$refs.textfield.MaterialTextfield.boundBlurHandler();
-            this.$refs.input.blur();
 
+            this.filter = '';
             this.content = suggestion.name;
             this.displayInput = false;
-            this.ignoreNextUpdate = true;
 
             this.$emit('input', suggestion.value);
-        },
-
-        changeInput(content) {
-            if (!this.suggestions[0]) {
-                return;
-            }
-
-            const firstName = this.suggestions[0].original.name.toLowerCase();
-
-            if (this.suggestions.length === 1 && firstName === content.toLowerCase()) {
-                return this.select(this.suggestions[0].original);
-            }
-
-            this.ignoreNextUpdate = true;
-            this.$emit('input', undefined);
         },
 
         convertOptions(options) {
@@ -178,11 +177,6 @@ export default {
 
     watch: {
         value(newValue) {
-            if (this.ignoreNextUpdate) {
-                this.ignoreNextUpdate = false;
-                return;
-            }
-
             const object = this.suggestions.find(
                 suggestion => JSON.stringify(newValue) === JSON.stringify(suggestion.original.value)
             );
@@ -211,6 +205,7 @@ export default {
 
 .b-inputselect__field {
     padding-right: 30px;
+    cursor: pointer;
 }
 
 .b-completelist {
@@ -226,6 +221,20 @@ export default {
     max-height: 288px;
     overflow: auto;
     transition: 0.2s opacity ease-out, 0.2s transform ease-out;
+}
+
+.b-completelist__search {
+    & > i {
+        position: absolute;
+        top: 8px;
+        left: 10px;
+        color: #222;
+    }
+
+    & > input {
+        padding: 10px 10px 10px 40px;
+        width: 100%;
+    }
 }
 
 .b-completelist__item {

@@ -47,6 +47,17 @@
             :paging="25"
             :data="displayedPurchases">
         </b-table>
+
+        <h4>Catering</h4>
+
+        <b-table
+            :headers="[
+                { title: 'Quantité', field: 'count' },
+                { title: 'Article', field: 'name'}
+            ]"
+            :paging="10"
+            :data="withdrawals">
+        </b-table>
     </div>
 </template>
 
@@ -70,7 +81,8 @@ export default {
 
     computed: {
         ...mapState({
-            purchases: state => state.objects.purchases
+            purchases: state => state.objects.purchases,
+            withdrawals: state => state.objects.withdrawals
         }),
 
         ...mapGetters([
