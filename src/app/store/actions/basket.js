@@ -127,6 +127,7 @@ export const sendBasket = (store, payload = {}) => {
 
     const localId = `transaction-id-${window.appId}-${Date.now()}`;
     const transactionToSend = {
+        assignedCard: payload.assignedCard,
         buyer: cardNumber,
         molType: config.buyerMeanOfLogin,
         date: now,

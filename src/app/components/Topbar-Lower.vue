@@ -3,7 +3,7 @@
         <div class="b-lower-bar__tabs">
             <tab
                 v-for="(tab, i) in tabs"
-                v-if="!loginState && isSellerMode && !history && !treasury"
+                v-if="!loginState && isSellerMode && !history && !treasury && !catering"
                 :name="tab.name"
                 :id="tab.id"
                 :key="tab.id"
@@ -36,6 +36,7 @@ export default {
             point: state => state.auth.device.point.name,
             history: state => state.history.opened,
             treasury: state => state.treasury.opened,
+            catering: state => state.catering.opened,
             seller: state => state.auth.seller,
             buyer: state => state.auth.buyer
         }),

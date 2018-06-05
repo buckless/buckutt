@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VuexPersistence from 'vuex-persist';
+import localForage from 'localforage';
 
 import createLogger from 'vuex/dist/logger';
 
@@ -14,10 +16,16 @@ import basket from './modules/basket';
 import online from './modules/online';
 import history from './modules/history';
 import treasury from './modules/treasury';
+import catering from './modules/catering';
 
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV === 'development';
+
+const vuexPersist = new VuexPersistence({
+    strictMode: debug,
+    storage: localForage
+});
 
 const store = new Vuex.Store({
     state: {
@@ -25,7 +33,9 @@ const store = new Vuex.Store({
         meanOfPayment: 'card',
         paymentStatus: 'WAITING'
     },
-
+    mutations: {
+        RESTORE_MUTATION: vuexPersist.RESTORE_MUTATION
+    },
     actions,
     getters,
     modules: {
@@ -36,10 +46,11 @@ const store = new Vuex.Store({
         basket,
         online,
         history,
-        treasury
+        treasury,
+        catering
     },
     strict: debug,
-    plugins: debug ? [createLogger()] : []
+    plugins: debug ? [createLogger(), vuexPersist.plugin] : [vuexPersist.plugin]
 });
 
 if (module.hot) {

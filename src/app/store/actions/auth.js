@@ -4,32 +4,26 @@ import q from '../../utils/q';
 import offlineLogin from '../../utils/offline/login';
 
 export const setPoint = ({ commit }, payload) => {
-    window.localStorage.setItem('headers', JSON.stringify(payload));
     commit('SET_DEVICE', payload);
 };
 
 export const setGiftReloads = ({ commit }, payload) => {
-    window.localStorage.setItem('giftReloads', JSON.stringify(payload));
     commit('SET_GIFTRELOADS', payload);
 };
 
 export const setNfcCosts = ({ commit }, payload) => {
-    window.localStorage.setItem('nfcCosts', JSON.stringify(payload));
     commit('SET_NFCCOSTS', payload);
 };
 
 export const setFullDevice = ({ commit }, payload) => {
-    window.localStorage.setItem('fullDevice', JSON.stringify(payload));
     commit('SET_FULL_DEVICE', payload);
 };
 
 export const setEvent = ({ commit }, payload) => {
-    window.localStorage.setItem('event', JSON.stringify(payload));
     commit('SET_EVENT', payload);
 };
 
 export const setGroups = ({ commit }, payload) => {
-    window.localStorage.setItem('groups', JSON.stringify(payload));
     commit('SET_GROUPS', payload);
 };
 
@@ -76,8 +70,8 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         .catch(err => {
             console.error(err);
 
-            commit('ID_SELLER', '');
-            commit('SET_DATA_LOADED', null);
+            dispatch('pursueLogout');
+            commit('SET_DATA_LOADED', true);
 
             if (err.message === 'Network Error') {
                 commit('ERROR', { message: 'Server not reacheable' });
@@ -88,14 +82,11 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         });
 };
 
-export const logout = store => {
+export const logoutBuyer = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
+
         return store.dispatch('clearBasket').then(() => store.dispatch('interfaceLoader'));
-    } else if (store.state.auth.seller.isAuth) {
-        store.commit('FIRST_LOGOUT_SELLER');
-    } else {
-        return store.dispatch('pursueLogout');
     }
 
     return Promise.resolve();
@@ -107,7 +98,8 @@ export const pursueLogout = ({ commit, dispatch }) => {
     // Remove disconnect warning
     commit('REMOVE_LOGOUT_WARNING');
 
-    return dispatch('clearBasket')
+    return dispatch('logoutBuyer')
+        .then(() => dispatch('clearBasket'))
         .then(() => dispatch('updateEssentials', true))
         .then(() => dispatch('clearInterface'))
         .then(() => dispatch('setupSocket'));
@@ -117,7 +109,7 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
+export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
     const token = store.getters.tokenHeaders;
     const onlyAuth = isOnlyAuth || false;
 
@@ -146,7 +138,7 @@ export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
 
         if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
             shouldChangeBuyer = true;
-            shouldCheckPending = store.state.online.status;
+            shouldCheckPending = store.state.online.status && options.assignedCard;
             shouldWriteCredit = store.state.auth.device.event.config.useCardData;
         } else {
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
@@ -157,7 +149,7 @@ export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
             shouldClearBasket = true;
             shouldChangeBuyer = true;
         } else {
-            shouldCheckPending = store.state.online.status;
+            shouldCheckPending = store.state.online.status && options.assignedCard;
             interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
         }
     }
@@ -180,16 +172,36 @@ export const buyer = (store, { cardNumber, credit, isOnlyAuth }) => {
             store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
         }
 
-        initialPromise = initialPromise.then(() => store.dispatch('sendBasket', { cardNumber }));
+        initialPromise = initialPromise
+            .then(() =>
+                store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard })
+            )
+            .catch((...args) => {
+                // if reload only and basket fail, clear basket
+                if (!store.getters.isSellerMode && store.getters.isReloaderMode) {
+                    store.commit('REMOVE_RELOADS');
+                }
+
+                return Promise.reject(...args);
+            });
     } else {
         initialPromise = initialPromise.then(() => store.commit('SET_BUYER_MOL', cardNumber));
     }
 
     if (shouldWriteCredit) {
+        const newOptions = {
+            assignedCard: true,
+            ...options.catering
+        };
+
         initialPromise = initialPromise.then(
             () =>
                 new Promise(resolve => {
-                    window.app.$root.$emit('readyToWrite', store.state.ui.lastUser.credit);
+                    window.app.$root.$emit(
+                        'readyToWrite',
+                        store.state.ui.lastUser.credit,
+                        newOptions
+                    );
                     window.app.$root.$on('writeCompleted', () => resolve());
                 })
         );

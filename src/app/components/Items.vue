@@ -34,11 +34,12 @@ export default {
             setBuyer: 'buyer'
         }),
 
-        validate(cardNumber, credit) {
-            console.log('items-validate', cardNumber, credit);
+        validate(cardNumber, credit, options) {
+            console.log('items-validate', cardNumber, credit, options);
             this.setBuyer({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
+                options,
                 isOnlyAuth: this.isWaiting && !this.isWriting
             });
         },

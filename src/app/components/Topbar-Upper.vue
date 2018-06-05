@@ -2,8 +2,11 @@
     <div class="b-upper-bar">
         <offline />
         <div class="b-upper-bar__buyer-name" v-if="buyer.isAuth">
+            <div class="b-upper-bar__buyer-logout">
+                <span class="b-icon" @click="logoutBuyer">eject</span>
+            </div>
             <span class="b--capitalized">{{ buyer.firstname }}</span>&nbsp;
-            <span class="b--capitalized">{{ buyer.lastname }}</span>
+            <span class="b--capitalized">{{ buyer.lastname || 'Anonyme' }}</span>
         </div>
         <div class="b-upper-bar__buyer-credit" v-if="buyer.isAuth">
             <span :class="{ 'b-upper-bar__buyer__credit--negative': credit < 0 }">
@@ -11,7 +14,7 @@
             </span>
         </div>
         <div class="b-space"></div>
-        <div class="b-upper-bar__date">
+        <div class="b-upper-bar__date" v-if="!buyer.isAuth">
             <live-time></live-time>
         </div>
         <div class="b-upper-bar__menu">
@@ -21,13 +24,15 @@
               :displayLogout="displayLogout"
               :onlyLogout="onlyLogout"
               :history="history"
-              :treasury="treasury"/>
+              :treasury="treasury"
+              :catering="catering"
+              :useCardData="useCardData"/>
         </div>
     </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 
 import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
@@ -48,6 +53,8 @@ export default {
         ...mapState({
             history: state => state.history.opened,
             treasury: state => state.treasury.opened,
+            catering: state => state.catering.opened,
+            useCardData: state => state.auth.device.event.config.useCardData,
             seller: state => state.auth.seller,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
             buyer: state => state.auth.buyer
@@ -56,6 +63,10 @@ export default {
         onlyLogout() {
             return this.displayLogout && this.seller.isAuth === false;
         }
+    },
+
+    methods: {
+        ...mapActions(['logoutBuyer'])
     }
 };
 </script>
@@ -81,6 +92,22 @@ export default {
 .b-upper-bar__date,
 .b-upper-bar__menu {
     margin: 0 6px;
+}
+
+.b-upper-bar__buyer-logout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    color: #222;
+    border-radius: 50%;
+    margin-right: 4px;
+    height: 20px;
+    width: 20px;
+
+    .b-icon {
+        font-size: 18px;
+    }
 }
 
 .b-upper-bar__buyer-name {
@@ -141,6 +168,12 @@ export default {
         padding-left: 10px;
         justify-content: flex-end;
         padding-bottom: 5px;
+    }
+
+    .b-upper-bar__buyer-credit {
+        left: unset;
+        right: 40px;
+        font-size: 22px;
     }
 
     .b-upper-bar__date {

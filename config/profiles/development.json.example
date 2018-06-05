@@ -4,6 +4,7 @@
     "loginMeanOfLogin": "\"etuId\"",
     "buyerMeanOfLogin": "\"etuId\"",
     "signingKey": "\"buckless\"",
+    "sentry": "\"https://28b38832484d4f22994e50c24d5d6a6a@sentry.io/1207636\"",
     "desfire"         : {
         "key"   : "\"0\"",
         "keyId" : "[4]",
@@ -21,5 +22,11 @@
     "certificate": {
         "path": "\"./buckless-certificate.p12\"",
         "password": "\"foo\""
-    }
+    },
+    "catering": {
+       "dayOne": "\"2018-06-02T00:00:00.000Z\"",
+       "days": "1",
+       "articles": [
+       ]
+   }
 }

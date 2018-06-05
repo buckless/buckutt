@@ -3,16 +3,17 @@
         <topbar />
         <main class="b-main">
             <login v-if="loginState" ref="login" />
-            <history v-if="isSellerMode && history && !treasury" ref="history" />
-            <treasury v-if="(isSellerMode || isReloaderMode) && treasury && !history" ref="treasury" />
-            <items v-if="isSellerMode && !history && !treasury" />
-            <sidebar v-if="isSellerMode && !history && !treasury" />
+            <history v-if="isCashMode && history && !treasury && !catering" ref="history" />
+            <treasury v-if="isCashMode && treasury && !history && !catering" ref="treasury" />
+            <catering v-if="isSellerMode && catering && !history && !treasury" ref="catering" />
+            <items v-if="isSellerMode && !history && !treasury && !catering" />
+            <sidebar v-if="isSellerMode && !history && !treasury && !catering" />
             <controller v-if="isControllerMode" ref="controller" />
             <assigner v-if="isAssignerMode" ref="assign" />
         </main>
         <reload
-            v-if="isReloaderMode"
-            :reloadOnly="!isSellerMode && isReloaderMode" />
+            v-if="isReloaderMode && (reloadState !== 'closed' || (reloadOnly && !history && !treasury))"
+            :reloadOnly="reloadOnly" />
         <transition name="b--fade">
             <loading v-if="loaded === false" />
         </transition>
@@ -29,7 +30,6 @@
 import 'normalize.css';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
-import hasEssentials from './utils/offline/hasEssentials';
 import OfflineData from '@/../lib/offlineData';
 
 import Items from './components/Items';
@@ -47,6 +47,7 @@ import DisconnectWarning from './components/DisconnectWarning';
 import Ticket from './components/Ticket';
 import History from './components/History';
 import Treasury from './components/Treasury';
+import Catering from './components/Catering';
 
 export default {
     name: 'App',
@@ -66,7 +67,8 @@ export default {
         DisconnectWarning,
         Ticket,
         History,
-        Treasury
+        Treasury,
+        Catering
     },
 
     computed: {
@@ -81,6 +83,8 @@ export default {
             online: state => state.online.status,
             history: state => state.history.opened,
             treasury: state => state.treasury.opened,
+            catering: state => state.catering.opened,
+            reloadState: state => state.reload.reloadState,
             alert: state => state.auth.alert
         }),
 
@@ -91,74 +95,23 @@ export default {
             'isReloaderMode',
             'isControllerMode',
             'isCashMode'
-        ])
+        ]),
+
+        reloadOnly() {
+            return !this.isSellerMode && this.isReloaderMode;
+        }
     },
 
     methods: {
-        ...mapActions([
-            'setupSocket',
-            'setSellers',
-            'setPoint',
-            'setGroups',
-            'setMeansOfPayment',
-            'setFullDevice',
-            'setEvent',
-            'setDefaultItems',
-            'setPendingRequests',
-            'setHistory',
-            'setPendingCancellations',
-            'setGiftReloads',
-            'updateEssentials',
-            'periodicSync'
-        ])
+        ...mapActions(['setupSocket', 'updateEssentials', 'periodicSync'])
     },
 
     mounted() {
         this.setupSocket();
-
-        if (hasEssentials()) {
-            this.setPoint(JSON.parse(window.localStorage.getItem('headers')));
-            this.setSellers(JSON.parse(window.localStorage.getItem('sellers')));
-
-            if (window.localStorage.hasOwnProperty('groups')) {
-                this.setGroups(JSON.parse(window.localStorage.getItem('groups')));
-            }
-
-            if (window.localStorage.hasOwnProperty('meansOfPayment')) {
-                this.setMeansOfPayment(JSON.parse(window.localStorage.getItem('meansOfPayment')));
-            }
-
-            if (window.localStorage.hasOwnProperty('fullDevice')) {
-                this.setFullDevice(JSON.parse(window.localStorage.getItem('fullDevice')));
-            }
-
-            if (window.localStorage.hasOwnProperty('event')) {
-                this.setEvent(JSON.parse(window.localStorage.getItem('event')));
-            }
-
-            if (window.localStorage.hasOwnProperty('defaultItems')) {
-                this.setDefaultItems(JSON.parse(window.localStorage.getItem('defaultItems')));
-            }
-
-            if (window.localStorage.hasOwnProperty('giftReloads')) {
-                this.setGiftReloads(JSON.parse(window.localStorage.getItem('giftReloads')));
-            }
-        }
-
         this.updateEssentials();
         this.periodicSync();
 
         setInterval(() => this.updateEssentials(!this.seller.isAuth), 60000);
-
-        if (window.localStorage.getItem('pendingRequests')) {
-            this.setPendingRequests(JSON.parse(window.localStorage.getItem('pendingRequests')));
-        }
-
-        if (window.localStorage.getItem('pendingCancellations')) {
-            this.setPendingCancellations(
-                JSON.parse(window.localStorage.getItem('pendingCancellations'))
-            );
-        }
 
         let nfc = {
             on() {}
@@ -175,10 +128,7 @@ export default {
         window.nfc = nfc;
         window.appId = Date.now();
         window.database = new OfflineData();
-        window.database
-            .init()
-            .then(() => window.database.getHistory())
-            .then(history => this.setHistory(history));
+        window.database.init();
     }
 };
 </script>

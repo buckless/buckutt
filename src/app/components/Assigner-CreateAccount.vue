@@ -85,7 +85,7 @@ export default {
     },
 
     methods: {
-        assignCard(cardId) {
+        assignCard(cardId, _, options) {
             if (this.assignModalOpened) {
                 this.$store.commit('SET_DATA_LOADED', false);
                 let promise = Promise.resolve();
@@ -96,6 +96,11 @@ export default {
                     cardId,
                     groups
                 };
+
+                if (options.assignedCard) {
+                    this.$store.commit('SET_DATA_LOADED', true);
+                    return this.$store.commit('ERROR', { message: 'Card already assigned' });
+                }
 
                 if (this.online) {
                     promise = promise.then(() =>
@@ -122,7 +127,10 @@ export default {
                         write =>
                             write && this.useCardData
                                 ? new Promise(resolve => {
-                                      window.app.$root.$emit('readyToWrite', this.numberCredit);
+                                      window.app.$root.$emit('readyToWrite', this.numberCredit, {
+                                          assignedCard: true,
+                                          catering: options.catering
+                                      });
                                       window.app.$root.$on('writeCompleted', () => resolve());
                                   })
                                 : Promise.resolve()
