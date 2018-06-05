@@ -3,8 +3,8 @@
         <topbar />
         <main class="b-main">
             <login v-if="loginState" ref="login" />
-            <history v-if="isSellerMode && history && !treasury && !catering" ref="history" />
-            <treasury v-if="(isSellerMode || isReloaderMode) && treasury && !history && !catering" ref="treasury" />
+            <history v-if="isCashMode && history && !treasury && !catering" ref="history" />
+            <treasury v-if="isCashMode && treasury && !history && !catering" ref="treasury" />
             <catering v-if="isSellerMode && catering && !history && !treasury" ref="catering" />
             <items v-if="isSellerMode && !history && !treasury && !catering" />
             <sidebar v-if="isSellerMode && !history && !treasury && !catering" />
@@ -12,8 +12,8 @@
             <assigner v-if="isAssignerMode" ref="assign" />
         </main>
         <reload
-            v-if="isReloaderMode"
-            :reloadOnly="!isSellerMode && isReloaderMode" />
+            v-if="isReloaderMode && (reloadState !== 'closed' || (reloadOnly && !history && !treasury))"
+            :reloadOnly="reloadOnly" />
         <transition name="b--fade">
             <loading v-if="loaded === false" />
         </transition>
@@ -84,6 +84,7 @@ export default {
             history: state => state.history.opened,
             treasury: state => state.treasury.opened,
             catering: state => state.catering.opened,
+            reloadState: state => state.reload.reloadState,
             alert: state => state.auth.alert
         }),
 
@@ -94,7 +95,11 @@ export default {
             'isReloaderMode',
             'isControllerMode',
             'isCashMode'
-        ])
+        ]),
+
+        reloadOnly() {
+            return !this.isSellerMode && this.isReloaderMode;
+        }
     },
 
     methods: {

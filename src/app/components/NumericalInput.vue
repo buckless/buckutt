@@ -77,10 +77,6 @@ export default {
         return { value: '' };
     },
 
-    props: {
-        password: { type: Boolean, default: false }
-    },
-
     methods: {
         input(v, e) {
             this.value += v.toString();

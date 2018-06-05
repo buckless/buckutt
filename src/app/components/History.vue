@@ -1,6 +1,6 @@
 <template>
     <div class="b-history">
-        <div class="b-history__text" v-if="cardNumber.length === 0">
+        <div class="b-history__text" v-if="!buyer.isAuth">
             Approchez la carte cashless
             <div>Pour visualiser les derniers achats sur cette borne</div>
             <nfc mode="read" @read="onCard" />
@@ -54,19 +54,14 @@ export default {
 
     data() {
         return {
-            selectedEntry: null,
-            localCardNumber: ''
+            selectedEntry: null
         };
     },
 
     computed: {
-        cardNumber() {
-            return this.buyer.isAuth ? this.buyer.meanOfLogin : this.localCardNumber;
-        },
-
         entries() {
             return this.history
-                .filter(e => e.cardNumber === this.cardNumber)
+                .filter(e => e.cardNumber === this.buyer.meanOfLogin)
                 .sort((a, b) => b.date - a.date)
                 .map(e => this.resume(e));
         },
@@ -80,18 +75,18 @@ export default {
 
     methods: {
         onCard(value, credit, options) {
-            if (this.cardNumber.length === 0) {
+            if (!this.buyer.isAuth) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value }).then(
-                    () => {
+                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value, credit })
+                    .then(() => {
                         if (typeof credit === 'number') {
                             this.$store.commit('OVERRIDE_BUYER_CREDIT', credit);
                         }
+
                         this.$store.commit('SET_DATA_LOADED', true);
-                        this.localCardNumber = value;
-                    }
-                );
-            } else if (this.cardNumber !== value) {
+                    })
+                    .catch(() => this.$store.commit('SET_DATA_LOADED', true));
+            } else if (this.buyer.meanOfLogin !== value) {
                 this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
             }
@@ -138,6 +133,10 @@ export default {
                     setTimeout(() => {
                         this.selectedEntry = null;
                     }, 1500);
+                })
+                .catch(err => {
+                    this.$store.commit('ERROR', err.response.data);
+                    this.$store.commit('SET_DATA_LOADED', true);
                 });
         },
 

@@ -3,7 +3,7 @@
         <offline />
         <div class="b-upper-bar__buyer-name" v-if="buyer.isAuth">
             <div class="b-upper-bar__buyer-logout">
-                <span class="b-icon" @click="logout">eject</span>
+                <span class="b-icon" @click="logoutBuyer">eject</span>
             </div>
             <span class="b--capitalized">{{ buyer.firstname }}</span>&nbsp;
             <span class="b--capitalized">{{ buyer.lastname || 'Anonyme' }}</span>
@@ -66,7 +66,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['logout'])
+        ...mapActions(['logoutBuyer'])
     }
 };
 </script>

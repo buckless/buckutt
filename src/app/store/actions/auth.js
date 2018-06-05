@@ -71,8 +71,8 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         .catch(err => {
             console.error(err);
 
-            commit('ID_SELLER', '');
-            commit('SET_DATA_LOADED', null);
+            dispatch('pursueLogout');
+            commit('SET_DATA_LOADED', true);
 
             if (err.message === 'Network Error') {
                 commit('ERROR', { message: 'Server not reacheable' });
@@ -83,14 +83,11 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         });
 };
 
-export const logout = store => {
+export const logoutBuyer = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
+
         return store.dispatch('clearBasket').then(() => store.dispatch('interfaceLoader'));
-    } else if (store.state.auth.seller.isAuth) {
-        store.commit('FIRST_LOGOUT_SELLER');
-    } else {
-        return store.dispatch('pursueLogout');
     }
 
     return Promise.resolve();
@@ -102,7 +99,8 @@ export const pursueLogout = ({ commit, dispatch }) => {
     // Remove disconnect warning
     commit('REMOVE_LOGOUT_WARNING');
 
-    return dispatch('clearBasket')
+    return dispatch('logoutBuyer')
+        .then(() => dispatch('clearBasket'))
         .then(() => dispatch('updateEssentials', true))
         .then(() => dispatch('clearInterface'))
         .then(() => dispatch('setupSocket'));
@@ -184,22 +182,43 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
     }
 
     if (shouldSendBasket) {
-        initialPromise = initialPromise.then(() => {
-            if (typeof cardCredit === 'number') {
-                store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
-            }
-            return store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard });
-        });
+        initialPromise = initialPromise
+            .then(() => {
+                if (typeof cardCredit === 'number') {
+                    store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
+                }
+
+                return store.dispatch('sendBasket', {
+                    cardNumber,
+                    assignedCard: options.assignedCard
+                });
+            })
+            .catch((...args) => {
+                // if reload only and basket fail, clear basket
+                if (!store.getters.isSellerMode && store.getters.isReloaderMode) {
+                    store.commit('REMOVE_RELOADS');
+                }
+
+                return Promise.reject(...args);
+            });
     } else {
         initialPromise = initialPromise.then(() => store.commit('SET_BUYER_MOL', cardNumber));
     }
 
     if (shouldWriteCredit) {
-        options.assignedCard = true;
+        const newOptions = {
+            assignedCard: true,
+            ...options.catering
+        };
+
         initialPromise = initialPromise.then(
             () =>
                 new Promise(resolve => {
-                    window.app.$root.$emit('readyToWrite', store.state.ui.lastUser.credit, options);
+                    window.app.$root.$emit(
+                        'readyToWrite',
+                        store.state.ui.lastUser.credit,
+                        newOptions
+                    );
                     window.app.$root.$on('writeCompleted', () => resolve());
                 })
         );

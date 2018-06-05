@@ -6,8 +6,10 @@
                 @click="cancel"></div>
             <div class="b-writer__modal">
                 <div class="b-writer__modal__text" v-if="!success">
-                    <span v-if="rewrite" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
+                    <span v-if="rewrite && cardToRewrite === inputValue" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
+                    <span v-else-if="rewrite && cardToRewrite !== inputValue" class="b-writer__modal__text__error">La carte scannée est différente de l'originale</span>
                     <span v-else class="b-writer__modal__text__card">Approchez la carte cashless</span>
+                    <span v-if="rewrite" class="b-writer__modal__text__card">Fermeture possible dans {{ timer }} secondes<br /><br /></span>
                     Gardez le contact jusqu'à la validation du paiement
                     <br /><br />
                     <slot></slot>
@@ -45,17 +47,36 @@ export default {
     data() {
         return {
             inputValue: '',
+            cardToRewrite: '',
             isCordova: process.env.TARGET === 'cordova',
             rewrite: false,
             success: false,
             dataToWrite: {
                 credit: null,
                 options: null
-            }
+            },
+            timer: 15,
+            currentTimer: null
         };
     },
 
     methods: {
+        resetTimer() {
+            this.timer = 15;
+            if (this.currentTimer) {
+                clearTimeout(this.currentTimer);
+            }
+            setTimeout(() => this.tickTimer(), 1000);
+        },
+
+        tickTimer() {
+            this.timer = Math.max(0, this.timer - 1);
+
+            if (this.timer > 0) {
+                this.currentTimer = setTimeout(() => this.tickTimer(), 1000);
+            }
+        },
+
         focus() {
             if (this.$refs.input) {
                 this.$refs.input.focus();
@@ -71,7 +92,7 @@ export default {
         },
 
         cancel() {
-            if (!this.rewrite) {
+            if (!this.rewrite || this.timer === 0) {
                 this.$emit('cancel');
             }
         },
@@ -88,13 +109,6 @@ export default {
                 return;
             }
 
-            this.success = false;
-            this.rewrite = false;
-            this.dataToWrite = {
-                credit: null,
-                options: null
-            };
-
             const nfc = window.nfc;
 
             if (this.useCardData) {
@@ -104,7 +118,6 @@ export default {
 
                 nfc.on('data', data => {
                     let card;
-
                     try {
                         card = nfc.dataToCard(
                             data.toLowerCase ? data.toLowerCase() : data,
@@ -115,7 +128,7 @@ export default {
                         this.onCard(card.credit, card.options);
                     } catch (err) {
                         console.log(err);
-                        if (!this.disableSignCheck) {
+                        if (!this.checkDisabled) {
                             this.$store.commit('ERROR', { message: 'Invalid card' });
                         } else {
                             this.onCard(0, {});
@@ -146,6 +159,13 @@ export default {
                 this.$store.commit('SET_DATA_LOADED', true);
             }
 
+            if (this.rewrite && this.cardToRewrite !== this.inputValue) {
+                this.resetTimer();
+                return Promise.reject();
+            }
+
+            this.cardToRewrite = this.inputValue;
+
             nfc
                 .write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
@@ -157,6 +177,7 @@ export default {
                 })
                 .catch(() => {
                     this.rewrite = true;
+                    this.resetTimer();
                     this.$store.commit('SET_DATA_LOADED', true);
                 });
         },
@@ -181,12 +202,30 @@ export default {
         }
     },
 
+    checkDisabled() {
+        return this.disableSignCheck || this.rewrite;
+    },
+
     mounted() {
+        this.success = false;
+        this.rewrite = false;
+        this.dataToWrite = {
+            credit: null,
+            options: null
+        };
+
         this.setListeners();
     },
 
     beforeDestroy() {
         this.destroyListeners();
+    },
+
+    watch: {
+        useCardData() {
+            this.destroyListeners();
+            this.setListeners();
+        }
     }
 };
 </script>

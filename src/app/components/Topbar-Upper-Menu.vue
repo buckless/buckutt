@@ -13,7 +13,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="isSellerMode"
+                    v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(toggleHistory)">
                     <i class="b-icon">history</i>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="isSellerMode && useCardData"
+                    v-if="isSellerMode && useCardData && displayCatering"
                     class="b-menu__actions__action"
                     @click="close(toggleCatering)">
                     <i class="b-icon">shopping_basket</i>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="(isReloaderMode || isSellerMode) && !history"
+                    v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(toggleTreasury)">
                     <i class="b-icon">account_balance</i>
@@ -59,7 +59,7 @@
                 <div
                     v-if="displayLogout"
                     class="b-menu__actions__action"
-                    @click="close(logout)">
+                    @click="close(logoutSeller)">
                     <i class="b-icon">eject</i>
                     Déconnexion
                 </div>
@@ -74,7 +74,7 @@
         <div class="b-menu" @click="close(toggleCatering)" v-else-if="catering && !onlyLogout">
             <div class="b-menu__icon b-icon">close</div>
         </div>
-        <div class="b-menu" @click="close(logout)" v-else>
+        <div class="b-menu" @click="close(logoutSeller)" v-else>
             <div class="b-menu__icon b-icon">close</div>
         </div>
     </div>
@@ -106,6 +106,10 @@ export default {
             return this.isSellerMode || this.isReloaderMode || this.displayLogout;
         },
 
+        displayCatering() {
+            return config.catering.articles.length > 0;
+        },
+
         ...mapState({
             syncing: state => state.online.syncing
         })
@@ -115,6 +119,14 @@ export default {
         close(action) {
             this.showMenu = false;
             action();
+        },
+
+        logoutSeller() {
+            if (this.onlyLogout) {
+                return this.$store.dispatch('pursueLogout');
+            }
+
+            return this.$store.commit('FIRST_LOGOUT_SELLER');
         },
 
         ...mapActions([
