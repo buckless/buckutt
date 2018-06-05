@@ -9,7 +9,7 @@
                     Les opérations en ligne ne sont validées qu'à la suite une transaction sur site.
                     <b-autocomplete label="Destinataire" id="b-name" @input="defineUser" class="b--inputwidth" required="required" error="Un utilisateur doit être sélectionné"/>
                     <label class="mdc-text-field" ref="currentPin">
-                        <input type="password" class="mdc-text-field__input" required minlength="4" v-model="currentPin">
+                        <input type="password" class="mdc-text-field__input" required pattern="\d{4}" v-model="currentPin">
                         <span class="mdc-text-field__label">Code PIN actuel</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>

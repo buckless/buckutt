@@ -28,13 +28,14 @@
             </section>
             <form @submit.prevent="change(key, pin, confirmedPin)">
                 <section class="mdc-card__supporting-text">
+                    Le nouveau code PIN doit exclusivement être composé de 4 chiffres.
                     <label class="mdc-text-field" ref="pin">
-                        <input type="password" class="mdc-text-field__input" required v-model="pin">
+                        <input type="password" class="mdc-text-field__input" required pattern="\d{4}" v-model="pin">
                         <span class="mdc-text-field__label">Nouveau code PIN</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
                     <label class="mdc-text-field" ref="confirmedPin">
-                        <input type="password" class="mdc-text-field__input" required v-model="confirmedPin">
+                        <input type="password" class="mdc-text-field__input" required pattern="\d{4}" v-model="confirmedPin">
                         <span class="mdc-text-field__label">Confirmation</span>
                         <div class="mdc-text-field__bottom-line"></div>
                     </label>
