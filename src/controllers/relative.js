@@ -1,12 +1,10 @@
 const express = require('express');
 const idParser = require('../lib/idParser');
-const logger = require('../lib/log');
+const log = require('../lib/log')(module);
 const modelParser = require('../lib/modelParser');
 const { embedParser, embedFilter } = require('../lib/embedParser');
 const dbCatch = require('../lib/dbCatch');
 const APIError = require('../errors/APIError');
-
-const log = logger(module);
 
 /**
  * Read submodel controller. Handles reading the children of one element (based on a relation).
@@ -14,10 +12,10 @@ const log = logger(module);
 const router = new express.Router();
 
 router.get('/:model/:id/:submodel', (req, res, next) => {
-    const info = `Read relatives ${req.params.submodel} of ${req.params.model} ${JSON.stringify(
-        req.query
-    )}`;
-    log.info(info, req.details);
+    req.details.query = req.query;
+    req.details.model = req.params.model;
+    req.details.modelId = req.params.id;
+    req.details.submodel = req.params.submodel;
 
     const submodel = req.params.submodel;
 
@@ -40,6 +38,8 @@ router.get('/:model/:id/:submodel', (req, res, next) => {
                 return next(new APIError(module, 404, 'Document not found'));
             }
 
+            log.info(`Read relatives ${req.params.submodel} of ${req.params.model}`, req.details);
+
             res
                 .status(200)
                 .json(instance[submodel])
@@ -49,9 +49,11 @@ router.get('/:model/:id/:submodel', (req, res, next) => {
 });
 
 router.post('/:model/:id/:submodel/:subId', (req, res, next) => {
-    const info = `Create relative ${req.params.submodel}(${req.params.subId}) of
-        ${req.params.model}(${req.params.id}) ${JSON.stringify(req.query)}`;
-    log.info(info, req.details);
+    req.details.query = req.query;
+    req.details.model = req.params.model;
+    req.details.modelId = req.params.id;
+    req.details.submodel = req.params.submodel;
+    req.details.submodelId = req.params.subId;
 
     const Model = req.Model;
     const { id, subId, submodel } = req.params;
@@ -91,19 +93,27 @@ router.post('/:model/:id/:submodel/:subId', (req, res, next) => {
 
             return left[submodel]().attach(right);
         })
-        .then(() =>
+        .then(() => {
+            log.info(
+                `Create relative ${req.params.submodel}(${req.params.subId}) of
+                ${req.params.model}(${req.params.id})`,
+                req.details
+            );
+
             res
                 .status(200)
                 .json({})
-                .end()
-        )
+                .end();
+        })
         .catch(err => dbCatch(module, err, next));
 });
 
 router.delete('/:model/:id/:submodel/:subId', (req, res, next) => {
-    const info = `Delete relative ${req.params.submodel}(${req.params.subId}) of
-        ${req.params.model}(${req.params.id}) ${JSON.stringify(req.query)}`;
-    log.info(info, req.details);
+    req.details.query = req.query;
+    req.details.model = req.params.model;
+    req.details.modelId = req.params.id;
+    req.details.submodel = req.params.submodel;
+    req.details.submodelId = req.params.subId;
 
     const Model = req.Model;
     const { id, subId, submodel } = req.params;
@@ -153,6 +163,12 @@ router.delete('/:model/:id/:submodel/:subId', (req, res, next) => {
             //     modelParser.modelsNames[req.params.model],
             //     { from: null, to: right }
             // );
+
+            log.info(
+                `Delete relative ${req.params.submodel}(${req.params.subId}) of
+                ${req.params.model}(${req.params.id})`,
+                req.details
+            );
 
             res
                 .status(200)

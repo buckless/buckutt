@@ -1,9 +1,7 @@
-const jwt = require('jsonwebtoken');
-const Promise = require('bluebird');
+const promisifyAll = require('util-promisifyall');
+const jwt = promisifyAll(require('jsonwebtoken'));
 const APIError = require('../errors/APIError');
 const config = require('../../config');
-
-Promise.promisifyAll(jwt);
 
 /**
  * Parses the client token
@@ -30,8 +28,7 @@ module.exports = function token(connector) {
         const err = new APIError(
             module,
             400,
-            'No token or scheme provided. Header format is Authorization: Bearer [token]',
-            connector.details
+            'No token or scheme provided. Header format is Authorization: Bearer [token]'
         );
         return Promise.reject(err);
     }
@@ -42,8 +39,7 @@ module.exports = function token(connector) {
         const err = new APIError(
             module,
             400,
-            'No token or scheme provided. Header format is Authorization: Bearer [token]',
-            connector.details
+            'No token or scheme provided. Header format is Authorization: Bearer [token]'
         );
         return Promise.reject(err);
     }
@@ -55,8 +51,7 @@ module.exports = function token(connector) {
         const err = new APIError(
             module,
             400,
-            'Scheme is `Bearer`. Header format is Authorization: Bearer [token]',
-            connector.details
+            'Scheme is `Bearer`. Header format is Authorization: Bearer [token]'
         );
         return Promise.reject(err);
     }
@@ -83,7 +78,6 @@ module.exports = function token(connector) {
             if (!user) {
                 return Promise.reject(new APIError(module, 500, 'User has been deleted'));
             }
-
             connector.user = user;
 
             connector.point_id = point.id;
@@ -109,12 +103,13 @@ module.exports = function token(connector) {
                 return false;
             });
 
-            connector.details.userId = user.id;
-            connector.details.user = `${user.firstname} ${user.lastname}`;
-            connector.details.rights = connector.user.rights.map(right => ({
-                name: right.name,
-                end: right.period.end
-            }));
+            connector.details.operator = {
+                id: user.id,
+                rights: connector.user.rights.map(right => ({
+                    name: right.name,
+                    end: right.period.end
+                }))
+            };
 
             return Promise.resolve();
         })

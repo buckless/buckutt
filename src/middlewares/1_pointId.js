@@ -8,6 +8,11 @@ const APIError = require('../errors/APIError');
 module.exports = connector => {
     let event;
 
+    connector.details = {
+        path: connector.path,
+        method: connector.method
+    };
+
     return bookshelf
         .knex('events')
         .limit(1)
@@ -37,11 +42,7 @@ module.exports = connector => {
             connector.point = {};
             connector.event = event;
             connector.wiket = {};
-            connector.details = {
-                device: connector.device.name,
-                path: connector.path,
-                method: connector.method
-            };
+            connector.details.device = connector.device.name;
 
             // Filters: allow an empty point but not a deleted point
             device.wikets
@@ -67,7 +68,6 @@ module.exports = connector => {
 
                         connector.details = {
                             ...connector.details,
-                            event: connector.event.name,
                             point: connector.point.name
                         };
 

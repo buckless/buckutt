@@ -44,3 +44,8 @@ module.exports.marshal = function marshal(mw) {
             });
     };
 };
+
+module.exports.unmarshal = function unmarshal(socket) {
+    socket.user = socket.connector.result.user;
+    socket.details = socket.connector.details;
+};

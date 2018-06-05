@@ -1,16 +1,14 @@
 const bcrypt_ = require('bcryptjs');
 const express = require('express');
-const Promise = require('bluebird');
+const promisifyAll = require('util-promisifyall');
 const APIError = require('../../../errors/APIError');
 const dbCatch = require('../../../lib/dbCatch');
-const logger = require('../../../lib/log');
-
-const log = logger(module);
+const log = require('../../../lib/log')(module);
 
 /**
  * GeneratePin controller.
  */
-const bcrypt = Promise.promisifyAll(bcrypt_);
+const bcrypt = promisifyAll(bcrypt_);
 const router = new express.Router();
 
 router.put('/services/manager/generatepin', (req, res, next) => {

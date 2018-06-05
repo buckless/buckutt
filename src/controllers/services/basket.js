@@ -1,18 +1,17 @@
 const express = require('express');
 const { countBy } = require('lodash');
 const APIError = require('../../errors/APIError');
-const logger = require('../../lib/log');
+const log = require('../../lib/log')(module);
+const createUser = require('../../lib/createUser');
 const vat = require('../../lib/vat');
 const { bookshelf } = require('../../lib/bookshelf');
 const rightsDetails = require('../../lib/rightsDetails');
 const dbCatch = require('../../lib/dbCatch');
 
-const log = logger(module);
-
 const getPriceAmount = (Price, priceId) =>
     Price.where({ id: priceId })
         .fetch()
-        .then(price => price.get('amount'));
+        .then(price => (price ? price.get('amount') : 0));
 
 /**
  * Basket controller. Handles purchases and reloads
@@ -21,13 +20,16 @@ const router = new express.Router();
 
 // Get the buyer
 router.post('/services/basket', (req, res, next) => {
-    log.info(`Processing basket ${JSON.stringify(req.body)}`, req.details);
-
     if (!req.body.buyer || !req.body.molType || !Array.isArray(req.body.basket)) {
         return next(new APIError(module, 400, 'Invalid basket'));
     }
 
+    req.details.buyer = req.body.buyer;
+    req.details.basket = req.body.basket;
+
     if (req.body.basket.length === 0) {
+        log.info(`Processing empty basket`, req.details);
+
         return res
             .status(200)
             .json({})
@@ -41,26 +43,50 @@ router.post('/services/basket', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid buyer'));
     }
 
-    req.app.locals.models.MeanOfLogin.where({
+    const molToCheck = {
         type: req.molType,
         data: req.buyer,
         blocked: false
-    })
+    };
+
+    req.app.locals.models.MeanOfLogin.where(molToCheck)
         .fetch({
             withRelated: ['user']
         })
         .then(mol => (mol ? mol.toJSON() : null))
         .then(mol => {
             if (!mol || !mol.user || !mol.user.id) {
-                return next(new APIError(module, 400, 'Invalid buyer'));
+                // Don't create a new account if the card was already assigned
+                if (!req.event.useCardData || req.body.assignedCard) {
+                    return Promise.reject(new APIError(module, 400, 'Invalid buyer'));
+                }
+
+                return createUser(
+                    req.app.locals.models,
+                    req.event,
+                    req.user,
+                    req.point,
+                    {},
+                    [],
+                    [molToCheck],
+                    [req.event.defaultGroup_id],
+                    false,
+                    true
+                );
             }
 
-            req.buyer = mol.user;
+            return Promise.resolve(mol.user);
+        })
+        .then(user => {
+            req.buyer = user;
             req.buyer.pin = '';
             req.buyer.password = '';
 
+            req.details.buyer = req.buyer.id;
+
             next();
-        });
+        })
+        .catch(err => dbCatch(module, err, next));
 });
 
 router.post('/services/basket', (req, res, next) => {
@@ -94,7 +120,8 @@ router.post('/services/basket', (req, res, next) => {
                 return purchase;
             });
         })
-        .then(() => next());
+        .then(() => next())
+        .catch(err => dbCatch(module, err, next));
 });
 
 router.post('/services/basket', (req, res, next) => {
@@ -144,12 +171,7 @@ router.post('/services/basket', (req, res, next) => {
     const newCredit = req.buyer.credit - totalCost;
 
     if (Number.isNaN(newCredit)) {
-        log.error('credit is not a number');
-
-        return res
-            .status(400)
-            .json(req.buyer)
-            .end();
+        return next(new APIError(module, 400, `Credit is not a number`));
     }
 
     const userRights = rightsDetails(req.user, req.point_id);
@@ -249,6 +271,9 @@ router.post('/services/basket', (req, res, next) => {
                 credit: req.buyer.credit,
                 pending: newCredit - req.buyer.credit
             });
+
+            req.details.basket = req.body.basket;
+            log.info(`Processing basket of ${req.buyer.id} sold by ${req.user.id}`, req.details);
 
             return res
                 .status(200)

@@ -1,12 +1,9 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const { padStart } = require('lodash');
-const mailer = require('../../lib/mailer');
+const log = require('../../lib/log')(module);
+const createUser = require('../../lib/createUser');
 const dbCatch = require('../../lib/dbCatch');
 const fetchFromAPI = require('../../ticketProviders');
 const APIError = require('../../errors/APIError');
-const template = require('../../mailTemplates');
-const config = require('../../../config');
 
 /**
  * Assigner controller. Handles cards assignment
@@ -20,14 +17,8 @@ router.get('/services/assigner', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid ticketOrMail'));
     }
 
-    const { MeanOfLogin, User, Reload, PendingCardUpdate } = req.app.locals.models;
-
-    let user;
+    const MeanOfLogin = req.app.locals.models.MeanOfLogin;
     let userData;
-    let pin;
-    let credit;
-    let username;
-    let ticketId;
 
     MeanOfLogin.where('type', 'in', ['ticketId', 'mail'])
         .where({
@@ -41,6 +32,8 @@ router.get('/services/assigner', (req, res, next) => {
         .then(mol => {
             if (mol && mol.user.id) {
                 if (req.user) {
+                    log.info(``, req.details);
+
                     return res
                         .status(200)
                         .json({
@@ -60,6 +53,7 @@ router.get('/services/assigner', (req, res, next) => {
                     'Ticket already binded',
                     req.query.ticketOrMail
                 );
+
                 return Promise.reject(err);
             }
 
@@ -76,11 +70,10 @@ router.get('/services/assigner', (req, res, next) => {
                     }
 
                     userData = userData_;
-                    ticketId = userData_.ticketId;
 
                     return MeanOfLogin.where({
                         type: 'ticketId',
-                        data: ticketId,
+                        data: userData.ticketId,
                         blocked: false
                     }).fetchAll();
                 })
@@ -91,110 +84,57 @@ router.get('/services/assigner', (req, res, next) => {
                         );
                     }
 
-                    pin = padStart(Math.floor(Math.random() * 10000), 4, '0');
-                    username = userData.username;
-                    credit = userData.credit || 0;
+                    const newUser = {
+                        firstname: userData.firstname,
+                        lastname: userData.lastname,
+                        mail: userData.mail,
+                        credit: 0, // Pass it to reloads to have a custom trace
+                        username: userData.username
+                    };
 
-                    userData.password = 'none';
-                    userData.pin = bcrypt.hashSync(pin);
-
-                    // if no user, create PCU, else directly write
-                    if (!req.user) {
-                        delete userData.credit;
-                    }
-
-                    delete userData.ticketId;
-                    delete userData.username;
-
-                    user = new User(userData);
-
-                    return user.save();
+                    return createUser(
+                        req.app.locals.models,
+                        req.event,
+                        req.user,
+                        req.point,
+                        newUser,
+                        [
+                            {
+                                credit: userData.credit || 0,
+                                type: 'Préchargement',
+                                trace: ticketOrMail
+                            }
+                        ],
+                        [
+                            {
+                                type: 'ticketId',
+                                data: userData.ticketId,
+                                blocked: false
+                            }
+                        ],
+                        [req.event.defaultGroup_id],
+                        true,
+                        // if no user, create PCU, else directly write
+                        !!req.user
+                    );
                 })
-                .then(() => {
-                    const from = config.askpin.from;
-                    const to = user.get('mail');
-                    const subject = config.assigner.subject;
-                    const { html, text } = template('pinAssign', {
-                        pin,
-                        username,
-                        email: to,
-                        brandname: config.merchantName,
-                        link: `${config.urls.managerUrl}`
-                    });
-
-                    return mailer.sendMail({
-                        from,
-                        to,
-                        subject,
-                        html,
-                        text
-                    });
-                })
-                .then(() => {
-                    const mailMol = new MeanOfLogin({
-                        user_id: user.id,
-                        type: 'mail',
-                        data: user.get('mail'),
-                        blocked: false
-                    });
-
-                    const ticketMol = new MeanOfLogin({
-                        user_id: user.id,
-                        type: 'ticketId',
-                        data: ticketId,
-                        blocked: false
-                    });
-
-                    const usernameMol = new MeanOfLogin({
-                        user_id: user.id,
-                        type: 'username',
-                        data: username,
-                        blocked: false
-                    });
-
-                    let initialReload = new Reload({
-                        credit: credit,
-                        type: 'Préchargement',
-                        trace: ticketOrMail,
-                        point_id: req.point_id,
-                        buyer_id: user.id,
-                        seller_id: user.id
-                    });
-
-                    let pendingCardUpdate = new PendingCardUpdate({
-                        user_id: user.id,
-                        amount: credit
-                    });
-
-                    if (credit === 0) {
-                        initialReload = { save: () => Promise.resolve() };
-                        pendingCardUpdate = { save: () => Promise.resolve() };
-                    }
-
-                    // if user do not create pcu
+                .then(user => {
                     if (req.user) {
-                        pendingCardUpdate = { save: () => Promise.resolve() };
-                    }
+                        req.details.credit = user.credit;
 
-                    return Promise.all([
-                        mailMol.save(),
-                        ticketMol.save(),
-                        usernameMol.save(),
-                        pendingCardUpdate.save(),
-                        initialReload.save()
-                    ]);
-                })
-                .then(() => {
-                    if (req.user) {
+                        log.info(`Assign ${user.id} with ${credit} credit`, req.details);
+
                         return res
                             .status(200)
                             .json({
                                 id: user.id,
-                                credit: user.get('credit'),
-                                name: `${user.get('firstname')} ${user.get('lastname')}`
+                                credit: user.credit,
+                                name: `${user.firstname} ${user.lastname}`
                             })
                             .end();
                     }
+
+                    log.info(`Already assigned`, req.details);
 
                     return res
                         .status(200)
@@ -209,6 +149,9 @@ router.post('/services/assigner/groups', (req, res, next) => {
     const userId = req.body.user;
     const groups = req.body.groups;
 
+    req.details.userId = userId;
+    req.details.groups = groups;
+
     if (!userId || userId.length === 0) {
         return next(new APIError(module, 400, 'Invalid user'));
     }
@@ -217,27 +160,25 @@ router.post('/services/assigner/groups', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid groups'));
     }
 
-    groups.push(req.event.defaultGroup_id);
-
     const Membership = req.app.locals.models.Membership;
 
-    const memberships = groups.map(groupId => {
-        const membership = new Membership({
+    const memberships = groups.map(groupId =>
+        new Membership({
             user_id: userId,
             group_id: groupId,
             period_id: req.event.defaultPeriod_id
-        });
-
-        return membership.save();
-    });
+        }).save()
+    );
 
     Promise.all(memberships)
-        .then(() =>
+        .then(() => {
+            log.info(`Create ${memberships.length} memberships for user ${userId}`, req.details);
+
             res
                 .status(200)
                 .json({})
-                .end()
-        )
+                .end();
+        })
         .catch(err => dbCatch(module, err, next));
 });
 
@@ -245,6 +186,10 @@ router.post('/services/assigner/anon', (req, res, next) => {
     const credit = req.body.credit;
     const groups = req.body.groups;
     const cardId = req.body.cardId;
+
+    req.details.groups = groups;
+    req.details.cardId = cardId;
+    req.details.credit = credit;
 
     if (!cardId || cardId.length === 0) {
         return next(new APIError(module, 400, 'Invalid cardId'));
@@ -258,62 +203,37 @@ router.post('/services/assigner/anon', (req, res, next) => {
         return next(new APIError(module, 400, 'Invalid groups'));
     }
 
-    groups.push(req.event.defaultGroup_id);
-
-    const User = req.app.locals.models.User;
-    const Membership = req.app.locals.models.Membership;
-    const Reload = req.app.locals.models.Reload;
-    const MeanOfLogin = req.app.locals.models.MeanOfLogin;
-
-    const user = new User({
-        firstname: 'anon',
-        lastname: 'anon',
-        mail: 'anon@anon.com',
-        pin: 'none',
-        password: 'none',
-        credit
-    });
-
-    user
-        .save()
-        .then(() => {
-            const memberships = groups.map(groupId => {
-                const membership = new Membership({
-                    user_id: user.id,
-                    group_id: groupId,
-                    period_id: req.event.defaultPeriod_id
-                });
-
-                return membership.save();
-            });
-
-            const mol = new MeanOfLogin({
+    createUser(
+        req.app.locals.models,
+        req.event,
+        req.user,
+        req.point,
+        { credit },
+        [],
+        [
+            {
                 type: 'cardId',
                 data: cardId,
-                blocked: false,
-                user_id: user.id
-            }).save();
+                blocked: false
+            }
+        ],
+        groups.concat([req.event.defaultGroup_id]),
+        false,
+        true
+    )
+        .then(user => {
+            log.info(
+                `Create anon user ${user.id} with ${
+                    groups.length
+                } memberships and ${credit} credit`,
+                req.details
+            );
 
-            const reload =
-                credit > 0
-                    ? new Reload({
-                          credit,
-                          type: 'anon',
-                          trace: 'anon',
-                          point_id: req.point_id,
-                          buyer_id: user.id,
-                          seller_id: req.user.id
-                      }).save()
-                    : Promise.resolve();
-
-            return Promise.all(memberships.concat([reload, mol]));
-        })
-        .then(() =>
             res
                 .status(200)
                 .json({})
-                .end()
-        )
+                .end();
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

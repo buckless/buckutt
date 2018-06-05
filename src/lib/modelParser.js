@@ -26,7 +26,8 @@ const modelsNames = {
     transfers: 'Transfer',
     transactions: 'Transaction',
     users: 'User',
-    webservices: 'Webservice'
+    webservices: 'Webservice',
+    withdrawals: 'Withdrawal'
 };
 
 const possibleValues = Object.keys(modelsNames);

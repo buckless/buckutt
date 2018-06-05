@@ -4,7 +4,7 @@
 module.exports = class APIError extends Error {
     /**
      * Instantiates a new APIError
-     * @param {Number} status  The HTML status code
+     * @param {Number} status  The HTTP status code
      * @param {String} message The error description
      * @param {Mixed}  details Any other relative information
      */
@@ -17,14 +17,18 @@ module.exports = class APIError extends Error {
         this.module = module;
         this.message = message;
         this.status = status;
-        this.details = details;
+
+        if (details instanceof Error && details.stack) {
+            this.details = details.stack;
+        } else {
+            this.details = details;
+        }
     }
 
     toJSON() {
         return {
             status: this.status,
-            message: this.message,
-            details: this.details
+            message: this.message
         };
     }
 };

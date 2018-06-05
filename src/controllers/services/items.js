@@ -2,6 +2,7 @@ const express = require('express');
 const APIError = require('../../errors/APIError');
 const rightsDetails = require('../../lib/rightsDetails');
 const dbCatch = require('../../lib/dbCatch');
+const log = require('../../lib/log')(module);
 
 const router = new express.Router();
 
@@ -14,6 +15,8 @@ router.get('/services/items', (req, res, next) => {
 
     if (!req.query.buyer || !req.query.molType) {
         if (!req.device.defaultGroup_id) {
+            log.warn('Get items with empty buyer', req.details);
+
             return res
                 .status(200)
                 .json({
@@ -22,6 +25,7 @@ router.get('/services/items', (req, res, next) => {
                 })
                 .end();
         }
+
         req.groups = [req.device.defaultGroup_id];
         return next();
     }
@@ -55,6 +59,8 @@ router.get('/services/items', (req, res, next) => {
 
             const buyer = mol.user;
 
+            req.details.buyer = buyer.id;
+
             req.buyer = buyer;
             req.buyer.pin = '';
             req.buyer.password = '';
@@ -64,6 +70,8 @@ router.get('/services/items', (req, res, next) => {
                 .map(membership => membership.group_id);
 
             if (req.groups.length === 0) {
+                log.warn(`Get items for buyer ${buyer.id} in no groups`, req.details);
+
                 return res
                     .status(200)
                     .json({
@@ -181,6 +189,8 @@ router.get('/services/items', (req, res, next) => {
 
                 return promotion;
             });
+
+            log.info(`Get items for buyer ${req.details.buyer}`, req.details);
 
             res
                 .status(200)

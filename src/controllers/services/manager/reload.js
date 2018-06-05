@@ -1,10 +1,8 @@
 const express = require('express');
 const { makePayment } = require('../../../reloadProviders');
-const logger = require('../../../lib/log');
+const log = require('../../../lib/log')(module);
 const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
-
-const log = logger(module);
 
 /**
  * Reload controller. Handles online reload

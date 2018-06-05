@@ -1,15 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const logger = require('./lib/log');
+const log = require('./lib/log')(module);
 const middlewares = require('./middlewares');
-const { marshal } = require('./middlewares/connectors/socket');
+const { marshal, unmarshal } = require('./middlewares/connectors/socket');
 
 const controllers = fs
     .readdirSync(path.join(__dirname, 'controllers/live'))
     .filter(f => f.slice(-3) === '.js')
     .map(f => require(path.join(__dirname, 'controllers', 'live', f)));
-
-const log = logger(module);
 
 /**
  * Start a socketio server on an express instance
@@ -65,16 +63,21 @@ module.exports.ioServer = (httpServer, app) => {
                                 return Promise.reject(result.err);
                             }
 
-                            return result.user;
+                            return unmarshal(socket);
                         });
                 }
 
                 initialPromise = initialPromise
-                    .then(user => {
+                    .then(() => {
+                        const user = socket.user;
+
                         clients[client.id] = { client, user };
 
-                        // Make controllers aware of clients
-                        controllers.forEach(c => c.client(clients, client, ...args));
+                        try {
+                            controller.client(clients, client, ...args);
+                        } catch (e) {
+                            log.error(e.stack || e, client.details);
+                        }
 
                         client.on('disconnect', () => {
                             delete clients[client.id];

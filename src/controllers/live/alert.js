@@ -1,3 +1,5 @@
+const log = require('../../lib/log')(module);
+
 const send = (clients, alert) => {
     Object.keys(clients)
         .map(id => clients[id])
@@ -15,7 +17,9 @@ module.exports = {
                 return;
             }
 
-            send(clients, data.to[0]);
+            let alert = data.to[0];
+            log.info(`Alert "${alert.content}" for ${alert.minimumViewTime} sec`);
+            send(clients, alert);
         });
     },
 

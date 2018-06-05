@@ -20,6 +20,7 @@ const exposeResBody = require('./lib/exposeResBody');
 const APIError = require('./errors/APIError');
 const sslConfig = require('../scripts/sslConfig');
 const { addDevice } = require('../scripts/addDevice');
+const { unmarshal } = require('./middlewares/connectors/http');
 
 const log = logger(module);
 
@@ -62,20 +63,41 @@ app.use((req, res, next) => {
 
 // Internal error
 app.use((err, req, res, next) => {
-    // eslint-disable-line no-unused-vars
+    // In case of an error occuring during the middleware chain, unmarshal has not been made
+    try {
+        unmarshal(req, res, () => {});
+    } catch (err_) {
+        // unmarshal has failed, thus req.details is undefined
+        if (!req.details) {
+            req.details = {};
+        }
+
+        log.error(err_);
+    }
+
     let error = err;
 
     /* istanbul ignore next */
     if (!(err instanceof APIError)) {
-        log.error(err, req.details);
+        try {
+            logger(err.stack.split('\n')[1]).error(err.stack, req.details);
+        } catch (e) {
+            log.error(err, req.details);
+        }
+
         error = new APIError(module, 500, 'Unknown error');
     } else {
-        logger(err.module).error(err.message, err.details);
+        if (err.details) {
+            // test req details
+            req.details.error = err.details;
+        }
+
+        logger(err.module).error(err.message, req.details);
     }
 
     res
         .status(error.status || 500)
-        .send(error.toJSON ? error.toJSON() : JSON.stringify(error))
+        .send(error.toJSON())
         .end();
 });
 

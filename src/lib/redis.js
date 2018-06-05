@@ -1,8 +1,7 @@
 const redis = require('redis');
 const promisifyAll = require('util-promisifyall');
 const config = require('../../config');
-const logger = require('./log');
-const log = logger(module);
+const log = require('./log')(module);
 
 let client = {};
 

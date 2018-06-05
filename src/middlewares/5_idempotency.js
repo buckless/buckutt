@@ -1,8 +1,7 @@
 const APIError = require('../errors/APIError');
 const config = require('../../config');
 const redis = require('../lib/redis');
-const logger = require('../lib/log');
-const log = logger(module);
+const log = require('../lib/log')(module);
 
 module.exports = async (req, res, next) => {
     if (req.method !== 'POST') {

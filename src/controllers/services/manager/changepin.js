@@ -1,21 +1,17 @@
 const bcrypt_ = require('bcryptjs');
 const express = require('express');
-const Promise = require('bluebird');
+const promisifyAll = require('util-promisifyall');
 const APIError = require('../../../errors/APIError');
 const dbCatch = require('../../../lib/dbCatch');
-const logger = require('../../../lib/log');
-
-const log = logger(module);
+const log = require('../../../lib/log')(module);
 
 /**
  * ChangePin controller.
  */
-const bcrypt = Promise.promisifyAll(bcrypt_);
+const bcrypt = promisifyAll(bcrypt_);
 const router = new express.Router();
 
 router.put('/services/manager/changepin', (req, res, next) => {
-    log.info(`Change pin for user ${req.user.id}`, req.details);
-
     const models = req.app.locals.models;
 
     if (req.body.currentPin.length !== 4 && req.body.pin.length !== 4) {
@@ -43,12 +39,14 @@ router.put('/services/manager/changepin', (req, res, next) => {
 
             return user.save();
         })
-        .then(() =>
+        .then(() => {
+            log.info(`Change pin for user ${req.user.id}`, req.details);
+
             res
                 .status(200)
                 .json({ changed: true })
-                .end()
-        )
+                .end();
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

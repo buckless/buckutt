@@ -1,11 +1,8 @@
 const express = require('express');
-const Promise = require('bluebird');
-const logger = require('../lib/log');
+const log = require('../lib/log')(module);
 const modelParser = require('../lib/modelParser');
 const { embedParser, embedFilter } = require('../lib/embedParser');
 const dbCatch = require('../lib/dbCatch');
-
-const log = logger(module);
 
 /**
  * Create controller. Handles creating one element, or multiple.
@@ -13,8 +10,6 @@ const log = logger(module);
 const router = new express.Router();
 
 router.post('/:model/', (req, res, next) => {
-    log.info(`Create ${req.params.model} ${JSON.stringify(req.body)}`, req.details);
-
     let insts;
 
     if (Array.isArray(req.body)) {
@@ -43,6 +38,9 @@ router.post('/:model/', (req, res, next) => {
                 modelParser.modelsNames[req.params.model],
                 { from: null, to: results }
             );
+
+            req.details.body = req.body;
+            log.info(`Create ${req.params.model}`, req.details);
 
             res
                 .status(200)

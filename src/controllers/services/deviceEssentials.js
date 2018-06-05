@@ -2,6 +2,7 @@ const express = require('express');
 const { pick } = require('lodash');
 const dbCatch = require('../../lib/dbCatch');
 const { embedParser, embedFilter } = require('../../lib/embedParser');
+const log = require('../../lib/log')(module);
 
 const router = new express.Router();
 
@@ -209,7 +210,9 @@ router.get('/services/deviceEssentials', (req, res, next) => {
 
             return Promise.resolve();
         })
-        .then(() =>
+        .then(() => {
+            log.info('Get deviceEssentials', req.details);
+
             res
                 .status(200)
                 .json({
@@ -223,8 +226,8 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     device,
                     event: req.event
                 })
-                .end()
-        )
+                .end();
+        })
         .catch(err => dbCatch(module, err, next));
 });
 

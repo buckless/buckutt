@@ -1,9 +1,7 @@
 const express = require('express');
 const { flatten } = require('lodash');
 const dbCatch = require('../../../lib/dbCatch');
-const logger = require('../../../lib/log');
-
-const log = logger(module);
+const log = require('../../../lib/log')(module);
 
 /**
  * History controller.
@@ -11,8 +9,8 @@ const log = logger(module);
 const router = new express.Router();
 
 router.get('/services/manager/history', (req, res, next) => {
-    const adminRight = req.details.rights.find(
-        right => right.name === 'admin' && right.end > new Date()
+    const adminRight = req.user.rights.find(
+        right => right.name === 'admin' && right.period.end > new Date()
     );
 
     if (adminRight && req.query.buyer) {
@@ -37,7 +35,7 @@ router.get('/services/manager/history', (req, res, next) => {
     next();
 });
 
-router.get('/services/manager/history', (req, res) => {
+router.get('/services/manager/history', (req, res, next) => {
     log.info(`Get history for user ${req.history.user}`, req.details);
 
     const models = req.app.locals.models;
