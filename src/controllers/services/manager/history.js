@@ -10,7 +10,7 @@ const router = new express.Router();
 
 router.get('/services/manager/history', (req, res, next) => {
     const adminRight = req.user.rights.find(
-        right => right.name === 'admin' && right.end > new Date()
+        right => right.name === 'admin' && right.period.end > new Date()
     );
 
     if (adminRight && req.query.buyer) {
