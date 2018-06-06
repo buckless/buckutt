@@ -4,12 +4,9 @@
             <img src="../assets/placeholder.jpg" height="150" width="150" />
         </div>
         <upper />
-        <div class="b-header__buyer-credit">
-            <span :class="{ 'b-header__buyer__credit--negative': credit < 0 }" v-if="buyer.isAuth">
+        <div class="b-header__buyer-credit" v-if="buyer.isAuth">
+            <span :class="{ 'b-header__buyer__credit--negative': credit < 0 }">
                 <currency :value="credit"></currency>
-            </span>
-            <span v-else>
-                -,-- €
             </span>
         </div>
         <lower />
@@ -57,13 +54,11 @@ export default {
 .b-header {
     background-color: $blue;
     color: #fff;
-    height: 150px;
     width: 100%;
 }
 
 .b-header__user-image {
     float: left;
-    height: 100%;
     width: 150px;
 }
 
@@ -76,7 +71,6 @@ export default {
 
 @media (max-width: 768px) {
     .b-header {
-        height: 119px;
     }
 }
 </style>
