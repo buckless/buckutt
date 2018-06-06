@@ -33,7 +33,7 @@ module.exports = function createUser(
         firstname: user.firstname || faker.name.firstName(),
         lastname: user.lastname || faker.name.lastName(),
         nickname: user.nickname || '',
-        mail: user.mail || faker.internet.email(),
+        mail: user.mail || 'anon@anon.com',
         pin: bcrypt.hashSync(pin),
         password: user.password || 'none',
         recoverKey: randomstring.generate(),
