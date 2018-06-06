@@ -1,6 +1,6 @@
 export const interfaceLoader = (store, credentials) => {
     let params = '';
-    let offlineAnswer;
+    let offlineAnswer = { data: store.state.online.offline.defaultItems };
 
     if (credentials) {
         params = `?buyer=${credentials.mol.trim()}&molType=${credentials.type}`;
