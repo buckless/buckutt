@@ -24,7 +24,15 @@ const debug = process.env.NODE_ENV === 'development';
 
 const vuexPersist = new VuexPersistence({
     strictMode: debug,
-    storage: localForage
+    storage: localForage,
+    reducer: state => ({
+        ...state,
+        online: {
+            status: false,
+            syncing: false,
+            offline: state.online.offline
+        }
+    })
 });
 
 const store = new Vuex.Store({
@@ -59,39 +67,38 @@ if (module.hot) {
         [
             './modules/auth',
             './modules/basket',
+            './modules/catering',
             './modules/history',
             './modules/items',
             './modules/online',
             './modules/reload',
+            './modules/treasury',
             './modules/ui'
         ],
         () => {
-            console.log('Hot update triggered');
             const newAuth = require('./modules/auth').default;
             const newBasket = require('./modules/basket').default;
+            const newCatering = require('./modules/catering').default;
             const newHistory = require('./modules/history').default;
             const newItems = require('./modules/items').default;
             const newOnline = require('./modules/online').default;
             const newReload = require('./modules/reload').default;
+            const newTreasury = require('./modules/treasury').default;
             const newUi = require('./modules/ui').default;
-
-            console.log(newOnline.mutations.SET_ONLINE);
 
             store.hotUpdate({
                 modules: {
                     auth: newAuth,
                     basket: newBasket,
+                    catering: newCatering,
                     history: newHistory,
                     items: newItems,
                     online: newOnline,
                     reload: newReload,
+                    treasury: newTreasury,
                     ui: newUi
                 }
             });
-
-            setTimeout(() => {
-                console.log(store);
-            }, 2000);
         }
     );
 }
