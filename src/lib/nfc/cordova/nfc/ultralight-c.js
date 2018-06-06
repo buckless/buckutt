@@ -9,8 +9,8 @@ module.exports = class UltralightC extends EventEmitter {
 
         document.addEventListener('mifareTagDiscovered', tag => {
             console.log(tag);
-            this.emit('uid', tag.tag.map(dec => dec.toString(16)).join(''));
-            this.emit('log', tag.tag.map(dec => dec.toString(16)).join(''));
+            this.emit('uid', tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join(''));
+            this.emit('log', tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join(''));
             this.emit('atr', module.exports.ATR);
             this.emit('cardType', 'ultralightC');
 
