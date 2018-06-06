@@ -1,20 +1,28 @@
 <template>
     <header class="b-header">
         <div class="b-header__user-image" v-if="buyer.isAuth && showPicture">
-            <img src="../assets/placeholder.jpg" height="112" width="112" />
+            <img src="../assets/placeholder.jpg" height="150" width="150" />
         </div>
         <upper />
-        <div class="b-header__separator"></div>
+        <div class="b-header__buyer-credit">
+            <span :class="{ 'b-header__buyer__credit--negative': credit < 0 }" v-if="buyer.isAuth">
+                <currency :value="credit"></currency>
+            </span>
+            <span v-else>
+                -,-- €
+            </span>
+        </div>
         <lower />
         <reload />
     </header>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import isMobile from '@/utils/isMobile';
 
+import Currency from './Currency';
 import Lower from './Topbar-Lower';
 import Upper from './Topbar-Upper';
 import Reload from './Topbar-Reload';
@@ -23,13 +31,16 @@ export default {
     components: {
         Lower,
         Upper,
-        Reload
+        Reload,
+        Currency
     },
 
     computed: {
         isMobile() {
             return isMobile();
         },
+
+        ...mapGetters(['credit']),
 
         ...mapState({
             showPicture: state => state.auth.device.config.showPicture,
@@ -46,26 +57,26 @@ export default {
 .b-header {
     background-color: $blue;
     color: #fff;
-    height: 112px;
+    height: 150px;
     width: 100%;
 }
 
 .b-header__user-image {
     float: left;
     height: 100%;
-    width: 112px;
+    width: 150px;
 }
 
-.b-header__separator {
-    background-color: #fff;
-    height: 1px;
-    opacity: 0.1;
+.b-header__buyer-credit {
+    padding: 6px 24px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
     .b-header {
-        min-height: 81px;
-        height: auto;
+        height: 119px;
     }
 }
 </style>

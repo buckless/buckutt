@@ -8,13 +8,8 @@
             <span class="b--capitalized">{{ buyer.firstname }}</span>&nbsp;
             <span class="b--capitalized">{{ buyer.lastname || 'Anonyme' }}</span>
         </div>
-        <div class="b-upper-bar__buyer-credit" v-if="buyer.isAuth">
-            <span :class="{ 'b-upper-bar__buyer__credit--negative': credit < 0 }">
-                <currency :value="credit"></currency>
-            </span>
-        </div>
         <div class="b-space"></div>
-        <div class="b-upper-bar__date" v-if="!buyer.isAuth">
+        <div class="b-upper-bar__date">
             <live-time></live-time>
         </div>
         <div class="b-upper-bar__menu">
@@ -34,21 +29,19 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
 
-import Currency from './Currency';
 import LiveTime from './Topbar-Upper-Time';
 import Offline from './Offline';
 import Menu from './Topbar-Upper-Menu';
 
 export default {
     components: {
-        Currency,
         LiveTime,
         Offline,
         'b-menu': Menu
     },
 
     computed: {
-        ...mapGetters(['credit', 'isSellerMode', 'isReloaderMode']),
+        ...mapGetters(['isSellerMode', 'isReloaderMode']),
 
         ...mapState({
             history: state => state.history.opened,
@@ -114,14 +107,6 @@ export default {
     font-size: 14px;
 }
 
-.b-upper-bar__buyer-credit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: bold;
-}
-
 .b-upper-bar {
     display: flex;
     height: 65px;
@@ -170,14 +155,7 @@ export default {
         padding-bottom: 5px;
     }
 
-    .b-upper-bar__buyer-credit {
-        left: unset;
-        right: 40px;
-        font-size: 22px;
-    }
-
     .b-upper-bar__date {
-        font-size: 18px;
         line-height: 45px;
     }
 

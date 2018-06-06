@@ -42,8 +42,8 @@
             <div
                 class="b-reload__modal__buttons"
                 v-show="reloadState === 'confirm'">
-                <button @click="reload">Paiement accepté</button>
-                <button @click="cancelReloadModal">Paiement refusé</button>
+                <button @click="reload"><span>Paiement</span> accepté</button>
+                <button @click="cancelReloadModal"><span>Paiement</span> refusé</button>
             </div>
         </div>
         <nfc mode="read" @read="validate" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
@@ -172,10 +172,12 @@ export default {
 @import '../main.css';
 
 .b-reload--reloadOnly {
+    flex: 1;
+
     & .b-reload__modal {
-        transform: translateX(-50%);
-        transform-origin: top center;
-        z-index: 3;
+        position: static;
+        transform: none !important;
+        margin: 10px auto;
     }
 }
 
@@ -257,12 +259,20 @@ export default {
     .b-reload--reloadOnly {
         & .b-reload__modal {
             transform: translateX(-50%);
-            top: 90px;
+            top: 140px;
 
             &.b-reload__modal--fromtop {
                 top: 150px;
             }
         }
+    }
+
+    .b-reload__modal {
+        padding: 10px 20px;
+    }
+
+    .b-reload__modal__topbar {
+        display: none;
     }
 
     .b-reload__modal {
@@ -272,6 +282,25 @@ export default {
     .b-reload__modal__methods {
         flex-wrap: wrap;
         width: 100%;
+    }
+
+    .b-reload__modal__numerical-input {
+        margin-bottom: 10px;
+    }
+
+    .b-reload__modal__buttons {
+        flex-direction: row-reverse;
+        padding: 0 10px 10px 10px;
+        align-items: center;
+        justify-content: space-between;
+
+        & > button {
+            padding: 10px 20px;
+        }
+
+        & > button > span {
+            display: none;
+        }
     }
 }
 </style>
