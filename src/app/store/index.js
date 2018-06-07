@@ -27,9 +27,8 @@ const vuexPersist = new VuexPersistence({
     storage: localForage,
     reducer: state => ({
         ...state,
+        // do not restore online.status
         online: {
-            status: false,
-            syncing: false,
             offline: state.online.offline
         }
     })
