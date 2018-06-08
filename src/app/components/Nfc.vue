@@ -3,6 +3,8 @@
         <template v-if="mode === 'write'">
             <div
                 class="b-writer__drop"
+                :success="success"
+                :error="rewrite"
                 @click="cancel"></div>
             <div class="b-writer__modal">
                 <div class="b-writer__modal__text" v-if="!success">
@@ -235,6 +237,14 @@ export default {
 
 .b-writer__drop {
     @add-mixin modal-drop;
+
+    &[success] {
+        background-color: $green;
+    }
+
+    &[error] {
+        background-color: $red;
+    }
 }
 
 .b-writer__modal {

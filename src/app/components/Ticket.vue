@@ -83,6 +83,8 @@ export default {
 
     & .b-ticket__drop {
         @add-mixin modal-drop;
+
+        background-color: $green;
     }
 }
 </style>
