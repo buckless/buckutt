@@ -2,6 +2,7 @@ const initialState = {
     status: false,
     syncing: false,
     offline: {
+        blockedCards: [],
         sellers: [],
         defaultItems: {
             articles: [],
@@ -29,6 +30,10 @@ const mutations = {
 
     SET_DEFAULT_ITEMS(state, payload) {
         state.offline.defaultItems = payload;
+    },
+
+    SET_BLOCKED_CARDS(state, payload) {
+        state.offline.blockedCards = payload;
     }
 };
 

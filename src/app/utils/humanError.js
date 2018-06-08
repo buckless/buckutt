@@ -19,6 +19,10 @@ export default (state, error) => {
         return 'Carte invalide';
     }
 
+    if (error.message === 'Locked card') {
+        return 'Carte bloquée par son propriétaire ou un administrateur';
+    }
+
     if (error.message === "Couldn't find ticket") {
         return 'Ticket introuvable';
     }

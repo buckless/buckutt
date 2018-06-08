@@ -74,6 +74,10 @@ export const setDefaultItems = (store, payload) => {
     store.commit('SET_DEFAULT_ITEMS', payload);
 };
 
+export const setBlockedCards = (store, payload) => {
+    store.commit('SET_BLOCKED_CARDS', payload);
+};
+
 export const currentTokenAxios = (store, job) => {
     // We try to log-in the current seller before any request
     return store.dispatch('logOperator').then(() =>

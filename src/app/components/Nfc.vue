@@ -43,7 +43,8 @@ export default {
     props: {
         mode: String,
         successText: String,
-        disableSignCheck: Boolean
+        disableSignCheck: Boolean,
+        disableLockCheck: Boolean
     },
 
     data() {
@@ -91,6 +92,10 @@ export default {
             } else {
                 this.$emit('read', this.inputValue, credit, options);
             }
+
+            if (this.mode === 'read') {
+                this.resetComponent();
+            }
         },
 
         cancel() {
@@ -119,22 +124,41 @@ export default {
                 });
 
                 nfc.on('data', data => {
-                    let card;
                     try {
-                        card = nfc.dataToCard(
+                        const card = nfc.dataToCard(
                             data.toLowerCase ? data.toLowerCase() : data,
                             this.inputValue + config.signingKey
                         );
 
                         console.log('nfc-data', card);
+
+                        let cardToLock = false;
+                        if (this.forbiddenIds.indexOf(this.inputValue) > -1) {
+                            // Only write lock if it isn't already done
+                            cardToLock = !card.options.locked;
+                            card.options.locked = true;
+                        }
+
+                        if (card.options.locked && !this.disableLockCheck) {
+                            if (cardToLock) {
+                                this.dataToWrite = card;
+                                this.write();
+                            }
+                            throw 'Locked card';
+                        }
+
                         this.onCard(card.credit, card.options);
                     } catch (err) {
                         console.log(err);
-                        if (!this.checkDisabled) {
+                        if (err === 'Locked card') {
+                            this.$store.commit('ERROR', { message: 'Locked card' });
+                        } else if (!this.signCheckDisabled) {
                             this.$store.commit('ERROR', { message: 'Invalid card' });
                         } else {
-                            this.onCard(0, {});
+                            return this.onCard(0, {});
                         }
+
+                        this.resetComponent();
                     }
                 });
             } else {
@@ -190,32 +214,38 @@ export default {
             window.nfc.removeAllListeners('error');
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
+        },
+
+        resetComponent() {
+            this.inputValue = '';
+            this.cardToRewrite = '';
+            this.success = false;
+            this.rewrite = false;
+            this.dataToWrite = {
+                credit: null,
+                options: null
+            };
         }
     },
 
     computed: {
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            dataLoaded: state => state.ui.dataLoaded
+            dataLoaded: state => state.ui.dataLoaded,
+            forbiddenIds: state => state.online.offline.blockedCards
         }),
 
         successTextUpdated() {
             return this.successText || 'Transaction effectuée';
+        },
+
+        signCheckDisabled() {
+            return this.disableSignCheck || this.rewrite;
         }
     },
 
-    checkDisabled() {
-        return this.disableSignCheck || this.rewrite;
-    },
-
     mounted() {
-        this.success = false;
-        this.rewrite = false;
-        this.dataToWrite = {
-            credit: null,
-            options: null
-        };
-
+        this.resetComponent();
         this.setListeners();
     },
 

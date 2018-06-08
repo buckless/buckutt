@@ -67,6 +67,10 @@ export const updateEssentials = (store, force) => {
                 promises.push(store.dispatch('setPendingCardUpdates', res.data.pendingCardUpdates));
             }
 
+            if (res.data.blockedCards) {
+                promises.push(store.dispatch('setBlockedCards', res.data.blockedCards));
+            }
+
             if (res.data.userTickets) {
                 const users = res.data.userTickets.map(user => [
                     user.id,

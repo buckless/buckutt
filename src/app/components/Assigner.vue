@@ -142,11 +142,28 @@ export default {
                 return this.$store.commit('ERROR', { message: 'Card already assigned' });
             }
 
+            const removeOldCards = encodeURIComponent(
+                JSON.stringify([
+                    { field: 'user_id', eq: this.assignModalId },
+                    { field: 'type', eq: 'cardId' },
+                    { field: 'data', ne: cardId }
+                ])
+            );
+
             this.sendRequest({
-                method: 'post',
-                url: 'meansoflogin',
-                data: mol
+                method: 'put',
+                url: `meansoflogin?q=${removeOldCards}`,
+                data: {
+                    blocked: true
+                }
             })
+                .then(() =>
+                    this.sendRequest({
+                        method: 'post',
+                        url: 'meansoflogin',
+                        data: mol
+                    })
+                )
                 .then(() =>
                     this.sendRequest({
                         method: 'post',
