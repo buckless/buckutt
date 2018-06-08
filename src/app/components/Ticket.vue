@@ -4,7 +4,7 @@
             <hr v-if="inline"/>
 
             Dernier client :
-            <strong v-if="user.name"><span class="b--capitalized">{{ user.name }}</span></strong>
+            <strong class="b--capitalized">{{ user.name || 'anonyme' }}</strong>
 
             <br/>
 
@@ -85,6 +85,12 @@ export default {
         @add-mixin modal-drop;
 
         background-color: $green;
+    }
+}
+
+@media (max-width: 768px) {
+    .b-ticket__modal {
+        padding: 30px !important;
     }
 }
 </style>
