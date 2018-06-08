@@ -26,7 +26,8 @@ module.exports = ticketNumber => {
                 return Promise.resolve();
             }
 
-            const tickets = res.data.filter(t => t.barcode === ticketNumber);
+            const tickets = res.data.filter(t => t.ext_id === ticketNumber);
+            console.log('ici', tickets);
 
             ticket = tickets.find(t => config.ticketIdTicket.indexOf(t.ticket_id.toString()) > -1);
             credit = tickets.find(
