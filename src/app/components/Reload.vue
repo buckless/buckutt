@@ -40,10 +40,16 @@
                 </div>
             </div>
             <div
-                class="b-reload__modal__buttons"
+                class="b-reload__modal__confirm"
                 v-show="reloadState === 'confirm'">
-                <button @click="reload"><span>Paiement</span> accepté</button>
-                <button @click="cancelReloadModal"><span>Paiement</span> refusé</button>
+                <div class="b-reload__modal__nfc" v-if="reloadOnly && currentNfcSupport">
+                    <input id="nfcsupport" type="checkbox" v-model="payNfcSupport" />
+                    <label for="nfcsupport">Facturer un support NFC</label>
+                </div>
+                <div class="b-reload__modal__buttons">
+                    <button @click="reload"><span>Paiement</span> accepté</button>
+                    <button @click="cancelReloadModal"><span>Paiement</span> refusé</button>
+                </div>
             </div>
         </div>
         <nfc mode="read" @read="validate" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
@@ -73,7 +79,8 @@ export default {
 
     data() {
         return {
-            reloadAmount: 0
+            reloadAmount: 0,
+            payNfcSupport: false
         };
     },
 
@@ -84,7 +91,10 @@ export default {
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing,
             giftReloads: state => state.items.giftReloads,
-            meanOfPayment: state => state.reload.meanOfPayment
+            meanOfPayment: state => state.reload.meanOfPayment,
+            nfcCosts: state => state.items.nfcCosts,
+            defaultGroup: state => state.auth.device.event.defaultGroup_id,
+            nfcId: state => state.auth.device.event.nfc_id
         }),
 
         ...mapGetters(['reloadSum']),
@@ -97,6 +107,30 @@ export default {
                     return timesEveryAmount * gr.amount;
                 })
                 .reduce((a, b) => a + b, 0);
+        },
+
+        currentNfcSupport() {
+            const now = new Date();
+            const costs = this.nfcCosts
+                .filter(
+                    cost =>
+                        cost.group_id === this.defaultGroup &&
+                        new Date(cost.period.start) <= now &&
+                        new Date(cost.period.end) >= now
+                )
+                .sort((a, b) => a.amount - b.amount);
+
+            if (costs.length === 0) {
+                return;
+            }
+
+            return {
+                price: costs[0],
+                id: this.nfcId,
+                vat: 0.2,
+                alcohol: 0,
+                name: 'Support NFC'
+            };
         }
     },
 
@@ -130,7 +164,11 @@ export default {
             let initialPromise = Promise.resolve();
 
             if (this.reloadOnly) {
-                initialPromise = this.sendBasket();
+                if (this.payNfcSupport) {
+                    initialPromise = this.addItemToBasket(this.currentNfcSupport);
+                }
+
+                initialPromise = initialPromise.then(() => this.sendBasket());
             }
 
             initialPromise.then(() => this.closeReload());
@@ -148,14 +186,16 @@ export default {
         cancelReload() {
             this.$store.commit('SET_WRITING', false);
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
-            this.removeReloads();
+            this.clearBasket();
+            this.payNfcSupport = false;
         },
 
         ...mapActions([
             'confirmReloadModal',
             'closeReloadModal',
+            'addItemToBasket',
             'addReload',
-            'removeReloads',
+            'clearBasket',
             'cancelReloadModal',
             'sendBasket',
             'buyer'
@@ -233,10 +273,26 @@ export default {
     width: 90%;
 }
 
+.b-reload__modal__nfc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0px;
+
+    & > input {
+        width: 25px;
+        height: 25px;
+        background: #fff;
+    }
+
+    & > label {
+        margin-left: 10px;
+    }
+}
+
 .b-reload__modal__buttons {
     display: flex;
     flex-direction: column;
-    padding: 0 40px 20px 40px;
 
     & > button {
         border: 0;

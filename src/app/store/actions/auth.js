@@ -208,7 +208,7 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
     if (shouldWriteCredit) {
         const newOptions = {
             assignedCard: true,
-            ...options.catering
+            catering: options.catering
         };
 
         initialPromise = initialPromise.then(
