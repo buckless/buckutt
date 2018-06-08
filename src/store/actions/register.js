@@ -9,7 +9,7 @@ export function assign(_, { ticketNumber }) {
         return Promise.reject(new Error('Ticket ou mail invalide'));
     }
 
-    return get(`assigner?ticketOrMail=${ticketNumber}`);
+    return post(`assigner`, { ticketOrMail: ticketNumber });
 }
 
 export function register(_, { firstname, lastname, rmail }) {
