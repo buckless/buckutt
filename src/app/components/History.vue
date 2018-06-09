@@ -109,20 +109,19 @@ export default {
                 return;
             }
 
+            let initialPromise = Promise.resolve();
+
+            if (this.useCardData) {
+                initialPromise = new Promise(resolve => {
+                    window.app.$root.$emit('readyToWrite', newCredit, options);
+                    window.app.$root.$on('writeCompleted', () => resolve());
+                });
+            }
+
             this.$store.commit('SET_DATA_LOADED', false);
-            this.cancelEntry(this.selectedEntry)
-                .then(() => {
-                    this.removeFromHistory(this.selectedEntry);
-
-                    if (this.useCardData) {
-                        return new Promise(resolve => {
-                            window.app.$root.$emit('readyToWrite', newCredit, options);
-                            window.app.$root.$on('writeCompleted', () => resolve());
-                        });
-                    }
-
-                    return Promise.resolve();
-                })
+            initialPromise
+                .then(() => this.cancelEntry(this.selectedEntry))
+                .then(() => this.removeFromHistory(this.selectedEntry))
                 .then(() => {
                     if (this.buyer.isAuth) {
                         this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);

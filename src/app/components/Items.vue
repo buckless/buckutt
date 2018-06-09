@@ -4,7 +4,7 @@
             v-for="item in tabItems"
             :item="item"
             :key="item.id"></item>
-        <nfc mode="read" @read="validate" v-if="!buyer.isAuth && isWaiting && !isWriting" key="read" />
+        <nfc mode="read" @read="logBuyer" v-if="!buyer.isAuth && isWaiting && !isWriting" key="read" />
         <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
     </div>
 </template>
@@ -31,16 +31,24 @@ export default {
 
     methods: {
         ...mapActions({
-            setBuyer: 'buyer'
+            setBuyer: 'buyer',
+            validateBasket: 'validateBasket'
         }),
+
+        logBuyer(cardNumber, credit, options) {
+            console.log('items-buyer-login', cardNumber, credit, options);
+            this.setBuyer({
+                cardNumber,
+                credit: Number.isInteger(credit) ? credit : null
+            });
+        },
 
         validate(cardNumber, credit, options) {
             console.log('items-validate', cardNumber, credit, options);
-            this.setBuyer({
+            this.validateBasket({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
-                options,
-                isOnlyAuth: this.isWaiting && !this.isWriting
+                options
             });
         },
 

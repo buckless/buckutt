@@ -110,139 +110,24 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
-    const token = store.getters.tokenHeaders;
-    const onlyAuth = isOnlyAuth || false;
-
-    let cardCredit = credit;
-
+export const buyer = (store, { cardNumber, credit }) => {
     store.commit('SET_DATA_LOADED', false);
 
     let initialPromise = Promise.resolve();
-
-    if (store.state.auth.seller.canAssign) {
-        store.commit('SET_DATA_LOADED', true);
-        return;
-    }
-
-    let interfaceLoaderCredentials;
-    let shouldSendBasket = false;
-    let shouldWriteCredit = false;
-    let shouldClearBasket = false;
-    let shouldCheckPending = false;
-    let shouldChangeBuyer = false;
-
-    if (!store.state.auth.device.config.doubleValidation) {
-        // First time: sendBasket will active "WAITING_FOR_BUYER" and return
-        shouldSendBasket = !onlyAuth;
-        shouldClearBasket = store.getters.isSellerMode;
-
-        if (store.state.basket.basketStatus === 'WAITING_FOR_BUYER') {
-            shouldChangeBuyer = true;
-            shouldCheckPending =
-                options.assignedCard &&
-                store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1;
-            shouldWriteCredit = store.state.auth.device.event.config.useCardData;
-        } else {
-            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
-        }
-    } else {
-        if (store.state.auth.buyer.isAuth) {
-            shouldSendBasket = true;
-            shouldClearBasket = true;
-            shouldChangeBuyer = true;
-        } else {
-            shouldCheckPending =
-                options.assignedCard &&
-                store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1;
-            interfaceLoaderCredentials = { type: config.buyerMeanOfLogin, mol: cardNumber, credit };
-        }
-    }
-
-    if (shouldCheckPending) {
-        const pendingUrl = `services/pendingCardUpdate?molType=${
-            config.buyerMeanOfLogin
-        }&buyer=${cardNumber}`;
-
-        initialPromise = initialPromise
-            .then(() =>
-                store.dispatch('sendRequest', {
-                    url: pendingUrl,
-                    noQueue: true,
-                    offlineAnswer: { fake: true }
-                })
-            )
-            .then(res => {
-                if (res.fake) {
-                    return Promise.resolve();
-                }
-                cardCredit += res.data.amount;
-                return store.dispatch('removePendingCardUpdate', cardNumber);
-            });
-    }
-
-    if (shouldSendBasket) {
-        initialPromise = initialPromise
-            .then(() => {
-                if (typeof cardCredit === 'number') {
-                    store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
-                }
-
-                return store.dispatch('sendBasket', {
-                    cardNumber,
-                    assignedCard: options.assignedCard
-                });
-            })
-            .catch((...args) => {
-                // if reload only and basket fail, clear basket
-                if (!store.getters.isSellerMode && store.getters.isReloaderMode) {
-                    store.commit('REMOVE_RELOADS');
-                }
-
-                return Promise.reject(...args);
-            });
-    } else {
-        initialPromise = initialPromise.then(() => store.commit('SET_BUYER_MOL', cardNumber));
-    }
-
-    if (shouldWriteCredit) {
-        const newOptions = {
-            assignedCard: true,
-            catering: options.catering
-        };
-
-        initialPromise = initialPromise.then(
-            () =>
-                new Promise(resolve => {
-                    window.app.$root.$emit(
-                        'readyToWrite',
-                        store.state.ui.lastUser.credit,
-                        newOptions
-                    );
-                    window.app.$root.$on('writeCompleted', () => resolve());
-                })
+    if (store.state.auth.device.config.doubleValidation) {
+        initialPromise = initialPromise.then(() =>
+            store.dispatch('checkPendingCardUpdates', { cardNumber })
         );
     }
 
-    if (shouldClearBasket) {
-        initialPromise = initialPromise.then(() => store.dispatch('clearBasket'));
-    }
-
-    return initialPromise
-        .then(() => store.dispatch('interfaceLoader', interfaceLoaderCredentials))
-        .then(() => {
-            if (
-                typeof cardCredit === 'number' &&
-                store.state.auth.device.event.config.useCardData
-            ) {
-                store.commit('OVERRIDE_BUYER_CREDIT', cardCredit);
-            }
-
-            if (shouldChangeBuyer) {
-                store.commit('OPEN_TICKET');
-                store.commit('LOGOUT_BUYER');
-            }
-        })
+    initialPromise
+        .then(() =>
+            store.dispatch('interfaceLoader', {
+                type: config.buyerMeanOfLogin,
+                mol: cardNumber,
+                credit
+            })
+        )
         .catch(err => {
             console.log(err);
 
@@ -254,8 +139,8 @@ export const buyer = (store, { cardNumber, credit, options, isOnlyAuth }) => {
             store.commit('ERROR', err.response.data);
         })
         .then(() => {
+            store.commit('EMPTY_TICKET');
             store.commit('SET_DATA_LOADED', true);
-            store.commit('SET_WRITING', false);
         });
 };
 

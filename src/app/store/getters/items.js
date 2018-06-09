@@ -1,5 +1,6 @@
 import uniqBy from 'lodash.uniqby';
 import isMobile from '../../utils/isMobile';
+import computePromotions from '../../utils/promotions';
 
 export const wiketItems = state => {
     const defaultItems = state.items.items;
@@ -35,8 +36,6 @@ export const wiketItems = state => {
             )
     );
 
-    console.log(res[0]);
-
     const promotions = res[1].map(promotion => {
         promotion.sets = promotion.sets.map(set => {
             set.articles = set.articles
@@ -64,8 +63,8 @@ export const tabItems = (state, getters) =>
         .filter(item => item.category.id === state.ui.currentTabId || isMobile())
         .sort((a, b) => a.name.localeCompare(b.name));
 
-export const basketAmount = state => {
-    const basket = state.items.basket.sidebar;
+export const basketAmount = (_, getters) => {
+    const basket = getters.sidebar;
 
     if (!basket.items && !basket.promotions) {
         return 0;
@@ -84,10 +83,35 @@ export const reloadAmount = state => {
     return state.reload.reloads.map(reload => reload.amount).reduce((a, b) => a + b, 0);
 };
 
-export const credit = state => {
+export const credit = (state, getters) => {
     const initialCredit = state.auth.buyer.credit;
-    const reloads = reloadAmount(state);
-    const basketCost = basketAmount(state);
+    const reloads = getters.reloadAmount;
+    const basketCost = getters.basketAmount;
 
     return initialCredit + reloads - basketCost;
+};
+
+export const sidebar = (state, getters) => {
+    const initialSidebar = computePromotions(
+        state.items.basket.itemList.slice(),
+        getters.wiketItems.promotions.slice()
+    );
+
+    const items = initialSidebar.items.map(item => {
+        const updatedItem = getters.wiketItems.items.find(i => i.id === item.id);
+        return {
+            ...updatedItem,
+            price: updatedItem ? updatedItem.price : item.price
+        };
+    });
+
+    const promotions = initialSidebar.promotions.map(promotion => {
+        const updatedPromotion = getters.wiketItems.promotions.find(p => p.id === promotion.id);
+        return {
+            ...updatedPromotion,
+            price: updatedPromotion ? updatedPromotion.price : promotion.price
+        };
+    });
+
+    return { items, promotions };
 };

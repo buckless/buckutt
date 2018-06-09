@@ -23,7 +23,7 @@
 
 <script>
 import countBy from 'lodash.countby';
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import SidebarItem from './Sidebar-Item';
 import SidebarPromotion from './Sidebar-Promotion';
@@ -32,11 +32,7 @@ import SidebarValidate from './Sidebar-Validate';
 
 export default {
     computed: {
-        ...mapGetters(['reloadAmount']),
-
-        ...mapState({
-            sidebar: state => state.items.basket.sidebar
-        }),
+        ...mapGetters(['reloadAmount', 'sidebar']),
 
         sidebarItems() {
             const counts = countBy(this.sidebar.items.map(item => item.id));

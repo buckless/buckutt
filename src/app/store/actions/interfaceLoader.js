@@ -1,14 +1,14 @@
-export const interfaceLoader = (store, credentials) => {
+export const interfaceLoader = (store, payload = {}) => {
     let params = '';
     let offlineAnswer = { data: store.state.online.offline.defaultItems };
 
-    if (credentials) {
-        params = `?buyer=${credentials.mol.trim()}&molType=${credentials.type}`;
-        offlineAnswer = window.database.cardAccesses(credentials.mol.trim()).then(memberships => ({
+    if (payload.mol) {
+        params = `?buyer=${payload.mol.trim()}&molType=${payload.type}`;
+        offlineAnswer = window.database.cardAccesses(payload.mol.trim()).then(memberships => ({
             data: {
                 ...store.state.online.offline.defaultItems,
                 buyer: {
-                    credit: credentials ? credentials.credit : null,
+                    credit: payload ? payload.credit : null,
                     memberships: memberships
                         .concat([
                             {
@@ -29,14 +29,15 @@ export const interfaceLoader = (store, credentials) => {
         }));
     }
 
-    store
+    return store
         .dispatch('sendRequest', {
             url: `/services/items${params}`,
             offlineAnswer,
-            noQueue: true
+            noQueue: true,
+            forceOffline: payload.forceOffline
         })
         .then(res => {
-            if (credentials && res.data.buyer && typeof res.data.buyer.credit === 'number') {
+            if (payload.mol && res.data.buyer && typeof res.data.buyer.credit === 'number') {
                 const memberships = res.data.buyer.memberships.map(membership => ({
                     start: membership.period.start,
                     end: membership.period.end,
@@ -44,9 +45,7 @@ export const interfaceLoader = (store, credentials) => {
                 }));
 
                 const credit =
-                    typeof credentials.credit === 'number'
-                        ? credentials.credit
-                        : res.data.buyer.credit;
+                    typeof payload.credit === 'number' ? payload.credit : res.data.buyer.credit;
 
                 store.commit('ID_BUYER', {
                     id: res.data.buyer.id || '',
@@ -56,7 +55,7 @@ export const interfaceLoader = (store, credentials) => {
                     memberships,
                     purchases: res.data.buyer.purchases || []
                 });
-                store.commit('SET_BUYER_MOL', credentials.mol.trim());
+                store.commit('SET_BUYER_MOL', payload.mol.trim());
             }
 
             if (!res.data.buyer || !res.data.buyer.id) {
@@ -90,17 +89,17 @@ export const interfaceLoader = (store, credentials) => {
                 err.response.data &&
                 err.response.data.message === 'Buyer not found' &&
                 store.state.auth.device.event.config.useCardData &&
-                typeof credentials.credit === 'number'
+                typeof payload.credit === 'number'
             ) {
                 store.commit('ID_BUYER', {
                     id: '',
-                    credit: credentials.credit,
+                    credit: payload.credit,
                     firstname: '',
                     lastname: '',
                     memberships: [],
                     purchases: []
                 });
-                store.commit('SET_BUYER_MOL', credentials.mol.trim());
+                store.commit('SET_BUYER_MOL', payload.mol.trim());
                 return;
             }
 

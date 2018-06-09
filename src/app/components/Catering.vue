@@ -85,23 +85,22 @@ export default {
                 buyer: cardId
             };
 
-            this.sendRequest({
-                method: 'post',
-                url: 'services/catering',
-                data: cateringToSend
+            new Promise(resolve => {
+                window.app.$root.$emit('readyToWrite', credit, deductedOptions);
+                window.app.$root.$on('writeCompleted', () => resolve());
             })
+                .then(() =>
+                    this.sendRequest({
+                        method: 'post',
+                        url: 'services/catering',
+                        data: cateringToSend
+                    })
+                )
                 .catch(err => {
                     // We always use card data for catering: it has to work
                     console.error(err);
                     return Promise.resolve();
                 })
-                .then(
-                    () =>
-                        new Promise(resolve => {
-                            window.app.$root.$emit('readyToWrite', credit, deductedOptions);
-                            window.app.$root.$on('writeCompleted', () => resolve());
-                        })
-                )
                 .then(() => {
                     this.lastArticle = {
                         name: this.selectedArticle.name,

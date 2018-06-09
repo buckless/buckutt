@@ -41,12 +41,10 @@ export default {
     methods: {
         validate(e) {
             e.currentTarget.blur();
-
-            // set to true for !useCardData events
-            this.sendBasket({ assignedCard: true });
+            this.basketClickValidation();
         },
 
-        ...mapActions(['sendBasket', 'clearBasket'])
+        ...mapActions(['basketClickValidation', 'clearBasket'])
     }
 };
 </script>

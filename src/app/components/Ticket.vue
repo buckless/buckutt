@@ -43,14 +43,7 @@ export default {
 
     methods: {
         close() {
-            this.$store.commit('SET_LAST_USER', {
-                display: false,
-                name: null,
-                localId: null,
-                bought: 0,
-                reload: 0,
-                credit: 0
-            });
+            this.$store.commit('EMPTY_TICKET');
         }
     }
 };

@@ -52,7 +52,8 @@ export const sendRequest = (store, job) => {
         return store.dispatch('currentTokenAxios', job);
     }
 
-    const forceOffline = !store.state.online.status || navigator.connection.downlink < 0.2;
+    const forceOffline =
+        !store.state.online.status || navigator.connection.downlink < 0.2 || job.forceOffline;
 
     if (job.noQueue) {
         if (forceOffline) {

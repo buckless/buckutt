@@ -2,11 +2,7 @@ const initialState = {
     items: [],
     promotions: [],
     basket: {
-        itemList: [],
-        sidebar: {
-            items: [],
-            promotions: []
-        }
+        itemList: []
     },
     giftReloads: [],
     nfcCosts: []
@@ -39,10 +35,6 @@ const mutations = {
         state.basket.itemList.splice(index, 1);
     },
 
-    SET_SIDEBAR(state, sidebar) {
-        state.basket.sidebar = sidebar;
-    },
-
     CLEAR_ITEMS(state) {
         state.items = [];
     },
@@ -53,26 +45,14 @@ const mutations = {
 
     CLEAR_BASKET(state) {
         state.basket = {
-            itemList: [],
-            sidebar: {
-                items: [],
-                promotions: []
-            }
+            itemList: []
         };
     },
 
     LOGOUT_BUYER(state) {
         state.basket = {
-            itemList: [],
-            sidebar: {
-                items: [],
-                promotions: []
-            }
+            itemList: []
         };
-    },
-
-    SET_TABS_ITEMS(state, tabsItems) {
-        state.tabsItems = tabsItems;
     }
 };
 

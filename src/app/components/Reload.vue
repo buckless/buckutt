@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <nfc mode="read" @read="validate" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
+        <nfc mode="read" @read="logBuyer" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
         <nfc mode="write" @read="validate" @cancel="cancelReload" v-if="reloadOnly && isWriting" key="write"/>
     </div>
 </template>
@@ -168,18 +168,28 @@ export default {
                     initialPromise = this.addItemToBasket(this.currentNfcSupport);
                 }
 
-                initialPromise = initialPromise.then(() => this.sendBasket());
+                initialPromise = initialPromise
+                    .then(() => this.basketClickValidation())
+                    .then(() => this.clearBasket());
             }
 
             initialPromise.then(() => this.closeReload());
         },
 
-        validate(cardNumber, credit, options) {
+        logBuyer(cardNumber, credit, options) {
+            console.log('reload-buyer-login', cardNumber, credit, options);
             this.buyer({
                 cardNumber,
+                credit: Number.isInteger(credit) ? credit : null
+            });
+        },
+
+        validate(cardNumber, credit, options) {
+            console.log('reload-validate', cardNumber, credit, options);
+            this.validateBasket({
+                cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
-                options,
-                isOnlyAuth: this.isWaiting && !this.isWriting
+                options
             });
         },
 
@@ -197,7 +207,8 @@ export default {
             'addReload',
             'clearBasket',
             'cancelReloadModal',
-            'sendBasket',
+            'validateBasket',
+            'basketClickValidation',
             'buyer'
         ])
     },
