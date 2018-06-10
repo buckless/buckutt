@@ -10,7 +10,7 @@ class OfflineData {
     init() {
         this.db.version(1).stores({
             users: 'uid,name,username,barcode,credit',
-            accesses: 'id,cardId,group,start,end',
+            accesses: 'id,userId,cardId,group,start,end',
             images: 'id,blob'
         });
 
@@ -55,6 +55,10 @@ class OfflineData {
         );
     }
 
+    userMemberships(userId) {
+        return this.db.accesses.filter(access => access.userId === userId).toArray();
+    }
+
     cardAccesses(cardId) {
         return this.db.accesses.filter(access => access.cardId === cardId).toArray();
     }
@@ -72,10 +76,11 @@ class OfflineData {
         } else if (table === 'accesses') {
             data = data.map(entry => ({
                 id: entry[0],
-                cardId: entry[1],
-                group: entry[2],
-                start: entry[3],
-                end: entry[4]
+                userId: entry[1],
+                cardId: entry[2],
+                group: entry[3],
+                start: entry[4],
+                end: entry[5]
             }));
         }
 

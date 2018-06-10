@@ -3,7 +3,6 @@ module.exports = () => {
         cordova.plugins.barcodeScanner.scan(
             result => {
                 if (!result.cancelled) {
-                    console.log('barcode', result);
                     return resolve(result.text);
                 }
 

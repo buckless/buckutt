@@ -16,9 +16,9 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@buckless/offline-queue@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@buckless/offline-queue/-/offline-queue-0.5.0.tgz#81bc3f3b1552904590eb818c362770297a0ccb46"
+"@buckless/offline-queue@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@buckless/offline-queue/-/offline-queue-0.5.1.tgz#cae32b6e76243f12250d9d0a78c055b0027108c8"
   dependencies:
     eventemitter3 "^3.0.1"
     is-promise "^2.1.0"
@@ -4740,10 +4740,6 @@ lodash.assign@^4.2.0:
 lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
-
-lodash.clonedeep@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
 
 lodash.countby@^4.6.0:
   version "4.6.0"

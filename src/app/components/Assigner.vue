@@ -78,7 +78,8 @@ export default {
             assignModalId: '',
             assignModalOpened: false,
             subpage: 'search',
-            activeGroups: []
+            activeGroups: [],
+            precheckedGroups: []
         };
     },
 
@@ -150,6 +151,10 @@ export default {
                 ])
             );
 
+            const membershipsToAdd = this.activeGroups
+                .filter(g => !this.precheckedGroups.some(group => g.id === group.id))
+                .map(g => g.id);
+
             this.sendRequest({
                 method: 'put',
                 url: `meansoflogin?q=${removeOldCards}`,
@@ -170,7 +175,7 @@ export default {
                         url: 'services/assigner/groups',
                         data: {
                             user: this.assignModalId,
-                            groups: this.activeGroups.map(g => g.id)
+                            groups: membershipsToAdd
                         }
                     })
                 )
@@ -241,19 +246,34 @@ export default {
         ticketScanned(value) {
             this.$store.commit('SET_DATA_LOADED', false);
 
-            const offlineAnswer = window.database.findByBarcode(value).then(users => {
-                let user = { data: {} };
-                if (users.length === 1) {
-                    user.data = {
-                        credit: users[0].credit,
-                        name: users[0].name,
-                        username: users[0].username,
-                        id: users[0].uid
-                    };
-                }
+            let user = { data: {} };
+            const now = new Date();
+            const offlineAnswer = window.database
+                .findByBarcode(value)
+                .then(users => {
+                    if (users.length === 1) {
+                        user.data = {
+                            credit: users[0].credit,
+                            name: users[0].name,
+                            username: users[0].username,
+                            id: users[0].uid
+                        };
 
-                return user;
-            });
+                        return window.database.userMemberships(user.data.id);
+                    }
+
+                    return Promise.resolve([]);
+                })
+                .then(memberships => {
+                    user.data.currentGroups = memberships
+                        .filter(
+                            membership =>
+                                new Date(membership.start) <= now && new Date(membership.end) >= now
+                        )
+                        .map(membership => ({ id: membership.group }));
+
+                    return user;
+                });
 
             this.sendRequest({
                 method: 'post',
@@ -268,7 +288,8 @@ export default {
                             res.data.credit,
                             res.data.name,
                             res.data.username,
-                            res.data.id
+                            res.data.id,
+                            res.data.currentGroups
                         );
                         return;
                     }
@@ -299,12 +320,15 @@ export default {
             this.ticketScanned(value);
         },
 
-        assignModal(credit, name, username, id) {
+        assignModal(credit, name, username, id, groups = []) {
+            const precheckedGroups = groups.map(group => this.groups.find(g => g.id === group.id));
             this.assignModalOpened = true;
             this.assignModalCredit = credit;
             this.assignModalName = name;
             this.assignModalUsername = username;
             this.assignModalId = id;
+            this.activeGroups = precheckedGroups;
+            this.precheckedGroups = groups;
         },
 
         barcode() {

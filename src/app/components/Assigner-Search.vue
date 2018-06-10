@@ -54,7 +54,37 @@ export default {
             this.$refs.search.blur();
         },
 
+        formatOfflineResults(users) {
+            const now = new Date();
+
+            return Promise.all(
+                users.map(user =>
+                    window.database.userMemberships(user.uid).then(memberships => {
+                        const currentGroups = memberships
+                            .filter(
+                                membership =>
+                                    new Date(membership.start) <= now &&
+                                    new Date(membership.end) >= now
+                            )
+                            .map(membership => ({ id: membership.group }));
+
+                        return {
+                            data: {
+                                credit: user.credit,
+                                name: user.name,
+                                username: user.username,
+                                id: user.uid,
+                                currentGroups
+                            }
+                        };
+                    })
+                )
+            );
+        },
+
         search: debounce(function() {
+            const now = new Date();
+
             if (this.searchInput.length <= 2) {
                 return;
             }
@@ -64,7 +94,9 @@ export default {
                 searchPromise = this.sendRequest({
                     url: `services/manager/searchuser?name=${this.searchInput}`,
                     noQueue: true,
-                    offlineAnswer: window.database.findByName(this.searchInput)
+                    offlineAnswer: window.database
+                        .findByName(this.searchInput)
+                        .then(users => this.formatOfflineResults(users))
                 });
             } else {
                 const filterRel = [
@@ -75,6 +107,14 @@ export default {
                             ['data', 'like', `${this.searchInput}%`]
                         ],
                         required: true
+                    },
+                    {
+                        embed: 'memberships'
+                    },
+                    {
+                        embed: 'memberships.period',
+                        filters: [['start', '<', now], ['end', '>', now]],
+                        required: true
                     }
                 ];
 
@@ -83,16 +123,25 @@ export default {
                 searchPromise = this.sendRequest({
                     url: `users?embed=${embed}`,
                     noQueue: true,
-                    offlineAnswer: window.database.findByBarcode(this.searchInput)
+                    offlineAnswer: window.database
+                        .findByBarcode(this.searchInput)
+                        .then(users => this.formatOfflineResults(users))
                 });
             }
 
             searchPromise
                 .then(res =>
-                    (res.data || res).map(user => {
+                    res.data.map(user => {
                         if (user.firstname) {
                             user.name = `${user.firstname} ${user.lastname}`;
                         }
+
+                        if (user.memberships) {
+                            user.currentGroups = user.memberships.map(membership => ({
+                                id: membership.group_id
+                            }));
+                        }
+
                         return user;
                     })
                 )
@@ -102,7 +151,14 @@ export default {
         }, 500),
 
         selectUser(user) {
-            this.$emit('assign', user.credit, user.name, user.username, user.uid);
+            this.$emit(
+                'assign',
+                user.credit,
+                user.name,
+                user.username,
+                user.id,
+                user.currentGroups
+            );
         },
 
         ...mapActions(['sendRequest'])

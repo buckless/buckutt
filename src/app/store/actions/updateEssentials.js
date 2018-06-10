@@ -90,6 +90,7 @@ export const updateEssentials = (store, force) => {
             if (res.data.accesses) {
                 const accesses = res.data.accesses.map((access, i) => [
                     i + 1,
+                    access.userId,
                     access.cardId,
                     access.groupId,
                     access.start,
