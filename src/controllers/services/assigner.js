@@ -1,6 +1,7 @@
 const express = require('express');
 const log = require('../../lib/log')(module);
 const createUser = require('../../lib/createUser');
+const { embedParser, embedFilter } = require('../../lib/embedParser');
 const dbCatch = require('../../lib/dbCatch');
 const fetchFromAPI = require('../../ticketProviders');
 const APIError = require('../../errors/APIError');
@@ -12,6 +13,7 @@ const router = new express.Router();
 
 router.post('/services/assigner', (req, res, next) => {
     const ticketOrMail = req.body.ticketOrMail;
+    const now = new Date();
 
     if (!ticketOrMail || ticketOrMail.length === 0) {
         return next(new APIError(module, 400, 'Invalid ticketOrMail'));
@@ -20,17 +22,41 @@ router.post('/services/assigner', (req, res, next) => {
     const MeanOfLogin = req.app.locals.models.MeanOfLogin;
     let userData;
 
+    const embedMeanOfLogin = [
+        {
+            embed: 'user',
+            required: true
+        },
+        {
+            embed: 'user.meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'username']]
+        },
+        {
+            embed: 'user.memberships'
+        },
+        {
+            embed: 'user.memberships.period',
+            filters: [['start', '<', now], ['end', '>', now]],
+            required: true
+        }
+    ];
+
+    const embedMeanOfLoginFilters = embedMeanOfLogin
+        .filter(rel => rel.required)
+        .map(rel => rel.embed);
+
     MeanOfLogin.where('type', 'in', ['ticketId', 'username', 'mail'])
         .where({
             data: ticketOrMail,
             blocked: false
         })
         .fetch({
-            withRelated: ['user', 'user.meansOfLogin']
+            withRelated: embedParser(embedMeanOfLogin)
         })
-        .then(mol => (mol ? mol.toJSON() : null))
-        .then(mol => {
-            if (mol && mol.user.id) {
+        .then(mol => embedFilter(embedMeanOfLoginFilters, [mol.toJSON()]))
+        .then(mols => {
+            if (mols.length > 0) {
+                const mol = mols[0];
                 if (req.user) {
                     log.info(``, req.details);
 
@@ -40,9 +66,10 @@ router.post('/services/assigner', (req, res, next) => {
                             id: mol.user.id,
                             credit: mol.user.credit,
                             name: `${mol.user.firstname} ${mol.user.lastname}`,
-                            username: (
-                                mol.user.meansOfLogin.find(mol => mol.type === 'username') || {}
-                            ).data
+                            currentGroups: mol.user.memberships.map(membership => ({
+                                id: membership.group_id
+                            })),
+                            username: (mol.user.meansOfLogin[0] || {}).data
                         })
                         .end();
                 }
@@ -129,7 +156,9 @@ router.post('/services/assigner', (req, res, next) => {
                             .json({
                                 id: user.id,
                                 credit: user.credit,
-                                name: `${user.firstname} ${user.lastname}`
+                                name: `${user.firstname} ${user.lastname}`,
+                                username: userData.username,
+                                currentGroups: [req.event.defaultGroup_id]
                             })
                             .end();
                     }
