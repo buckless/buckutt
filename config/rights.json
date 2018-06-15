@@ -83,6 +83,7 @@
           "/services/manager/reload",
           "/services/manager/giftReloads",
           "/services/manager/switchuser",
+          "/services/manager/block",
           "userCredit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
