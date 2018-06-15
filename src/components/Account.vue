@@ -33,6 +33,28 @@
                 </form>
             </transition>
         </div>
+        <div class="mdc-card" v-if="hasCard">
+            <section class="mdc-card__primary" @click="blockPage = !blockPage">
+                <h1 class="mdc-card__title mdc-card__title--large">
+                    <i class="material-icons" :active="blockPage">keyboard_arrow_right</i>
+                    Bloquer ma carte
+                </h1>
+            </section>
+            <transition name="slide">
+                <div class="b-block" v-show="blockPage">
+                    <template v-if="hasCard && !cardBlocked">
+                        Vous avez perdu ou vous vous êtes fait voler votre carte ? Bloquez la ici.<br/><br/>
+                        <strong>Attention, cette action est irreversible.</strong>
+                        <button class="mdc-button mdc-button--raised" @click="block">Oui, bloquer ma carte</button>
+                    </template>
+                    <template v-if="hasCard && cardBlocked">
+                        Vous avez perdu ou vous vous êtes fait voler votre carte ? Bloquez la ici.<br/><br/>
+                        <strong>Attention, cette action est irreversible.</strong><br/>
+                        <strong>Votre carte a été bloquée.</strong>
+                    </template>
+                </div>
+            </transition>
+        </div>
         <div class="mdc-card" v-if="uid">
             <section class="mdc-card__primary" @click="qrPage = !qrPage">
                 <h1 class="mdc-card__title mdc-card__title--large">
@@ -58,6 +80,7 @@ export default {
     data() {
         return {
             qrPage: false,
+            blockPage: false,
             pinPage: false,
             currentPin: '',
             pin: '',
@@ -67,7 +90,10 @@ export default {
 
     computed: {
         ...mapState({
-            uid: state => state.app.loggedUser.id
+            uid: state => state.app.loggedUser.id,
+            hasCard: state => state.app.loggedUser.meansOfLogin.some(mol => mol.type === 'cardId'),
+            cardBlocked: state =>
+                state.app.loggedUser.meansOfLogin.some(mol => mol.type === 'cardId' && mol.blocked)
         }),
 
         qrcode() {
@@ -76,7 +102,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['changePin', 'notify']),
+        ...mapActions(['changePin', 'notify', 'block']),
 
         change(currentPin, pin, confirmedPin) {
             this.changePin({ currentPin, pin, confirmedPin })
@@ -130,5 +156,13 @@ export default {
 
 .b-account .b-qrcode {
     padding: 0 16px;
+}
+
+.b-account .b-block {
+    padding: 0 16px 16px;
+}
+
+.b-account .b-block button {
+    margin-top: 12px;
 }
 </style>

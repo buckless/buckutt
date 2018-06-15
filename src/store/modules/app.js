@@ -41,6 +41,16 @@ const mutations = {
 
     SET_GIFT_RELOADS(state_, giftReloads) {
         state_.giftReloads = giftReloads;
+    },
+
+    BLOCK_CARDS(state_) {
+        state_.loggedUser.meansOfLogin = state_.loggedUser.meansOfLogin.map(mol => {
+            if (mol.type === 'cardId') {
+                mol.blocked = true;
+            }
+
+            return mol;
+        });
     }
 };
 
