@@ -18,7 +18,7 @@
         </div>
         <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
         <search v-show="subpage === 'search'" @assign="assignModal"/>
-        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck>
+        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck shouldPinLock :shouldPinUnlock="false">
             <p class="b-assigner-modal__modal__text__head">
                 <strong>{{ assignModalName }}</strong><br />
                 Nom d'utilisateur : <strong>{{ assignModalUsername }}</strong><br/>

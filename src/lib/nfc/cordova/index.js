@@ -17,6 +17,14 @@ module.exports = class NFC extends EventEmitter {
         this.nfc.on('data', data => this.emit('data', data));
     }
 
+    shouldLock(lock) {
+        this.nfc.shouldLock(lock);
+    }
+
+    shouldUnlock(unlock) {
+        this.nfc.shouldUnlock(unlock);
+    }
+
     write(data) {
         return this.nfc.write(data);
     }

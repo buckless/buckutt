@@ -17,7 +17,8 @@
     "ultralight": {
         "cardLength": 60,
         "firstWritablePage": 4,
-        "creditSize": 23
+        "creditSize": 23,
+        "pin": "0x11223344"
     },
     "certificate": {
         "path": "\"./buckless-certificate.p12\"",
