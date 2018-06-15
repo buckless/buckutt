@@ -17,7 +17,7 @@ module.exports = class UltralightC extends EventEmitter {
 
             this.connect()
                 .then(() => {
-                    if (this.shouldUnlock) {
+                    if (this.shouldUnlock && this.pin) {
                         return this.unlock(this.pin);
                     }
                 })
@@ -148,7 +148,7 @@ module.exports = class UltralightC extends EventEmitter {
                 });
         }
 
-        if (this.shouldLock) {
+        if (this.shouldLock && this.pin) {
             sequence = sequence.then(() => this.lock(this.pin));
         }
 
