@@ -28,7 +28,13 @@
                 <div
                     class="b-assigner-search__results__result"
                     v-for="match in matches"
-                    @click="selectUser(match)">{{ match.name }}</div>
+                    @click="selectUser(match)"
+                >
+                    {{ match.name }}
+                    <div v-if="match.mail">
+                        <em>{{ match.mail }}</em>
+                    </div>
+                </div>
             </div>
             <p v-else-if="searchInput.length <= 2">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
             <p v-else>Aucun résultat.</p>
