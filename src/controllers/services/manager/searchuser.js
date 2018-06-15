@@ -63,6 +63,7 @@ router.get('/services/manager/searchuser', (req, res) => {
                     id: user.id,
                     firstname: user.firstname,
                     lastname: user.lastname,
+                    mail: userRights.assign ? user.mail : undefined,
                     credit: userRights.assign ? user.credit : undefined,
                     currentGroups: userRights.assign
                         ? user.memberships.map(membership => ({ id: membership.group_id }))
