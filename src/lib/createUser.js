@@ -5,8 +5,11 @@ const { padStart } = require('lodash');
 const mailer = require('./mailer');
 const username = require('./username');
 const template = require('../mailTemplates');
+const checkAnonymousAccount = require('./checkAnonymousAccount');
+const checkTicket = require('./checkTicket');
 const config = require('../../config');
 const log = require('./log')(module);
+const APIError = require('../errors/APIError');
 
 module.exports = function createUser(
     models,
@@ -23,26 +26,41 @@ module.exports = function createUser(
     let newUser;
     let userName;
     let pin;
+    let creditToAdd = 0;
 
     pin = user.pin || padStart(Math.floor(Math.random() * 10000), 4, '0');
 
-    const totalReloadsCredit = reloads.reduce((a, b) => a + b.credit, 0);
-    const newCredit = user.credit ? user.credit + totalReloadsCredit : totalReloadsCredit;
+    return checkTicket(models, meansOfLogin)
+        .then(() => checkAnonymousAccount(models, meansOfLogin))
+        .then(anonymousData => {
+            const totalReloadsCredit = reloads.reduce((a, b) => a + b.credit, 0);
+            creditToAdd = user.credit ? user.credit + totalReloadsCredit : totalReloadsCredit;
+            let userCredit = isWritten ? creditToAdd : 0;
 
-    newUser = new models.User({
-        firstname: user.firstname || faker.name.firstName(),
-        lastname: user.lastname || faker.name.lastName(),
-        nickname: user.nickname || '',
-        mail: user.mail || 'anon@anon.com',
-        pin: bcrypt.hashSync(pin),
-        password: user.password || 'none',
-        recoverKey: randomstring.generate(),
-        credit: newCredit,
-        isTemporary: false
-    });
+            if (anonymousData) {
+                userCredit += anonymousData.credit;
+            }
 
-    return newUser
-        .save()
+            const userData = {
+                firstname: user.firstname || faker.name.firstName(),
+                lastname: user.lastname || faker.name.lastName(),
+                nickname: user.nickname || '',
+                mail: user.mail || 'anon@anon.com',
+                pin: user.cryptedPin || bcrypt.hashSync(pin),
+                password: user.password || 'none',
+                recoverKey: randomstring.generate(),
+                credit: userCredit,
+                isTemporary: false
+            };
+
+            if (anonymousData) {
+                newUser = new models.User({ id: anonymousData.id });
+                return newUser.save(userData, { patch: true });
+            }
+
+            newUser = new models.User(userData);
+            return newUser.save();
+        })
         .then(() => user.username || username(newUser.get('firstname'), newUser.get('lastname')))
         .then(username_ => {
             if (!username_) {
@@ -53,32 +71,45 @@ module.exports = function createUser(
 
             userName = username_;
 
+            // Remove old mols (even cardId which will be recreated bellow)
+            return models.MeanOfLogin.where('type', 'in', ['mail', 'username', 'cardId'])
+                .where({
+                    user_id: newUser.id
+                })
+                .destroy();
+        })
+        .then(() => {
             // Create requested mols
-            let molsPromises = meansOfLogin.map(mol =>
+            const molsPromises = meansOfLogin.map(mol =>
                 new models.MeanOfLogin({
                     type: mol.type,
                     data: mol.data,
+                    physical_id: mol.physical_id,
                     blocked: mol.blocked,
                     user_id: newUser.id
                 }).save()
             );
 
             // Create standard mols
-            const mailMol = new models.MeanOfLogin({
-                type: 'mail',
-                data: newUser.get('mail'),
-                blocked: false,
-                user_id: newUser.id
-            });
+            if (user.mail) {
+                molsPromises.push(
+                    new models.MeanOfLogin({
+                        type: 'mail',
+                        data: newUser.get('mail'),
+                        blocked: false,
+                        user_id: newUser.id
+                    }).save()
+                );
+            }
 
-            const usernameMol = new models.MeanOfLogin({
-                type: 'username',
-                data: userName,
-                blocked: false,
-                user_id: newUser.id
-            });
-
-            molsPromises = molsPromises.concat([mailMol.save(), usernameMol.save()]);
+            molsPromises.push(
+                new models.MeanOfLogin({
+                    type: 'username',
+                    data: userName,
+                    blocked: false,
+                    user_id: newUser.id
+                }).save()
+            );
 
             // Create reloads
             const reloadsPromises = reloads.map(reload =>
@@ -108,10 +139,10 @@ module.exports = function createUser(
 
             // Add a PCU if the credit isn't written yet
             let pendingCardUpdate = Promise.resolve();
-            if (!isWritten && newUser.get('credit') > 0) {
+            if (!isWritten && creditToAdd > 0) {
                 pendingCardUpdate = new models.PendingCardUpdate({
                     user_id: newUser.id,
-                    amount: newUser.get('credit')
+                    amount: creditToAdd
                 }).save();
             }
 

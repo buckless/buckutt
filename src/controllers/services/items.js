@@ -20,7 +20,7 @@ router.get('/services/items', (req, res, next) => {
     const models = req.app.locals.models;
     const now = new Date();
 
-    models.MeanOfLogin.where({
+    return models.MeanOfLogin.where({
         type: req.query.molType,
         data: req.query.buyer,
         blocked: false

@@ -2,14 +2,14 @@ const faker = require('faker/locale/fr');
 const uuid = require('uuid');
 const computeUsername = require('../lib/username');
 
-module.exports = ticketOrMail => {
+module.exports = async ticketOrMail => {
     if (ticketOrMail === 'fail') {
         return Promise.resolve(null);
     }
 
     let firstname = faker.name.firstName();
     let lastname = faker.name.lastName();
-    let username = computeUsername(firstname, lastname);
+    let username = await computeUsername(firstname, lastname);
 
     /**
      * Mail is provided

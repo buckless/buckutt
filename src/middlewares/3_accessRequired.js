@@ -45,11 +45,6 @@ module.exports = connector => {
             url = url.slice(0, -37);
         }
 
-        /* istanbul ignore if */
-        if (url.slice(-6) === '/search') {
-            url = url.slice(0, -7);
-        }
-
         // Get : check for read authorizations
         // Post/Put/Delete : check for write authorizations
         if (method.toLowerCase() === 'get' && authorize[right.name].read.indexOf(url) > -1) {
