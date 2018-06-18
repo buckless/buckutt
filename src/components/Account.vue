@@ -47,7 +47,9 @@
                             <template v-if="userData.blockedCards.length > 0">
                                 Ce compte est associé avec les supports bloqués suivants:
                                 <template v-for="(blockedCard, index) in userData.blockedCards">
-                                    <strong>{{ blockedCard }}</strong><template v-if="index < userData.blockedCards.length - 1">, </template><template v-else>.</template>
+                                    <strong :key="index">{{ blockedCard }}</strong>
+                                    <template v-if="index < userData.blockedCards.length - 1">, </template>
+                                    <template v-else>.</template>
                                 </template>
                                 <br /><br />
                             </template>
