@@ -47,7 +47,7 @@ export default {
 
     methods: {
         blur() {
-            this.$refs.checkbox.blur()
+            this.$refs.checkbox.blur();
         }
     },
 
@@ -64,3 +64,9 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+label {
+    user-select: none;
+}
+</style>

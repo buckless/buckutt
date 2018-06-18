@@ -95,7 +95,7 @@ export default {
                 })
                 .catch(err => {
                     if (err.status) {
-                        err.json().then((data) => {
+                        err.json().then(data => {
                             if (data.message.indexOf('Can not reload less than') > -1) {
                                 data.message = data.message.replace(
                                     'Can not reload less than',
