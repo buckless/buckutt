@@ -11,7 +11,7 @@ export default (state, getters, error) => {
         return state.auth.seller.isAuth ? 'Client introuvable' : 'Identifiants incorrects';
     }
 
-    if (error.message === 'Login error: wrong credentials') {
+    if (error.message === 'Login error: Wrong credentials') {
         return 'Identifiants incorrects';
     }
 

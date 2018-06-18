@@ -17,16 +17,16 @@
             </div>
         </div>
         <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
-        <search v-show="subpage === 'search'" @assign="assignModal"/>
-        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck shouldPinLock :shouldPinUnlock="false">
+        <search v-show="subpage === 'search'" @assign="setAssignModal"/>
+        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModal.opened" disableSignCheck shouldPinLock :shouldPinUnlock="false">
             <p class="b-assigner-modal__modal__text__head">
-                <strong>{{ assignModalName }}</strong><br />
-                Nom d'utilisateur : <strong>{{ assignModalUsername }}</strong><br/>
-                Nouveau crédit : <strong><currency :value="assignModalCredit" /></strong>
+                <strong>{{ assignModal.name }}</strong><br />
+                Nom d'utilisateur : <strong>{{ assignModal.username }}</strong><br/>
+                Nouveau crédit : <strong><currency :value="assignModal.credit" /></strong>
 
                 <template v-if="nfcCost.amount > 0">
                     <br /><br />
-                    <strong v-if="assignModalCredit < nfcCost.amount">
+                    <strong v-if="assignModal.credit < nfcCost.amount">
                         Le compte n'a pas assez de crédit pour payer le support, encaisser <currency :value="nfcCost.amount" />.
                     </strong>
                     <strong v-else>
@@ -56,6 +56,7 @@
 import { mapState, mapActions } from 'vuex';
 
 import barcode from '@/../lib/barcode';
+import formatOfflineResults from '@/utils/formatOfflineResults';
 import CreateAccount from './Assigner-CreateAccount';
 import Search from './Assigner-Search';
 import Ok from './Ok';
@@ -72,11 +73,7 @@ export default {
     data() {
         return {
             showOkModal: false,
-            assignModalCredit: 0,
-            assignModalName: '',
-            assignModalUsername: '',
-            assignModalId: '',
-            assignModalOpened: false,
+            assignModal: { opened: false },
             subpage: 'search',
             activeGroups: [],
             precheckedGroups: []
@@ -129,58 +126,48 @@ export default {
     methods: {
         assignCard(cardId, _, options) {
             this.$store.commit('SET_DATA_LOADED', false);
-            const mol = {
-                user_id: this.assignModalId,
-                type: 'cardId',
-                data: cardId,
-                blocked: false
-            };
-
-            let initialPromise = Promise.resolve();
 
             if (options.assignedCard) {
                 this.$store.commit('SET_DATA_LOADED', true);
                 return this.$store.commit('ERROR', { message: 'Card already assigned' });
             }
 
-            const removeOldCards = encodeURIComponent(
-                JSON.stringify([
-                    { field: 'user_id', eq: this.assignModalId },
-                    { field: 'type', eq: 'cardId' },
-                    { field: 'data', ne: cardId }
-                ])
-            );
+            const assignPromise = this.useCardData
+                ? new Promise(resolve => {
+                      const creditToWrite =
+                          this.assignModal.credit < this.nfcCost.amount
+                              ? this.assignModal.credit
+                              : this.assignModal.credit - this.nfcCost.amount;
+                      window.app.$root.$emit('readyToWrite', creditToWrite, {
+                          assignedCard: true,
+                          catering: options.catering
+                      });
+                      window.app.$root.$on('writeCompleted', () => resolve());
+                  })
+                : Promise.resolve();
 
-            const membershipsToAdd = this.activeGroups
+            const groupsToAdd = this.activeGroups
                 .filter(g => !this.precheckedGroups.some(group => g.id === group.id))
                 .map(g => g.id);
 
-            this.sendRequest({
-                method: 'put',
-                url: `meansoflogin?q=${removeOldCards}`,
-                data: {
-                    blocked: true
-                }
-            })
+            assignPromise
                 .then(() =>
                     this.sendRequest({
                         method: 'post',
-                        url: 'meansoflogin',
-                        data: mol
-                    })
-                )
-                .then(() =>
-                    this.sendRequest({
-                        method: 'post',
-                        url: 'services/assigner/groups',
+                        url: 'services/manager/assigner',
                         data: {
-                            user: this.assignModalId,
-                            groups: membershipsToAdd
+                            userId: this.assignModal.id,
+                            ticketNumber: this.assignModal.ticketId,
+                            groups: groupsToAdd,
+                            cardId
                         }
                     })
                 )
                 .then(() => {
-                    if (this.nfcCost.amount === 0) {
+                    if (
+                        this.nfcCost.amount === 0 ||
+                        this.nfcCost.amount > this.assignModal.credit
+                    ) {
                         return Promise.resolve();
                     }
 
@@ -216,28 +203,6 @@ export default {
                         data: transactionToSend
                     });
                 })
-                .catch(
-                    err =>
-                        err.response.data.message === 'Duplicate Entry'
-                            ? Promise.resolve()
-                            : Promise.reject(err)
-                )
-                .then(
-                    () =>
-                        this.useCardData
-                            ? new Promise(resolve => {
-                                  const creditToWrite =
-                                      this.assignModalCredit < this.nfcCost.amount
-                                          ? this.assignModalCredit
-                                          : this.assignModalCredit - this.nfcCost.amount;
-                                  window.app.$root.$emit('readyToWrite', creditToWrite, {
-                                      assignedCard: true,
-                                      catering: options.catering
-                                  });
-                                  window.app.$root.$on('writeCompleted', () => resolve());
-                              })
-                            : Promise.resolve()
-                )
                 .then(() => this.ok())
                 .catch(err => this.$store.commit('ERROR', err.response.data))
                 .then(() => this.$store.commit('SET_DATA_LOADED', true));
@@ -246,50 +211,23 @@ export default {
         ticketScanned(value) {
             this.$store.commit('SET_DATA_LOADED', false);
 
-            let user = { data: {} };
-            const now = new Date();
-            const offlineAnswer = window.database
-                .findByBarcode(value)
-                .then(users => {
-                    if (users.length === 1) {
-                        user.data = {
-                            credit: users[0].credit,
-                            name: users[0].name,
-                            username: users[0].username,
-                            id: users[0].uid
-                        };
-
-                        return window.database.userMemberships(user.data.id);
-                    }
-
-                    return Promise.resolve([]);
-                })
-                .then(memberships => {
-                    user.data.currentGroups = memberships
-                        .filter(
-                            membership =>
-                                new Date(membership.start) <= now && new Date(membership.end) >= now
-                        )
-                        .map(membership => ({ id: membership.group }));
-
-                    return user;
-                });
-
             this.sendRequest({
-                method: 'post',
-                url: `services/assigner`,
-                data: { ticketOrMail: value },
-                immediate: true,
-                offlineAnswer
+                url: `services/assigner?ticketOrMail=${value}`,
+                noQueue: true,
+                offlineAnswer: window.database
+                    .findByBarcode(this.searchInput)
+                    .then(users => formatOfflineResults(users))
             })
-                .then(res => {
-                    if (typeof res.data.credit === 'number') {
-                        this.assignModal(
-                            res.data.credit,
-                            res.data.name,
-                            res.data.username,
-                            res.data.id,
-                            res.data.currentGroups
+                .then(res => (res.data.length > 0 ? res.data[0] : {}))
+                .then(user => {
+                    if (typeof user.credit === 'number') {
+                        this.setAssignModal(
+                            user.credit,
+                            user.name || `${user.firstname} ${user.lastname}`,
+                            user.username,
+                            user.id,
+                            user.currentGroups,
+                            user.ticketId
                         );
                         return;
                     }
@@ -305,11 +243,7 @@ export default {
 
         closeModal() {
             this.activeGroups = [];
-            this.assignModalOpened = false;
-            this.assignModalCredit = 0;
-            this.assignModalName = '';
-            this.assignModalUsername = '';
-            this.assignModalId = '';
+            this.assignModal = { opened: false };
         },
 
         onBarcode(value) {
@@ -320,13 +254,19 @@ export default {
             this.ticketScanned(value);
         },
 
-        assignModal(credit, name, username, id, groups = []) {
-            const precheckedGroups = groups.map(group => this.groups.find(g => g.id === group.id));
-            this.assignModalOpened = true;
-            this.assignModalCredit = credit;
-            this.assignModalName = name;
-            this.assignModalUsername = username;
-            this.assignModalId = id;
+        setAssignModal(credit, name, username, id, groups = [], ticketId) {
+            const precheckedGroups = groups
+                .filter(group => group.id !== this.defaultGroup.id)
+                .map(group => this.groups.find(g => g.id === group.id));
+
+            this.assignModal = {
+                opened: true,
+                credit,
+                name,
+                username,
+                id,
+                ticketId
+            };
             this.activeGroups = precheckedGroups;
             this.precheckedGroups = groups;
         },

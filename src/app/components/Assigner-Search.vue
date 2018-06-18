@@ -45,6 +45,7 @@
 <script>
 import { mapActions } from 'vuex';
 import debounce from 'lodash.debounce';
+import formatOfflineResults from '@/utils/formatOfflineResults';
 
 export default {
     data() {
@@ -58,34 +59,6 @@ export default {
     methods: {
         closeSearch() {
             this.$refs.search.blur();
-        },
-
-        formatOfflineResults(users) {
-            const now = new Date();
-
-            return Promise.all(
-                users.map(user =>
-                    window.database.userMemberships(user.uid).then(memberships => {
-                        const currentGroups = memberships
-                            .filter(
-                                membership =>
-                                    new Date(membership.start) <= now &&
-                                    new Date(membership.end) >= now
-                            )
-                            .map(membership => ({ id: membership.group }));
-
-                        return {
-                            data: {
-                                credit: user.credit,
-                                name: user.name,
-                                username: user.username,
-                                id: user.uid,
-                                currentGroups
-                            }
-                        };
-                    })
-                )
-            );
         },
 
         search: debounce(function() {
@@ -102,36 +75,15 @@ export default {
                     noQueue: true,
                     offlineAnswer: window.database
                         .findByName(this.searchInput)
-                        .then(users => this.formatOfflineResults(users))
+                        .then(users => formatOfflineResults(users))
                 });
             } else {
-                const filterRel = [
-                    {
-                        embed: 'meansOfLogin',
-                        filters: [
-                            ['type', '=', 'ticketId'],
-                            ['data', 'like', `${this.searchInput}%`]
-                        ],
-                        required: true
-                    },
-                    {
-                        embed: 'memberships'
-                    },
-                    {
-                        embed: 'memberships.period',
-                        filters: [['start', '<', now], ['end', '>', now]],
-                        required: true
-                    }
-                ];
-
-                const embed = encodeURIComponent(JSON.stringify(filterRel));
-
                 searchPromise = this.sendRequest({
-                    url: `users?embed=${embed}`,
+                    url: `services/assigner?ticketOrMail=${this.searchInput}`,
                     noQueue: true,
                     offlineAnswer: window.database
                         .findByBarcode(this.searchInput)
-                        .then(users => this.formatOfflineResults(users))
+                        .then(users => formatOfflineResults(users))
                 });
             }
 
@@ -163,7 +115,8 @@ export default {
                 user.name,
                 user.username,
                 user.id,
-                user.currentGroups
+                user.currentGroups,
+                user.ticketId
             );
         },
 

@@ -56,7 +56,7 @@ export const checkPendingCardUpdates = (store, { cardNumber }) => {
             if (res.fake) {
                 return Promise.resolve();
             }
-            store.commit('OVERRIDE_BUYER_CREDIT', store.getters.credit + res.data.amount);
+            store.commit('OVERRIDE_BUYER_CREDIT', store.state.auth.buyer.credit + res.data.amount);
             return store.dispatch('removePendingCardUpdate', cardNumber);
         });
 };

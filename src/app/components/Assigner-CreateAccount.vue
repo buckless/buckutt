@@ -89,7 +89,8 @@ export default {
                 const anon = {
                     credit: this.numberCredit ? this.numberCredit : 0,
                     cardId,
-                    groups
+                    groups,
+                    anon: true
                 };
 
                 if (options.assignedCard) {
@@ -97,28 +98,23 @@ export default {
                     return this.$store.commit('ERROR', { message: 'Card already assigned' });
                 }
 
-                this.sendRequest({
-                    method: 'post',
-                    url: 'services/assigner/anon',
-                    data: anon
-                })
-                    .catch(
-                        err =>
-                            err.response.data.message === 'Duplicate Entry'
-                                ? Promise.resolve()
-                                : Promise.reject(err)
-                    )
-                    .then(
-                        () =>
-                            this.useCardData
-                                ? new Promise(resolve => {
-                                      window.app.$root.$emit('readyToWrite', this.numberCredit, {
-                                          assignedCard: true,
-                                          catering: options.catering
-                                      });
-                                      window.app.$root.$on('writeCompleted', () => resolve());
-                                  })
-                                : Promise.resolve()
+                const assignPromise = this.useCardData
+                    ? new Promise(resolve => {
+                          window.app.$root.$emit('readyToWrite', this.numberCredit, {
+                              assignedCard: true,
+                              catering: options.catering
+                          });
+                          window.app.$root.$on('writeCompleted', () => resolve());
+                      })
+                    : Promise.resolve();
+
+                assignPromise
+                    .then(() =>
+                        this.sendRequest({
+                            method: 'post',
+                            url: 'services/manager/assigner',
+                            data: anon
+                        })
                     )
                     .then(() => this.ok())
                     .catch(err => this.$store.commit('ERROR', err.response.data))

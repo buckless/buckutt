@@ -1,6 +1,10 @@
 const initialState = {
     items: [],
     promotions: [],
+    wiketItems: {
+        items: [],
+        promotions: []
+    },
     basket: {
         itemList: []
     },
@@ -23,6 +27,10 @@ const mutations = {
 
     SET_PROMOTIONS(state, payload) {
         state.promotions = payload;
+    },
+
+    SET_WIKETITEMS(state, payload) {
+        state.wiketItems = payload;
     },
 
     ADD_ITEM(state, item) {
