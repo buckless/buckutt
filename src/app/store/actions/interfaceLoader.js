@@ -75,11 +75,12 @@ export const interfaceLoader = (store, payload = {}) => {
                 store.commit('SET_PROMOTIONS', res.data.promotions);
             }
 
+            return store.dispatch('setWiketItems');
+        })
+        .then(() => {
             if (store.getters.tabs.length > 0) {
                 store.commit('CHANGE_TAB', store.getters.tabs[0].id);
             }
-
-            return store.dispatch('setWiketItems');
         })
         .catch(err => {
             if (err.message === 'Network Error') {
