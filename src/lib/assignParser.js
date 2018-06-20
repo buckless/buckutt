@@ -23,7 +23,7 @@ module.exports = async function assignParser(req) {
             });
         }
 
-        if (typeof userData.credit === 'number' && userData.credit > 0) {
+        if (typeof userData.credit === 'number' && userData.credit > 0 && !userData.ticketId) {
             reloads.push({
                 credit: userData.credit,
                 type: 'Préchargement',
