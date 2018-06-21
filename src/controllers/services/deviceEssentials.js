@@ -218,7 +218,8 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             for (let i = prices.length - 1; i >= 0; i -= 1) {
                 nfcCosts.push({
                     ...pick(prices[i], ['id', 'amount', 'group_id']),
-                    period: pick(prices[i].period, ['start', 'end'])
+                    ...pick(prices[i].period, ['start', 'end']),
+                    group: prices[i].group_id
                 });
             }
 
