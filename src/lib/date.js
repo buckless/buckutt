@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-export function parseDate(date) {
+export function formatDate(date) {
     const dateJs = new Date(date);
 
     const day = `0${dateJs.getDate()}`.slice(-2);
@@ -13,4 +13,4 @@ export function parseDate(date) {
     return `${day}/${month}/${year} ${hour}:${minutes}`;
 }
 
-Vue.filter('date', date => parseDate(date));
+Vue.filter('date', date => formatDate(date));

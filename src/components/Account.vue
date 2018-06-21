@@ -67,6 +67,8 @@
                     <p class="b-cardtext" v-if="userData.card">
                         Votre espace cashless est associé avec le support <strong>{{ userData.card }}</strong>.<br /><br />
                         Souhaitez-vous bloquer le support ? Cette action est irreversible.
+                        <br/>
+                        <br/>
                         <button class="mdc-button mdc-button--raised" @click="block">Oui, bloquer mon support</button>
                     </p>
                 </div>
@@ -100,6 +102,35 @@
                 </div>
             </transition>
         </div>
+        <div class="mdc-card">
+            <section class="mdc-card__primary" @click="accountRefundPage = !accountRefundPage">
+                <h1 class="mdc-card__title mdc-card__title--large">
+                    <i class="material-icons" :active="accountRefundPage">keyboard_arrow_right</i>
+                    Demander un remboursement
+                </h1>
+            </section>
+            <transition name="slide">
+                <div v-show="accountRefundPage">
+                    <p class="b-cardtext">
+                        Si l'organisateur a activé cette option, vous pouvez être remboursé de votre solde restant.
+                        Le solde maximum remboursable correspond à la somme de vos rechargements sur Internet. Il n'est pas possible de rembourser les montants rechargés en physique.<br/>
+                        <template v-if="refund.minimum > -1 && refund.allowed">
+                            Vous pouvez demander le remboursement de <strong>{{ refund.refundable | price(true) }}</strong>
+                        </template>
+                        <br/>
+                        <br/>
+                        <template v-if="refund.allowed">
+                            <button class="mdc-button mdc-button--raised" @click="accountRefund">Demander un remboursement</button>
+                        </template>
+                        <template v-else>
+                            <div v-for="(error, i) in whyCannotRefund" :key="i">
+                                {{ error }}
+                            </div>
+                        </template>
+                    </p>
+                </div>
+            </transition>
+        </div>
         <div class="mdc-card" v-if="userData.username">
             <section class="mdc-card__primary" @click="qrPage = !qrPage">
                 <h1 class="mdc-card__title mdc-card__title--large">
@@ -121,6 +152,9 @@
 import { MDCTextField } from '@material/textfield/dist/mdc.textfield.min.js';
 import { mapActions, mapState } from 'vuex';
 
+import price from '../lib/price';
+import { formatDate } from '../lib/date';
+
 export default {
     data() {
         return {
@@ -129,6 +163,7 @@ export default {
             pinPage: false,
             addCardPage: false,
             addTicketPage: false,
+            accountRefundPage: false,
             currentPin: '',
             pin: '',
             confirmedPin: '',
@@ -142,8 +177,46 @@ export default {
 
     computed: {
         ...mapState({
-            loggedUser: state => state.app.loggedUser
+            loggedUser: state => state.app.loggedUser,
+            refund: state => state.app.refund
         }),
+
+        whyCannotRefund() {
+            const errors = [];
+            const now = new Date();
+
+            if (this.refund.alreadyAsked) {
+                return [
+                    `Vous avez déjà fait votre demande de remboursement au ${formatDate(
+                        this.refund.alreadyAsked.created_at
+                    )}`
+                ];
+            }
+
+            if (this.refund.minimum <= 0) {
+                return ["Le remboursement n'a pas été activé par l'organisateur"];
+            }
+
+            if (this.refund.refundable < this.refund.minimum) {
+                errors.push(`Le remboursement minimum est de : ${price(this.refund.minimum, true)}`);
+            }
+
+            if (now <= this.refund.start) {
+                errors.push(
+                    `Les remboursements ne sont pas encore ouverts avant le ${formatDate(
+                        this.refund.start
+                    )}`
+                );
+            }
+
+            if (now >= this.refund.end) {
+                errors.push(
+                    `Les remboursements sont fermés depuis le ${formatDate(this.refund.end)}`
+                );
+            }
+
+            return errors;
+        },
 
         qrcode() {
             return `https://chart.apis.google.com/chart?cht=qr&chs=400x400&chl=${this.userData
@@ -178,7 +251,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['changePin', 'notify', 'assign', 'block']),
+        ...mapActions(['changePin', 'notify', 'assign', 'block', 'accountRefund', 'canRefund']),
 
         change(currentPin, pin, confirmedPin) {
             this.disablePin = true;
@@ -228,6 +301,8 @@ export default {
         MDCTextField.attachTo(this.$refs.ticket);
         MDCTextField.attachTo(this.$refs.confirmedPin);
         MDCTextField.attachTo(this.$refs.card);
+
+        this.canRefund();
     }
 };
 </script>

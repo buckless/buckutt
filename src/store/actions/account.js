@@ -2,7 +2,7 @@
  * Account supports actions
  */
 
-import { post, put } from '../../lib/fetch';
+import { post, put, get } from '../../lib/fetch';
 
 export function assign({ state, dispatch }, { ticketNumber, physicalId }) {
     let message = null;
@@ -49,4 +49,12 @@ export const block = ({ state, dispatch }) => {
             })
         )
         .catch(() => window.alert('Impossible de bloquer votre carte'));
+};
+
+export const canRefund = ({ commit }) => {
+    get('accountRefund').then(data => commit('SET_REFUNDABLE', data));
+};
+
+export const accountRefund = ({ commit }) => {
+    post('accountRefund').then(data => commit('SET_REFUNDABLE', data));
 };
