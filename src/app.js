@@ -88,6 +88,10 @@ app.use((err, req, res, next) => {
         error = new APIError(module, 500, 'Unknown error');
     } else {
         if (err.details) {
+            if (!req.details) {
+                req.details = {};
+            }
+
             // test req details
             req.details.error = err.details;
         }

@@ -32,6 +32,10 @@ module.exports = ticketNumber => {
                     (t.ext_id === ticketNumber || t.barcode === ticketNumber)
             );
 
+            if (!ticket) {
+                return Promise.resolve(null);
+            }
+
             credit = res.data.find(
                 t =>
                     config.ticketIdPreload.indexOf(t.ticket_id.toString()) > -1 &&
@@ -44,10 +48,6 @@ module.exports = ticketNumber => {
 
             if (!credit) {
                 credit = 0;
-            }
-
-            if (!ticket) {
-                return Promise.resolve(null);
             }
 
             return username(ticket.firstname, ticket.name);
