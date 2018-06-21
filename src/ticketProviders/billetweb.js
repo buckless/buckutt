@@ -26,16 +26,20 @@ module.exports = ticketNumber => {
                 return Promise.resolve();
             }
 
-            const tickets = res.data.filter(
-                t => t.ext_id === ticketNumber || t.barcode === ticketNumber
+            ticket = res.data.find(
+                t =>
+                    config.ticketIdTicket.indexOf(t.ticket_id.toString()) > -1 &&
+                    (t.ext_id === ticketNumber || t.barcode === ticketNumber)
             );
 
-            ticket = tickets.find(t => config.ticketIdTicket.indexOf(t.ticket_id.toString()) > -1);
-            credit = tickets.find(
-                t => config.ticketIdPreload.indexOf(t.ticket_id.toString()) > -1
+            credit = res.data.find(
+                t =>
+                    config.ticketIdPreload.indexOf(t.ticket_id.toString()) > -1 &&
+                    t.pass === ticket.id
             ) || {
                 price: 0
             };
+
             credit = Math.floor(parseFloat(credit.price) * 100);
 
             if (!credit) {
