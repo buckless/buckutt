@@ -4,10 +4,10 @@ const rusha = require('rusha');
 const duration = parseInt(config.catering.duration, 10);
 const articles = Object.values(config.catering.articles).sort((a, b) => a.id - b.id);
 
-// The first bit is used by assignedCard parameter, the second by the lock state
+// The first bit is used by assignedCard parameter, the second by the lock state, the third by the paid state
 const usefulDataLength = articles.reduce(
     (a, b) => a + b.maxNumber.toString(2).length + duration,
-    2
+    3
 );
 const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
 
@@ -30,6 +30,7 @@ module.exports = new SignedData(config.signingKey, 12, rusha.createHash, [
              * {
              *   assignedCard: Boolean,
              *   locked: Boolean,
+             *   paidCard: Boolean,
              *   catering: [
              *     {
              *       id: string,
@@ -45,6 +46,9 @@ module.exports = new SignedData(config.signingKey, 12, rusha.createHash, [
 
             // Set the second bit depending on the lock state
             data += options.locked ? '1' : '0';
+
+            // Set the third bit depending on the paid state
+            data += options.paidCard ? '1' : '0';
 
             articles.forEach(article => {
                 const userCatering = options.catering.find(entry => entry.id === article.id);
@@ -76,10 +80,11 @@ module.exports = new SignedData(config.signingKey, 12, rusha.createHash, [
             const options = {
                 assignedCard: binaryOptions.charAt(0) === '1',
                 locked: binaryOptions.charAt(1) === '1',
+                paidCard: binaryOptions.charAt(2) === '1',
                 catering: []
             };
 
-            let articleIndex = 2;
+            let articleIndex = 3;
             articles.forEach(article => {
                 const articleSize = article.maxNumber.toString(2).length + duration;
                 const articleBits = binaryOptions.substr(articleIndex, articleSize);

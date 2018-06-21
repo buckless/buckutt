@@ -24,19 +24,6 @@
                 Nom d'utilisateur : <strong>{{ assignModal.username }}</strong><br/>
                 Nouveau crédit : <strong><currency :value="assignModal.credit" /></strong>
 
-                <template v-if="nfcCost.amount > 0">
-                    <br /><br />
-                    <strong v-if="assignModal.credit < nfcCost.amount">
-                        Le compte n'a pas assez de crédit pour payer le support, encaisser <currency :value="nfcCost.amount" />.
-                    </strong>
-                    <strong v-else>
-                        <currency :value="nfcCost.amount" />
-                        <template v-if="nfcCost.amount === 100">va être débité</template>
-                        <template v-else>vont être débités</template>
-                        du compte afin de payer le support
-                    </strong>
-                </template>
-
                 <h4 v-if="groups.length > 0">Groupes :</h4>
             </p>
             <div class="b-assigner-modal__modal__text__groups" v-if="groups.length > 0">
@@ -97,29 +84,17 @@ export default {
             return this.subpage === 'barcode' ? 'b-assigner__home__button--active' : '';
         },
 
-        nfcCost() {
-            const now = new Date();
-            const groupsToCheck = [this.defaultGroup].concat(this.activeGroups);
-            const validCosts = this.nfcCosts
-                .filter(
-                    nfcCost =>
-                        new Date(nfcCost.period.start) <= now &&
-                        new Date(nfcCost.period.end) >= now &&
-                        groupsToCheck.find(group => group.id === nfcCost.group_id)
-                )
-                .sort((a, b) => a.amount - b.amount);
-            return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
-        },
-
         ...mapState({
             operator: state => state.auth.seller,
             useCardData: state => state.auth.device.event.config.useCardData,
-            nfcId: state => state.auth.device.event.nfc_id,
-            nfcCosts: state => state.items.nfcCosts,
             defaultGroup: state =>
-                state.auth.groups.find(group => group.name === state.auth.device.event.name),
+                state.auth.groups.find(
+                    group => group.id === state.auth.device.event.defaultGroup_id
+                ),
             groups: state =>
-                state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
+                state.auth.groups.filter(
+                    group => group.id !== state.auth.device.event.defaultGroup_id
+                )
         })
     },
 
@@ -134,11 +109,7 @@ export default {
 
             const assignPromise = this.useCardData
                 ? new Promise(resolve => {
-                      const creditToWrite =
-                          this.assignModal.credit < this.nfcCost.amount
-                              ? this.assignModal.credit
-                              : this.assignModal.credit - this.nfcCost.amount;
-                      window.app.$root.$emit('readyToWrite', creditToWrite, {
+                      window.app.$root.$emit('readyToWrite', this.assignModal.credit, {
                           assignedCard: true,
                           catering: options.catering
                       });
@@ -163,46 +134,6 @@ export default {
                         }
                     })
                 )
-                .then(() => {
-                    if (
-                        this.nfcCost.amount === 0 ||
-                        this.nfcCost.amount > this.assignModal.credit
-                    ) {
-                        return Promise.resolve();
-                    }
-
-                    const localId = `transaction-id-${window.appId}-${Date.now()}`;
-                    const transactionToSend = {
-                        assignedCard: true,
-                        buyer: cardId,
-                        molType: config.buyerMeanOfLogin,
-                        date: new Date(),
-                        basket: [
-                            {
-                                price_id: this.nfcCost.id,
-                                promotion_id: null,
-                                articles: [
-                                    {
-                                        id: this.nfcId,
-                                        vat: 0.2,
-                                        price: this.nfcCost.id
-                                    }
-                                ],
-                                alcohol: 0,
-                                cost: this.nfcCost.amount,
-                                type: 'purchase'
-                            }
-                        ],
-                        seller: this.operator.id,
-                        localId
-                    };
-
-                    return this.sendRequest({
-                        method: 'post',
-                        url: 'services/basket',
-                        data: transactionToSend
-                    });
-                })
                 .then(() => this.ok())
                 .catch(err => this.$store.commit('ERROR', err.response.data))
                 .then(() => this.$store.commit('SET_DATA_LOADED', true));

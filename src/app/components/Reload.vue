@@ -42,10 +42,6 @@
             <div
                 class="b-reload__modal__confirm"
                 v-show="reloadState === 'confirm'">
-                <div class="b-reload__modal__nfc" v-if="reloadOnly && currentNfcSupport">
-                    <input id="nfcsupport" type="checkbox" v-model="payNfcSupport" />
-                    <label for="nfcsupport">Facturer un support NFC</label>
-                </div>
                 <div class="b-reload__modal__buttons">
                     <button @click="reload"><span>Paiement</span> accepté</button>
                     <button @click="cancelReloadModal"><span>Paiement</span> refusé</button>
@@ -79,8 +75,7 @@ export default {
 
     data() {
         return {
-            reloadAmount: 0,
-            payNfcSupport: false
+            reloadAmount: 0
         };
     },
 
@@ -91,10 +86,7 @@ export default {
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing,
             giftReloads: state => state.items.giftReloads,
-            meanOfPayment: state => state.reload.meanOfPayment,
-            nfcCosts: state => state.items.nfcCosts,
-            defaultGroup: state => state.auth.device.event.defaultGroup_id,
-            nfcId: state => state.auth.device.event.nfc_id
+            meanOfPayment: state => state.reload.meanOfPayment
         }),
 
         ...mapGetters(['reloadSum']),
@@ -107,30 +99,6 @@ export default {
                     return timesEveryAmount * gr.amount;
                 })
                 .reduce((a, b) => a + b, 0);
-        },
-
-        currentNfcSupport() {
-            const now = new Date();
-            const costs = this.nfcCosts
-                .filter(
-                    cost =>
-                        cost.group_id === this.defaultGroup &&
-                        new Date(cost.period.start) <= now &&
-                        new Date(cost.period.end) >= now
-                )
-                .sort((a, b) => a.amount - b.amount);
-
-            if (costs.length === 0) {
-                return;
-            }
-
-            return {
-                price: costs[0],
-                id: this.nfcId,
-                vat: 0.2,
-                alcohol: 0,
-                name: 'Support NFC'
-            };
         }
     },
 
@@ -164,10 +132,6 @@ export default {
             let initialPromise = Promise.resolve();
 
             if (this.reloadOnly) {
-                if (this.payNfcSupport) {
-                    initialPromise = this.addItemToBasket(this.currentNfcSupport);
-                }
-
                 initialPromise = initialPromise
                     .then(() => this.basketClickValidation())
                     .then(() => this.clearBasket());
@@ -197,13 +161,11 @@ export default {
             this.$store.commit('SET_WRITING', false);
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
             this.clearBasket();
-            this.payNfcSupport = false;
         },
 
         ...mapActions([
             'confirmReloadModal',
             'closeReloadModal',
-            'addItemToBasket',
             'addReload',
             'clearBasket',
             'cancelReloadModal',
@@ -282,23 +244,6 @@ export default {
 .b-reload__modal__numerical-input {
     margin: 0 auto 20px auto;
     width: 90%;
-}
-
-.b-reload__modal__nfc {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 0px;
-
-    & > input {
-        width: 25px;
-        height: 25px;
-        background: #fff;
-    }
-
-    & > label {
-        margin-left: 10px;
-    }
 }
 
 .b-reload__modal__buttons {

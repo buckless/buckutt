@@ -61,6 +61,32 @@ export const checkPendingCardUpdates = (store, { cardNumber }) => {
         });
 };
 
+export const addNfcSupportToBasket = store => {
+    const now = new Date();
+    const currentBuyerGroups = store.state.auth.buyer.memberships
+        .filter(membership => new Date(membership.start) <= now && new Date(membership.end) >= now)
+        .map(membership => ({ id: membership.group }));
+
+    const validCosts = store.state.items.nfcCosts
+        .filter(
+            nfcCost =>
+                new Date(nfcCost.start) <= now &&
+                new Date(nfcCost.end) >= now &&
+                currentBuyerGroups.find(group => group.id === nfcCost.group)
+        )
+        .sort((a, b) => a.amount - b.amount);
+
+    if (validCosts.length > 0) {
+        store.dispatch('addItemToBasket', {
+            price: validCosts[0],
+            id: store.state.auth.device.event.nfc_id,
+            vat: 0.2,
+            alcohol: 0,
+            name: 'Support NFC'
+        });
+    }
+};
+
 export const validateBasket = (store, { cardNumber, credit, options }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
@@ -83,6 +109,12 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
         });
     }
 
+    const shouldPayCard = !options.paidCard && store.state.auth.device.event.config.useCardData;
+
+    if (shouldPayCard) {
+        initialPromise = initialPromise.then(() => store.dispatch('addNfcSupportToBasket'));
+    }
+
     const shouldCheckPending =
         options.assignedCard &&
         store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1 &&
@@ -99,6 +131,7 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
     if (store.state.auth.device.event.config.useCardData) {
         const newOptions = {
             assignedCard: true,
+            paidCard: true,
             catering: options.catering
         };
 
@@ -134,6 +167,9 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
         .then(() => {
             store.commit('SET_DATA_LOADED', true);
             store.commit('SET_WRITING', false);
+            return store.dispatch('removeItemFromBasket', {
+                id: store.state.auth.device.event.nfc_id
+            });
         });
 };
 
@@ -147,6 +183,8 @@ export const sendBasket = (store, payload = {}) => {
     const reloads = store.state.reload.reloads;
 
     const basketToSend = [];
+
+    console.log(basket.items);
 
     basket.items.forEach(article => {
         basketToSend.push({

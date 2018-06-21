@@ -16,8 +16,9 @@ module.exports = class NFC extends EventEmitter {
         window.mock.addCard = (name, cardId, credit, options_) => {
             const options = Object.assign(
                 {
-                    assignedCard: 1,
-                    locked: 0,
+                    assignedCard: true,
+                    locked: false,
+                    paidCard: false,
                     catering: []
                 },
                 options_

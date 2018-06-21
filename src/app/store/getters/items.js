@@ -54,7 +54,11 @@ export const sidebar = (state, getters) => {
     );
 
     const items = initialSidebar.items.map(item => {
-        const updatedItem = getters.wiketItems.items.find(i => i.id === item.id);
+        let updatedItem = getters.wiketItems.items.find(i => i.id === item.id);
+        if (!updatedItem && state.auth.device.event.nfc_id === item.id) {
+            updatedItem = item;
+        }
+
         return {
             ...updatedItem,
             price: updatedItem ? updatedItem.price : item.price
