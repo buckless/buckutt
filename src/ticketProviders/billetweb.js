@@ -1,26 +1,30 @@
 const axios = require('axios');
 const username = require('../lib/username');
+const { memoize } = require('lodash');
+
+const config = require('../../config').assigner.billetweb;
+
+const url = `https://www.billetweb.fr/api/event/${config.event}/attendees`;
+const params = {
+    user: config.user,
+    key: config.key,
+    version: config.version
+};
+
+const fetcher = memoize(() => axios.get(url, { params }));
+
+setInterval(() => fetcher.cache.clear(), 30 * 1000);
 
 module.exports = ticketNumber => {
-    const config = require('../../config').assigner.billetweb;
-
     if (!config.event || !config.user || !config.key || !config.version) {
         throw new Error('Missing config.assigner.billetweb.{event,user,key,version}');
     }
-
-    const url = `https://www.billetweb.fr/api/event/${config.event}/attendees`;
-    const params = {
-        user: config.user,
-        key: config.key,
-        version: config.version
-    };
 
     let ticket;
     let credit;
     let ticketData;
 
-    return axios
-        .get(url, { params })
+    return fetcher()
         .then(res => {
             if (!Array.isArray(res.data) || !res.data.length) {
                 return Promise.resolve();
