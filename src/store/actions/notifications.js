@@ -8,6 +8,8 @@ const translateNotification = message => {
             return 'Cette carte appartient à déjà un autre compte';
         case 'Ticket already binded':
             return 'Ce billet appartient à déjà un autre compte';
+        case 'Duplicate Entry':
+            return 'Cette carte est déjà associée à votre compte';
         default:
             return message;
     }
