@@ -101,6 +101,8 @@ export default {
 
         & > input {
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            background-color: #fff !important;
+            border-radius: 3px;
             flex: 1;
             text-align: center;
             background-color: transparent;
