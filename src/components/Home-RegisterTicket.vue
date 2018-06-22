@@ -71,8 +71,11 @@ export default {
 
                     if (err.status === 404) {
                         return this.notify({
-                            message:
-                                'Numéro de billet ou support cashless introuvable ou déjà utilisé.'
+                            message: 'Numéro de billet ou support cashless introuvable.'
+                        });
+                    } else if (err.status === 400) {
+                        return this.notify({
+                            message: 'Numéro de billet ou support cashless déjà utilisé.'
                         });
                     }
 
