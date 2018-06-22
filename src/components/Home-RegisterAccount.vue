@@ -78,20 +78,7 @@ export default {
                 .then(() => {
                     this.$router.push('/assign/success');
                 })
-                .catch(err => {
-                    if (err.status === 403) {
-                        return this.notify({ message: 'Le compte existe déjà.' });
-                    }
-
-                    if (err.status === 404) {
-                        return this.notify({ message: "Le support cashless n'a pas été trouvé." });
-                    }
-
-                    this.notify({
-                        message:
-                            err.message || 'Une erreur a eu lieu lors de la création du compte.'
-                    });
-                })
+                .catch(error => this.notify(error))
                 .then(() => {
                     setTimeout(() => {
                         this.working = false;

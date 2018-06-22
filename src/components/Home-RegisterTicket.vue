@@ -66,23 +66,9 @@ export default {
                 .then(() => {
                     this.$router.push('/assign/success');
                 })
-                .catch(err => {
+                .catch(error => {
                     this.ticketNumberInput.valid = false;
-
-                    if (err.status === 404) {
-                        return this.notify({
-                            message: 'Numéro de billet ou support cashless introuvable.'
-                        });
-                    } else if (err.status === 400) {
-                        return this.notify({
-                            message: 'Numéro de billet ou support cashless déjà utilisé.'
-                        });
-                    }
-
-                    this.notify({
-                        message:
-                            err.message || 'Une erreur a eu lieu lors de la création du compte.'
-                    });
+                    return this.notify(error);
                 })
                 .then(() => {
                     setTimeout(() => {
