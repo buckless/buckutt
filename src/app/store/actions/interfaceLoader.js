@@ -144,19 +144,20 @@ export const setWiketItems = ({ state, commit }) => {
                     initialObjects.findIndex(
                         object2 =>
                             object1.id === object2.id &&
-                            (object1.category.id === object2.category.id || !object1.category)
+                            (!object1.category || object1.category.id === object2.category.id)
                     )
             )
     );
 
-    const promotions = res[1].map(promotion => {
-        promotion.sets = promotion.sets.map(set => {
-            set.articles = set.articles
+    const promotions = res[1].map(promotion => ({
+        ...promotion,
+        sets: promotion.sets.map(set => ({
+            ...set,
+            articles: set.articles
                 .map(article => res[0].find(a => a.id === article.id))
-                .filter(article => article);
-            return set;
-        });
-    });
+                .filter(article => article)
+        }))
+    }));
 
     return commit('SET_WIKETITEMS', { items: res[0], promotions });
 };
