@@ -30,10 +30,9 @@ module.exports = async function assignParser(req) {
                 type: 'Préchargement',
                 trace: userData.ticketId
             });
-        } else {
-            userData.credit = 0;
         }
 
+        userData.credit = 0;
         targetUser = userData;
     }
 
