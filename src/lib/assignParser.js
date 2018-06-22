@@ -24,7 +24,7 @@ module.exports = async function assignParser(req) {
             });
         }
 
-        if (typeof userData.credit === 'number' && userData.credit > 0 && !userData.ticketId) {
+        if (typeof userData.credit === 'number' && userData.credit > 0 && !userData.id) {
             reloads.push({
                 credit: userData.credit,
                 type: 'Préchargement',
