@@ -14,9 +14,8 @@ const router = new express.Router();
 router.post('/services/manager/register', (req, res, next) => {
     assignParser(req)
         .then(registerData => {
-            console.log(registerData.targetUser);
             if (registerData.targetUser.id) {
-                return next(new APIError(module, 400, 'This user already exists'));
+                return Promise.reject(new APIError(module, 400, 'This user already exists'));
             }
 
             return createUser(
