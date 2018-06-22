@@ -11,7 +11,7 @@ module.exports = function token(connector) {
     const secret = config.app.secret;
 
     // OpenUrls : no token required
-    const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1 || config.disableAuth);
+    const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1);
 
     if (!needToken && !connector.headers.authorization) {
         return Promise.resolve();
