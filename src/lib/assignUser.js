@@ -27,9 +27,11 @@ module.exports = async function assignUser(
 
     const userAccount = user.toJSON();
     const anonymousData = await checkAnonymousAccount(models, meansOfLogin);
+    const totalReloadsCredit = reloads.reduce((a, b) => a + b.credit, 0);
     let mergedAccount = userAccount;
     let molsToSkip = [];
     let groupsToSkip = [];
+    let creditToAdd = totalReloadsCredit;
 
     // If the card already has an anonymous account, keep it, add user informations to it and delete the old one
     if (anonymousData) {
@@ -47,20 +49,15 @@ module.exports = async function assignUser(
             recoverKey: userAccount.recoverKey
         };
 
+        if (userAccount.credit) {
+            creditToAdd += userAccount.credit;
+        }
+
         const operations = [];
 
         operations.push(
             new models.User({ id: anonymousData.id }).save(updatedUser, { patch: true })
         );
-
-        if (!isWritten && userAccount.credit > 0) {
-            operations.push(
-                new models.PendingCardUpdate({
-                    user_id: anonymousData.id,
-                    amount: userAccount.credit
-                }).save()
-            );
-        }
 
         operations.push(
             models.PendingCardUpdate.where({ user_id: userAccount.id }).save(
@@ -148,6 +145,14 @@ module.exports = async function assignUser(
             point: point.id,
             connectType: 'pin'
         });
+    }
+
+    // Add a PCU for reloads and the potential credit of the deleted account
+    if (!isWritten && creditToAdd > 0) {
+        await new models.PendingCardUpdate({
+            user_id: mergedAccount.id,
+            amount: creditToAdd
+        }).save();
     }
 
     // Block old cards if a new one is assigned

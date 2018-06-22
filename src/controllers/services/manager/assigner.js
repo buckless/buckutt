@@ -49,6 +49,10 @@ router.post('/services/manager/assigner', (req, res, next) => {
                 mail: user.mail
             };
 
+            req.app.locals.modelChanges.emit('userCreditUpdate', {
+                id: user.id
+            });
+
             log.info(`Assign user ${user.firstname} ${user.lastname}`, req.details);
 
             user.pin = '';
