@@ -63,7 +63,8 @@ module.exports = ticketNumber => {
                 mail: ticket.email,
                 username,
                 credit,
-                ticketId: ticket.barcode
+                ticketId: ticket.barcode,
+                physicalId: ticket.ext_id
             };
         });
 };

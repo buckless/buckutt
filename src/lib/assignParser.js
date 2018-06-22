@@ -19,7 +19,8 @@ module.exports = async function assignParser(req) {
         if (userData.ticketId) {
             meansOfLogin.push({
                 type: 'ticketId',
-                data: userData.ticketId
+                data: userData.ticketId,
+                physical_id: userData.physicalId
             });
         }
 
