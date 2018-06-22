@@ -231,7 +231,7 @@ export default {
             );
             const username = this.loggedUser.meansOfLogin.find(mol => mol.type === 'username');
             if (ticket) {
-                userData.ticket = ticket.data;
+                userData.ticket = ticket.physical_id || ticket.data;
             }
 
             if (card) {
