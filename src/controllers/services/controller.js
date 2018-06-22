@@ -54,7 +54,7 @@ router.get('/services/controller', (req, res, next) => {
                 if (memberships[i].user.meansOfLogin.length > 0) {
                     accesses.push({
                         cardId: memberships[i].user.meansOfLogin[0].data,
-                        groupId: memberships[i].group_id,
+                        group: memberships[i].group_id,
                         start: memberships[i].period.start,
                         end: memberships[i].period.end
                     });
