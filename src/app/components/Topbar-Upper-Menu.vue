@@ -107,7 +107,9 @@ export default {
         },
 
         displayCatering() {
-            return config.catering.articles.length > 0;
+            const articles = Object.values(config.catering.articles);
+
+            return articles.length > 0;
         },
 
         ...mapState({
