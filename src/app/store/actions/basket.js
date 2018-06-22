@@ -144,7 +144,7 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
         );
     }
 
-    initialPromise
+    return initialPromise
         .then(() =>
             store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard })
         )

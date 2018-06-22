@@ -132,9 +132,7 @@ export default {
             let initialPromise = Promise.resolve();
 
             if (this.reloadOnly) {
-                initialPromise = initialPromise
-                    .then(() => this.basketClickValidation())
-                    .then(() => this.clearBasket());
+                initialPromise = this.basketClickValidation();
             }
 
             initialPromise.then(() => this.closeReload());
