@@ -27,6 +27,6 @@
     <plugin name="cordova-android-support-gradle-release" spec="^1.2.0">
         <variable name="ANDROID_SUPPORT_VERSION" value="25.+" />
     </plugin>
-    <engine name="android" spec="^6.4.0" />
     <plugin name="cordova-plugin-mifare-ultralight" spec="^1.0.3" />
+    <engine name="android" spec="^6.4.0" />
 </widget>

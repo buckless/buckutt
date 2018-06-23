@@ -1,21 +1,19 @@
-import { SignedData } from '@buckless/signed-data';
-import rusha from 'rusha';
+const { SignedData } = require('@buckless/signed-data');
+const rusha = require('rusha');
 
-const duration = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
-const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
-    (a, b) => a.id - b.id
-);
+const duration = parseInt(config.catering.duration, 10);
+const articles = Object.values(config.catering.articles).sort((a, b) => a.id - b.id);
 
-// The first bit is used by assignedCard parameter
+// The first bit is used by assignedCard parameter, the second by the lock state, the third by the paid state
 const usefulDataLength = articles.reduce(
     (a, b) => a + b.maxNumber.toString(2).length + duration,
-    1
+    3
 );
 const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
 
 const byteNumber = optionsLength / 8;
 
-export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 8, rusha.createHash, [
+module.exports = new SignedData(config.signingKey, 12, rusha.createHash, [
     {
         name: 'credit',
         default: '000000',
@@ -31,6 +29,8 @@ export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 8, rusha.createHas
             /**
              * {
              *   assignedCard: Boolean,
+             *   locked: Boolean,
+             *   paidCard: Boolean,
              *   catering: [
              *     {
              *       id: string,
@@ -43,6 +43,13 @@ export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 8, rusha.createHas
 
             // Set the first bit depending on the card assignation
             let data = options.assignedCard ? '1' : '0';
+
+            // Set the second bit depending on the lock state
+            data += options.locked ? '1' : '0';
+
+            // Set the third bit depending on the paid state
+            data += options.paidCard ? '1' : '0';
+
             articles.forEach(article => {
                 const userCatering = options.catering.find(entry => entry.id === article.id);
 
@@ -72,10 +79,12 @@ export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 8, rusha.createHas
 
             const options = {
                 assignedCard: binaryOptions.charAt(0) === '1',
+                locked: binaryOptions.charAt(1) === '1',
+                paidCard: binaryOptions.charAt(2) === '1',
                 catering: []
             };
 
-            let articleIndex = 1;
+            let articleIndex = 3;
             articles.forEach(article => {
                 const articleSize = article.maxNumber.toString(2).length + duration;
                 const articleBits = binaryOptions.substr(articleIndex, articleSize);

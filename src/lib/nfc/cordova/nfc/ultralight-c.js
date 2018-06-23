@@ -26,61 +26,66 @@ export const ATR = Buffer.from([
 export default class UltralightC extends EventEmitter {
     constructor() {
         super();
-        console.log('lib-nfc-cordova-nfc-ultralight-c-constructor');
+
+        this.shouldLock = false;
+        this.shouldUnlock = false;
+        this.pin = parseInt(config.ultralight.pin, 16);
 
         document.addEventListener('mifareTagDiscovered', tag => {
-            console.log('lib-nfc-cordova-nfc-ultralight-c-constructor EVENT');
-            this.emit('uid', tag.tag.map(dec => dec.toString(16)).join(''));
-            this.emit('log', tag.tag.map(dec => dec.toString(16)).join(''));
-            this.emit('atr', ATR);
-            this.emit('cardType', 'ultralightC');
+            console.log(tag);
 
             console.time('NFC Write');
 
             this.connect()
-                .then(() => this.read())
-                .then(data => {
-                    this.emit(
-                        'data',
-                        data.slice(0, parseInt(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE, 10))
-                    );
+                .then(() => {
+                    if (this.shouldUnlock && this.pin) {
+                        return this.unlock(this.pin);
+                    }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
+                .then(() => {
+                    this.emit(
+                        'uid',
+                        tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
+                    );
+                    this.emit(
+                        'log',
+                        tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
+                    );
+                    this.emit('atr', module.exports.ATR);
+                    this.emit('cardType', 'ultralightC');
+
+                    return this.read();
+                })
+                .then(data => this.emit('data', data.slice(0, config.ultralight.creditSize)))
+                .catch(err => this.emit('error', err));
         });
+    }
+
+    shouldLock(lock) {
+        this.shouldLock = lock;
+    }
+
+    shouldUnlock(unlock) {
+        this.shouldUnlock = unlock;
     }
 
     disconnect() {
         return new Promise((resolve, reject) => {
-            window.mifare.disconnect(
-                () => {
-                    resolve();
-                },
-                err => {
-                    reject(err);
-                }
-            );
+            window.mifare.disconnect(() => resolve(), err => reject(err));
         });
     }
 
     connect() {
         return new Promise((resolve, reject) => {
             window.mifare.connect(
-                () => {
-                    resolve();
-                },
-                err => {
-                    reject(err);
-                }
+                () => resolve(),
+                err => reject(err)
             );
         });
     }
 
     read() {
-        const firstWritablePage = parseInt(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE, 10);
-        const cardLength = parseInt(process.env.VUE_APP_ULTRALIGHT_CARDLENGTH, 10);
-        const creditSize = parseInt(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE, 10);
+        const { firstWritablePage, cardLength, creditSize } = config.ultralight;
 
         const repeat = Math.ceil(cardLength / 4);
 
@@ -90,30 +95,31 @@ export default class UltralightC extends EventEmitter {
 
         // add 4 each time (read 16 bytes each time)
         for (let page = 4; page < repeat; page += 4) {
-            initialPromise = initialPromise.then(() => {
-                return new Promise((resolve, reject) => {
-                    window.mifare.read(
-                        page,
-                        res => {
-                            bufs.push(res.data);
-                            resolve();
-                        },
-                        err => {
-                            console.log('err', err);
-                            reject(err);
-                        }
-                    );
-                });
-            });
+            initialPromise = initialPromise
+                .then(() => this._readPage(page))
+                .then(data => bufs.push(data));
         }
 
         return initialPromise.then(() => bufs.join(''));
     }
 
+    _readPage(page) {
+        return new Promise((resolve, reject) => {
+            window.mifare.read(
+                page,
+                res => {
+                    resolve(res.data);
+                },
+                err => {
+                    console.log('err', err);
+                    reject(err);
+                }
+            );
+        });
+    }
+
     write(data) {
-        const dataLength =
-            parseInt(process.env.VUE_APP_ULTRALIGHT_CARDLENGTH, 10) -
-            parseInt(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE, 10) * 4;
+        const dataLength = config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
 
         const buf = Buffer.from(data);
         const newBuf = Buffer.alloc(dataLength, 0);
@@ -151,7 +157,7 @@ export default class UltralightC extends EventEmitter {
                 .then(() => {
                     return new Promise((resolve, reject) => {
                         window.mifare.write(
-                            i + parseInt(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE, 10),
+                            i + config.ultralight.firstWritablePage,
                             Array.from(page).map(int => int.toString(16)),
                             res => resolve(res),
                             err => {
@@ -166,8 +172,49 @@ export default class UltralightC extends EventEmitter {
                 });
         }
 
+        if (this.shouldLock && this.pin) {
+            sequence = sequence.then(() => this.lock(this.pin));
+        }
+
         return sequence.then(() => newBuf).catch(err => {
             throw new Error(`Write failed : ${err}`);
+        });
+    }
+
+    async lock(pinData = 0x11223344) {
+        let pin = this.intTo4BytesArray(pinData);
+
+        try {
+            console.log('write', '0x10', ['00', '00', '00', '04']);
+            console.log('write', '0x11', ['00', '00', '00', '00']);
+            console.log('write', '0x13', ['99', '99', '00', '00']);
+            console.log('write', '0x12', pin);
+            await window.mifare.write(0x10, ['00', '00', '00', '04']);
+            await window.mifare.write(0x11, ['00', '00', '00', '00']);
+            await window.mifare.write(0x13, ['99', '99', '00', '00']);
+            await window.mifare.write(0x12, pin);
+        } catch (err) {
+            console.error('got err during write', err);
+            return Promise.reject(err);
+        }
+    }
+
+    intTo4BytesArray(int) {
+        const bytes = [];
+        let i = 4;
+
+        do {
+            i = i - 1;
+            bytes[i] = (int & 255).toString('16');
+            int = int >> 8;
+        } while (i);
+
+        return bytes;
+    }
+
+    unlock(pin) {
+        return new Promise((resolve, reject) => {
+            window.mifare.unlock(pin, () => resolve(), err => reject(err));
         });
     }
 }
