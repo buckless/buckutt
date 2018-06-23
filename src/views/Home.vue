@@ -12,6 +12,10 @@
             <h2>Gérer les options d'une carte</h2>
             <p>Gère les options (propres à votre évènement) d'une carte</p>
         </Mode>
+        <Mode @click.native="cardRead">
+            <h2>Lire une carte</h2>
+            <p>Lis une carte et affiche les informations inscrites</p>
+        </Mode>
 
         <nfc
             mode="write"
@@ -71,6 +75,10 @@ export default {
 
         options() {
             this.$router.push('/options');
+        },
+
+        cardRead() {
+            this.$router.push('/cardRead');
         }
     }
 };

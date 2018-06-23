@@ -30,6 +30,8 @@
   },
   "dependencies": {
     "@buckless/signed-data": "^2.1.2",
+    "lodash.chunk": "^4.2.0",
+    "normalize.css": "^8.0.0",
     "rusha": "^0.8.13",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",

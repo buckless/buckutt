@@ -101,15 +101,15 @@ export default {
                 this.inputValue = data.toString();
             });
 
-            nfc.on('data', data => {
+            nfc.on('data', data_ => {
                 let card;
 
                 try {
-                    card = nfc.dataToCard(
-                        data.toLowerCase ? data.toLowerCase() : data,
-                        this.inputValue + process.env.VUE_APP_SIGNINGKEY
-                    );
+                    let data = data_.toLowerCase ? data_.toLowerCase() : data_;
 
+                    card = nfc.dataToCard(data, this.inputValue + process.env.VUE_APP_SIGNINGKEY);
+
+                    this.$emit('data', data);
                     this.onCard(card.credit, card.options);
                 } catch (err) {
                     console.log(err);
@@ -215,5 +215,11 @@ export default {
     margin: 10px 10px 0;
     font-size: 18px;
     font-weight: bold;
+}
+.b--out-of-screen {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    opacity: 0;
 }
 </style>

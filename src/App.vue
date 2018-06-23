@@ -15,13 +15,14 @@ export default {
 };
 </script>
 
+<style src="@/../node_modules/normalize.css"/>
+
 <style>
 * {
     box-sizing: border-box;
 }
 
 body {
-    margin: 0;
     background-color: #fafafa;
 }
 
