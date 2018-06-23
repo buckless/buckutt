@@ -67,8 +67,10 @@ export const sidebar = (state, getters) => {
 
     const promotions = initialSidebar.promotions.map(promotion => {
         const updatedPromotion = getters.wiketItems.promotions.find(p => p.id === promotion.id);
+
         return {
             ...updatedPromotion,
+            content: promotion.content,
             price: updatedPromotion ? updatedPromotion.price : promotion.price
         };
     });
