@@ -33,8 +33,11 @@ module.exports = async (models, ticketNumber) => {
     const ticketId = userData ? userData.ticketId : ticketNumber;
 
     const apiData = await MeanOfLogin.where('type', 'in', ['ticketId', 'username', 'mail'])
+        .query({
+            where: { data: ticketId },
+            orWhere: { physical_id: ticketId }
+        })
         .where({
-            data: ticketId,
             blocked: false
         })
         .fetch({
