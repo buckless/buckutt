@@ -161,14 +161,14 @@ module.exports = class UltralightC extends EventEmitter {
         let pin = this.intTo4BytesArray(pinData);
 
         try {
-            console.log('write', '0x10', ['00', '00', '00', '04']);
             console.log('write', '0x11', ['00', '00', '00', '00']);
             console.log('write', '0x13', ['99', '99', '00', '00']);
             console.log('write', '0x12', pin);
-            await window.mifare.write(0x10, ['00', '00', '00', '04']);
+            console.log('write', '0x10', ['00', '00', '00', '04']);
             await window.mifare.write(0x11, ['00', '00', '00', '00']);
             await window.mifare.write(0x13, ['99', '99', '00', '00']);
             await window.mifare.write(0x12, pin);
+            await window.mifare.write(0x10, ['00', '00', '00', '04']);
         } catch (err) {
             console.error('got err during write', err);
             return Promise.reject(err);
