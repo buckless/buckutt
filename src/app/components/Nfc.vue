@@ -39,6 +39,8 @@
 <script>
 import { mapState } from 'vuex';
 
+const noSign = true;
+
 export default {
     props: {
         mode: String,
@@ -247,7 +249,7 @@ export default {
         },
 
         signCheckDisabled() {
-            return this.disableSignCheck || this.rewrite;
+            return noSign || this.disableSignCheck || this.rewrite;
         }
     },
 
