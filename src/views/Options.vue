@@ -117,6 +117,17 @@ export default {
                 assignedCard,
                 catering
             });
+
+            window.app.$root.$on('writeCompleted', () => {
+                setTimeout(() => {
+                    this.writeModal = false;
+                    this.$forceUpdate();
+
+                    setTimeout(() => {
+                        this.writeOptions(_, credit, options);
+                    }, 50);
+                }, 400);
+            });
         }
     }
 };
