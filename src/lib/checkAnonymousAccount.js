@@ -9,7 +9,7 @@ module.exports = (models, meansOfLogin) => {
 
     return models.MeanOfLogin.where({ type: 'cardId', blocked: false, data: card.data })
         .fetch({
-            withRelated: ['user']
+            withRelated: ['user', 'user.memberships']
         })
         .then(meanOfLogin => {
             if (!meanOfLogin) {

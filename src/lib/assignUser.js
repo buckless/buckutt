@@ -30,7 +30,9 @@ module.exports = async function assignUser(
     const totalReloadsCredit = reloads.reduce((a, b) => a + b.credit, 0);
     let mergedAccount = userAccount;
     let molsToSkip = [];
-    let groupsToSkip = [];
+    let groupsToSkip = userAccount.memberships
+        .filter(membership => membership.period === event.defaultPeriod_id)
+        .map(membership => membership.group_id);
     let creditToAdd = totalReloadsCredit;
 
     // If the card already has an anonymous account, keep it, add user informations to it and delete the old one
@@ -139,9 +141,11 @@ module.exports = async function assignUser(
         mergedAccount = anonymousData;
         molsToSkip = userAccount.meansOfLogin.map(mol => mol.type);
         molsToSkip.push('cardId');
-        groupsToSkip = userAccount.memberships
-            .filter(membership => membership.period === event.defaultPeriod_id)
-            .map(membership => membership.group_id);
+        groupsToSkip = groupsToSkip.concat(
+            anonymousAccount.memberships
+                .filter(membership => membership.period === event.defaultPeriod_id)
+                .map(membership => membership.group_id)
+        );
 
         // Generate the new token, to update manager session
         mergedAccount.token = generateToken({
