@@ -57,9 +57,9 @@ export default class UltralightC extends EventEmitter {
 
                     const pages = chunk(data.split(''), 8);
 
-                    if (pages[12][7] === '4') {
-                        alert('Card locked');
-                    }
+                    // if (pages[12][7] === '4') {
+                    //     alert('Card locked');
+                    // }
 
                     this.emit('fulldata', data);
                     this.emit(
