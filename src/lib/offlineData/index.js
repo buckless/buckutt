@@ -9,7 +9,7 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            users: 'uid,name,username,barcode,credit',
+            users: 'uid,name,username,barcode,credit,physicalId',
             accesses: 'id,userId,cardId,group,start,end',
             images: 'id,blob'
         });
@@ -47,7 +47,12 @@ class OfflineData {
         return (
             this.db.users
                 // user.username === barcode is when user scan their manager qrcode
-                .filter(user => user.barcode === barcode || user.username === barcode)
+                .filter(
+                    user =>
+                        user.barcode === barcode ||
+                        user.username === barcode ||
+                        user.physicalId === barcode
+                )
                 .limit(1)
                 .toArray()
         );
@@ -69,7 +74,8 @@ class OfflineData {
                 name: entry[1],
                 username: entry[2],
                 barcode: entry[3],
-                credit: entry[4]
+                credit: entry[4],
+                physicalId: entry[5]
             }));
         } else if (table === 'accesses') {
             data = data.map(entry => ({
