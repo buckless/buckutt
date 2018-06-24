@@ -18,7 +18,7 @@ module.exports = connector => {
         return Promise.resolve();
     }
 
-    const rights = connector.user.rights || [];
+    const rights = (connector.user || {}).rights || [];
     let url = connector.path;
     const method = connector.method;
 
