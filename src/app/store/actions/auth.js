@@ -85,6 +85,7 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
 export const logoutBuyer = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
+        store.commit('UPDATE_TOKEN', '');
 
         return store.dispatch('clearBasket').then(() => store.dispatch('interfaceLoader'));
     }
