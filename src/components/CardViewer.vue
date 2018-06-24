@@ -93,18 +93,19 @@ mark.byte {
 }
 
 mark.credit {
-    background-color: tomato;
+    background-color: #2ecc71;
 }
 
 mark.options {
-    background-color: rebeccapurple;
+    background-color: #d35400;
 }
 
 mark.catering {
-    background-color: darkgreen;
+    background-color: #2980b9;
 }
 
 mark.signature {
-    background-color: aqua;
+    background-color: #8e44ad;
+    color: #fff;
 }
 </style>
