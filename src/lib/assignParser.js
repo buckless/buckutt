@@ -16,7 +16,7 @@ module.exports = async function assignParser(req) {
         const userData = await fetchTicket(req.app.locals.models, req.body.ticketNumber);
 
         // If from API: don't recreate the mol
-        if (userData.id) {
+        if (!userData.id) {
             meansOfLogin.push({
                 type: 'ticketId',
                 data: userData.ticketId,
