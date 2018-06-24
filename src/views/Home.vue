@@ -23,17 +23,6 @@
             disableSignCheck>
             Mode: initialisation
         </nfc>
-
-        <nfc
-            mode="write"
-            @read="anonSupport"
-            @cancel="anon = false"
-            successText="Carte anonyme créée"
-            v-if="anon"
-            key="anon"
-            disableSignCheck>
-            Mode: carte anonyme
-        </nfc>
     </div>
 </template>
 

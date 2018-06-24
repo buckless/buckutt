@@ -31,6 +31,7 @@
   "dependencies": {
     "@buckless/signed-data": "^2.2.0",
     "lodash.chunk": "^4.2.0",
+    "moment": "^2.22.2",
     "normalize.css": "^8.0.0",
     "rusha": "^0.8.13",
     "vue": "^2.5.16",

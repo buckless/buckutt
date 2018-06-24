@@ -1,11 +1,11 @@
 <template>
-<div class="container">
+    <div class="container">
         <template v-if="pages.length > 0">
             <div class="cardData">
                 <div v-for="(page, i) in pages" class="page" :key="i">
-                    <div class="page-indicator">Page {{ i+1 }}:</div>
+                    <div class="page-indicator">{{ i + 1 }}:</div>
                     <div class="bytes">
-                        <mark v-for="(byte, j) in page" :class="byteClasses[i][j]" :key="j">{{ byte.join('') }}</mark>
+                        <mark v-for="(byte, j) in page" :class="getClass(i, j)" :key="j">{{ byte.join('') }}</mark>
                     </div>
                 </div>
             </div>
@@ -21,14 +21,15 @@
         <template v-else>
             Scannez un support pour lire ses informations
         </template>
-</div>
+    </div>
 </template>
 
 <script>
 const byteClasses = [
     [['byte', 'credit'], ['byte', 'credit'], ['byte', 'credit'], ['byte', 'options']],
+    [['byte', 'catering'], ['byte', 'catering'], ['byte', 'catering'], ['byte', 'catering']],
     [['byte', 'catering'], ['byte', 'catering'], ['byte', 'signature'], ['byte', 'signature']],
-    [['byte', 'signature'], ['byte', 'signature']]
+    [['byte', 'signature'], ['byte', 'signature'], ['byte', 'none'], ['byte', 'none']]
 ];
 
 export default {
@@ -43,6 +44,16 @@ export default {
         return {
             byteClasses
         };
+    },
+
+    methods: {
+        getClass(i, j) {
+            if (byteClasses[i] && byteClasses[i][j]) {
+                return byteClasses[i][j];
+            }
+
+            return ['byte', 'none'];
+        }
     }
 };
 </script>
@@ -56,8 +67,14 @@ export default {
     margin: 0 2em;
 }
 
+.page {
+    display: flex;
+    margin: 9px 0;
+}
+
 .page-indicator {
-    margin: 1em 0;
+    display: inline-block;
+    width: 24px;
 }
 
 .legend ul {

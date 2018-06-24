@@ -1,6 +1,22 @@
 <template>
     <div>
         <h2>Lire une carte</h2>
+        <div class="resume" v-if="cardData && cardData.credit >= 0">
+            <div><strong>Serial id</strong>: {{ cardData.cardId }}</div>
+            <div><strong>Crédit:</strong> {{ cardData.credit | price(true) }}</div>
+            <div><strong>Carte assignée</strong>: <span v-if="cardData.options.assignedCard">oui</span><span v-else>non</span></div>
+            <div><strong>Carte payée</strong>: <span v-if="cardData.options.paidCard">oui</span><span v-else>non</span></div>
+            <div><strong>Carte bloquée</strong>: <span v-if="cardData.options.locked">oui</span><span v-else>non</span></div>
+            <div><strong>Catering:</strong>
+                <div v-for="(item, i) in cardData.options.catering" :key="i">
+                    {{ getCateringName(item.id) }} : {{ item.balance }}
+
+                    (<span v-for="(active, day) in getCateringAvail(item.validity)" :key="day" class="day" :active="active">
+                        {{ day }}
+                    </span>)
+                </div>
+            </div>
+        </div>
         <CardViewer :pages="pages" class="cardViewer" />
         <nfc
             mode="read"
@@ -12,10 +28,23 @@
 </template>
 
 <script>
+import moment from 'moment';
 import Nfc from '@/components/Nfc';
 import CardViewer from '@/components/CardViewer';
 
 import * as chunk from 'lodash.chunk';
+
+window.moment = moment;
+
+const daysTrans = {
+    Sunday: 'D',
+    Monday: 'L',
+    Tuesday: 'M',
+    Wednesday: 'M',
+    Thursday: 'J',
+    Friday: 'V',
+    Saturday: 'S'
+};
 
 export default {
     components: {
@@ -32,20 +61,40 @@ export default {
 
     methods: {
         onNfcRead(cardId, credit, options) {
+            console.log(cardId, credit, options);
             this.cardData = { cardId, credit, options };
         },
 
-        onNfcRawData(rawData_) {
-            console.log('ok', rawData_);
-            let rawData = Buffer.from(rawData_)
-                .toString('hex')
-                .split('');
+        onNfcRawData(rawData) {
             this.pages = chunk(rawData, 8).map(page => chunk(page, 2));
-            console.log(this.pages);
         },
 
         error(err) {
             alert('Impossible de lire la carte', err);
+        },
+
+        getCateringName(id) {
+            try {
+                return JSON.parse(process.env.VUE_APP_ARTICLES).find(entry => entry.id === id).name;
+            } catch (err) {
+                console.log('couldnt find id', id, err);
+                return 'Inconnu';
+            }
+        },
+
+        getCateringAvail(validity) {
+            const firstDay = moment(process.env.VUE_APP_CATERING_DAYONE);
+            const days = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
+
+            const avails = {};
+
+            for (let i = 0; i < days; ++i) {
+                const date = moment(firstDay).add(i, 'day');
+
+                avails[daysTrans[date.format('dddd')]] = validity[i];
+            }
+
+            return avails;
         }
     }
 };
@@ -61,6 +110,20 @@ h2 {
     padding: 0 12px;
     text-align: justify;
     max-width: 320px;
+}
+
+.resume {
+    padding: 0 24px;
+    line-height: 1.2;
+    margin-bottom: 36px;
+}
+
+.day {
+    color: red;
+}
+
+.day[active] {
+    color: green;
 }
 
 .toggles {

@@ -22,6 +22,16 @@ export default {
     box-sizing: border-box;
 }
 
+html,
+body,
+#app {
+    height: 100%;
+}
+
+#app {
+    overflow: scroll;
+}
+
 body {
     background-color: #fafafa;
 }

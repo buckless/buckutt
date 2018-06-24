@@ -1,5 +1,5 @@
-const { SignedData } = require('@buckless/signed-data');
-const rusha = require('rusha');
+import { SignedData } from '@buckless/signed-data';
+import rusha from 'rusha';
 
 const duration = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
 const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
@@ -15,7 +15,7 @@ const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
 
 const byteNumber = optionsLength / 8;
 
-module.exports = new SignedData(process.env.VUE_APP_SIGNINGKEY, 12, rusha.createHash, [
+export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 12, rusha.createHash, [
     {
         name: 'credit',
         default: '000000',
