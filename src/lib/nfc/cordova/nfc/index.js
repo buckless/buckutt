@@ -13,10 +13,21 @@ export default class NFCReader extends EventEmitter {
         this.ultralightC.on('cardType', cardType => this.emit('cardType', cardType));
         this.ultralightC.on('atr', atr => this.emit('atr', atr));
         this.ultralightC.on('data', data => this.emit('data', data));
+        this.ultralightC.on('fulldata', data => this.emit('fulldata', data));
+        this.ultralightC.on('error', err => this.emit('error', err));
     }
 
     write(data) {
         console.timeEnd('NFC Write');
         return this.ultralightC.write(data);
+    }
+
+    shouldLock(lock) {
+        console.log(this.ultralightC, this.ultralightC.shouldLock);
+        this.ultralightC.shouldLock(lock);
+    }
+
+    shouldUnlock(unlock) {
+        this.ultralightC.shouldUnlock(unlock);
     }
 }

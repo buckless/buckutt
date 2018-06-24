@@ -17,6 +17,7 @@ export default class NFC extends EventEmitter {
         this.nfc.on('atr', atr => this.emit('atr', atr));
         this.nfc.on('cardType', cardType => this.emit('cardType', cardType));
         this.nfc.on('data', data => this.emit('data', data));
+        this.nfc.on('fulldata', data => this.emit('fulldata', data));
     }
 
     shouldLock(lock) {

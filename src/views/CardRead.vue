@@ -4,8 +4,9 @@
         <CardViewer :pages="pages" class="cardViewer" />
         <nfc
             mode="read"
-            @data="onNfcRawData"
+            @fulldata="onNfcRawData"
             @read="onNfcRead"
+            @error="error"
             key="reader" />
     </div>
 </template>
@@ -35,11 +36,16 @@ export default {
         },
 
         onNfcRawData(rawData_) {
+            console.log('ok', rawData_);
             let rawData = Buffer.from(rawData_)
                 .toString('hex')
                 .split('');
             this.pages = chunk(rawData, 8).map(page => chunk(page, 2));
             console.log(this.pages);
+        },
+
+        error(err) {
+            alert('Impossible de lire la carte', err);
         }
     }
 };

@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import chunk from 'lodash.chunk';
 
 export const ATR = Buffer.from([
     0x3b,
@@ -27,9 +28,9 @@ export default class UltralightC extends EventEmitter {
     constructor() {
         super();
 
-        this.shouldLock = false;
-        this.shouldUnlock = false;
-        this.pin = parseInt(config.ultralight.pin, 16);
+        this.shouldLock_ = false;
+        this.shouldUnlock_ = false;
+        this.pin = parseInt(process.env.VUE_APP_PIN, 16);
 
         document.addEventListener('mifareTagDiscovered', tag => {
             console.log(tag);
@@ -37,11 +38,6 @@ export default class UltralightC extends EventEmitter {
             console.time('NFC Write');
 
             this.connect()
-                .then(() => {
-                    if (this.shouldUnlock && this.pin) {
-                        return this.unlock(this.pin);
-                    }
-                })
                 .then(() => {
                     this.emit(
                         'uid',
@@ -51,22 +47,36 @@ export default class UltralightC extends EventEmitter {
                         'log',
                         tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
                     );
-                    this.emit('atr', module.exports.ATR);
+                    this.emit('atr', ATR);
                     this.emit('cardType', 'ultralightC');
 
                     return this.read();
                 })
-                .then(data => this.emit('data', data.slice(0, config.ultralight.creditSize)))
+                .then(data => {
+                    console.log(data);
+
+                    const pages = chunk(data.split(''), 8);
+
+                    if (pages[12][7] === '4') {
+                        alert('Card locked');
+                    }
+
+                    this.emit('fulldata', data);
+                    this.emit(
+                        'data',
+                        data.slice(0, parseInt(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE, 10))
+                    );
+                })
                 .catch(err => this.emit('error', err));
         });
     }
 
     shouldLock(lock) {
-        this.shouldLock = lock;
+        this.shouldLock_ = lock;
     }
 
     shouldUnlock(unlock) {
-        this.shouldUnlock = unlock;
+        this.shouldUnlock_ = unlock;
     }
 
     disconnect() {
@@ -85,7 +95,8 @@ export default class UltralightC extends EventEmitter {
     }
 
     read() {
-        const { firstWritablePage, cardLength, creditSize } = config.ultralight;
+        const firstWritablePage = JSON.parse(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE);
+        const cardLength = 68;
 
         const repeat = Math.ceil(cardLength / 4);
 
@@ -119,7 +130,11 @@ export default class UltralightC extends EventEmitter {
     }
 
     write(data) {
-        const dataLength = config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
+        const firstWritablePage = JSON.parse(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE);
+        const cardLength = JSON.parse(process.env.VUE_APP_ULTRALIGHT_CARDLENGTH);
+        const creditSize = JSON.parse(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE);
+
+        const dataLength = cardLength - firstWritablePage * 4;
 
         const buf = Buffer.from(data);
         const newBuf = Buffer.alloc(dataLength, 0);
@@ -157,7 +172,7 @@ export default class UltralightC extends EventEmitter {
                 .then(() => {
                     return new Promise((resolve, reject) => {
                         window.mifare.write(
-                            i + config.ultralight.firstWritablePage,
+                            i + firstWritablePage,
                             Array.from(page).map(int => int.toString(16)),
                             res => resolve(res),
                             err => {
@@ -172,7 +187,7 @@ export default class UltralightC extends EventEmitter {
                 });
         }
 
-        if (this.shouldLock && this.pin) {
+        if (this.shouldLock_ && this.pin) {
             sequence = sequence.then(() => this.lock(this.pin));
         }
 

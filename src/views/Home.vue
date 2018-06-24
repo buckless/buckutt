@@ -4,17 +4,13 @@
             <h2>Initialiser un support</h2>
             <p>Créer un support qui sera ré-assignable par la suite</p>
         </Mode>
-        <Mode @click.native="anon = true">
-            <h2>Assigner un support anonyme</h2>
-            <p>Créer un support qui <strong>ne sera pas</strong> ré-assignable par la suite</p>
-        </Mode>
         <Mode @click.native="options">
             <h2>Gérer les options d'une carte</h2>
             <p>Gère les options (propres à votre évènement) d'une carte</p>
         </Mode>
         <Mode @click.native="cardRead">
             <h2>Lire une carte</h2>
-            <p>Lis une carte et affiche les informations inscrites</p>
+            <p>Lit une carte et affiche les informations inscrites</p>
         </Mode>
 
         <nfc
@@ -53,8 +49,7 @@ export default {
 
     data() {
         return {
-            initialize: false,
-            anon: false
+            initialize: false
         };
     },
 
@@ -62,13 +57,6 @@ export default {
         initializeSupport() {
             window.app.$root.$emit('readyToWrite', 0, {
                 assignedCard: false,
-                catering: []
-            });
-        },
-
-        anonSupport() {
-            window.app.$root.$emit('readyToWrite', 0, {
-                assignedCard: true,
                 catering: []
             });
         },

@@ -37,8 +37,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 export default {
     props: {
         mode: String,
@@ -120,60 +118,50 @@ export default {
 
             const nfc = window.nfc;
 
-            if (this.useCardData) {
-                if (nfc.shouldLock && nfc.shouldUnlock) {
-                    nfc.shouldLock(this.shouldPINLock);
-                    nfc.shouldUnlock(this.shouldPINUnlock);
-                }
-
-                nfc.on('uid', data => {
-                    this.inputValue = data.toString();
-                });
-
-                nfc.on('data', data => {
-                    try {
-                        const card = nfc.dataToCard(
-                            data.toLowerCase ? data.toLowerCase() : data,
-                            this.inputValue + config.signingKey
-                        );
-
-                        console.log('nfc-data', card);
-
-                        let cardToLock = false;
-                        if (this.forbiddenIds.indexOf(this.inputValue) > -1) {
-                            // Only write lock if it isn't already done
-                            cardToLock = !card.options.locked;
-                            card.options.locked = true;
-                        }
-
-                        if (card.options.locked && !this.disableLockCheck) {
-                            if (cardToLock) {
-                                this.dataToWrite = card;
-                                this.write();
-                            }
-                            throw 'Locked card';
-                        }
-
-                        this.onCard(card.credit, card.options);
-                    } catch (err) {
-                        console.log(err);
-                        if (err === 'Locked card') {
-                            this.$store.commit('ERROR', { message: 'Locked card' });
-                        } else if (!this.signCheckDisabled) {
-                            this.$store.commit('ERROR', { message: 'Invalid card' });
-                        } else {
-                            return this.onCard(0, {});
-                        }
-
-                        this.resetComponent();
-                    }
-                });
-            } else {
-                nfc.on('uid', data => {
-                    this.inputValue = data;
-                    this.onCard();
-                });
+            if (nfc.shouldLock && nfc.shouldUnlock) {
+                nfc.shouldLock(this.shouldPINLock);
+                nfc.shouldUnlock(this.shouldPINUnlock);
             }
+
+            nfc.on('uid', data => {
+                this.inputValue = data.toString();
+            });
+
+            nfc.on('data', data => {
+                try {
+                    const card = nfc.dataToCard(
+                        data.toLowerCase ? data.toLowerCase() : data,
+                        this.inputValue + process.env.VUE_APP_SIGNINGKEY
+                    );
+
+                    console.log('nfc-data', card);
+
+                    let cardToLock = false;
+
+                    if (card.options.locked && !this.disableLockCheck) {
+                        if (cardToLock) {
+                            this.dataToWrite = card;
+                            this.write();
+                        }
+                        throw 'Locked card';
+                    }
+
+                    this.onCard(card.credit, card.options);
+                } catch (err) {
+                    console.log(err, this.signCheckDisabled);
+                    if (err === 'Locked card') {
+                        console.log('Locked card');
+                    } else if (!this.signCheckDisabled) {
+                        console.log('Invalid card');
+                    } else {
+                        return this.onCard(0, {});
+                    }
+
+                    this.resetComponent();
+                }
+            });
+
+            nfc.on('fulldata', fulldata => this.$emit('fulldata', fulldata));
 
             nfc.on('error', err => {
                 console.error(err);
@@ -186,12 +174,6 @@ export default {
         },
 
         write() {
-            let restartDataLoader = false;
-            if (!this.dataLoaded) {
-                restartDataLoader = true;
-                this.$store.commit('SET_DATA_LOADED', true);
-            }
-
             if (this.rewrite && this.cardToRewrite !== this.inputValue) {
                 this.resetTimer();
                 return Promise.reject();
@@ -199,18 +181,16 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            nfc.write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
+            nfc.write(
+                nfc.cardToData(this.dataToWrite, this.inputValue + process.env.VUE_APP_SIGNINGKEY)
+            )
                 .then(() => {
                     this.success = true;
                     this.$root.$emit('writeCompleted');
-                    if (restartDataLoader) {
-                        this.$store.commit('SET_DATA_LOADED', false);
-                    }
                 })
                 .catch(() => {
                     this.rewrite = true;
                     this.resetTimer();
-                    this.$store.commit('SET_DATA_LOADED', true);
                 });
         },
 
@@ -235,12 +215,6 @@ export default {
     },
 
     computed: {
-        ...mapState({
-            useCardData: state => state.auth.device.event.config.useCardData,
-            dataLoaded: state => state.ui.dataLoaded,
-            forbiddenIds: state => state.online.offline.blockedCards
-        }),
-
         successTextUpdated() {
             return this.successText || 'Transaction effectuée';
         },
@@ -257,13 +231,6 @@ export default {
 
     beforeDestroy() {
         this.destroyListeners();
-    },
-
-    watch: {
-        useCardData() {
-            this.destroyListeners();
-            this.setListeners();
-        }
     }
 };
 </script>

@@ -1,8 +1,10 @@
 const { SignedData } = require('@buckless/signed-data');
 const rusha = require('rusha');
 
-const duration = parseInt(config.catering.duration, 10);
-const articles = Object.values(config.catering.articles).sort((a, b) => a.id - b.id);
+const duration = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
+const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
+    (a, b) => a.id - b.id
+);
 
 // The first bit is used by assignedCard parameter, the second by the lock state, the third by the paid state
 const usefulDataLength = articles.reduce(
@@ -13,7 +15,7 @@ const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
 
 const byteNumber = optionsLength / 8;
 
-module.exports = new SignedData(config.signingKey, 12, rusha.createHash, [
+module.exports = new SignedData(process.env.VUE_APP_SIGNINGKEY, 12, rusha.createHash, [
     {
         name: 'credit',
         default: '000000',
