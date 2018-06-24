@@ -124,7 +124,7 @@ export default {
                     this.$forceUpdate();
 
                     setTimeout(() => {
-                        this.writeOptions(_, credit, options);
+                        this.writeModal = true;
                     }, 50);
                 }, 400);
             });
