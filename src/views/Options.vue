@@ -5,6 +5,23 @@
 
         <button @click="writeModal = true">Valider</button>
 
+        <div class="options">
+            <label>
+                <input type="checkbox" v-model="assignedCard">
+                Rendre la carte assignée
+            </label>
+
+            <label>
+                <input type="checkbox" v-model="paidCard">
+                Rendre la carte payée
+            </label>
+
+            <label>
+                <input type="checkbox" v-model="lockedCard">
+                Rendre la carte bloquée
+            </label>
+        </div>
+
         <div class="toggles">
             <Mode
                 v-for="(article, i) in articles"
@@ -69,7 +86,10 @@ export default {
             articles,
             balances: articles.map(article => 0),
             validities: articles.map(article => Array(days).fill(false)),
-            selectedArticles: []
+            selectedArticles: [],
+            assignedCard: false,
+            paidCard: false,
+            lockedCard: false
         };
     },
 
@@ -105,8 +125,6 @@ export default {
         },
 
         writeOptions(_, credit, options) {
-            const assignedCard = options.assignedCard;
-
             const catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
                 id: article.id,
                 balance: this.balances[i],
@@ -114,7 +132,9 @@ export default {
             }));
 
             window.app.$root.$emit('readyToWrite', credit, {
-                assignedCard,
+                assignedCard: this.assignedCard,
+                locked: this.lockedCard,
+                paidCard: this.paidCard,
                 catering
             });
 
@@ -147,6 +167,12 @@ p {
 
 button {
     margin: 6px auto;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 24px;
 }
 
 .toggles {
