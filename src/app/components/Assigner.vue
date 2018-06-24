@@ -158,7 +158,7 @@ export default {
                             user.username,
                             user.id,
                             user.currentGroups,
-                            user.ticketId
+                            value
                         );
                         return;
                     }

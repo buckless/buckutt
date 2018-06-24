@@ -116,7 +116,7 @@ export default {
                 user.username,
                 user.id,
                 user.currentGroups,
-                user.ticketId
+                user.searchBy === 'ticketId' ? searchInput : null
             );
         },
 
