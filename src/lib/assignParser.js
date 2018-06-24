@@ -38,26 +38,26 @@ module.exports = async function assignParser(req) {
     }
 
     const userRights = rightsDetails(req.user, req.point_id);
-    const isFromAssigner = req.point.name !== 'Internet';
+    const isFromAssigner = userRights.assign;
 
-    if (!isFromAssigner) {
-        // If the request comes from manager
-        if (!targetUser && !req.user && req.body.firstname && req.body.lastname && req.body.mail) {
-            // If the user hasn't been generated from the ticket, REGISTER FROM MANAGER
-            checkMail = true;
+    // If the request comes from manager
+    if (!targetUser && !req.user && req.body.firstname && req.body.lastname && req.body.mail) {
+        // If the user hasn't been generated from the ticket, REGISTER FROM MANAGER
+        checkMail = true;
 
-            targetUser = {
-                firstname: req.body.firstname,
-                lastname: req.body.lastname,
-                mail: req.body.mail
-            };
-        } else if (req.user) {
-            // If no information is provided and the user logged, ASSIGNER FROM MANAGER
-            targetUser = req.user;
-        }
-        // Else: REGISTER FROM MANAGER (ticket) - OR REJECT
-    } else if (userRights.assign) {
-        // If the request comes from assigner & have assigner rights
+        targetUser = {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            mail: req.body.mail
+        };
+    } else if (req.user) {
+        // If no information is provided and the user logged, ASSIGNER FROM MANAGER
+        targetUser = req.user;
+    }
+    // Else: REGISTER FROM MANAGER (ticket) - OR REJECT
+
+    if (userRights.assign) {
+        // If the user has assigner rights, do some extra checks
         if (req.body.userId) {
             // Check if a userId isn't already provided, ASSIGNER FROM ASSIGNER
             targetUser = {
@@ -73,8 +73,6 @@ module.exports = async function assignParser(req) {
         if (req.body.groups) {
             groupsToAdd = groupsToAdd.concat(req.body.groups);
         }
-    } else {
-        return Promise.reject(new APIError(module, 401, 'No right to do that'));
     }
 
     if (!targetUser) {

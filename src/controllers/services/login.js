@@ -2,7 +2,7 @@ const promisifyAll = require('util-promisifyall');
 const bcrypt = promisifyAll(require('bcryptjs'));
 const express = require('express');
 const log = require('../../lib/log')(module);
-const rightsDetails = require('../../lib/rightsDetails');
+const sanitizeUser = require('../../lib/sanitizeUser');
 const dbCatch = require('../../lib/dbCatch');
 const { bookshelf } = require('../../lib/bookshelf');
 const generateToken = require('../../lib/generateToken');
@@ -113,23 +113,15 @@ router.post('/services/login', async (req, res, next) => {
         return dbCatch(module, err, next);
     }
 
-    const users = users_.toJSON().map(user => ({
-        id: user.id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        credit: user.credit,
-        username: (user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
+    const users = users_.toJSON().map(u => ({
+        id: u.id,
+        firstname: u.firstname,
+        lastname: u.lastname,
+        credit: u.credit,
+        username: (u.meansOfLogin.find(mol => mol.type === 'username') || {}).data
     }));
 
-    user.pin = '';
-    user.password = '';
-
-    const userRights = rightsDetails(user, req.point_id);
-
-    user.canSell = userRights.sell;
-    user.canReload = userRights.reload;
-    user.canAssign = userRights.assign;
-    user.canControl = userRights.control;
+    user = sanitizeUser(user, req.point_id);
 
     log.info(
         `Login with mol ${infos.meanOfLogin}(${infos.data}) and ${infos.connectType}`,
