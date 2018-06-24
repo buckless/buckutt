@@ -163,6 +163,8 @@ export default {
                             this.$store.commit('ERROR', { message: 'Locked card' });
                         } else if (!this.signCheckDisabled) {
                             this.$store.commit('ERROR', { message: 'Invalid card' });
+                        } else if (err.message === '[signed-data] signature does not match') {
+                            return this.onCard(err.value.credit, err.value.options);
                         } else {
                             return this.onCard(0, {});
                         }
