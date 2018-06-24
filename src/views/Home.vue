@@ -4,18 +4,23 @@
             <h2>Gérer les options d'une carte</h2>
             <p>Gère les options (propres à votre évènement) d'une carte</p>
         </Mode>
-        <Mode @click.native="initialize = true">
+        <Mode @click.native="initialize = true" v-if="developertools">
             <h2>Initialiser un support</h2>
             <p>Créer un support qui sera ré-assignable par la suite (développeur !)</p>
         </Mode>
-        <Mode @click.native="cardRead">
+        <Mode @click.native="cardRead" v-if="developertools">
             <h2>Lire une carte</h2>
             <p>Lit une carte et affiche les informations inscrites (développeur !)</p>
         </Mode>
-        <Mode @click.native="unlock">
+        <Mode @click.native="unlock" v-if="developertools">
             <h2>Enlever le code PIN</h2>
             <p>Supprime le code PIN d'une carte (développeur !)</p>
         </Mode>
+
+        <label>
+            <input type="checkbox" v-model="developertools">
+            Activer les options développeur
+        </label>
 
         <nfc
             mode="write"
@@ -42,7 +47,8 @@ export default {
 
     data() {
         return {
-            initialize: false
+            initialize: false,
+            developertools: false
         };
     },
 
@@ -51,6 +57,17 @@ export default {
             window.app.$root.$emit('readyToWrite', 0, {
                 assignedCard: false,
                 catering: []
+            });
+
+            window.app.$root.$on('writeCompleted', () => {
+                setTimeout(() => {
+                    this.initialize = false;
+                    this.$forceUpdate();
+
+                    setTimeout(() => {
+                        this.initialize = true;
+                    }, 50);
+                }, 400);
             });
         },
 
@@ -78,5 +95,10 @@ export default {
 
 .home > .mode {
     margin-top: 12px;
+}
+
+.home > label {
+    position: absolute;
+    bottom: 20px;
 }
 </style>

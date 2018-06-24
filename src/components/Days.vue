@@ -3,18 +3,40 @@
         <li
             v-for="(active, i) in mutableValue"
             @click.stop="toggle(i)"
-            :active="active">Jour {{ i + 1 }}</li>
+            :active="active">{{ days[i] }}</li>
     </ul>
 </template>
 
 <script>
+const daysTrans = {
+    Sunday: 'Dim',
+    Monday: 'Lun',
+    Tuesday: 'Mar',
+    Wednesday: 'Mer',
+    Thursday: 'Jeu',
+    Friday: 'Ven',
+    Saturday: 'Sam'
+};
+
 export default {
     props: ['value'],
 
     data() {
+        const firstDay = moment(process.env.VUE_APP_CATERING_DAYONE);
+        const dayCount = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
+
+        const days = [];
+
+        for (let i = 0; i < dayCount; ++i) {
+            const date = moment(firstDay).add(i, 'day');
+
+            days.push(daysTrans[date.format('dddd')]);
+        }
+
         return {
             // create a data that we can mutate before emitting
-            mutableValue: Array.prototype.slice.call(this.value)
+            mutableValue: Array.prototype.slice.call(this.value),
+            days
         };
     },
 

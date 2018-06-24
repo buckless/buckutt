@@ -11,10 +11,12 @@
                 class="toggle"
                 :active="isActive(article) > -1"
                 :key="i"
-                @click.native="toggle(article)">
+                @click.native="open(article)">
                 <strong>{{ article.name }}</strong>
+                <i @click.stop="close(article)" v-if="isActive(article) > -1">Fermer</i>
                 <br/>
                 <br/>
+                Solde sur carte :
                 <vue-slider
                     ref="slider"
                     v-model="balances[i]"
@@ -26,7 +28,7 @@
                     :speed="0.1"
                     tooltip-dir="bottom"></vue-slider>
                 <br/>
-                Jours :
+                Dépensable les jours :
                 <Days v-model="validities[i]"></Days>
             </Mode>
         </div>
@@ -84,6 +86,18 @@ export default {
             }
         },
 
+        open(article) {
+            this.balances[this.articles.indexOf(article)] = article.maxNumber;
+            setTimeout(() => this.selectedArticles.push(article));
+        },
+
+        close(article) {
+            const index = this.isActive(article);
+
+            this.balances[this.articles.indexOf(article)] = 0;
+            this.selectedArticles.splice(index, 1);
+        },
+
         isActive(article) {
             return this.selectedArticles.findIndex(
                 selectedArticle => selectedArticle.id === article.id
@@ -135,8 +149,21 @@ button {
     height: 45px;
     margin-top: 12px;
     padding: 12px;
+    position: relative;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 0 0 2px transparent;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.toggle i {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: none;
 }
 
 .toggle[active] {
