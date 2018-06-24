@@ -165,7 +165,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     username: (meansOfLogin[i].user.meansOfLogin[0] || { data: '' }).data,
                     ticket: meansOfLogin[i].data,
                     credit: meansOfLogin[i].user.credit,
-                    hasPaidCard: meansOfLogin[i].user.hasPaidCard
+                    physicalId: meansOfLogin[i].physical_id
                 });
             }
 
