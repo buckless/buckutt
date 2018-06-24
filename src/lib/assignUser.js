@@ -59,68 +59,71 @@ module.exports = async function assignUser(
             new models.User({ id: anonymousData.id }).save(updatedUser, { patch: true })
         );
 
-        operations.push(
-            models.PendingCardUpdate.where({ user_id: userAccount.id }).save(
-                { user_id: anonymousData.id },
-                {
+        const changes = [
+            {
+                model: 'PendingCardUpdate',
+                field: 'user_id'
+            },
+            {
+                model: 'Reload',
+                field: 'buyer_id'
+            },
+            {
+                model: 'Transfer',
+                field: 'sender_id'
+            },
+            {
+                model: 'Transfer',
+                field: 'reciever_id'
+            },
+            {
+                model: 'Purchase',
+                field: 'buyer_id'
+            },
+            {
+                model: 'Withdrawal',
+                field: 'buyer_id'
+            },
+            {
+                model: 'Refund',
+                field: 'buyer_id'
+            },
+            {
+                model: 'Transaction',
+                field: 'user_id'
+            },
+            {
+                model: 'Membership',
+                field: 'user_id'
+            },
+            {
+                model: 'Right',
+                field: 'user_id'
+            }
+        ];
+
+        changes.forEach(change => {
+            const whereClause = {
+                [change.field]: userAccount.id
+            };
+            const saveClause = {
+                [change.field]: anonymousData.id
+            };
+
+            operations.push(
+                models[change.model].where(whereClause).save(saveClause, {
                     patch: true,
                     require: false
-                }
-            )
-        );
+                })
+            );
+        });
 
+        // Remove all anonymousAccount mols, except the card
         operations.push(
-            models.Reload.where({ buyer_id: userAccount.id }).save(
-                { buyer_id: anonymousData.id },
-                {
-                    patch: true,
-                    require: false
-                }
-            )
+            models.MeanOfLogin.where('type', '<>', 'cardId')
+                .where({ user_id: anonymousData.id })
+                .destroy()
         );
-
-        operations.push(
-            models.Transfer.where({ sender_id: userAccount.id }).save(
-                { sender_id: anonymousData.id },
-                {
-                    patch: true,
-                    require: false
-                }
-            )
-        );
-
-        operations.push(
-            models.Transfer.where({ reciever_id: userAccount.id }).save(
-                { reciever_id: anonymousData.id },
-                {
-                    patch: true,
-                    require: false
-                }
-            )
-        );
-
-        operations.push(
-            models.Purchase.where({ buyer_id: userAccount.id }).save(
-                { buyer_id: anonymousData.id },
-                {
-                    patch: true,
-                    require: false
-                }
-            )
-        );
-
-        operations.push(
-            models.Membership.where({ user_id: userAccount.id }).save(
-                { user_id: anonymousData.id },
-                {
-                    patch: true,
-                    require: false
-                }
-            )
-        );
-
-        // Remove all anonymousAccount mols, others are going to be transfered from the account or created by arguments
-        operations.push(models.MeanOfLogin.where({ user_id: anonymousData.id }).destroy());
 
         await Promise.all(operations);
 
@@ -135,6 +138,7 @@ module.exports = async function assignUser(
 
         mergedAccount = anonymousData;
         molsToSkip = userAccount.meansOfLogin.map(mol => mol.type);
+        molsToSkip.push('cardId');
         groupsToSkip = userAccount.memberships
             .filter(membership => membership.period === event.defaultPeriod_id)
             .map(membership => membership.group_id);
