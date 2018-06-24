@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Home from '@/views/Home';
 import Options from '@/views/Options';
 import CardRead from '@/views/CardRead';
+import Unlock from '@/views/Unlock';
 
 Vue.use(Router);
 
@@ -20,6 +21,10 @@ export default new Router({
         {
             path: '/cardRead',
             component: CardRead
+        },
+        {
+            path: '/unlock',
+            component: Unlock
         }
     ]
 });

@@ -1,16 +1,20 @@
 <template>
     <div class="home">
-        <Mode @click.native="initialize = true">
-            <h2>Initialiser un support</h2>
-            <p>Créer un support qui sera ré-assignable par la suite</p>
-        </Mode>
         <Mode @click.native="options">
             <h2>Gérer les options d'une carte</h2>
             <p>Gère les options (propres à votre évènement) d'une carte</p>
         </Mode>
+        <Mode @click.native="initialize = true">
+            <h2>Initialiser un support</h2>
+            <p>Créer un support qui sera ré-assignable par la suite (développeur !)</p>
+        </Mode>
         <Mode @click.native="cardRead">
             <h2>Lire une carte</h2>
-            <p>Lit une carte et affiche les informations inscrites</p>
+            <p>Lit une carte et affiche les informations inscrites (développeur !)</p>
+        </Mode>
+        <Mode @click.native="unlock">
+            <h2>Enlever le code PIN</h2>
+            <p>Supprime le code PIN d'une carte (développeur !)</p>
         </Mode>
 
         <nfc
@@ -56,6 +60,10 @@ export default {
 
         cardRead() {
             this.$router.push('/cardRead');
+        },
+
+        unlock() {
+            this.$router.push('/unlock');
         }
     }
 };
