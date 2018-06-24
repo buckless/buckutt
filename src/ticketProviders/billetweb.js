@@ -64,7 +64,7 @@ module.exports = ticketNumber => {
             return {
                 firstname: ticket.firstname,
                 lastname: ticket.name,
-                mail: ticket.email,
+                mail: ticket.email || ticket.order_email,
                 username,
                 credit,
                 ticketId: ticket.barcode,
