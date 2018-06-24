@@ -131,7 +131,11 @@ router.get('/services/items', (req, res, next) => {
                 }
             });
 
-            log.info(`Get items for buyer ${req.details.buyer}`, req.details);
+            if (req.details.buyer) {
+                log.info(`Get items for buyer ${req.details.buyer}`, req.details);
+            } else {
+                log.info(`Get point items`, req.details);
+            }
 
             res
                 .status(200)

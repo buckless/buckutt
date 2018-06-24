@@ -11,8 +11,8 @@ const router = new express.Router('/');
  * Use every middlewares
  */
 for (const key of Object.keys(middlewares)) {
-    // Skip 5_idempotency which is http only
-    if (key === '5') {
+    // Skip 6_idempotency which is http only
+    if (key === '6') {
         router.use(middlewares[key]);
         continue;
     }

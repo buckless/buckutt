@@ -17,6 +17,11 @@ module.exports = function token(connector) {
         return Promise.resolve();
     }
 
+    // Skip token at login
+    if (connector.path === '/services/login') {
+        return Promise.resolve();
+    }
+
     // Config is invalid
     /* istanbul ignore if */
     if (!secret) {
