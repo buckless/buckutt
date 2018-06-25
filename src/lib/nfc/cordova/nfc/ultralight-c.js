@@ -14,7 +14,6 @@ module.exports = class UltralightC extends EventEmitter {
             console.log(tag);
 
             console.time('NFC Write');
-
             this.connect()
                 .then(() => {
                     if (this.shouldUnlock && this.pin) {
@@ -40,11 +39,11 @@ module.exports = class UltralightC extends EventEmitter {
         });
     }
 
-    shouldLock(lock) {
+    setLock(lock) {
         this.shouldLock = lock;
     }
 
-    shouldUnlock(unlock) {
+    setUnlock(unlock) {
         this.shouldUnlock = unlock;
     }
 

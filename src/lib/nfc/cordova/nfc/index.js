@@ -21,10 +21,10 @@ module.exports = class NFCReader extends EventEmitter {
     }
 
     shouldLock(lock) {
-        this.ultralightC.shouldLock(lock);
+        this.ultralightC.setLock(lock);
     }
 
     shouldUnlock(unlock) {
-        this.ultralightC.shouldUnlock(unlock);
+        this.ultralightC.setUnlock(unlock);
     }
 };

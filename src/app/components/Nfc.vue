@@ -47,8 +47,8 @@ export default {
         successText: String,
         disableSignCheck: Boolean,
         disableLockCheck: Boolean,
-        shouldPINLock: { type: Boolean, default: false },
-        shouldPINUnlock: { type: Boolean, default: true }
+        shouldPinLock: { type: Boolean, default: false },
+        shouldPinUnlock: { type: Boolean, default: true }
     },
 
     data() {
@@ -124,8 +124,8 @@ export default {
 
             if (this.useCardData) {
                 if (nfc.shouldLock && nfc.shouldUnlock) {
-                    nfc.shouldLock(this.shouldPINLock);
-                    nfc.shouldUnlock(this.shouldPINUnlock);
+                    nfc.shouldLock(this.shouldPinLock);
+                    nfc.shouldUnlock(this.shouldPinUnlock);
                 }
 
                 nfc.on('uid', data => {

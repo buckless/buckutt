@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@buckless/offline-queue": "^0.5.1",
-    "@buckless/signed-data": "^2.1.2",
+    "@buckless/signed-data": "^2.2.0",
     "@pokusew/pcsclite": "^0.4.18",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",

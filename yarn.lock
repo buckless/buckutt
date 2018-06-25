@@ -23,9 +23,9 @@
     eventemitter3 "^3.0.1"
     is-promise "^2.1.0"
 
-"@buckless/signed-data@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@buckless/signed-data/-/signed-data-2.1.2.tgz#2c312e493211aa316febf35bed804c45a20e3989"
+"@buckless/signed-data@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@buckless/signed-data/-/signed-data-2.2.0.tgz#88f8a71afc139eb3671bcadee12af2eacda7d9ca"
   dependencies:
     hmac "^1.0.1"
 
