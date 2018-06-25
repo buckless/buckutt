@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const chunk = require('lodash.chunk');
 
 let config = require('../../../../../config');
 

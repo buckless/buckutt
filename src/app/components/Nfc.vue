@@ -132,15 +132,15 @@ export default {
                     this.inputValue = data.toString();
                 });
 
-                nfc.on('locked', data => {
-                    this.cardLocked = data;
+                nfc.on('locked', locked => {
+                    this.cardLocked = locked;
 
                     if (nfc.shouldUnlock) {
-                        nfc.shouldUnlock(data);
+                        nfc.shouldUnlock(locked);
                     }
 
                     if (nfc.shouldLock) {
-                        nfc.shouldLock(!data);
+                        nfc.shouldLock(!locked);
                     }
                 });
 
@@ -177,12 +177,12 @@ export default {
                             err.message === '[signed-data] signature does not match'
                         ) {
                             if (!this.cardLocked) {
-                                return this.onCard(0, {});
+                                return this.onCard(0, { catering: [] });
                             }
 
                             return this.onCard(err.value.credit, err.value.options);
                         } else if (this.disablePinCheck) {
-                            return this.onCard(0, {});
+                            return this.onCard(0, { catering: [] });
                         } else {
                             this.$store.commit('ERROR', { message: 'Invalid card' });
                         }
@@ -239,6 +239,7 @@ export default {
 
         destroyListeners() {
             window.nfc.removeAllListeners('data');
+            window.nfc.removeAllListeners('locked');
             window.nfc.removeAllListeners('uid');
             window.nfc.removeAllListeners('error');
             window.app.$root.$off('readyToWrite');
