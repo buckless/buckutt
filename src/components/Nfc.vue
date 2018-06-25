@@ -148,11 +148,17 @@ export default {
 
                     this.onCard(card.credit, card.options);
                 } catch (err) {
-                    console.log(err, this.signCheckDisabled);
+                    console.log(
+                        err.message,
+                        err.message === '[signed-data] signature does not match'
+                    );
                     if (err === 'Locked card') {
                         console.log('Locked card');
                     } else if (!this.signCheckDisabled) {
                         console.log('Invalid card');
+                    } else if (err.message === '[signed-data] signature does not match') {
+                        console.log('> oncard anyway');
+                        return this.onCard(err.value.credit, err.value.options);
                     } else {
                         return this.onCard(0, {});
                     }

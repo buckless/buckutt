@@ -23,6 +23,7 @@
             @fulldata="onNfcRawData"
             @read="onNfcRead"
             @error="error"
+            disableSignCheck
             key="reader" />
     </div>
 </template>

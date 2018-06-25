@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import NFCReader from './nfc';
 import signedData from '../signedData';
-console.log(signedData);
 
 export default class NFC extends EventEmitter {
     constructor() {
