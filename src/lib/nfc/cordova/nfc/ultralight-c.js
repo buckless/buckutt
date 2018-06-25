@@ -34,7 +34,13 @@ module.exports = class UltralightC extends EventEmitter {
 
                     return this.read();
                 })
-                .then(data => this.emit('data', data.slice(0, config.ultralight.creditSize)))
+                .then(data => {
+                    console.log('fulldata', data);
+                    const pages = chunk(data.split(''), 8);
+
+                    this.emit('locked', pages[12][7] === '4');
+                    this.emit('data', data.slice(0, config.ultralight.creditSize));
+                })
                 .catch(err => this.emit('error', err));
         });
     }
