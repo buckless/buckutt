@@ -39,6 +39,11 @@ export default class UltralightC extends EventEmitter {
 
             this.connect()
                 .then(() => {
+                    if (this.shouldUnlock_ && this.pin) {
+                        return this.unlock(this.pin);
+                    }
+                })
+                .then(() => {
                     this.emit(
                         'uid',
                         tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
@@ -61,6 +66,7 @@ export default class UltralightC extends EventEmitter {
                     //     alert('Card locked');
                     // }
 
+                    this.emit('locked', pages[12][7] === '4');
                     this.emit('fulldata', data);
                     this.emit(
                         'data',

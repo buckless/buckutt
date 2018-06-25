@@ -43,6 +43,7 @@ export default {
         successText: String,
         disableSignCheck: Boolean,
         disableLockCheck: Boolean,
+        disablePinCheck: Boolean,
         shouldPinLock: { type: Boolean, default: false },
         shouldPinUnlock: { type: Boolean, default: true }
     },
@@ -59,7 +60,8 @@ export default {
                 options: null
             },
             timer: 15,
-            currentTimer: null
+            currentTimer: null,
+            cardLocked: false
         };
     },
 
@@ -118,13 +120,21 @@ export default {
 
             const nfc = window.nfc;
 
-            if (nfc.shouldLock && nfc.shouldUnlock) {
-                nfc.shouldLock(this.shouldPinLock);
-                nfc.shouldUnlock(this.shouldPinUnlock);
-            }
-
             nfc.on('uid', data => {
                 this.inputValue = data.toString();
+            });
+
+            nfc.on('locked', locked => {
+                this.cardLocked = locked;
+                console.log(locked);
+
+                if (nfc.shouldUnlock) {
+                    nfc.shouldUnlock(locked);
+                }
+
+                if (nfc.shouldLock) {
+                    nfc.shouldLock(!locked);
+                }
             });
 
             nfc.on('data', data => {
@@ -154,13 +164,16 @@ export default {
                     );
                     if (err === 'Locked card') {
                         console.log('Locked card');
-                    } else if (!this.signCheckDisabled) {
-                        console.log('Invalid card');
-                    } else if (err.message === '[signed-data] signature does not match') {
+                    } else if (
+                        this.signCheckDisabled &&
+                        err.message === '[signed-data] signature does not match'
+                    ) {
                         console.log('> oncard anyway');
                         return this.onCard(err.value.credit, err.value.options);
+                    } else if (this.disablePinCheck) {
+                        return this.onCard(0, { catering: [] });
                     } else {
-                        return this.onCard(0, {});
+                        console.log('Invalid card');
                     }
 
                     this.resetComponent();
@@ -207,6 +220,7 @@ export default {
         destroyListeners() {
             window.nfc.removeAllListeners('data');
             window.nfc.removeAllListeners('uid');
+            window.nfc.removeAllListeners('locked');
             window.nfc.removeAllListeners('error');
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
