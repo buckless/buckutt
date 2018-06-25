@@ -43,8 +43,8 @@ export default {
         successText: String,
         disableSignCheck: Boolean,
         disableLockCheck: Boolean,
-        shouldPINLock: { type: Boolean, default: false },
-        shouldPINUnlock: { type: Boolean, default: true }
+        shouldPinLock: { type: Boolean, default: false },
+        shouldPinUnlock: { type: Boolean, default: true }
     },
 
     data() {
@@ -187,9 +187,13 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            nfc.write(
-                nfc.cardToData(this.dataToWrite, this.inputValue + process.env.VUE_APP_SIGNINGKEY)
-            )
+            nfc
+                .write(
+                    nfc.cardToData(
+                        this.dataToWrite,
+                        this.inputValue + process.env.VUE_APP_SIGNINGKEY
+                    )
+                )
                 .then(() => {
                     this.success = true;
                     this.$root.$emit('writeCompleted');

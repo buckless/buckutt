@@ -87,10 +87,7 @@ export default class UltralightC extends EventEmitter {
 
     connect() {
         return new Promise((resolve, reject) => {
-            window.mifare.connect(
-                () => resolve(),
-                err => reject(err)
-            );
+            window.mifare.connect(() => resolve(), err => reject(err));
         });
     }
 

@@ -29,7 +29,8 @@
             successText="Carte initialisée"
             v-if="initialize"
             key="initialize"
-            disableSignCheck>
+            disableSignCheck
+            shouldPinLock>
             Mode: initialisation
         </nfc>
     </div>

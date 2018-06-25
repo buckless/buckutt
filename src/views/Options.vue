@@ -57,7 +57,8 @@
             successText="Options écrites"
             v-if="writeModal"
             key="validate"
-            disableSignCheck />
+            disableSignCheck
+            shouldPinUnlock />
     </div>
 </template>
 
