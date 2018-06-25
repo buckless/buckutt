@@ -65,7 +65,8 @@ export default {
 
     methods: {
         onNfcRead(cardId, credit, options) {
-            const serial = cards.find(map => map.uid === cardId).serial || 'introuvable';
+            const serial = (cards.find(map => map.uid === cardId) || { serial: 'introuvable' })
+                .serial;
 
             this.cardData = { cardId, credit, options, serial };
         },
