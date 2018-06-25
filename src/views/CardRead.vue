@@ -3,6 +3,7 @@
         <h2>Lire une carte</h2>
         <div class="resume" v-if="cardData && cardData.credit >= 0">
             <div><strong>Serial id</strong>: {{ cardData.cardId }}</div>
+            <div><strong>Serial physique</strong>: {{ cardData.serial }}</div>
             <div><strong>Crédit:</strong> {{ cardData.credit | price(true) }}</div>
             <div><strong>Carte assignée</strong>: <span v-if="cardData.options.assignedCard">oui</span><span v-else>non</span></div>
             <div><strong>Carte payée</strong>: <span v-if="cardData.options.paidCard">oui</span><span v-else>non</span></div>
@@ -31,10 +32,11 @@
 
 <script>
 import moment from 'moment';
+import * as chunk from 'lodash.chunk';
+
 import Nfc from '@/components/Nfc';
 import CardViewer from '@/components/CardViewer';
-
-import * as chunk from 'lodash.chunk';
+import cards from '@/assets/cards.csv';
 
 window.moment = moment;
 
@@ -63,8 +65,9 @@ export default {
 
     methods: {
         onNfcRead(cardId, credit, options) {
-            console.log(cardId, credit, options);
-            this.cardData = { cardId, credit, options };
+            const serial = cards.find(map => map.uid === cardId).serial || 'introuvable';
+
+            this.cardData = { cardId, credit, options, serial };
         },
 
         onNfcRawData(rawData) {

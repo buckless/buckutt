@@ -16,6 +16,16 @@ module.exports = {
 
         config.watch = (env === 'development' && target === 'cordova')
 
+        config.module.rules.push({
+            test: /\.csv$/,
+            loader: 'csv-loader',
+            options: {
+                dynamicTyping: true,
+                header: true,
+                skipEmptyLines: true
+            }
+        })
+
         config.plugins.push(
             new webpack.EnvironmentPlugin({
                 TARGET: target
