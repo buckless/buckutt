@@ -15,7 +15,7 @@
             <div v-if="seller.meanOfLogin.length === 0">
                 <div class="b-login__card b-login__card--sellerId">
                     En attente d'un opérateur
-                    <nfc mode="read" @read="validate" key="seller" disableSignCheck />
+                    <nfc mode="read" @read="validate" key="seller" disableSignCheck disablePinCheck />
                 </div>
             </div>
         </div>

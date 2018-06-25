@@ -47,8 +47,8 @@ export default {
         successText: String,
         disableSignCheck: Boolean,
         disableLockCheck: Boolean,
-        shouldPinLock: { type: Boolean, default: false },
-        shouldPinUnlock: { type: Boolean, default: true }
+        disablePinCheck: Boolean,
+        shouldPinLock: { type: Boolean, default: false }
     },
 
     data() {
@@ -63,7 +63,8 @@ export default {
                 options: null
             },
             timer: 15,
-            currentTimer: null
+            currentTimer: null,
+            cardLocked: false
         };
     },
 
@@ -123,13 +124,24 @@ export default {
             const nfc = window.nfc;
 
             if (this.useCardData) {
-                if (nfc.shouldLock && nfc.shouldUnlock) {
+                if (nfc.shouldLock) {
                     nfc.shouldLock(this.shouldPinLock);
-                    nfc.shouldUnlock(this.shouldPinUnlock);
                 }
 
                 nfc.on('uid', data => {
                     this.inputValue = data.toString();
+                });
+
+                nfc.on('locked', data => {
+                    this.cardLocked = data;
+
+                    if (nfc.shouldUnlock) {
+                        nfc.shouldUnlock(data);
+                    }
+
+                    if (nfc.shouldLock) {
+                        nfc.shouldLock(!data);
+                    }
                 });
 
                 nfc.on('data', data => {
@@ -158,15 +170,21 @@ export default {
 
                         this.onCard(card.credit, card.options);
                     } catch (err) {
-                        console.log(err);
                         if (err === 'Locked card') {
                             this.$store.commit('ERROR', { message: 'Locked card' });
-                        } else if (!this.signCheckDisabled) {
-                            this.$store.commit('ERROR', { message: 'Invalid card' });
-                        } else if (err.message === '[signed-data] signature does not match') {
+                        } else if (
+                            this.signCheckDisabled &&
+                            err.message === '[signed-data] signature does not match'
+                        ) {
+                            if (!this.cardLocked) {
+                                return this.onCard(0, {});
+                            }
+
                             return this.onCard(err.value.credit, err.value.options);
-                        } else {
+                        } else if (this.disablePinCheck) {
                             return this.onCard(0, {});
+                        } else {
+                            this.$store.commit('ERROR', { message: 'Invalid card' });
                         }
 
                         this.resetComponent();
