@@ -39,13 +39,13 @@ import * as chunk from 'lodash.chunk';
 window.moment = moment;
 
 const daysTrans = {
-    Sunday: 'D',
-    Monday: 'L',
-    Tuesday: 'M',
-    Wednesday: 'M',
-    Thursday: 'J',
-    Friday: 'V',
-    Saturday: 'S'
+    Sunday: 'Dim',
+    Monday: 'Lun',
+    Tuesday: 'Mar',
+    Wednesday: 'Mer',
+    Thursday: 'Jeu',
+    Friday: 'Ven',
+    Saturday: 'Sam'
 };
 
 export default {
