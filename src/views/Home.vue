@@ -29,6 +29,7 @@
             successText="Carte initialisée"
             v-if="initialize"
             key="initialize"
+            disableLockCheck
             disableSignCheck
             shouldPinLock>
             Mode: initialisation

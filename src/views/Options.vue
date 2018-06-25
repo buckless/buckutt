@@ -58,6 +58,7 @@
             v-if="writeModal"
             key="validate"
             disableSignCheck
+            disableLockCheck
             shouldPinUnlock />
     </div>
 </template>

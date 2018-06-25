@@ -119,8 +119,8 @@ export default {
             const nfc = window.nfc;
 
             if (nfc.shouldLock && nfc.shouldUnlock) {
-                nfc.shouldLock(this.shouldPINLock);
-                nfc.shouldUnlock(this.shouldPINUnlock);
+                nfc.shouldLock(this.shouldPinLock);
+                nfc.shouldUnlock(this.shouldPinUnlock);
             }
 
             nfc.on('uid', data => {
