@@ -93,7 +93,7 @@ export default class UltralightC extends EventEmitter {
 
     read() {
         const firstWritablePage = JSON.parse(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE);
-        const cardLength = 68;
+        const cardLength = process.env.VUE_APP_ULTRALIGHT_CARDLENGTH;
 
         const repeat = Math.ceil(cardLength / 4);
 
