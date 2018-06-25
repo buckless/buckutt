@@ -47,8 +47,7 @@ export default {
         successText: String,
         disableSignCheck: Boolean,
         disableLockCheck: Boolean,
-        disablePinCheck: Boolean,
-        shouldPinLock: { type: Boolean, default: false }
+        disablePinCheck: Boolean
     },
 
     data() {
@@ -124,10 +123,6 @@ export default {
             const nfc = window.nfc;
 
             if (this.useCardData) {
-                if (nfc.shouldLock) {
-                    nfc.shouldLock(this.shouldPinLock);
-                }
-
                 nfc.on('uid', data => {
                     this.inputValue = data.toString();
                 });
