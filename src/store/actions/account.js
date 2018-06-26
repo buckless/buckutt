@@ -8,6 +8,7 @@ export function assign({ state, dispatch }, { ticketNumber, physicalId }) {
     let message = null;
 
     return post('assigner', {
+        userId: state.app.loggedUser.id,
         ticketNumber,
         physicalId
     })
