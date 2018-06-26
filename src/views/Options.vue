@@ -5,7 +5,7 @@
 
         <button @click="writeModal = true">Valider</button>
 
-        <div class="options">
+        <div class="options" v-if="developermode">
             <label>
                 <input type="checkbox" v-model="assignedCard">
                 Rendre la carte assignée
@@ -91,7 +91,8 @@ export default {
             selectedArticles: [],
             assignedCard: false,
             paidCard: false,
-            lockedCard: false
+            lockedCard: false,
+            developermode: sessionStorage.getItem('masterapp-developertools') === 'true'
         };
     },
 
@@ -133,12 +134,21 @@ export default {
                 validity: this.validities[i]
             }));
 
-            window.app.$root.$emit('readyToWrite', credit, {
-                assignedCard: this.assignedCard,
-                locked: this.lockedCard,
-                paidCard: this.paidCard,
+            const newOptions = {
                 catering
-            });
+            };
+
+            if (this.developermode) {
+                newOptions.assignedCard = this.assignedCard;
+                newOptions.locked = this.lockedCard;
+                newOptions.paidCard = this.paidCard;
+            } else {
+                newOptions.assignedCard = options.assignedCard;
+                newOptions.locked = options.locked;
+                newOptions.paidCard = options.paidCard;
+            }
+
+            window.app.$root.$emit('readyToWrite', credit, newOptions);
 
             window.app.$root.$on('writeCompleted', () => {
                 setTimeout(() => {

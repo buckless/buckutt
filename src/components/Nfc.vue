@@ -251,7 +251,6 @@ export default {
 
     beforeDestroy() {
         this.destroyListeners();
-        window.nfc.unbind();
     }
 };
 </script>

@@ -84,6 +84,18 @@ export default {
         unlock() {
             this.$router.push('/unlock');
         }
+    },
+
+    mounted() {
+        if (sessionStorage.hasOwnProperty('masterapp-developertools')) {
+            this.developertools = sessionStorage.getItem('masterapp-developertools') === 'true';
+        }
+    },
+
+    watch: {
+        developertools() {
+            sessionStorage.setItem('masterapp-developertools', this.developertools);
+        }
     }
 };
 </script>
