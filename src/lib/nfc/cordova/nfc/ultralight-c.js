@@ -17,11 +17,6 @@ module.exports = class UltralightC extends EventEmitter {
             console.time('NFC Write');
             this.connect()
                 .then(() => {
-                    if (this.shouldUnlock && this.pin) {
-                        return this.unlock(this.pin);
-                    }
-                })
-                .then(() => {
                     this.emit(
                         'uid',
                         tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
@@ -130,6 +125,9 @@ module.exports = class UltralightC extends EventEmitter {
         } while (i <= buf.length);
 
         let sequence = Promise.resolve();
+        if (this.shouldUnlock && this.pin) {
+            sequence = this.unlock(this.pin);
+        }
 
         // Write in sequence
         i = 0;
