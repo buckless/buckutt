@@ -34,7 +34,6 @@ module.exports = connector => {
                     })
                 );
             }
-            console.log('SALIL');
             let minPeriod = Infinity;
             let handled = false;
 
