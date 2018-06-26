@@ -30,7 +30,8 @@
                 :key="i"
                 @click.native="open(article)">
                 <strong>{{ article.name }}</strong>
-                <i @click.stop="close(article)" v-if="isActive(article) > -1">Fermer</i>
+                <i @click.stop="close(article)" v-if="isActive(article) > -1">Annuler</i>
+                <br/>
                 <br/>
                 <br/>
                 Solde sur carte :
