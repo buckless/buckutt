@@ -126,7 +126,6 @@ export default {
 
             nfc.on('locked', locked => {
                 this.cardLocked = locked;
-                console.log(locked);
 
                 if (nfc.shouldUnlock) {
                     nfc.shouldUnlock(locked);
