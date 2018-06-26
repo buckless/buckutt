@@ -1,20 +1,16 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const config = require('../../../../config');
 const log = require('../../../lib/log')(module);
 const rightsDetails = require('../../../lib/rightsDetails');
 const dbCatch = require('../../../lib/dbCatch');
 const { bookshelf } = require('../../../lib/bookshelf');
+const generateToken = require('../../../lib/generateToken');
 const APIError = require('../../../errors/APIError');
 
 /**
  * SearchUser controller.
  */
 const router = new express.Router();
-
-const tokenOptions = {
-    expiresIn: '30d' // 30 days token
-};
 
 router.post('/services/manager/switchuser', (req, res, next) => {
     const infos = { type: req.body.meanOfLogin.toString(), data: req.body.data.toString() };
@@ -27,8 +23,6 @@ router.post('/services/manager/switchuser', (req, res, next) => {
     if (req.connectType !== 'pin') {
         return next(new APIError(module, 401, 'User not found', errDetails));
     }
-
-    const secret = config.app.secret;
 
     req.app.locals.models.MeanOfLogin.query(q =>
         q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data.toLowerCase().trim())
@@ -66,17 +60,12 @@ router.post('/services/manager/switchuser', (req, res, next) => {
                 .status(200)
                 .json({
                     user,
-                    token: jwt.sign(
-                        {
-                            id: user.id,
-                            point: req.point,
-                            event: req.event,
-                            // Will be used by middleware (else how could middleware know if pin or password ?)
-                            connectType: req.connectType
-                        },
-                        secret,
-                        tokenOptions
-                    )
+                    token: generateToken({
+                        id: user.id,
+                        point: req.point.id,
+                        // Will be used by middleware (else how could middleware know if pin or password ?)
+                        connectType: req.connectType
+                    })
                 })
                 .end();
         })
