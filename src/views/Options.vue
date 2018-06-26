@@ -41,7 +41,6 @@
                     :tooltip="false"
                     :piecewise="true"
                     :piecewise-label="true"
-                    :clickable="false"
                     :speed="0.1"
                     tooltip-dir="bottom"></vue-slider>
                 <br/>
@@ -104,7 +103,7 @@ export default {
                 this.balances[this.articles.indexOf(article)] = 0;
                 this.selectedArticles.splice(index, 1);
             } else {
-                this.balances[this.articles.indexOf(article)] = article.maxNumber;
+                this.balances[this.articles.indexOf(article)] = 0;
                 setTimeout(() => this.selectedArticles.push(article));
             }
         },
