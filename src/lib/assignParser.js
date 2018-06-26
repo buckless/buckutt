@@ -50,8 +50,8 @@ module.exports = async function assignParser(req) {
             lastname: req.body.lastname,
             mail: req.body.mail
         };
-    } else if (req.user) {
-        // If no information is provided and the user logged, ASSIGNER FROM MANAGER
+    } else if (req.body.userId && req.user) {
+        // If a userId is provided and the user logged, ASSIGNER FROM MANAGER
         targetUser = req.user;
     }
     // Else: REGISTER FROM MANAGER (ticket) - OR REJECT
