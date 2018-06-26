@@ -18,9 +18,9 @@ export function logoutUser({ dispatch }) {
     dispatch('setToken');
     dispatch('updateLoggedUser');
     dispatch('closeSocket');
-    localStorage.removeItem('manager-token', null);
-    localStorage.removeItem('manager-user', null);
-    localStorage.removeItem('manager-linkedusers', null);
+    localStorage.removeItem('manager-token');
+    localStorage.removeItem('manager-user');
+    localStorage.removeItem('manager-linkedusers');
 }
 
 export function updateLoggedUser({ commit }, loggedUser) {
@@ -35,11 +35,16 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 }
 
 export function autoLoginUser({ commit, dispatch }) {
-    if (localStorage.hasOwnProperty('manager-token')) {
-        commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
-        commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
-        dispatch('setToken', localStorage.getItem('manager-token'));
-        dispatch('loadUser');
+    try {
+        if (localStorage.hasOwnProperty('manager-token')) {
+            commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
+            commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
+            dispatch('setToken', localStorage.getItem('manager-token'));
+            dispatch('loadUser');
+        }
+    } catch(err) {
+        console.log(err);
+        dispatch('logoutUser');
     }
 }
 
