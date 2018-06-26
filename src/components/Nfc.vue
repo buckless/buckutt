@@ -199,13 +199,9 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            nfc
-                .write(
-                    nfc.cardToData(
-                        this.dataToWrite,
-                        this.inputValue + process.env.VUE_APP_SIGNINGKEY
-                    )
-                )
+            nfc.write(
+                nfc.cardToData(this.dataToWrite, this.inputValue + process.env.VUE_APP_SIGNINGKEY)
+            )
                 .then(() => {
                     this.success = true;
                     this.$root.$emit('writeCompleted');
@@ -221,6 +217,7 @@ export default {
             window.nfc.removeAllListeners('uid');
             window.nfc.removeAllListeners('locked');
             window.nfc.removeAllListeners('error');
+            window.nfc.removeAllListeners('fulldata');
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
         },
@@ -254,6 +251,7 @@ export default {
 
     beforeDestroy() {
         this.destroyListeners();
+        window.nfc.unbind();
     }
 };
 </script>
