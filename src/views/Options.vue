@@ -35,15 +35,9 @@
                 <br/>
                 <br/>
                 Solde sur carte :
-                <vue-slider
-                    ref="slider"
+                <UnitInput
                     v-model="balances[i]"
-                    :max="article.maxNumber"
-                    :tooltip="false"
-                    :piecewise="true"
-                    :piecewise-label="true"
-                    :speed="0.1"
-                    tooltip-dir="bottom"></vue-slider>
+                    :maxNumber="article.maxNumber"></UnitInput>
                 <br/>
                 Dépensable les jours :
                 <Days v-model="validities[i]"></Days>
@@ -64,18 +58,17 @@
 </template>
 
 <script>
-import vueSlider from 'vue-slider-component/src/vue2-slider.vue';
-
 import Days from '@/components/Days';
 import Mode from '@/components/Mode';
 import Nfc from '@/components/Nfc';
+import UnitInput from '@/components/UnitInput';
 
 export default {
     components: {
         Days,
         Mode,
         Nfc,
-        vueSlider
+        UnitInput
     },
 
     data() {
@@ -97,20 +90,8 @@ export default {
     },
 
     methods: {
-        toggle(article) {
-            const index = this.isActive(article);
-
-            if (index > -1) {
-                this.balances[this.articles.indexOf(article)] = 0;
-                this.selectedArticles.splice(index, 1);
-            } else {
-                this.balances[this.articles.indexOf(article)] = 0;
-                setTimeout(() => this.selectedArticles.push(article));
-            }
-        },
-
         open(article) {
-            this.balances[this.articles.indexOf(article)] = article.maxNumber;
+            this.balances[this.articles.indexOf(article)] = 0;
             setTimeout(() => this.selectedArticles.push(article));
         },
 
@@ -128,6 +109,8 @@ export default {
         },
 
         writeOptions(_, credit, options) {
+            console.log(this.balances);
+
             const catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
                 id: article.id,
                 balance: this.balances[i],
