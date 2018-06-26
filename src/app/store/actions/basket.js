@@ -84,6 +84,8 @@ export const addNfcSupportToBasket = store => {
             alcohol: 0,
             name: 'Support NFC'
         });
+
+        store.commit('SET_LAST_USER_CARD_PAID', validCosts[0].amount);
     }
 };
 

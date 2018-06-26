@@ -9,7 +9,8 @@ const initialState = {
         localId: null,
         bought: 0,
         reload: 0,
-        credit: 0
+        credit: 0,
+        cardPaid: 0
     },
     error: null
 };
@@ -38,11 +39,17 @@ const mutations = {
             localId: null,
             bought: 0,
             reload: 0,
-            credit: 0
+            credit: 0,
+            cardPaid: 0
         };
     },
 
+    SET_LAST_USER_CARD_PAID(state, payload) {
+        state.lastUser.cardPaid = payload;
+    },
+
     SET_LAST_USER(state, payload) {
+        payload.cardPaid = state.lastUser.cardPaid;
         state.lastUser = payload;
     },
 
