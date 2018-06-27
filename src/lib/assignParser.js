@@ -58,8 +58,9 @@ module.exports = async function assignParser(req) {
     // Else: REGISTER FROM MANAGER (ticket) - OR REJECT
 
     if (userRights.assign) {
+        let account;
         if (req.body.cardId) {
-            const account = await getAccountFromCard(models, req.body.cardId);
+            account = await getAccountFromCard(req.app.locals.models, req.body.cardId);
         }
 
         // If the user has assigner rights, do some extra checks
