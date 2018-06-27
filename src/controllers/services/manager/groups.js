@@ -14,7 +14,8 @@ router.get('/services/manager/groups', (req, res, next) => {
 
     const models = req.app.locals.models;
 
-    return models.Group.fetchAll()
+    return models.Group.where('id', '!=', req.event.defaultGroup_id)
+        .fetchAll()
         .then(groups_ => groups_.toJSON())
         .then(groups =>
             res
