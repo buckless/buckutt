@@ -28,7 +28,7 @@ const re = /^(\w+),(\w+).+/;
 const now = new Date().toMysqlFormat();
 
 for (let line of table.split('\n')) {
-    const sub = `INSERT INTO physicalsupports VALUES ('${uuid()}', '$1', '$2', '${now}', '${now}', NULL, '1');\n`;
+    const sub = `INSERT INTO physicalsupports (id, physical_id, logical_id, created_at, updated_at, deleted_at, active) VALUES ('${uuid()}', '$1', '$2', '${now}', '${now}', NULL, '1');\n`;
     const newLine = line.replace(re, sub);
     output += newLine;
 }
