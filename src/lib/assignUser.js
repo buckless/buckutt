@@ -36,7 +36,7 @@ module.exports = async function assignUser(
     let creditToAdd = totalReloadsCredit;
 
     // If the card already has an anonymous account, keep it, add user informations to it and delete the old one
-    if (anonymousData) {
+    if (anonymousData && anonymousData.id !== user.id) {
         const newCredit = isWritten
             ? userAccount.credit + anonymousData.credit
             : anonymousData.credit;

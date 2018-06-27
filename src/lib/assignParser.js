@@ -1,4 +1,5 @@
 const getSupportDetails = require('./getSupportDetails');
+const getAccountFromCard = require('./getAccountFromCard');
 const fetchFromAPI = require('../ticketProviders');
 const fetchTicket = require('./fetchTicket');
 const rightsDetails = require('./rightsDetails');
@@ -57,12 +58,19 @@ module.exports = async function assignParser(req) {
     // Else: REGISTER FROM MANAGER (ticket) - OR REJECT
 
     if (userRights.assign) {
+        if (req.body.cardId) {
+            const account = await getAccountFromCard(models, req.body.cardId);
+        }
+
         // If the user has assigner rights, do some extra checks
         if (req.body.userId) {
             // Check if a userId isn't already provided, ASSIGNER FROM ASSIGNER
             targetUser = {
                 id: req.body.userId
             };
+        } else if (account) {
+            // If the card is already assigned, assign to the account, ASSIGNER FROM ASSIGNER
+            targetUser = account;
         } else if (req.body.anon) {
             // Authorize assigner to create an anonymous account, REGISTER FROM ASSIGNER
             targetUser = { credit: req.body.credit || 0 };

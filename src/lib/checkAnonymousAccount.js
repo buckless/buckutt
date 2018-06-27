@@ -1,4 +1,5 @@
 const APIError = require('../errors/APIError');
+const getAccountFromCard = require('./getAccountFromCard');
 
 module.exports = (models, meansOfLogin) => {
     const card = meansOfLogin.find(mol => mol.type === 'cardId');
@@ -7,25 +8,19 @@ module.exports = (models, meansOfLogin) => {
         return Promise.resolve();
     }
 
-    return models.MeanOfLogin.where({ type: 'cardId', blocked: false, data: card.data })
-        .fetch({
-            withRelated: ['user', 'user.memberships']
-        })
-        .then(meanOfLogin => {
-            if (!meanOfLogin) {
-                return Promise.resolve();
-            }
+    return getAccountFromCard(models, card.data).then(user => {
+        if (!user) {
+            return Promise.resolve();
+        }
 
-            const mol = meanOfLogin.toJSON();
-            console.log(mol.user.mail);
-            if (mol.user.mail !== 'anon@anon.com') {
-                return Promise.reject(
-                    new APIError(module, 403, 'Card already binded', {
-                        mol
-                    })
-                );
-            }
+        if (user.mail !== 'anon@anon.com') {
+            return Promise.reject(
+                new APIError(module, 403, 'Card already binded', {
+                    mol
+                })
+            );
+        }
 
-            return mol.user;
-        });
+        return user;
+    });
 };
