@@ -20,6 +20,11 @@
                 <input type="checkbox" v-model="lockedCard">
                 Carte bloquée
             </label>
+
+            <label>
+                <input type="checkbox" v-model="addCatering">
+                Ajouter le catering, sans écraser les données existantes
+            </label>
         </div>
 
         <div class="toggles">
@@ -97,6 +102,7 @@ export default {
             assignedCard: false,
             paidCard: false,
             lockedCard: false,
+            addCatering: false,
             developermode: sessionStorage.getItem('masterapp-developertools') === 'true',
             groups: [],
             activeGroups: []
@@ -123,15 +129,36 @@ export default {
         },
 
         writeOptions(cardId, credit, options) {
-            const catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
-                id: article.id,
-                balance: this.balances[i],
-                validity: this.validities[i]
-            }));
+            let catering;
+
+            console.log(options);
+
+            if (this.addCatering) {
+                catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
+                    id: article.id,
+                    balance:
+                        this.balances[i] + options.catering[i].balance <= article.maxNumber
+                            ? this.balances[i] + options.catering[i].balance
+                            : article.maxNumber,
+                    validity: this.validities[i].map((validity, j) => {
+                        console.log(validity);
+                        console.log(options.catering[i].validity[j]);
+                        return validity || options.catering[i].validity[j];
+                    })
+                }));
+            } else {
+                catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
+                    id: article.id,
+                    balance: this.balances[i],
+                    validity: this.validities[i]
+                }));
+            }
 
             const newOptions = {
                 catering
             };
+
+            console.log(newOptions);
 
             if (this.developermode) {
                 newOptions.assignedCard = this.assignedCard;
@@ -147,17 +174,15 @@ export default {
 
             window.app.$root.$on('writeCompleted', () => {
                 setTimeout(() => {
-                    if (this.activeGroups.length > 0) {
-                        window.queue
-                            .method('post')
-                            .url('assigner')
-                            .data({
-                                cardId,
-                                anon: true,
-                                groups: this.activeGroups.map(g => g.id)
-                            })
-                            .push();
-                    }
+                    window.queue
+                        .method('post')
+                        .url('assigner')
+                        .data({
+                            cardId,
+                            anon: true,
+                            groups: this.activeGroups.map(g => g.id)
+                        })
+                        .push();
 
                     this.writeModal = false;
                     this.$forceUpdate();
