@@ -83,6 +83,7 @@
           "/services/manager/assigner",
           "/services/manager/block",
           "/services/manager/accountRefund",
+          "/services/manager/groups",
           "userCredit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
