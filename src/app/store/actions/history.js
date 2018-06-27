@@ -112,3 +112,7 @@ export const sendValidCancellations = store => {
             });
     });
 };
+
+export const incrementCatering = (store, id) => {
+    store.commit('INCREMENT_CATERING', id);
+};

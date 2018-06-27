@@ -26,7 +26,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['sendRequest']),
+        ...mapActions(['sendRequest', 'incrementCatering']),
 
         toggleNfc(article) {
             this.selectedArticle = article;
@@ -102,6 +102,7 @@ export default {
                     return Promise.resolve();
                 })
                 .then(() => {
+                    this.incrementCatering(this.selectedArticle.id.toString());
                     this.lastArticle = {
                         name: this.selectedArticle.name,
                         balance: deductedOptions.catering[userArticleIndex].balance
