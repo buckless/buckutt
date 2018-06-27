@@ -40,6 +40,11 @@ module.exports = async function assignParser(req) {
 
     const userRights = rightsDetails(req.user, req.point_id);
     const isFromAssigner = userRights.assign;
+    let cardAccount;
+
+    if (req.body.cardId) {
+        cardAccount = await getAccountFromCard(req.app.locals.models, req.body.cardId);
+    }
 
     // If the request comes from manager
     if (!targetUser && !req.user && req.body.firstname && req.body.lastname && req.body.mail) {
@@ -58,20 +63,15 @@ module.exports = async function assignParser(req) {
     // Else: REGISTER FROM MANAGER (ticket) - OR REJECT
 
     if (userRights.assign) {
-        let account;
-        if (req.body.cardId) {
-            account = await getAccountFromCard(req.app.locals.models, req.body.cardId);
-        }
-
         // If the user has assigner rights, do some extra checks
         if (req.body.userId) {
             // Check if a userId isn't already provided, ASSIGNER FROM ASSIGNER
             targetUser = {
                 id: req.body.userId
             };
-        } else if (account) {
+        } else if (cardAccount) {
             // If the card is already assigned, assign to the account, ASSIGNER FROM ASSIGNER
-            targetUser = account;
+            targetUser = cardAccount;
         } else if (req.body.anon) {
             // Authorize assigner to create an anonymous account, REGISTER FROM ASSIGNER
             targetUser = { credit: req.body.credit || 0 };
@@ -92,7 +92,8 @@ module.exports = async function assignParser(req) {
     const assignCard =
         (req.body.physicalId && req.body.physicalId.length > 0) ||
         (req.body.cardId && req.body.cardId.length > 0);
-    if (assignCard) {
+
+    if (assignCard && !cardAccount) {
         const supportDetails = await getSupportDetails(req.app.locals.models, {
             logical_id: req.body.cardId,
             physical_id: req.body.physicalId
