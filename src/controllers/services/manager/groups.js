@@ -22,7 +22,7 @@ router.get('/services/manager/groups', (req, res, next) => {
                 .json(
                     groups.map(group => ({
                         id: group.id,
-                        name: group.id
+                        name: group.name
                     }))
                 )
                 .end()
