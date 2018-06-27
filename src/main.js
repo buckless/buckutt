@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import Queue from '@buckless/offline-queue';
+import axios_ from 'axios';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -23,6 +25,67 @@ window.app = new Vue({
 }).$mount('#app');
 
 window.nfc = new NFC();
+
+// API base
+const axios = axios_.create({
+    baseURL: process.env.VUE_APP_API,
+    headers: {
+        Accept: '',
+        'Accept-Language': ''
+    }
+});
+
+const logOperator = force => {
+    if (localStorage.hasOwnProperty('masterapp-token') && !force) {
+        return Promise.resolve();
+    }
+
+    const credentials = {
+        meanOfLogin: 'cardId',
+        data: process.env.VUE_APP_OPERATOR_CARD,
+        pin: process.env.VUE_APP_OPERATOR_PIN
+    };
+
+    return axios.post('login', credentials).then(res => {
+        localStorage.setItem('masterapp-token', res.data.token);
+    });
+};
+
+const fetchGroups = () => {
+    const options = {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('masterapp-token')}`
+        }
+    };
+
+    return axios.get('groups', options).then(res => {
+        localStorage.setItem('masterapp-groups', JSON.stringify(res.data));
+    });
+};
+
+window.queue = new Queue({
+    process(job) {
+        const options = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('masterapp-token')}`
+            }
+        };
+
+        return logOperator().then(() =>
+            axios({
+                method: job.method || 'get',
+                url: job.url,
+                data: job.data,
+                ...Object.assign({}, options, job.params)
+            })
+        );
+    },
+
+    syncInterval: 60000,
+    syncToStorage: localStorage
+});
+
+logOperator().then(() => fetchGroups());
 
 // force / as initial URL on cordova
 Vue.nextTick(() => {

@@ -5,20 +5,20 @@
 
         <button @click="writeModal = true">Valider</button>
 
-        <div class="options" v-if="developermode">
-            <label>
+        <div class="options">
+            <label v-if="developermode">
                 <input type="checkbox" v-model="assignedCard">
-                Rendre la carte assignée
+                Carte assignée
             </label>
 
             <label>
                 <input type="checkbox" v-model="paidCard">
-                Rendre la carte payée
+                Carte payée
             </label>
 
-            <label>
+            <label v-if="developermode">
                 <input type="checkbox" v-model="lockedCard">
-                Rendre la carte bloquée
+                Carte bloquée
             </label>
         </div>
 
@@ -43,6 +43,18 @@
                 <Days v-model="validities[i]"></Days>
             </Mode>
         </div>
+
+        <template v-if="groups.length > 0">
+            <h4>Groupes</h4>
+            <div class="groups">
+                <div class="groups__group" v-for="group in groups">
+                    <input type="checkbox" name="group" class="out-of-screen" :id="group.id" v-model="activeGroups" :value="group">
+                    <label :for="group.id">
+                        {{ group.name }}
+                    </label>
+                </div>
+            </div>
+        </template>
 
         <nfc
             mode="write"
@@ -85,7 +97,9 @@ export default {
             assignedCard: false,
             paidCard: false,
             lockedCard: false,
-            developermode: sessionStorage.getItem('masterapp-developertools') === 'true'
+            developermode: sessionStorage.getItem('masterapp-developertools') === 'true',
+            groups: [],
+            activeGroups: []
         };
     },
 
@@ -108,9 +122,7 @@ export default {
             );
         },
 
-        writeOptions(_, credit, options) {
-            console.log(this.balances);
-
+        writeOptions(cardId, credit, options) {
             const catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
                 id: article.id,
                 balance: this.balances[i],
@@ -126,15 +138,27 @@ export default {
                 newOptions.locked = this.lockedCard;
                 newOptions.paidCard = this.paidCard;
             } else {
-                newOptions.assignedCard = options.assignedCard;
+                newOptions.assignedCard = true;
                 newOptions.locked = options.locked;
-                newOptions.paidCard = options.paidCard;
+                newOptions.paidCard = this.paidCard;
             }
 
             window.app.$root.$emit('readyToWrite', credit, newOptions);
 
             window.app.$root.$on('writeCompleted', () => {
                 setTimeout(() => {
+                    if (this.activeGroups.length > 0) {
+                        window.queue
+                            .method('post')
+                            .url('assigner')
+                            .data({
+                                cardId,
+                                anon: true,
+                                groups: this.activeGroups.map(g => g.id)
+                            })
+                            .push();
+                    }
+
                     this.writeModal = false;
                     this.$forceUpdate();
 
@@ -143,6 +167,12 @@ export default {
                     }, 50);
                 }, 400);
             });
+        }
+    },
+
+    mounted() {
+        if (localStorage.hasOwnProperty('masterapp-groups')) {
+            this.groups = JSON.parse(localStorage.getItem('masterapp-groups'));
         }
     }
 };
@@ -210,5 +240,30 @@ button {
 
 .toggle[active] .vue-slider-component {
     opacity: 1;
+}
+
+.groups {
+    margin-top: 16px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.groups__group > label {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
+}
+
+.groups__group > input:checked + label {
+    background-color: #2980b9;
+    color: #fff;
+}
+
+.out-of-screen {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
 }
 </style>
