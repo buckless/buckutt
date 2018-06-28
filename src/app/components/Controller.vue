@@ -53,14 +53,15 @@ export default {
 
         onCard(cardId) {
             console.log('onCARD');
-            this.sendRequest({
-                url: `services/controller?user=${cardId}`,
-                noQueue: true,
-                offlineAnswer: window.database.cardAccesses(cardId)
-            })
+            // this.sendRequest({
+            //     url: `services/controller?user=${cardId}`,
+            //     noQueue: true,
+            //     offlineAnswer: window.database.cardAccesses(cardId)
+            // })
+            window.database
+                .cardAccesses(cardId)
                 .then(res => res.data || res)
                 .then(accesses => {
-                    console.log(accesses);
                     let match = false;
 
                     for (let i = accesses.length - 1; i >= 0; i--) {
