@@ -102,14 +102,12 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
     let initialPromise = Promise.resolve();
 
     // Offline interfaceLoader to update user prices
-    if (!store.state.auth.buyer.isAuth) {
-        initialPromise = store.dispatch('interfaceLoader', {
-            type: config.buyerMeanOfLogin,
-            mol: cardNumber,
-            credit,
-            forceOffline: true
-        });
-    }
+    initialPromise = store.dispatch('interfaceLoader', {
+        type: config.buyerMeanOfLogin,
+        mol: cardNumber,
+        credit,
+        forceOffline: true
+    });
 
     const shouldPayCard = !options.paidCard && store.state.auth.device.event.config.useCardData;
 
