@@ -79,10 +79,6 @@ module.exports = async function assignUser(
                 field: 'reciever_id'
             },
             {
-                model: 'Purchase',
-                field: 'buyer_id'
-            },
-            {
                 model: 'Withdrawal',
                 field: 'buyer_id'
             },
@@ -142,7 +138,7 @@ module.exports = async function assignUser(
         molsToSkip = userAccount.meansOfLogin.map(mol => mol.type);
         molsToSkip.push('cardId');
         groupsToSkip = groupsToSkip.concat(
-            anonymousAccount.memberships
+            anonymousData.memberships
                 .filter(membership => membership.period === event.defaultPeriod_id)
                 .map(membership => membership.group_id)
         );
