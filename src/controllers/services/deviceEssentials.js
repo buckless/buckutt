@@ -1,10 +1,62 @@
 const express = require('express');
-const { pick } = require('lodash');
+const { pick, memoize } = require('lodash');
 const dbCatch = require('../../lib/dbCatch');
 const { embedParser, embedFilter } = require('../../lib/embedParser');
 const log = require('../../lib/log')(module);
 
 const router = new express.Router();
+
+const cachedAccesses = memoize((groupId, models) => {
+    const now = new Date();
+
+    const embedMemberships = [
+        {
+            embed: 'user',
+            required: true
+        },
+        {
+            embed: 'user.meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
+            required: true
+        },
+        {
+            embed: 'period',
+            filters: [['end', '>', now]],
+            required: true
+        }
+    ];
+
+    const embedMembershipsFilters = embedMemberships
+        .filter(rel => rel.required)
+        .map(rel => rel.embed);
+
+    // Step 4: fetch accesses
+    return models.Membership.where('group_id', '!=', groupId)
+        .fetchAll({
+            withRelated: embedParser(embedMemberships)
+        })
+        .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()));
+});
+
+const cachedUserTickets = memoize((_, models) => {
+    // Step 3: fetch tickets
+    return models.MeanOfLogin.where({
+        type: 'ticketId',
+        blocked: false
+    })
+        .fetchAll({
+            withRelated: [
+                'user',
+                { 'user.meansOfLogin': query => query.where({ type: 'username' }) }
+            ]
+        })
+        .then(meansOfLogin => meansOfLogin.toJSON().filter(meanOfLogin => meanOfLogin.user.id));
+});
+
+setInterval(() => {
+    cachedAccesses.cache.clear();
+    cachedUserTickets.cache.clear();
+}, 5 * 60 * 1000);
 
 router.get('/services/deviceEssentials', (req, res, next) => {
     if (!req.user) {
@@ -35,23 +87,6 @@ router.get('/services/deviceEssentials', (req, res, next) => {
         }
     ];
 
-    const embedMemberships = [
-        {
-            embed: 'user',
-            required: true
-        },
-        {
-            embed: 'user.meansOfLogin',
-            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
-            required: true
-        },
-        {
-            embed: 'period',
-            filters: [['end', '>', now]],
-            required: true
-        }
-    ];
-
     const embedPrices = [
         {
             embed: 'period',
@@ -73,9 +108,6 @@ router.get('/services/deviceEssentials', (req, res, next) => {
     ];
 
     const embedRightsFilters = embedRights.filter(rel => rel.required).map(rel => rel.embed);
-    const embedMembershipsFilters = embedMemberships
-        .filter(rel => rel.required)
-        .map(rel => rel.embed);
 
     const embedPricesFilters = embedPrices.filter(rel => rel.required).map(rel => rel.embed);
     const embedPendingCardUpdatesFilters = embedPendingCardUpdates
@@ -143,19 +175,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             }
 
             // Step 3: fetch tickets
-            return models.MeanOfLogin.where({
-                type: 'ticketId',
-                blocked: false
-            })
-                .fetchAll({
-                    withRelated: [
-                        'user',
-                        { 'user.meansOfLogin': query => query.where({ type: 'username' }) }
-                    ]
-                })
-                .then(meansOfLogin =>
-                    meansOfLogin.toJSON().filter(meanOfLogin => meanOfLogin.user.id)
-                );
+            return cachedUserTickets('cached', models);
         })
         .then(meansOfLogin => {
             for (let i = meansOfLogin.length - 1; i >= 0; i -= 1) {
@@ -170,11 +190,7 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             }
 
             // Step 4: fetch accesses
-            return models.Membership.where('group_id', '!=', req.event.defaultGroup_id)
-                .fetchAll({
-                    withRelated: embedParser(embedMemberships)
-                })
-                .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()));
+            return cachedAccesses(req.event.defaultGroup_id, models);
         })
         .then(memberships => {
             for (let i = memberships.length - 1; i >= 0; i -= 1) {
