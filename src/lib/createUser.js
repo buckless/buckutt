@@ -163,8 +163,7 @@ module.exports = function createUser(
             );
         })
         .then(() => {
-            if (false) {
-                // if (sendMail) {
+            if (sendMail) {
                 const from = config.askpin.from;
                 const to = newUser.get('mail');
                 const subject = config.assigner.subject;
