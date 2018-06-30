@@ -19,8 +19,6 @@ module.exports = async function assignUser(
         withRelated: ['meansOfLogin', 'memberships']
     });
 
-    console.log('user', user);
-
     if (!user) {
         return Promise.reject(new APIError(module, 404, 'User not found', { body: req.body }));
     }
@@ -38,7 +36,6 @@ module.exports = async function assignUser(
     let creditToAdd = totalReloadsCredit;
 
     // If the card already has an anonymous account, keep it, add user informations to it and delete the old one
-    console.log('first condition', anonymousData, anonymousData && anonymousData.id !== user.id);
     if (anonymousData && anonymousData.id !== user.id) {
         const newCredit = isWritten
             ? userAccount.credit + anonymousData.credit
@@ -48,6 +45,7 @@ module.exports = async function assignUser(
             firstname: userAccount.firstname,
             lastname: userAccount.lastname,
             nickname: userAccount.nickname,
+            mail: userAccount.mail,
             credit: newCredit,
             pin: userAccount.pin,
             password: userAccount.password,
@@ -166,15 +164,15 @@ module.exports = async function assignUser(
     }
 
     // Block old cards if a new one is assigned
-//    if (meansOfLogin.some(mol => mol.type === 'cardId')) {
-//        await models.MeanOfLogin.where({ user_id: mergedAccount.id, type: 'cardId' }).save(
-//            { blocked: true },
-//            {
-//                patch: true,
-//                require: false
-//            }
-//        );
-//    }
+    //    if (meansOfLogin.some(mol => mol.type === 'cardId')) {
+    //        await models.MeanOfLogin.where({ user_id: mergedAccount.id, type: 'cardId' }).save(
+    //            { blocked: true },
+    //            {
+    //                patch: true,
+    //                require: false
+    //            }
+    //        );
+    //    }
 
     // Create requested mols
     await Promise.all(

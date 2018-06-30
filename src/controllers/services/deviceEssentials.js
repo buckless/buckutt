@@ -38,6 +38,38 @@ const cachedAccesses = memoize((groupId, models) => {
         .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()));
 });
 
+const cachedAccessesBenevoles = memoize((groupId, models) => {
+    const now = new Date();
+
+    const embedMemberships = [
+        {
+            embed: 'user',
+            required: true
+        },
+        {
+            embed: 'user.meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
+            required: true
+        },
+        {
+            embed: 'period',
+            filters: [['end', '>', now]],
+            required: true
+        }
+    ];
+
+    const embedMembershipsFilters = embedMemberships
+        .filter(rel => rel.required)
+        .map(rel => rel.embed);
+
+    // Step 4: fetch accesses
+    return models.Membership.where('group_id', '=', 'f32f5cbc-d8ba-48d3-a550-7464f61a74c2')
+        .fetchAll({
+            withRelated: embedParser(embedMemberships)
+        })
+        .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()));
+});
+
 const cachedUserTickets = memoize((_, models) => {
     // Step 3: fetch tickets
     return models.MeanOfLogin.where({
@@ -55,6 +87,7 @@ const cachedUserTickets = memoize((_, models) => {
 
 setInterval(() => {
     cachedAccesses.cache.clear();
+    cachedAccessesBenevoles.cache.clear();
     cachedUserTickets.cache.clear();
 }, 5 * 60 * 1000);
 
@@ -191,6 +224,10 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     credit: meansOfLogin[i].user.credit,
                     physicalId: meansOfLogin[i].physical_id
                 });
+            }
+
+            if (req.user.lastname === 'SELLER') {
+                return cachedAccessesBenevoles(req.event.defaultGroup_id, models);
             }
 
             if (req.user.lastname !== 'CONTROLER') {
