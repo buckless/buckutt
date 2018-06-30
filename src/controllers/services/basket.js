@@ -57,7 +57,7 @@ router.post('/services/basket', (req, res, next) => {
         .then(mol => {
             if (!mol || !mol.user || !mol.user.id) {
                 // Don't create a new account if the card was already assigned
-                if (!req.event.useCardData || req.body.assignedCard) {
+                if (!req.event.useCardData) {
                     return Promise.reject(new APIError(module, 400, 'Invalid buyer'));
                 }
 

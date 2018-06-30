@@ -174,6 +174,10 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 giftReloads.push(pick(giftReloads_[i], ['everyAmount', 'amount']));
             }
 
+            if (req.user.lastname !== 'ASSIGNER') {
+                return Promise.resolve([]);
+            }
+
             // Step 3: fetch tickets
             return cachedUserTickets('cached', models);
         })
@@ -187,6 +191,10 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     credit: meansOfLogin[i].user.credit,
                     physicalId: meansOfLogin[i].physical_id
                 });
+            }
+
+            if (req.user.lastname !== 'CONTROLER') {
+                return Promise.resolve([]);
             }
 
             // Step 4: fetch accesses

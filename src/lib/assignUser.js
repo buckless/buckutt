@@ -166,15 +166,15 @@ module.exports = async function assignUser(
     }
 
     // Block old cards if a new one is assigned
-    if (meansOfLogin.some(mol => mol.type === 'cardId')) {
-        await models.MeanOfLogin.where({ user_id: mergedAccount.id, type: 'cardId' }).save(
-            { blocked: true },
-            {
-                patch: true,
-                require: false
-            }
-        );
-    }
+//    if (meansOfLogin.some(mol => mol.type === 'cardId')) {
+//        await models.MeanOfLogin.where({ user_id: mergedAccount.id, type: 'cardId' }).save(
+//            { blocked: true },
+//            {
+//                patch: true,
+//                require: false
+//            }
+//        );
+//    }
 
     // Create requested mols
     await Promise.all(
