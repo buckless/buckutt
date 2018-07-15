@@ -40,14 +40,12 @@
           "read": [
               "/users",
               "/services/items",
-              "/services/assigner",
               "/services/pendingCardUpdate",
+              "/services/assigner",
               "alert"
           ],
           "write": [
               "/meansoflogin",
-              "/services/assigner/groups",
-              "/services/assigner/anon",
               "/services/basket"
           ]
       },
@@ -72,8 +70,7 @@
           "/services/manager/generatepin",
           "/services/manager/register",
           "/services/deviceEssentials",
-          "/provider/callback",
-          "/services/assigner"
+          "/provider/callback"
       ],
       "loggedUrls": [
           "/services/manager/changepin",
@@ -83,6 +80,10 @@
           "/services/manager/reload",
           "/services/manager/giftReloads",
           "/services/manager/switchuser",
+          "/services/manager/assigner",
+          "/services/manager/block",
+          "/services/manager/accountRefund",
+          "/services/manager/groups",
           "userCredit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]

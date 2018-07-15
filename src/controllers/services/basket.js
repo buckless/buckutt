@@ -57,7 +57,7 @@ router.post('/services/basket', (req, res, next) => {
         .then(mol => {
             if (!mol || !mol.user || !mol.user.id) {
                 // Don't create a new account if the card was already assigned
-                if (!req.event.useCardData || req.body.assignedCard) {
+                if (!req.event.useCardData) {
                     return Promise.reject(new APIError(module, 400, 'Invalid buyer'));
                 }
 
@@ -176,12 +176,22 @@ router.post('/services/basket', (req, res, next) => {
 
     const userRights = rightsDetails(req.user, req.point_id);
 
+    // Allow purchase of NFC supports only if the operator is reloader or assigner
+    const onlyNfcDevice =
+        (userRights.reload || userRights.assign) &&
+        !req.body.basket.find(
+            item =>
+                typeof item.cost === 'number' &&
+                item.articles.find(article => article.id !== req.event.nfc_id)
+        );
+
     const unallowedPurchase =
         req.body.basket.find(item => typeof item.cost === 'number') &&
         !userRights.sell &&
-        !userRights.assign;
+        !onlyNfcDevice;
     const unallowedReload =
         req.body.basket.find(item => typeof item.credit === 'number') && !userRights.reload;
+    // Allow purchase if it's a nfc card and the operator is a reloader
 
     if (unallowedPurchase || unallowedReload) {
         return next(

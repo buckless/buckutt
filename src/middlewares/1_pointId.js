@@ -34,7 +34,6 @@ module.exports = connector => {
                     })
                 );
             }
-
             let minPeriod = Infinity;
             let handled = false;
 
@@ -78,13 +77,6 @@ module.exports = connector => {
             if (!handled && !device.isUser) {
                 return Promise.reject(new APIError(module, 404, 'No assigned points'));
             }
-
-            connector.header('point', connector.point_id);
-            connector.header('pointName', connector.point.name);
-            connector.header('event', connector.event_id);
-            connector.header('eventName', connector.event.name);
-            connector.header('wiket', connector.wiket.id);
-            connector.header('device', device.id);
 
             return Promise.resolve();
         });

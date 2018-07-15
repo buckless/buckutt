@@ -1,4 +1,5 @@
 const express = require('express');
+const assignParser = require('../../../lib/assignParser');
 const createUser = require('../../../lib/createUser');
 const dbCatch = require('../../../lib/dbCatch');
 const log = require('../../../lib/log')(module);
@@ -9,20 +10,12 @@ const APIError = require('../../../errors/APIError');
  */
 const router = new express.Router();
 
+// Assign a card or a ticket to a new account
 router.post('/services/manager/register', (req, res, next) => {
-    const newUser = {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        mail: req.body.mail
-    };
-
-    return req.app.locals.models.MeanOfLogin.where('type', 'in', ['mail'])
-        .where('data', 'in', [req.body.mail])
-        .where({ blocked: false })
-        .fetchAll()
-        .then(mols => {
-            if (mols.length > 0) {
-                return Promise.reject(new APIError(module, 404, 'User exists', { body: req.body }));
+    assignParser(req)
+        .then(registerData => {
+            if (registerData.targetUser.id) {
+                return Promise.reject(new APIError(module, 400, 'This user already exists'));
             }
 
             return createUser(
@@ -30,12 +23,12 @@ router.post('/services/manager/register', (req, res, next) => {
                 req.event,
                 req.user,
                 req.point,
-                newUser,
-                [],
-                [],
-                [req.event.defaultGroup_id],
+                registerData.targetUser,
+                registerData.reloads,
+                registerData.meansOfLogin,
+                registerData.groupsToAdd,
                 true,
-                false
+                req.point.name !== 'Internet' // if Internet (manager), create PCU, else (assigner) directly write
             );
         })
         .then(user => {
@@ -48,9 +41,12 @@ router.post('/services/manager/register', (req, res, next) => {
 
             log.info(`Register user ${user.firstname} ${user.lastname}`, req.details);
 
+            user.pin = '';
+            user.password = '';
+
             res
                 .status(200)
-                .json({})
+                .json(user)
                 .end();
         })
         .catch(err => dbCatch(module, err, next));

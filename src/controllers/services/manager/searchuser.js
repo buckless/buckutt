@@ -1,6 +1,7 @@
 const express = require('express');
 const leven = require('leven');
 const { bookshelf } = require('../../../lib/bookshelf');
+const { embedParser, embedFilter } = require('../../../lib/embedParser');
 const rightsDetails = require('../../../lib/rightsDetails');
 const log = require('../../../lib/log')(module);
 
@@ -15,11 +16,29 @@ router.get('/services/manager/searchuser', (req, res) => {
     const models = req.app.locals.models;
     const name = req.query.name;
     const userRights = rightsDetails(req.user, req.point.id);
+    const now = new Date();
     let max = req.query.limit;
 
     if (!userRights.admin) {
         max = Number.isNaN(parseInt(max, 10)) ? 15 : Math.min(max, 15);
     }
+
+    const embedUsers = [
+        {
+            embed: 'meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'username']]
+        },
+        {
+            embed: 'memberships'
+        },
+        {
+            embed: 'memberships.period',
+            filters: [['start', '<', now], ['end', '>', now]],
+            required: true
+        }
+    ];
+
+    const embedUsersFilters = embedUsers.filter(rel => rel.required).map(rel => rel.embed);
 
     models.User.query(user => {
         let filter = user
@@ -36,16 +55,20 @@ router.get('/services/manager/searchuser', (req, res) => {
 
         return filter;
     })
-        .fetchAll()
+        .fetchAll({ withRelated: embedParser(embedUsers) })
+        .then(users => embedFilter(embedUsersFilters, users.toJSON()))
         .then(users => {
             const cleanedUsers = users
-                .toJSON()
                 .map(user => ({
                     id: user.id,
                     firstname: user.firstname,
                     lastname: user.lastname,
+                    mail: userRights.assign ? user.mail : undefined,
                     credit: userRights.assign ? user.credit : undefined,
-                    hasPaidCard: userRights.assign ? user.hasPaidCard : undefined
+                    currentGroups: userRights.assign
+                        ? user.memberships.map(membership => ({ id: membership.group_id }))
+                        : undefined,
+                    username: (user.meansOfLogin[0] || {}).data
                 }))
                 .sort((a, b) => {
                     const aName = `${a.firstname} ${a.lastname}`;

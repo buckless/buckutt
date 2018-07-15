@@ -43,7 +43,7 @@ function copyClient(opts, cwd) {
     log.info('Copying client files...');
 
     try {
-        const client = fs.readFileSync('./ssl/templates/client1.cnf', 'utf8')
+        const client = fs.readFileSync(path.join(__dirname, '..', 'ssl', 'templates', 'client1.cnf'), 'utf8')
             .replace(/(challengePassword\s*= )(\w*)/, `$1${opts.password}`)
             .replace(/(CN\s*= )(\w*)/, `$1${opts.deviceName}`);
 
@@ -64,11 +64,12 @@ function genClient(opts) {
     copyClient(opts, cwd);
 
     try {
-        outPassword = fs.readFileSync('./ssl/certificates/ca/ca.cnf', 'utf8').match(/output_password\s* = (\w*)/)[1];
+        outPassword = fs.readFileSync(path.join(__dirname, '..', 'ssl', 'certificates', 'ca', 'ca.cnf'), 'utf8').match(/output_password\s* = (\w*)/)[1];
     } catch (e) {
         return Promise.reject(e);
     }
 
+    const pemPath = path.join(__dirname, '..', 'ssl', 'certificates', opts.deviceName, `${opts.deviceName}-crt.pem`);
     try {
         /* eslint-disable max-len */
         execSync(`openssl genrsa -out ${opts.deviceName}-key.pem 4096`, { cwd });
@@ -76,7 +77,7 @@ function genClient(opts) {
         execSync(`openssl x509 -req -extfile ${opts.deviceName}.cnf -days 999 -passin "pass:${outPassword}" -in ${opts.deviceName}-csr.pem -CA ../ca/ca-crt.pem -CAkey ../ca/ca-key.pem -CAcreateserial -out ${opts.deviceName}-crt.pem`, { cwd });
         execSync(`openssl verify -CAfile ../ca/ca-crt.pem ${opts.deviceName}-crt.pem`, { cwd });
         execSync(`openssl pkcs12 -export -clcerts -in ${opts.deviceName}-crt.pem -inkey ${opts.deviceName}-key.pem -out ${opts.deviceName}.p12 -password "pass:${opts.password}"`, { cwd });
-        out = execSync(`openssl x509 -fingerprint -in ./ssl/certificates/${opts.deviceName}/${opts.deviceName}-crt.pem`);
+        out = execSync(`openssl x509 -fingerprint -in ${pemPath}`);
         /* eslint-enable max-len */
     } catch (e) {
         return Promise.reject(e);

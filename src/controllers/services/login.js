@@ -1,12 +1,11 @@
 const promisifyAll = require('util-promisifyall');
 const bcrypt = promisifyAll(require('bcryptjs'));
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const log = require('../../lib/log')(module);
-const config = require('../../../config');
-const rightsDetails = require('../../lib/rightsDetails');
+const sanitizeUser = require('../../lib/sanitizeUser');
 const dbCatch = require('../../lib/dbCatch');
 const { bookshelf } = require('../../lib/bookshelf');
+const generateToken = require('../../lib/generateToken');
 const APIError = require('../../errors/APIError');
 
 function validate(body) {
@@ -40,10 +39,6 @@ function validate(body) {
  */
 const router = new express.Router();
 
-const tokenOptions = {
-    expiresIn: '30d' // 30 days token
-};
-
 router.post('/services/login', async (req, res, next) => {
     try {
         validate(req.body);
@@ -51,7 +46,6 @@ router.post('/services/login', async (req, res, next) => {
         return next(err);
     }
 
-    const secret = config.app.secret;
     const models = req.app.locals.models;
 
     const connectType = req.body.hasOwnProperty('pin') ? 'pin' : 'password';
@@ -119,23 +113,15 @@ router.post('/services/login', async (req, res, next) => {
         return dbCatch(module, err, next);
     }
 
-    const users = users_.toJSON().map(user => ({
-        id: user.id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        credit: user.credit,
-        username: (user.meansOfLogin.find(mol => mol.type === 'username') || {}).data
+    const users = users_.toJSON().map(u => ({
+        id: u.id,
+        firstname: u.firstname,
+        lastname: u.lastname,
+        credit: u.credit,
+        username: (u.meansOfLogin.find(mol => mol.type === 'username') || {}).data
     }));
 
-    user.pin = '';
-    user.password = '';
-
-    const userRights = rightsDetails(user, req.point_id);
-
-    user.canSell = userRights.sell;
-    user.canReload = userRights.reload;
-    user.canAssign = userRights.assign;
-    user.canControl = userRights.control;
+    user = sanitizeUser(user, req.point_id);
 
     log.info(
         `Login with mol ${infos.meanOfLogin}(${infos.data}) and ${infos.connectType}`,
@@ -147,17 +133,12 @@ router.post('/services/login', async (req, res, next) => {
         .json({
             user,
             linkedUsers: users,
-            token: jwt.sign(
-                {
-                    id: user.id,
-                    point: req.point,
-                    event: req.event,
-                    // Will be used by middleware (else how could middleware know if pin or password ?)
-                    connectType
-                },
-                secret,
-                tokenOptions
-            )
+            token: generateToken({
+                id: user.id,
+                point: req.point.id,
+                // Will be used by middleware (else how could middleware know if pin or password ?)
+                connectType
+            })
         })
         .end();
 });

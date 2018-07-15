@@ -11,9 +11,14 @@ module.exports = function token(connector) {
     const secret = config.app.secret;
 
     // OpenUrls : no token required
-    const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1 || config.disableAuth);
+    const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1);
 
     if (!needToken && !connector.headers.authorization) {
+        return Promise.resolve();
+    }
+
+    // Skip token at login
+    if (connector.path === '/services/login') {
         return Promise.resolve();
     }
 
@@ -57,7 +62,6 @@ module.exports = function token(connector) {
     }
 
     let connectType;
-    let point;
 
     const pinLoggingAllowed = config.rights.pinLoggingAllowed;
     const now = connector.date;
@@ -66,15 +70,20 @@ module.exports = function token(connector) {
         .verifyAsync(bearer, secret)
         .then(decoded => {
             const userId = decoded.id;
-            point = decoded.point;
             connectType = decoded.connectType;
 
-            return connector.models.User.where({ id: userId }).fetch({
-                withRelated: ['rights', 'rights.period', 'rights.point']
-            });
+            return Promise.all([
+                connector.models.User.where({ id: userId }).fetch({
+                    withRelated: ['rights', 'rights.period', 'rights.point']
+                }),
+                connector.models.Point.where({ id: decoded.point }).fetch()
+            ]);
         })
-        .then(res => (res ? res.toJSON() : null))
-        .then(user => {
+        .then(([resUser, resPoint]) => [
+            resUser ? resUser.toJSON() : null,
+            resPoint ? resPoint.toJSON() : null
+        ])
+        .then(([user, point]) => {
             if (!user) {
                 return Promise.reject(new APIError(module, 500, 'User has been deleted'));
             }

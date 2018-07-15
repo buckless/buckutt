@@ -14,26 +14,13 @@ router.get('/services/items', (req, res, next) => {
     }
 
     if (!req.query.buyer || !req.query.molType) {
-        if (!req.device.defaultGroup_id) {
-            log.warn('Get items with empty buyer', req.details);
-
-            return res
-                .status(200)
-                .json({
-                    articles: [],
-                    promotions: []
-                })
-                .end();
-        }
-
-        req.groups = [req.device.defaultGroup_id];
         return next();
     }
 
     const models = req.app.locals.models;
     const now = new Date();
 
-    models.MeanOfLogin.where({
+    return models.MeanOfLogin.where({
         type: req.query.molType,
         data: req.query.buyer,
         blocked: false
@@ -65,23 +52,6 @@ router.get('/services/items', (req, res, next) => {
             req.buyer.pin = '';
             req.buyer.password = '';
 
-            req.groups = req.buyer.memberships
-                .filter(membership => membership.period.id)
-                .map(membership => membership.group_id);
-
-            if (req.groups.length === 0) {
-                log.warn(`Get items for buyer ${buyer.id} in no groups`, req.details);
-
-                return res
-                    .status(200)
-                    .json({
-                        buyer: req.buyer,
-                        articles: [],
-                        promotions: []
-                    })
-                    .end();
-            }
-
             next();
         })
         .catch(err => dbCatch(module, err, next));
@@ -93,13 +63,11 @@ router.get('/services/items', (req, res, next) => {
     let articles = [];
     let promotions = [];
 
-    models.Price.query(price =>
-        price.where('point_id', req.point.id).whereIn('group_id', req.groups)
-    )
+    models.Price.query(price => price.where('point_id', req.point.id))
         .fetchAll({
             withRelated: [
                 {
-                    period: query => query.where('start', '<=', now).where('end', '>=', now)
+                    period: query => query.where('end', '>=', now)
                 },
                 'point',
                 'fundation',
@@ -127,7 +95,10 @@ router.get('/services/items', (req, res, next) => {
                         name: price.promotion.name,
                         price: {
                             id: price.id,
-                            amount: price.amount
+                            amount: price.amount,
+                            group: price.group_id,
+                            start: price.period.start,
+                            end: price.period.end
                         },
                         sets: promotionSets
                     });
@@ -145,7 +116,10 @@ router.get('/services/items', (req, res, next) => {
                                 alcohol: price.article.alcohol,
                                 price: {
                                     id: price.id,
-                                    amount: price.amount
+                                    amount: price.amount,
+                                    group: price.group_id,
+                                    start: price.period.start,
+                                    end: price.period.end
                                 },
                                 category: {
                                     id: category.id,
@@ -157,40 +131,11 @@ router.get('/services/items', (req, res, next) => {
                 }
             });
 
-            // Keep the lowest price (by category) for each article and promotion
-            articles = articles
-                .sort((a, b) => a.price.amount - b.price.amount)
-                .filter(
-                    (article, i, initialArticles) =>
-                        i ===
-                        initialArticles.findIndex(
-                            article2 =>
-                                article.id === article2.id &&
-                                article.category.id === article2.category.id
-                        )
-                );
-
-            promotions = promotions
-                .sort((a, b) => a.price.amount - b.price.amount)
-                .filter(
-                    (promotion, i, initialPromotion) =>
-                        i ===
-                        initialPromotion.findIndex(promotion2 => promotion.id === promotion2.id)
-                );
-
-            // Get the displayed price of a single article inside a promotion
-            promotions = promotions.map(promotion => {
-                promotion.sets = promotion.sets.map(set => {
-                    set.articles = set.articles
-                        .map(article => articles.find(a => a.id === article.id))
-                        .filter(article => article);
-                    return set;
-                });
-
-                return promotion;
-            });
-
-            log.info(`Get items for buyer ${req.details.buyer}`, req.details);
+            if (req.details.buyer) {
+                log.info(`Get items for buyer ${req.details.buyer}`, req.details);
+            } else {
+                log.info(`Get point items`, req.details);
+            }
 
             res
                 .status(200)

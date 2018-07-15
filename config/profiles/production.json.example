@@ -76,7 +76,7 @@
             "version": "1"
         },
         "from": "noreply@buckless.com",
-        "subject": "Buckless — Votre code PIN",
+        "subject": "Buckless — Votre code PIN"
     },
     "provider": {
         "name": "epayments",

@@ -1,7 +1,9 @@
 const express = require('express');
 const { flatten } = require('lodash');
+const sanitizeUser = require('../../../lib/sanitizeUser');
 const dbCatch = require('../../../lib/dbCatch');
 const log = require('../../../lib/log')(module);
+const APIError = require('../../../errors/APIError');
 
 /**
  * History controller.
@@ -13,36 +15,32 @@ router.get('/services/manager/history', (req, res, next) => {
         right => right.name === 'admin' && right.period.end > new Date()
     );
 
-    if (adminRight && req.query.buyer) {
-        return req.app.locals.models.User.where({ id: req.query.buyer })
-            .fetch()
-            .then(user => {
-                req.history = {
-                    user: req.query.buyer,
-                    credit: user.get('credit')
-                };
+    const targetUser = adminRight && req.query.buyer ? req.query.buyer : req.user.id;
 
-                next();
-            })
-            .catch(err => dbCatch(module, err, next));
-    }
+    return req.app.locals.models.User.where({ id: targetUser })
+        .fetch({
+            withRelated: ['meansOfLogin', 'rights', 'rights.period']
+        })
+        .then(user => (user ? user.toJSON() : null))
+        .then(user => {
+            if (!user) {
+                return Promise.reject(new APIError(module, 404, 'User not found', targetUser));
+            }
 
-    req.history = {
-        user: req.user.id,
-        credit: req.user.credit
-    };
-
-    next();
+            req.target = user;
+            next();
+        })
+        .catch(err => dbCatch(module, err, next));
 });
 
 router.get('/services/manager/history', (req, res, next) => {
-    log.info(`Get history for user ${req.history.user}`, req.details);
+    log.info(`Get history for user ${req.target.id}`, req.details);
 
     const models = req.app.locals.models;
 
     // TODO: optimize filters
     const purchaseQuery = () =>
-        models.Purchase.where({ buyer_id: req.history.user }).fetchAll({
+        models.Purchase.where({ buyer_id: req.target.id }).fetchAll({
             withRelated: [
                 'seller',
                 'price',
@@ -55,31 +53,31 @@ router.get('/services/manager/history', (req, res, next) => {
         });
 
     const reloadQuery = () =>
-        models.Reload.where({ buyer_id: req.history.user }).fetchAll({
+        models.Reload.where({ buyer_id: req.target.id }).fetchAll({
             withRelated: ['seller', 'point'],
             withDeleted: true
         });
 
     const refundQuery = () =>
-        models.Refund.where({ buyer_id: req.history.user }).fetchAll({
+        models.Refund.where({ buyer_id: req.target.id }).fetchAll({
             withRelated: ['seller'],
             withDeleted: true
         });
 
     const transferFromQuery = () =>
-        models.Transfer.where({ reciever_id: req.history.user }).fetchAll({
+        models.Transfer.where({ reciever_id: req.target.id }).fetchAll({
             withRelated: ['sender'],
             withDeleted: true
         });
 
     const transferToQuery = () =>
-        models.Transfer.where({ sender_id: req.history.user }).fetchAll({
+        models.Transfer.where({ sender_id: req.target.id }).fetchAll({
             withRelated: ['reciever'],
             withDeleted: true
         });
 
     const pendingCardUpdatesQuery = () =>
-        models.PendingCardUpdate.where({ user_id: req.history.user }).fetchAll();
+        models.PendingCardUpdate.where({ user_id: req.target.id }).fetchAll();
 
     let history = [];
     let pending = 0;
@@ -202,7 +200,7 @@ router.get('/services/manager/history', (req, res, next) => {
             res
                 .status(200)
                 .json({
-                    credit: req.history.credit,
+                    user: sanitizeUser(req.target, req.point_id),
                     pending,
                     history
                 })

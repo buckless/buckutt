@@ -1,10 +1,95 @@
 const express = require('express');
-const { pick } = require('lodash');
+const { pick, memoize } = require('lodash');
 const dbCatch = require('../../lib/dbCatch');
 const { embedParser, embedFilter } = require('../../lib/embedParser');
 const log = require('../../lib/log')(module);
 
 const router = new express.Router();
+
+const cachedAccesses = memoize((groupId, models) => {
+    const now = new Date();
+
+    const embedMemberships = [
+        {
+            embed: 'user',
+            required: true
+        },
+        {
+            embed: 'user.meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
+            required: true
+        },
+        {
+            embed: 'period',
+            filters: [['end', '>', now]],
+            required: true
+        }
+    ];
+
+    const embedMembershipsFilters = embedMemberships
+        .filter(rel => rel.required)
+        .map(rel => rel.embed);
+
+    // Step 4: fetch accesses
+    return models.Membership.where('group_id', '!=', groupId)
+        .fetchAll({
+            withRelated: embedParser(embedMemberships)
+        })
+        .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()));
+});
+
+const cachedAccessesBenevoles = memoize((groupId, models) => {
+    const now = new Date();
+
+    const embedMemberships = [
+        {
+            embed: 'user',
+            required: true
+        },
+        {
+            embed: 'user.meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
+            required: true
+        },
+        {
+            embed: 'period',
+            filters: [['end', '>', now]],
+            required: true
+        }
+    ];
+
+    const embedMembershipsFilters = embedMemberships
+        .filter(rel => rel.required)
+        .map(rel => rel.embed);
+
+    // Step 4: fetch accesses
+    return models.Membership.where('group_id', '=', 'f32f5cbc-d8ba-48d3-a550-7464f61a74c2')
+        .fetchAll({
+            withRelated: embedParser(embedMemberships)
+        })
+        .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()));
+});
+
+const cachedUserTickets = memoize((_, models) => {
+    // Step 3: fetch tickets
+    return models.MeanOfLogin.where({
+        type: 'ticketId',
+        blocked: false
+    })
+        .fetchAll({
+            withRelated: [
+                'user',
+                { 'user.meansOfLogin': query => query.where({ type: 'username' }) }
+            ]
+        })
+        .then(meansOfLogin => meansOfLogin.toJSON().filter(meanOfLogin => meanOfLogin.user.id));
+});
+
+setInterval(() => {
+    cachedAccesses.cache.clear();
+    cachedAccessesBenevoles.cache.clear();
+    cachedUserTickets.cache.clear();
+}, 5 * 60 * 1000);
 
 router.get('/services/deviceEssentials', (req, res, next) => {
     if (!req.user) {
@@ -35,23 +120,6 @@ router.get('/services/deviceEssentials', (req, res, next) => {
         }
     ];
 
-    const embedMemberships = [
-        {
-            embed: 'user',
-            required: true
-        },
-        {
-            embed: 'user.meansOfLogin',
-            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
-            required: true
-        },
-        {
-            embed: 'period',
-            filters: [['end', '>', now]],
-            required: true
-        }
-    ];
-
     const embedPrices = [
         {
             embed: 'period',
@@ -60,12 +128,24 @@ router.get('/services/deviceEssentials', (req, res, next) => {
         }
     ];
 
+    const embedPendingCardUpdates = [
+        {
+            embed: 'user',
+            required: true
+        },
+        {
+            embed: 'user.meansOfLogin',
+            filters: [['blocked', '=', false], ['type', '=', 'cardId']],
+            required: true
+        }
+    ];
+
     const embedRightsFilters = embedRights.filter(rel => rel.required).map(rel => rel.embed);
-    const embedMembershipsFilters = embedMemberships
-        .filter(rel => rel.required)
-        .map(rel => rel.embed);
 
     const embedPricesFilters = embedPrices.filter(rel => rel.required).map(rel => rel.embed);
+    const embedPendingCardUpdatesFilters = embedPendingCardUpdates
+        .filter(rel => rel.required)
+        .map(rel => rel.embed);
 
     const operators = [];
     const giftReloads = [];
@@ -74,6 +154,8 @@ router.get('/services/deviceEssentials', (req, res, next) => {
     const groups = [];
     const meansOfPayment = [];
     const nfcCosts = [];
+    const pendingCardUpdates = [];
+    const blockedCards = [];
     let device = {};
 
     // Step 1: get operators
@@ -125,20 +207,12 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                 giftReloads.push(pick(giftReloads_[i], ['everyAmount', 'amount']));
             }
 
+            if (req.user.lastname !== 'ASSIGNER') {
+                return Promise.resolve([]);
+            }
+
             // Step 3: fetch tickets
-            return models.MeanOfLogin.where({
-                type: 'ticketId',
-                blocked: false
-            })
-                .fetchAll({
-                    withRelated: [
-                        'user',
-                        { 'user.meansOfLogin': query => query.where({ type: 'username' }) }
-                    ]
-                })
-                .then(meansOfLogin =>
-                    meansOfLogin.toJSON().filter(meanOfLogin => meanOfLogin.user.id)
-                );
+            return cachedUserTickets('cached', models);
         })
         .then(meansOfLogin => {
             for (let i = meansOfLogin.length - 1; i >= 0; i -= 1) {
@@ -148,21 +222,26 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     username: (meansOfLogin[i].user.meansOfLogin[0] || { data: '' }).data,
                     ticket: meansOfLogin[i].data,
                     credit: meansOfLogin[i].user.credit,
-                    hasPaidCard: meansOfLogin[i].user.hasPaidCard
+                    physicalId: meansOfLogin[i].physical_id
                 });
             }
 
+            if (req.user.lastname === 'SELLER') {
+                return cachedAccessesBenevoles(req.event.defaultGroup_id, models);
+            }
+
+            if (req.user.lastname !== 'CONTROLER') {
+                return Promise.resolve([]);
+            }
+
             // Step 4: fetch accesses
-            return models.Membership.where('group_id', '!=', req.event.defaultGroup_id)
-                .fetchAll({
-                    withRelated: embedParser(embedMemberships)
-                })
-                .then(memberships => embedFilter(embedMembershipsFilters, memberships.toJSON()));
+            return cachedAccesses(req.event.defaultGroup_id, models);
         })
         .then(memberships => {
             for (let i = memberships.length - 1; i >= 0; i -= 1) {
                 if (memberships[i].user.meansOfLogin.length > 0) {
                     accesses.push({
+                        userId: memberships[i].user.id,
                         cardId: memberships[i].user.meansOfLogin[0].data,
                         groupId: memberships[i].group_id,
                         start: memberships[i].period.start,
@@ -200,11 +279,44 @@ router.get('/services/deviceEssentials', (req, res, next) => {
             for (let i = prices.length - 1; i >= 0; i -= 1) {
                 nfcCosts.push({
                     ...pick(prices[i], ['id', 'amount', 'group_id']),
-                    period: pick(prices[i].period, ['start', 'end'])
+                    ...pick(prices[i].period, ['start', 'end']),
+                    group: prices[i].group_id
                 });
             }
 
-            // Step 8: prepare device
+            // Step 8: get pendingCardUpdates
+            return models.PendingCardUpdate.fetchAll({
+                withRelated: embedParser(embedPendingCardUpdates)
+            }).then(pendingCardUpdates_ =>
+                embedFilter(embedPendingCardUpdatesFilters, pendingCardUpdates_.toJSON())
+            );
+        })
+        .then(pendingCardUpdates_ => {
+            let pendingId;
+            for (let i = pendingCardUpdates_.length - 1; i >= 0; i -= 1) {
+                if (!pendingCardUpdates_[i].user.meansOfLogin.length) {
+                    continue;
+                }
+
+                pendingId = pendingCardUpdates_[i].user.meansOfLogin[0].data;
+                if (pendingCardUpdates.indexOf(pendingId) === -1) {
+                    pendingCardUpdates.push(pendingId);
+                }
+            }
+
+            // Step 9: get blocked cards
+            return models.MeanOfLogin.where({
+                type: 'cardId',
+                blocked: true
+            }).fetchAll();
+        })
+        .then(blockedCards_ => blockedCards_.toJSON().map(blockedCard => blockedCard.data))
+        .then(blockedCards_ => {
+            for (let i = blockedCards_.length - 1; i >= 0; i -= 1) {
+                blockedCards.push(blockedCards_[i]);
+            }
+
+            // Step 10: prepare device
             device = req.device;
             delete device.wikets;
 
@@ -223,6 +335,8 @@ router.get('/services/deviceEssentials', (req, res, next) => {
                     groups,
                     meansOfPayment,
                     nfcCosts,
+                    pendingCardUpdates,
+                    blockedCards,
                     device,
                     event: req.event
                 })
