@@ -45,13 +45,6 @@ module.exports = {
         agent       : sslAgent,
         pathRewrite : { '/api': '' }
       },
-      '/api/assigner': {
-        target      : 'https://0.0.0.0:3000/services/assigner',
-        changeOrigin: true,
-        secure      : false,
-        agent       : sslAgent,
-        pathRewrite : { '/api/assigner': '' }
-      },
       '/api/callback': {
         target      : 'https://0.0.0.0:3000/provider/callback',
         changeOrigin: true,

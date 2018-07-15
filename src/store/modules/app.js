@@ -4,7 +4,14 @@ const state = {
     history: [],
     users: [],
     giftReloads: [],
-    pending: 0
+    pending: 0,
+    refund: {
+        allowed: false,
+        alreadyAsked: false,
+        end: new Date('1970-01-01T01:00:00.000Z'),
+        refundable: 0,
+        start: new Date('1970-01-01T01:00:00.000Z')
+    }
 };
 
 const mutations = {
@@ -41,6 +48,12 @@ const mutations = {
 
     SET_GIFT_RELOADS(state_, giftReloads) {
         state_.giftReloads = giftReloads;
+    },
+
+    SET_REFUNDABLE(state_, payload) {
+        state_.refund = payload;
+        state_.refund.end = state_.refund.end ? new Date(state_.refund.end) : null;
+        state_.refund.start = state_.refund.start ? new Date(state_.refund.start) : null;
     }
 };
 

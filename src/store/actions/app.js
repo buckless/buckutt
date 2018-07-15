@@ -18,9 +18,9 @@ export function logoutUser({ dispatch }) {
     dispatch('setToken');
     dispatch('updateLoggedUser');
     dispatch('closeSocket');
-    localStorage.removeItem('manager-token', null);
-    localStorage.removeItem('manager-user', null);
-    localStorage.removeItem('manager-linkedusers', null);
+    localStorage.removeItem('manager-token');
+    localStorage.removeItem('manager-user');
+    localStorage.removeItem('manager-linkedusers');
 }
 
 export function updateLoggedUser({ commit }, loggedUser) {
@@ -35,21 +35,23 @@ export function updateLoggedUserField({ state, dispatch }, payload) {
 }
 
 export function autoLoginUser({ commit, dispatch }) {
-    if (localStorage.hasOwnProperty('manager-token')) {
-        commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
-        commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
-        dispatch('setToken', localStorage.getItem('manager-token'));
-        dispatch('loadUser');
+    try {
+        if (localStorage.hasOwnProperty('manager-token')) {
+            commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('manager-user')));
+            commit('UPDATELINKEDUSERS', JSON.parse(localStorage.getItem('manager-linkedusers')));
+            dispatch('setToken', localStorage.getItem('manager-token'));
+            dispatch('loadUser');
+        }
+    } catch(err) {
+        console.log(err);
+        dispatch('logoutUser');
     }
 }
 
 export function loadHistory({ state, commit, dispatch }) {
     if (state.app.loggedUser) {
         get('history').then(result => {
-            const newUser = state.app.loggedUser;
-            newUser.credit = result.credit;
-
-            dispatch('updateLoggedUser', newUser);
+            dispatch('updateLoggedUser', result.user);
             commit('REPLACEHISTORY', result.history.filter(entry => !entry.isRemoved));
             commit('SET_PENDING_AMOUNT', result.pending);
         });
