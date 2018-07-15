@@ -10,7 +10,8 @@
         <b-table
             :headers="[
                 { title: 'Type', field: 'type' },
-                { title: 'Contenu', field: 'data'}
+                { title: 'Contenu', field: 'data'},
+                { title: 'Identifiant physique', field: 'physical_id' }
             ]"
             :data="focusedUser.meansOfLogin"
             :actions="[
