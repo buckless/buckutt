@@ -269,6 +269,10 @@ export default {
         }
     },
 
+    checkDisabled() {
+        return this.disableSignCheck || this.rewrite;
+    },
+
     mounted() {
         this.resetComponent();
         this.setListeners();

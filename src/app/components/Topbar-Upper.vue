@@ -9,7 +9,7 @@
             <span class="b--capitalized">{{ buyer.lastname || 'Anonyme' }}</span>
         </div>
         <div class="b-space"></div>
-        <div class="b-upper-bar__date">
+        <div class="b-upper-bar__date" v-if="!buyer.isAuth">
             <live-time></live-time>
         </div>
         <div class="b-upper-bar__menu">
@@ -153,6 +153,12 @@ export default {
         padding-left: 10px;
         justify-content: flex-end;
         padding-bottom: 5px;
+    }
+
+    .b-upper-bar__buyer-credit {
+        left: unset;
+        right: 40px;
+        font-size: 22px;
     }
 
     .b-upper-bar__date {
