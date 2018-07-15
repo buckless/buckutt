@@ -1,26 +1,18 @@
-import promotions from '../../utils/promotions';
-
 const initialState = {
-    categories: [],
     items: [],
-    tabsItems: [],
     promotions: [],
+    wiketItems: {
+        items: [],
+        promotions: []
+    },
     basket: {
-        itemList: [],
-        sidebar: {
-            items: [],
-            promotions: []
-        }
+        itemList: []
     },
     giftReloads: [],
     nfcCosts: []
 };
 
 const mutations = {
-    SET_CATEGORIES(state, payload) {
-        state.categories = payload;
-    },
-
     SET_GIFTRELOADS(state, payload) {
         state.giftReloads = payload;
     },
@@ -37,30 +29,22 @@ const mutations = {
         state.promotions = payload;
     },
 
+    SET_WIKETITEMS(state, payload) {
+        state.wiketItems = payload;
+    },
+
     ADD_ITEM(state, item) {
         state.basket.itemList.push(item);
-
-        state.basket.sidebar = promotions(state.basket.itemList.slice(), state.promotions.slice());
     },
 
     REMOVE_ITEM(state, { id }) {
         const index = state.basket.itemList.findIndex(item => item.id === id);
 
         state.basket.itemList.splice(index, 1);
-
-        state.basket.sidebar = promotions(state.basket.itemList.slice(), state.promotions.slice());
     },
 
     CLEAR_ITEMS(state) {
         state.items = [];
-    },
-
-    CLEAR_CATEGORIES(state) {
-        state.categories = [];
-    },
-
-    CLEAR_TABSITEMS(state) {
-        state.tabsItems = [];
     },
 
     CLEAR_PROMOTIONS(state) {
@@ -69,26 +53,14 @@ const mutations = {
 
     CLEAR_BASKET(state) {
         state.basket = {
-            itemList: [],
-            sidebar: {
-                items: [],
-                promotions: []
-            }
+            itemList: []
         };
     },
 
     LOGOUT_BUYER(state) {
         state.basket = {
-            itemList: [],
-            sidebar: {
-                items: [],
-                promotions: []
-            }
+            itemList: []
         };
-    },
-
-    SET_TABS_ITEMS(state, tabsItems) {
-        state.tabsItems = tabsItems;
     }
 };
 

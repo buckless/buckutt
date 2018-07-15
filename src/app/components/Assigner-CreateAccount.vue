@@ -33,8 +33,7 @@
 </template>
 
 <script>
-import axios from '@/utils/axios';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 import Currency from './Currency';
 
@@ -57,7 +56,6 @@ export default {
         },
 
         ...mapState({
-            online: state => state.online.status,
             point: state => state.auth.device.point.id,
             nfcCosts: state => state.items.nfcCosts,
             defaultGroup: state =>
@@ -79,22 +77,20 @@ export default {
                 )
                 .sort((a, b) => a.amount - b.amount);
             return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
-        },
-
-        ...mapGetters(['tokenHeaders'])
+        }
     },
 
     methods: {
         assignCard(cardId, _, options) {
             if (this.assignModalOpened) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                let promise = Promise.resolve();
                 const groups = this.activeGroups.map(group => group.id);
 
                 const anon = {
                     credit: this.numberCredit ? this.numberCredit : 0,
                     cardId,
-                    groups
+                    groups,
+                    anon: true
                 };
 
                 if (options.assignedCard) {
@@ -102,38 +98,23 @@ export default {
                     return this.$store.commit('ERROR', { message: 'Card already assigned' });
                 }
 
-                if (this.online) {
-                    promise = promise.then(() =>
-                        axios.post(`${config.api}/services/assigner/anon`, anon, this.tokenHeaders)
-                    );
-                } else {
-                    promise = promise.then(() =>
-                        this.addPendingRequest({
-                            url: `${config.api}/services/assigner/anon`,
-                            body: anon
-                        })
-                    );
-                }
+                const assignPromise = this.useCardData
+                    ? new Promise(resolve => {
+                          window.app.$root.$emit('readyToWrite', this.numberCredit, {
+                              assignedCard: true,
+                              catering: options.catering
+                          });
+                          window.app.$root.$on('writeCompleted', () => resolve());
+                      })
+                    : Promise.resolve();
 
-                promise = promise
-                    .then(() => Promise.resolve(true))
-                    .catch(
-                        err =>
-                            err.response.data.message === 'Duplicate Entry'
-                                ? Promise.resolve(true)
-                                : Promise.reject(err)
-                    )
-                    .then(
-                        write =>
-                            write && this.useCardData
-                                ? new Promise(resolve => {
-                                      window.app.$root.$emit('readyToWrite', this.numberCredit, {
-                                          assignedCard: true,
-                                          catering: options.catering
-                                      });
-                                      window.app.$root.$on('writeCompleted', () => resolve());
-                                  })
-                                : Promise.resolve()
+                assignPromise
+                    .then(() =>
+                        this.sendRequest({
+                            method: 'post',
+                            url: 'services/manager/assigner',
+                            data: anon
+                        })
                     )
                     .then(() => this.ok())
                     .catch(err => this.$store.commit('ERROR', err.response.data))
@@ -148,7 +129,7 @@ export default {
             this.activeGroups = [];
         },
 
-        ...mapActions(['addPendingRequest'])
+        ...mapActions(['sendRequest'])
     }
 };
 </script>

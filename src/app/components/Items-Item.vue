@@ -17,7 +17,7 @@
             v-if="selectedItem > 0"
             @click.stop="remove(item)">
         </div>
-        <div class="b-item__text" ref="name">{{ item.name }}</div>
+        <div class="b-item__text" ref="name" v-html="item.name"></div>
     </div>
 </template>
 

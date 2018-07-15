@@ -3,6 +3,8 @@
         <template v-if="mode === 'write'">
             <div
                 class="b-writer__drop"
+                :success="success"
+                :error="rewrite"
                 @click="cancel"></div>
             <div class="b-writer__modal">
                 <div class="b-writer__modal__text" v-if="!success">
@@ -37,11 +39,15 @@
 <script>
 import { mapState } from 'vuex';
 
+const noSign = true;
+
 export default {
     props: {
         mode: String,
         successText: String,
-        disableSignCheck: Boolean
+        disableSignCheck: Boolean,
+        disableLockCheck: Boolean,
+        disablePinCheck: Boolean
     },
 
     data() {
@@ -56,7 +62,8 @@ export default {
                 options: null
             },
             timer: 15,
-            currentTimer: null
+            currentTimer: null,
+            cardLocked: false
         };
     },
 
@@ -89,6 +96,10 @@ export default {
             } else {
                 this.$emit('read', this.inputValue, credit, options);
             }
+
+            if (this.mode === 'read') {
+                this.resetComponent();
+            }
         },
 
         cancel() {
@@ -116,23 +127,62 @@ export default {
                     this.inputValue = data.toString();
                 });
 
+                nfc.on('locked', locked => {
+                    this.cardLocked = locked;
+
+                    if (nfc.shouldUnlock) {
+                        nfc.shouldUnlock(locked);
+                    }
+
+                    if (nfc.shouldLock) {
+                        nfc.shouldLock(!locked);
+                    }
+                });
+
                 nfc.on('data', data => {
-                    let card;
                     try {
-                        card = nfc.dataToCard(
+                        const card = nfc.dataToCard(
                             data.toLowerCase ? data.toLowerCase() : data,
                             this.inputValue + config.signingKey
                         );
 
                         console.log('nfc-data', card);
+
+                        let cardToLock = false;
+                        if (this.forbiddenIds.indexOf(this.inputValue) > -1) {
+                            // Only write lock if it isn't already done
+                            cardToLock = !card.options.locked;
+                            card.options.locked = true;
+                        }
+
+                        if (card.options.locked && !this.disableLockCheck) {
+                            if (cardToLock) {
+                                this.dataToWrite = card;
+                                this.write();
+                            }
+                            throw 'Locked card';
+                        }
+
                         this.onCard(card.credit, card.options);
                     } catch (err) {
-                        console.log(err);
-                        if (!this.checkDisabled) {
-                            this.$store.commit('ERROR', { message: 'Invalid card' });
+                        if (err === 'Locked card') {
+                            this.$store.commit('ERROR', { message: 'Locked card' });
+                        } else if (
+                            this.signCheckDisabled &&
+                            err.message === '[signed-data] signature does not match'
+                        ) {
+                            if (!this.cardLocked) {
+                                return this.onCard(0, { catering: [] });
+                            }
+
+                            return this.onCard(err.value.credit, err.value.options);
+                        } else if (this.disablePinCheck) {
+                            return this.onCard(0, { catering: [] });
                         } else {
-                            this.onCard(0, {});
+                            this.$store.commit('ERROR', { message: 'Invalid card' });
                         }
+
+                        this.resetComponent();
                     }
                 });
             } else {
@@ -184,21 +234,38 @@ export default {
 
         destroyListeners() {
             window.nfc.removeAllListeners('data');
+            window.nfc.removeAllListeners('locked');
             window.nfc.removeAllListeners('uid');
             window.nfc.removeAllListeners('error');
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
+        },
+
+        resetComponent() {
+            this.inputValue = '';
+            this.cardToRewrite = '';
+            this.success = false;
+            this.rewrite = false;
+            this.dataToWrite = {
+                credit: null,
+                options: null
+            };
         }
     },
 
     computed: {
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            dataLoaded: state => state.ui.dataLoaded
+            dataLoaded: state => state.ui.dataLoaded,
+            forbiddenIds: state => state.online.offline.blockedCards
         }),
 
         successTextUpdated() {
             return this.successText || 'Transaction effectuée';
+        },
+
+        signCheckDisabled() {
+            return noSign || this.disableSignCheck || this.rewrite;
         }
     },
 
@@ -207,13 +274,7 @@ export default {
     },
 
     mounted() {
-        this.success = false;
-        this.rewrite = false;
-        this.dataToWrite = {
-            credit: null,
-            options: null
-        };
-
+        this.resetComponent();
         this.setListeners();
     },
 
@@ -235,6 +296,14 @@ export default {
 
 .b-writer__drop {
     @add-mixin modal-drop;
+
+    &[success] {
+        background-color: $green;
+    }
+
+    &[error] {
+        background-color: $red;
+    }
 }
 
 .b-writer__modal {

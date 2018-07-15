@@ -1,7 +1,8 @@
 const initialState = {
     opened: false,
     history: [],
-    pendingCancellations: []
+    pendingCancellations: [],
+    catering: {}
 };
 
 const mutations = {
@@ -65,6 +66,14 @@ const mutations = {
 
     TOGGLE_HISTORY(state) {
         state.opened = !state.opened;
+    },
+
+    INCREMENT_CATERING(state, id) {
+        if (!state.catering[id]) {
+            state.catering[id] = 0;
+        }
+
+        state.catering[id] += 1;
     }
 };
 

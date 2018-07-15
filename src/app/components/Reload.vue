@@ -40,13 +40,15 @@
                 </div>
             </div>
             <div
-                class="b-reload__modal__buttons"
+                class="b-reload__modal__confirm"
                 v-show="reloadState === 'confirm'">
-                <button @click="reload">Paiement accepté</button>
-                <button @click="cancelReloadModal">Paiement refusé</button>
+                <div class="b-reload__modal__buttons">
+                    <button @click="reload"><span>Paiement</span> accepté</button>
+                    <button @click="cancelReloadModal"><span>Paiement</span> refusé</button>
+                </div>
             </div>
         </div>
-        <nfc mode="read" @read="validate" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
+        <nfc mode="read" @read="logBuyer" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
         <nfc mode="write" @read="validate" @cancel="cancelReload" v-if="reloadOnly && isWriting" key="write"/>
     </div>
 </template>
@@ -130,34 +132,43 @@ export default {
             let initialPromise = Promise.resolve();
 
             if (this.reloadOnly) {
-                initialPromise = this.sendBasket();
+                initialPromise = this.basketClickValidation();
             }
 
             initialPromise.then(() => this.closeReload());
         },
 
-        validate(cardNumber, credit, options) {
+        logBuyer(cardNumber, credit, options) {
+            console.log('reload-buyer-login', cardNumber, credit, options);
             this.buyer({
                 cardNumber,
+                credit: Number.isInteger(credit) ? credit : null
+            });
+        },
+
+        validate(cardNumber, credit, options) {
+            console.log('reload-validate', cardNumber, credit, options);
+            this.validateBasket({
+                cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
-                options,
-                isOnlyAuth: this.isWaiting && !this.isWriting
+                options
             });
         },
 
         cancelReload() {
             this.$store.commit('SET_WRITING', false);
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
-            this.removeReloads();
+            this.clearBasket();
         },
 
         ...mapActions([
             'confirmReloadModal',
             'closeReloadModal',
             'addReload',
-            'removeReloads',
+            'clearBasket',
             'cancelReloadModal',
-            'sendBasket',
+            'validateBasket',
+            'basketClickValidation',
             'buyer'
         ])
     },
@@ -172,10 +183,12 @@ export default {
 @import '../main.css';
 
 .b-reload--reloadOnly {
+    flex: 1;
+
     & .b-reload__modal {
-        transform: translateX(-50%);
-        transform-origin: top center;
-        z-index: 3;
+        position: static;
+        transform: none !important;
+        margin: 10px auto;
     }
 }
 
@@ -234,7 +247,6 @@ export default {
 .b-reload__modal__buttons {
     display: flex;
     flex-direction: column;
-    padding: 0 40px 20px 40px;
 
     & > button {
         border: 0;
@@ -257,12 +269,20 @@ export default {
     .b-reload--reloadOnly {
         & .b-reload__modal {
             transform: translateX(-50%);
-            top: 90px;
+            top: 140px;
 
             &.b-reload__modal--fromtop {
                 top: 150px;
             }
         }
+    }
+
+    .b-reload__modal {
+        padding: 10px 20px;
+    }
+
+    .b-reload__modal__topbar {
+        display: none;
     }
 
     .b-reload__modal {
@@ -272,6 +292,25 @@ export default {
     .b-reload__modal__methods {
         flex-wrap: wrap;
         width: 100%;
+    }
+
+    .b-reload__modal__numerical-input {
+        margin-bottom: 10px;
+    }
+
+    .b-reload__modal__buttons {
+        flex-direction: row-reverse;
+        padding: 0 10px 10px 10px;
+        align-items: center;
+        justify-content: space-between;
+
+        & > button {
+            padding: 10px 20px;
+        }
+
+        & > button > span {
+            display: none;
+        }
     }
 }
 </style>

@@ -5,7 +5,9 @@ export default (deviceSellers, credentials) =>
         const now = new Date();
         const seller = deviceSellers.find(user =>
             user.meansOfLogin.some(
-                mol => mol.data === credentials.data && mol.type === credentials.meanOfLogin
+                mol =>
+                    mol.data.toLowerCase() === credentials.data.toLowerCase() &&
+                    mol.type === credentials.meanOfLogin
             )
         );
 

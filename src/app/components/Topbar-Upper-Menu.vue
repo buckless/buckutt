@@ -46,7 +46,7 @@
                 <div class="b-menu__actions__separator"></div>
                 <div
                     class="b-menu__actions__action"
-                    @click="syncPendingRequests">
+                    @click="syncQueue">
                     <i class="b-icon">sync</i>
                     <template v-if="syncing">
                         Synchronisation en cours
@@ -107,7 +107,9 @@ export default {
         },
 
         displayCatering() {
-            return config.catering.articles.length > 0;
+            const articles = Object.values(config.catering.articles);
+
+            return articles.length > 0;
         },
 
         ...mapState({
@@ -135,7 +137,8 @@ export default {
             'toggleTreasury',
             'toggleCatering',
             'clearBasket',
-            'syncPendingRequests'
+            'logout',
+            'syncQueue'
         ])
     }
 };

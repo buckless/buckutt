@@ -2,12 +2,11 @@
     <nav class="b-lower-bar">
         <div class="b-lower-bar__tabs">
             <tab
-                v-for="(tab, i) in tabs"
+                v-for="tab in tabs"
                 v-if="!loginState && isSellerMode && !history && !treasury && !catering"
                 :name="tab.name"
                 :id="tab.id"
-                :key="tab.id"
-                :index="i"></tab>
+                :key="tab.id"></tab>
         </div>
         <div class="b-lower-bar__device">
             <div
@@ -74,7 +73,6 @@ export default {
 .b-lower-bar__device__point {
     height: 100%;
     line-height: 46px;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0 10px;
 }
 

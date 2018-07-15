@@ -1,6 +1,6 @@
 import { credit } from '../store/getters/items';
 
-export default (state, error) => {
+export default (state, getters, error) => {
     if (!error) {
         return null;
     }
@@ -11,8 +11,16 @@ export default (state, error) => {
         return state.auth.seller.isAuth ? 'Client introuvable' : 'Identifiants incorrects';
     }
 
+    if (error.message === 'Login error: Wrong credentials') {
+        return 'Identifiants incorrects';
+    }
+
     if (error.message === 'Invalid card') {
         return 'Carte invalide';
+    }
+
+    if (error.message === 'Locked card') {
+        return 'Carte bloquée par son propriétaire ou un administrateur';
     }
 
     if (error.message === "Couldn't find ticket") {
@@ -58,7 +66,7 @@ export default (state, error) => {
     }
 
     if (error.message === 'Not enough credit') {
-        return `Pas assez de crédit: ${(credit(state) / 100).toFixed(2)}€`;
+        return `Pas assez de crédit: ${(credit(state, getters) / 100).toFixed(2)}€`;
     }
 
     if (error.message === 'Catering not available today') {

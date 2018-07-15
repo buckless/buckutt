@@ -36,6 +36,7 @@ export default {
 
 .b-error__drop {
     @add-mixin modal-drop;
+    background-color: $red;
     z-index: 999999;
 }
 

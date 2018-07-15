@@ -9,8 +9,8 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            users: 'uid,name,username,barcode,credit',
-            accesses: 'id,cardId,group,start,end',
+            users: 'uid,name,username,barcode,credit,physicalId',
+            accesses: 'id,userId,cardId,group,start,end',
             images: 'id,blob'
         });
 
@@ -44,12 +44,22 @@ class OfflineData {
     }
 
     findByBarcode(barcode) {
-        const reg = new RegExp(`${barcode}(.*)`, 'i');
+        return (
+            this.db.users
+                // user.username === barcode is when user scan their manager qrcode
+                .filter(
+                    user =>
+                        user.barcode === barcode ||
+                        user.username === barcode ||
+                        user.physicalId === barcode
+                )
+                .limit(1)
+                .toArray()
+        );
+    }
 
-        return this.db.users
-            .filter(user => reg.test(user.barcode))
-            .limit(5)
-            .toArray();
+    userMemberships(userId) {
+        return this.db.accesses.filter(access => access.userId === userId).toArray();
     }
 
     cardAccesses(cardId) {
@@ -64,15 +74,17 @@ class OfflineData {
                 name: entry[1],
                 username: entry[2],
                 barcode: entry[3],
-                credit: entry[4]
+                credit: entry[4],
+                physicalId: entry[5]
             }));
         } else if (table === 'accesses') {
             data = data.map(entry => ({
                 id: entry[0],
-                cardId: entry[1],
-                group: entry[2],
-                start: entry[3],
-                end: entry[4]
+                userId: entry[1],
+                cardId: entry[2],
+                group: entry[3],
+                start: entry[4],
+                end: entry[5]
             }));
         }
 

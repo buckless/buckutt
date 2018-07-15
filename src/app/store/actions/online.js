@@ -1,11 +1,7 @@
-import axios from '@/utils/axios';
-import merge from 'lodash.merge';
 import io from 'socket.io-client/dist/socket.io.js';
-import { sendBasket } from './basket';
-import q from '../../utils/q';
+import axios from '@/utils/axios';
 
 let socket = null;
-let lock = false;
 
 export const setupSocket = (store, token) => {
     if (socket) {
@@ -33,7 +29,7 @@ export const setupSocket = (store, token) => {
         store.commit('SET_ONLINE');
         store.dispatch('logOperator').then(() => {
             store.dispatch('updateEssentials');
-            store.dispatch('syncPendingRequests');
+            store.dispatch('syncQueue');
         });
         socket.emit('alert');
     });
@@ -53,12 +49,6 @@ export const setupSocket = (store, token) => {
     });
 };
 
-export const periodicSync = ({ dispatch }) => {
-    dispatch('syncPendingRequests').then(() => {
-        setTimeout(() => dispatch('periodicSync'), 300000);
-    });
-};
-
 export const logOperator = store => {
     if (store.getters.tokenHeaders.headers || !store.state.auth.seller.isAuth) {
         return Promise.resolve();
@@ -70,59 +60,10 @@ export const logOperator = store => {
         pin: store.state.auth.seller.pin
     };
 
+    // Use axios to avoid a logOperator loop
     return axios
-        .post(`${config.api}/services/login`, credentials)
+        .post('services/login', credentials)
         .then(res => store.commit('UPDATE_TOKEN', res.data.token));
-};
-
-export const syncPendingRequests = store => {
-    const storedRequests = store.state.online.pendingRequests;
-    const failedRequests = [];
-
-    console.log('is-online', store.state.online.status);
-    // Continue if the operator is logged (locally or not)
-    if (!store.state.auth.seller.isAuth || !store.state.online.status || lock) {
-        return Promise.resolve();
-    }
-
-    lock = true;
-    store.commit('SET_SYNCING', true);
-
-    let promise = Promise.resolve();
-
-    storedRequests.forEach(request => {
-        promise = promise
-            .then(() => axios.post(request.url, request.body, store.getters.tokenHeaders))
-            .then(res => {
-                if (request.body.localId) {
-                    const localId = request.body.localId;
-
-                    store.dispatch('updateOfflineEntry', {
-                        localId,
-                        basketData: res.data
-                    });
-                }
-            })
-            .then(
-                () =>
-                    new Promise(resolve => {
-                        setTimeout(() => resolve(), 150);
-                    })
-            )
-            .catch(err => {
-                failedRequests.push(request);
-                console.error('Error while resending basket : ', err);
-            });
-    });
-
-    return promise.then(() => store.dispatch('sendValidCancellations')).then(() => {
-        // wait for 200ms before unlocking (for menu action)
-        setTimeout(() => {
-            store.commit('SET_SYNCING', false);
-            store.dispatch('setPendingRequests', failedRequests);
-            lock = false;
-        }, 200);
-    });
 };
 
 export const setSellers = (store, payload) => {
@@ -133,16 +74,18 @@ export const setDefaultItems = (store, payload) => {
     store.commit('SET_DEFAULT_ITEMS', payload);
 };
 
-export const addPendingRequest = (store, payload) => {
-    payload.body.created_at = new Date();
-
-    store.commit('ADD_PENDING_REQUEST', payload);
+export const setBlockedCards = (store, payload) => {
+    store.commit('SET_BLOCKED_CARDS', payload);
 };
 
-export const setPendingRequests = (store, payload) => {
-    if (payload.length > 0) {
-        store.commit('SET_PENDING_REQUESTS', payload);
-    } else {
-        store.commit('CLEAR_PENDING_REQUESTS');
-    }
+export const currentTokenAxios = (store, job) => {
+    // We try to log-in the current seller before any request
+    return store.dispatch('logOperator').then(() =>
+        axios({
+            method: job.method || 'get',
+            url: job.url,
+            data: job.data,
+            ...Object.assign({}, store.getters.tokenHeaders, job.params)
+        })
+    );
 };

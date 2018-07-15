@@ -39,6 +39,23 @@
             </table>
             <p v-else>Aucun rechargement à afficher.</p>
 
+            <h3>Catering</h3>
+            <table class="b-treasury__table" v-if="displayedCatering.length > 0">
+              <thead>
+                <tr>
+                  <th class="b-treasury__table__cell--non-numeric">Article</th>
+                  <th>Quantité</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="cat in displayedCatering">
+                  <td class="b-treasury__table__cell--non-numeric">{{ cat.name }}</td>
+                  <td>{{ cat.count }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <p v-else>Aucun ticket à afficher.</p>
+
             <h3>Options</h3>
             <div class="b-treasury__export" @click="historyExport">Exporter au format JSON</div>
         </div>
@@ -106,8 +123,17 @@ export default {
             };
         },
 
+        displayedCatering() {
+            const cat = Object.values(config.catering.articles);
+            return Object.keys(this.catering).map(key => ({
+                name: cat.find(article => article.id.toString() === key.toString()).name,
+                count: this.catering[key]
+            }));
+        },
+
         ...mapState({
             history: state => state.history.history,
+            catering: state => state.history.catering,
             meansOfPayment: state => state.reload.meansOfPayment
         })
     },

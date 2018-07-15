@@ -1,7 +1,3 @@
-import axios from '@/utils/axios';
-
-const cancelUrl = `${config.api}/services/cancelTransaction`;
-
 export const toggleHistory = ({ commit }) => {
     commit('TOGGLE_HISTORY');
 };
@@ -19,6 +15,13 @@ export const removeFromHistory = ({ commit }, payload) => {
 };
 
 export const updateOfflineEntry = (store, payload) => {
+    if (store.state.ui.lastUser.localId === payload.localId) {
+        store.commit('SET_LAST_USER', {
+            ...store.state.ui.lastUser,
+            name: `${payload.basketData.firstname} ${payload.basketData.lastname}`
+        });
+    }
+
     store.commit('UPDATE_HISTORY_ENTRY', payload);
     store.commit('UPDATE_PENDING_CANCELLATIONS_ENTRY', payload);
 };
@@ -47,8 +50,6 @@ export const cancelEntry = (store, payload) => {
     if (!payload.transactionIds) {
         store.dispatch('addPendingCancellation', payload);
     } else {
-        // request made online
-
         const cancelPurchases = payload.transactionIds.purchases.map(id => ({
             rawType: 'purchase',
             id
@@ -59,26 +60,15 @@ export const cancelEntry = (store, payload) => {
             id
         }));
 
-        if (store.state.online.status) {
-            // we're still online
+        const reqs = cancelPurchases.concat(cancelReloads).map(body =>
+            store.dispatch('sendRequest', {
+                method: 'post',
+                url: 'services/cancelTransaction',
+                data: body
+            })
+        );
 
-            const reqs = cancelPurchases
-                .concat(cancelReloads)
-                .map(body => axios.post(cancelUrl, body, store.getters.tokenHeaders));
-
-            return Promise.all(reqs);
-        } else {
-            // we're offline
-
-            cancelPurchases.concat(cancelReloads).map(body =>
-                store.dispatch('addPendingRequest', {
-                    url: cancelUrl,
-                    body
-                })
-            );
-
-            return Promise.resolve();
-        }
+        return Promise.all(reqs);
     }
 };
 
@@ -103,7 +93,15 @@ export const sendValidCancellations = store => {
             return cancelPurchases.concat(cancelReloads);
         })
         .map(bodys =>
-            Promise.all(bodys.map(body => axios.post(cancelUrl, body, store.getters.tokenHeaders)))
+            Promise.all(
+                bodys.map(body =>
+                    store.dispatch('sendRequest', {
+                        method: 'post',
+                        url: 'services/cancelTransaction',
+                        data: body
+                    })
+                )
+            )
         );
 
     return Promise.all(cancellations).then(() => {
@@ -113,4 +111,8 @@ export const sendValidCancellations = store => {
                 store.dispatch('removePendingCancellation', pending);
             });
     });
+};
+
+export const incrementCatering = (store, id) => {
+    store.commit('INCREMENT_CATERING', id);
 };

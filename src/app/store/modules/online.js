@@ -1,8 +1,8 @@
 const initialState = {
     status: false,
     syncing: false,
-    pendingRequests: [],
     offline: {
+        blockedCards: [],
         sellers: [],
         defaultItems: {
             articles: [],
@@ -32,16 +32,8 @@ const mutations = {
         state.offline.defaultItems = payload;
     },
 
-    ADD_PENDING_REQUEST(state, payload) {
-        state.pendingRequests.push(payload);
-    },
-
-    SET_PENDING_REQUESTS(state, payload) {
-        state.pendingRequests = payload;
-    },
-
-    CLEAR_PENDING_REQUESTS(state) {
-        state.pendingRequests = [];
+    SET_BLOCKED_CARDS(state, payload) {
+        state.offline.blockedCards = payload;
     }
 };
 

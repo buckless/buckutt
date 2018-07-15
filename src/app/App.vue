@@ -10,10 +10,11 @@
             <sidebar v-if="isSellerMode && !history && !treasury && !catering" />
             <controller v-if="isControllerMode" ref="controller" />
             <assigner v-if="isAssignerMode" ref="assign" />
+            <reload
+                v-if="isReloaderMode && reloadOnly && !history && !treasury"
+                reloadOnly />
         </main>
-        <reload
-            v-if="isReloaderMode && (reloadState !== 'closed' || (reloadOnly && !history && !treasury))"
-            :reloadOnly="reloadOnly" />
+        <reload v-if="isReloaderMode && !reloadOnly && reloadState !== 'closed'" />
         <transition name="b--fade">
             <loading v-if="loaded === false" />
         </transition>
@@ -26,7 +27,6 @@
 </template>
 
 <script>
-/* global IS_ELECTRON */
 import 'normalize.css';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
@@ -103,13 +103,13 @@ export default {
     },
 
     methods: {
-        ...mapActions(['setupSocket', 'updateEssentials', 'periodicSync'])
+        ...mapActions(['setupSocket', 'updateEssentials', 'initQueue'])
     },
 
     mounted() {
         this.setupSocket();
+        this.initQueue();
         this.updateEssentials();
-        this.periodicSync();
 
         setInterval(() => this.updateEssentials(!this.seller.isAuth), 60000);
 

@@ -17,25 +17,12 @@
             </div>
         </div>
         <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
-        <search v-show="subpage === 'search'" @assign="assignModal"/>
-        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModalOpened" disableSignCheck>
+        <search v-show="subpage === 'search'" @assign="setAssignModal"/>
+        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModal.opened" disableSignCheck>
             <p class="b-assigner-modal__modal__text__head">
-                <strong>{{ assignModalName }}</strong><br />
-                Nom d'utilisateur : <strong>{{ assignModalUsername }}</strong><br/>
-                Nouveau crédit : <strong><currency :value="assignModalCredit" /></strong>
-
-                <template v-if="nfcCost.amount > 0">
-                    <br /><br />
-                    <strong v-if="assignModalCredit < nfcCost.amount">
-                        Le compte n'a pas assez de crédit pour payer le support, encaisser <currency :value="nfcCost.amount" />.
-                    </strong>
-                    <strong v-else>
-                        <currency :value="nfcCost.amount" />
-                        <template v-if="nfcCost.amount === 100">va être débité</template>
-                        <template v-else>vont être débités</template>
-                        du compte afin de payer le support
-                    </strong>
-                </template>
+                <strong>{{ assignModal.name }}</strong><br />
+                Nom d'utilisateur : <strong>{{ assignModal.username }}</strong><br/>
+                Nouveau crédit : <strong><currency :value="assignModal.credit" /></strong>
 
                 <h4 v-if="groups.length > 0">Groupes :</h4>
             </p>
@@ -53,10 +40,10 @@
 </template>
 
 <script>
-import axios from '@/utils/axios';
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 import barcode from '@/../lib/barcode';
+import formatOfflineResults from '@/utils/formatOfflineResults';
 import CreateAccount from './Assigner-CreateAccount';
 import Search from './Assigner-Search';
 import Ok from './Ok';
@@ -73,13 +60,10 @@ export default {
     data() {
         return {
             showOkModal: false,
-            assignModalCredit: 0,
-            assignModalName: '',
-            assignModalUsername: '',
-            assignModalId: '',
-            assignModalOpened: false,
+            assignModal: { opened: false },
             subpage: 'search',
-            activeGroups: []
+            activeGroups: [],
+            precheckedGroups: []
         };
     },
 
@@ -100,160 +84,55 @@ export default {
             return this.subpage === 'barcode' ? 'b-assigner__home__button--active' : '';
         },
 
-        nfcCost() {
-            const now = new Date();
-            const groupsToCheck = [this.defaultGroup].concat(this.activeGroups);
-            const validCosts = this.nfcCosts
-                .filter(
-                    nfcCost =>
-                        new Date(nfcCost.period.start) <= now &&
-                        new Date(nfcCost.period.end) >= now &&
-                        groupsToCheck.find(group => group.id === nfcCost.group_id)
-                )
-                .sort((a, b) => a.amount - b.amount);
-            return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
-        },
-
         ...mapState({
             operator: state => state.auth.seller,
-            online: state => state.online.status,
             useCardData: state => state.auth.device.event.config.useCardData,
-            nfcId: state => state.auth.device.event.nfc_id,
-            nfcCosts: state => state.items.nfcCosts,
             defaultGroup: state =>
-                state.auth.groups.find(group => group.name === state.auth.device.event.name),
+                state.auth.groups.find(
+                    group => group.id === state.auth.device.event.defaultGroup_id
+                ),
             groups: state =>
-                state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
-        }),
-
-        ...mapGetters(['tokenHeaders'])
+                state.auth.groups.filter(
+                    group => group.id !== state.auth.device.event.defaultGroup_id
+                )
+        })
     },
 
     methods: {
         assignCard(cardId, _, options) {
             this.$store.commit('SET_DATA_LOADED', false);
-            const mol = {
-                user_id: this.assignModalId,
-                type: 'cardId',
-                data: cardId,
-                blocked: false
-            };
-
-            let initialPromise = Promise.resolve();
 
             if (options.assignedCard) {
                 this.$store.commit('SET_DATA_LOADED', true);
                 return this.$store.commit('ERROR', { message: 'Card already assigned' });
             }
 
-            if (this.online) {
-                initialPromise = initialPromise
-                    .then(() => axios.post(`${config.api}/meansoflogin`, mol, this.tokenHeaders))
-                    .then(() =>
-                        axios.post(
-                            `${config.api}/services/assigner/groups`,
-                            {
-                                user: this.assignModalId,
-                                groups: this.activeGroups.map(g => g.id)
-                            },
-                            this.tokenHeaders
-                        )
-                    )
-                    .then(() => {
-                        if (this.nfcCost.amount === 0) {
-                            return Promise.resolve();
+            const assignPromise = this.useCardData
+                ? new Promise(resolve => {
+                      window.app.$root.$emit('readyToWrite', this.assignModal.credit, {
+                          assignedCard: true,
+                          catering: options.catering
+                      });
+                      window.app.$root.$on('writeCompleted', () => resolve());
+                  })
+                : Promise.resolve();
+
+            const groupsToAdd = this.activeGroups
+                .filter(g => !this.precheckedGroups.some(group => g.id === group.id))
+                .map(g => g.id);
+
+            assignPromise
+                .then(() =>
+                    this.sendRequest({
+                        method: 'post',
+                        url: 'services/manager/assigner',
+                        data: {
+                            userId: this.assignModal.id,
+                            ticketNumber: this.assignModal.ticketId,
+                            groups: groupsToAdd,
+                            cardId
                         }
-
-                        const localId = `transaction-id-${window.appId}-${Date.now()}`;
-                        const transactionToSend = {
-                            assignedCard: true,
-                            buyer: cardId,
-                            molType: config.buyerMeanOfLogin,
-                            date: new Date(),
-                            basket: [
-                                {
-                                    price_id: this.nfcCost.id,
-                                    promotion_id: null,
-                                    articles: [
-                                        {
-                                            id: this.nfcId,
-                                            vat: 0.2,
-                                            price: this.nfcCost.id
-                                        }
-                                    ],
-                                    alcohol: 0,
-                                    cost: this.nfcCost.amount,
-                                    type: 'purchase'
-                                }
-                            ],
-                            seller: this.operator.id,
-                            localId
-                        };
-
-                        return axios
-                            .post(
-                                `${config.api}/services/basket`,
-                                transactionToSend,
-                                this.tokenHeaders
-                            )
-                            .catch(() => {
-                                // if useCardData: it has to work
-                                if (this.useCardData) {
-                                    return this.addPendingRequest({
-                                        url: `${config.api}/services/basket`,
-                                        body: transactionToSend
-                                    });
-                                }
-                            });
-                    });
-            } else {
-                initialPromise = initialPromise
-                    .then(() =>
-                        this.addPendingRequest({
-                            url: `${config.api}/meansoflogin`,
-                            body: mol
-                        })
-                    )
-                    .then(() =>
-                        this.addPendingRequest({
-                            url: `${config.api}/services/assigner/groups`,
-                            body: {
-                                user: this.assignModalId,
-                                groups: this.activeGroups.map(g => g.id)
-                            }
-                        })
-                    )
-                    .then(() =>
-                        this.addPendingRequest({
-                            url: `${config.api}/services/basket`,
-                            body: transactionToSend
-                        })
-                    );
-            }
-
-            initialPromise
-                .then(() => Promise.resolve(true))
-                .catch(
-                    err =>
-                        err.response.data.message === 'Duplicate Entry'
-                            ? Promise.resolve(true)
-                            : Promise.reject(err)
-                )
-                .then(
-                    write =>
-                        write && this.useCardData
-                            ? new Promise(resolve => {
-                                  const creditToWrite =
-                                      this.assignModalCredit < this.nfcCost.amount
-                                          ? this.assignModalCredit
-                                          : this.assignModalCredit - this.nfcCost.amount;
-                                  window.app.$root.$emit('readyToWrite', creditToWrite, {
-                                      assignedCard: true,
-                                      catering: options.catering
-                                  });
-                                  window.app.$root.$on('writeCompleted', () => resolve());
-                              })
-                            : Promise.resolve()
+                    })
                 )
                 .then(() => this.ok())
                 .catch(err => this.$store.commit('ERROR', err.response.data))
@@ -262,54 +141,40 @@ export default {
 
         ticketScanned(value) {
             this.$store.commit('SET_DATA_LOADED', false);
-            if (this.online) {
-                axios
-                    .get(`${config.api}/services/assigner?ticketOrMail=${value}`, this.tokenHeaders)
-                    .then(res => {
-                        if (typeof res.data.credit === 'number') {
-                            this.assignModal(
-                                res.data.credit,
-                                res.data.name,
-                                res.data.username,
-                                res.data.id
-                            );
-                            return;
-                        }
 
-                        return this.$store.commit('ERROR', { message: "Couldn't find ticket" });
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        this.$store.commit('ERROR', err.response.data);
-                    })
-                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
-            } else {
-                window.database
-                    .findByBarcode(value)
-                    .then(users => {
-                        if (users.length === 1) {
-                            this.assignModal(
-                                users[0].credit,
-                                users[0].name,
-                                users[0].username,
-                                users[0].uid
-                            );
-                            return;
-                        }
+            this.sendRequest({
+                url: `services/assigner?ticketOrMail=${value}`,
+                noQueue: true,
+                offlineAnswer: window.database
+                    .findByBarcode(this.searchInput)
+                    .then(users => formatOfflineResults(users))
+            })
+                .then(res => (res.data.length > 0 ? res.data[0] : {}))
+                .then(user => {
+                    if (typeof user.credit === 'number') {
+                        this.setAssignModal(
+                            user.credit,
+                            user.name || `${user.firstname} ${user.lastname}`,
+                            user.username,
+                            user.id,
+                            user.currentGroups,
+                            value
+                        );
+                        return;
+                    }
 
-                        return this.$store.commit('ERROR', { message: "Couldn't find ticket" });
-                    })
-                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
-            }
+                    return this.$store.commit('ERROR', { message: "Couldn't find ticket" });
+                })
+                .catch(err => {
+                    console.error(err);
+                    this.$store.commit('ERROR', err.response.data);
+                })
+                .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
         closeModal() {
             this.activeGroups = [];
-            this.assignModalOpened = false;
-            this.assignModalCredit = 0;
-            this.assignModalName = '';
-            this.assignModalUsername = '';
-            this.assignModalId = '';
+            this.assignModal = { opened: false };
         },
 
         onBarcode(value) {
@@ -320,12 +185,21 @@ export default {
             this.ticketScanned(value);
         },
 
-        assignModal(credit, name, username, id) {
-            this.assignModalOpened = true;
-            this.assignModalCredit = credit;
-            this.assignModalName = name;
-            this.assignModalUsername = username;
-            this.assignModalId = id;
+        setAssignModal(credit, name, username, id, groups = [], ticketId) {
+            const precheckedGroups = groups
+                .filter(group => group.id !== this.defaultGroup.id)
+                .map(group => this.groups.find(g => g.id === group.id));
+
+            this.assignModal = {
+                opened: true,
+                credit,
+                name,
+                username,
+                id,
+                ticketId
+            };
+            this.activeGroups = precheckedGroups;
+            this.precheckedGroups = groups;
         },
 
         barcode() {
@@ -337,7 +211,7 @@ export default {
             this.closeModal();
         },
 
-        ...mapActions(['addPendingRequest', 'updateEssentials'])
+        ...mapActions(['sendRequest'])
     },
 
     mounted() {

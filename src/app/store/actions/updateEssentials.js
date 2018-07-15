@@ -1,16 +1,17 @@
-import axios from '@/utils/axios';
-
 let lock = false;
 
 export const updateEssentials = (store, force) => {
-    if (lock || store.getters.isDegradedModeActive) {
+    if (lock) {
         return Promise.resolve();
     }
 
     lock = true;
 
-    return axios
-        .get(`${config.api}/services/deviceEssentials`, store.getters.tokenHeaders)
+    return store
+        .dispatch('sendRequest', {
+            url: 'services/deviceEssentials',
+            noQueue: true
+        })
         .then(res => {
             if (!store.state.auth.device.point.id || store.state.auth.seller.canAssign || force) {
                 return store
@@ -62,13 +63,22 @@ export const updateEssentials = (store, force) => {
                 promises.push(store.dispatch('setNfcCosts', res.data.nfcCosts));
             }
 
+            if (res.data.pendingCardUpdates) {
+                promises.push(store.dispatch('setPendingCardUpdates', res.data.pendingCardUpdates));
+            }
+
+            if (res.data.blockedCards) {
+                promises.push(store.dispatch('setBlockedCards', res.data.blockedCards));
+            }
+
             if (res.data.userTickets) {
                 const users = res.data.userTickets.map(user => [
                     user.id,
                     user.fullname,
                     user.username,
                     user.ticket,
-                    user.credit
+                    user.credit,
+                    user.physicalId
                 ]);
 
                 promises.push(
@@ -81,6 +91,7 @@ export const updateEssentials = (store, force) => {
             if (res.data.accesses) {
                 const accesses = res.data.accesses.map((access, i) => [
                     i + 1,
+                    access.userId,
                     access.cardId,
                     access.groupId,
                     access.start,

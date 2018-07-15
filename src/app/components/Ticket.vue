@@ -4,12 +4,12 @@
             <hr v-if="inline"/>
 
             Dernier client :
-            <strong v-if="user.name"><span class="b--capitalized">{{ user.name }}</span></strong>
+            <strong class="b--capitalized">{{ user.name || 'anonyme' }}</strong>
 
             <br/>
 
             Achats :
-            <strong><currency :value="user.bought || 0"></currency></strong>
+            <strong><currency :value="user.bought || 0"></currency></strong> <template v-if="user.cardPaid > 0">(dont <currency :value="user.cardPaid"></currency> d'activation de carte)</template>
 
             <br/>
 
@@ -43,13 +43,7 @@ export default {
 
     methods: {
         close() {
-            this.$store.commit('SET_LAST_USER', {
-                display: false,
-                name: null,
-                bought: 0,
-                reload: 0,
-                credit: 0
-            });
+            this.$store.commit('EMPTY_TICKET');
         }
     }
 };
@@ -82,6 +76,14 @@ export default {
 
     & .b-ticket__drop {
         @add-mixin modal-drop;
+
+        background-color: $green;
+    }
+}
+
+@media (max-width: 768px) {
+    .b-ticket__modal {
+        padding: 30px !important;
     }
 }
 </style>

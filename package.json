@@ -41,7 +41,8 @@
     ]
   },
   "dependencies": {
-    "@buckless/signed-data": "^2.1.2",
+    "@buckless/offline-queue": "^0.5.1",
+    "@buckless/signed-data": "^2.2.0",
     "@pokusew/pcsclite": "^0.4.18",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
@@ -49,9 +50,10 @@
     "dexie": "^2.0.2",
     "electron": "^1.8.3",
     "file-saver": "^1.3.8",
+    "fuzzy": "^0.1.3",
     "inquirer": "^5.1.0",
     "localforage": "^1.7.1",
-    "lodash.clonedeep": "^4.5.0",
+    "lodash.chunk": "^4.2.0",
     "lodash.countby": "^4.6.0",
     "lodash.debounce": "^4.0.8",
     "lodash.groupby": "^4.6.0",

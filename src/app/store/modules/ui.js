@@ -2,14 +2,15 @@ const initialState = {
     dataLoaded: null,
     inputStream: [],
     tabs: [],
-    currentTab: 0,
     currentTabId: null,
     lastUser: {
         display: false,
         name: null,
+        localId: null,
         bought: 0,
         reload: 0,
-        credit: 0
+        credit: 0,
+        cardPaid: 0
     },
     error: null
 };
@@ -27,20 +28,28 @@ const mutations = {
         state.inputStream = [];
     },
 
-    SET_TABS(state, payload) {
-        state.tabs = payload;
-    },
-
-    CHANGE_TAB(state, { tab, index }) {
-        state.currentTab = index;
+    CHANGE_TAB(state, tab) {
         state.currentTabId = tab;
     },
 
-    OPEN_TICKET(state) {
-        state.lastUser.display = true;
+    EMPTY_TICKET(state) {
+        state.lastUser = {
+            display: false,
+            name: null,
+            localId: null,
+            bought: 0,
+            reload: 0,
+            credit: 0,
+            cardPaid: 0
+        };
+    },
+
+    SET_LAST_USER_CARD_PAID(state, payload) {
+        state.lastUser.cardPaid = payload;
     },
 
     SET_LAST_USER(state, payload) {
+        payload.cardPaid = state.lastUser.cardPaid;
         state.lastUser = payload;
     },
 
