@@ -1,13 +1,9 @@
 node_modules/
-rethinkdb_data/
 coverage/
 .nyc_output
 log/
-config/*.json
+config/profiles/*.json
 !config/rights.json
-!config/test.json
-!config/prod.json
-!config/dev.json
 ssl/certificates
 ready.lock
 yarn-error.log
