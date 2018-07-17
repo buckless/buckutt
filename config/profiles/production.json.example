@@ -1,8 +1,8 @@
 {
     "api": "\"https://server:3000\"",
     "images": "\"http://images:3400\"",
-    "loginMeanOfLogin": "\"etuId\"",
-    "buyerMeanOfLogin": "\"etuId\"",
+    "loginMeanOfLogin": "\"cardId\"",
+    "buyerMeanOfLogin": "\"cardId\"",
     "signingKey": "\"buckless\"",
     "sentry": "\"https://28b38832484d4f22994e50c24d5d6a6a@sentry.io/1207636\"",
     "desfire"         : {
