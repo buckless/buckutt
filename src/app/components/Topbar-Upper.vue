@@ -5,8 +5,8 @@
             <div class="b-upper-bar__buyer-logout">
                 <span class="b-icon" @click="logoutBuyer">eject</span>
             </div>
-            <span class="b--capitalized">{{ buyer.firstname }}</span>&nbsp;
-            <span class="b--capitalized">{{ buyer.lastname || 'Anonyme' }}</span>
+            <span class="b--capitalized">{{ buyerName.firstname }}</span>&nbsp;
+            <span class="b--capitalized">{{ buyerName.lastname }}</span>
         </div>
         <div class="b-space"></div>
         <div class="b-upper-bar__date" v-if="!buyer.isAuth">
@@ -52,6 +52,14 @@ export default {
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
             buyer: state => state.auth.buyer
         }),
+
+        buyerName() {
+            if (this.buyer && this.buyer.lastname === 'Anonyme') {
+                return { firstname: '', lastname: '' };
+            }
+
+            return this.buyer;
+        },
 
         onlyLogout() {
             return this.displayLogout && this.seller.isAuth === false;

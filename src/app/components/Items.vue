@@ -9,7 +9,7 @@
             v-for="item in displayedItems"
             :item="item"
             :key="item.id"></item>
-        <nfc mode="read" @read="logBuyer" v-if="!buyer.isAuth && isWaiting && !isWriting" key="read" />
+        <nfc mode="read" @read="logBuyer" v-if="isWaiting && !isWriting" key="read" />
         <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
     </div>
 </template>

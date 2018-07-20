@@ -111,10 +111,17 @@ export const cancelLogout = ({ commit }) => {
 };
 
 export const buyer = (store, { cardNumber, credit }) => {
+    const doubleValidation = store.state.auth.device.config.doubleValidation;
+
+    // if double validation, then a user2 can't eject/replace user1
+    if (doubleValidation && store.state.auth.buyer.isAuth) {
+        return;
+    }
+
     store.commit('SET_DATA_LOADED', false);
 
     let initialPromise = Promise.resolve();
-    if (store.state.auth.device.config.doubleValidation) {
+    if (doubleValidation) {
         initialPromise = initialPromise.then(() =>
             store.dispatch('checkPendingCardUpdates', { cardNumber })
         );
