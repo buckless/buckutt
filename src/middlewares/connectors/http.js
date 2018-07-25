@@ -7,8 +7,6 @@ module.exports.marshal = function marshal(mw) {
         req.connector = req.connector || {
             ip: req.ip,
 
-            authorized: req.client.authorized,
-
             headers: req.headers,
 
             query: req.query,
@@ -27,13 +25,6 @@ module.exports.marshal = function marshal(mw) {
 
             header(name, value) {
                 res.header(name, value);
-            },
-
-            getClientFingerprint() {
-                return req.connection
-                    .getPeerCertificate()
-                    .fingerprint.replace(/:/g, '')
-                    .trim();
             }
         };
 

@@ -20,8 +20,6 @@
     "dev": "cross-env NODE_ENV=development npm run watch",
     "seed": "cross-env NODE_ENV=development node scripts/seed",
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.js\"",
-    "sslConfig": "node scripts/sslConfig",
-    "addDevice": "node scripts/addDevice",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "husky": {

@@ -1,8 +1,6 @@
 module.exports.marshal = function marshal(mw) {
     return function connectorMiddleware(path, socket, app) {
         socket.connector = socket.connector || {
-            authorized: socket.client.request.client.authorized,
-
             headers: socket.client.request.headers,
 
             query: {},
@@ -24,10 +22,6 @@ module.exports.marshal = function marshal(mw) {
 
             header(name, value) {
                 socket.connector.result.headers[name] = value;
-            },
-
-            getClientFingerprint() {
-                return socket.fingerprint;
             }
         };
 

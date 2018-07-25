@@ -2,7 +2,7 @@ const { bookshelf } = require('../lib/bookshelf');
 const APIError = require('../errors/APIError');
 
 /**
- * Retrieve the point id from the SSL certificate fingerprint
+ * Retrieve the point id from the device fingerprint
  * @param {Object} connector HTTP/Socket.IO connector
  */
 module.exports = connector => {
@@ -12,6 +12,12 @@ module.exports = connector => {
         path: connector.path,
         method: connector.method
     };
+
+    if (!connector.headers['x-fingerprint']) {
+        return Promise.reject(new APIError(module, 401, 'Missing device fingerprint'));
+    }
+
+    connector.fingerprint = connector.headers['x-fingerprint'];
 
     return bookshelf
         .knex('events')

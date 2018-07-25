@@ -1,18 +1,7 @@
 const app = require('../../src/app');
-
-const bookshelf     = require('../../src/lib/bookshelf');
-const sslConfig     = require('../../scripts/sslConfig');
-const { addDevice } = require('../../scripts/addDevice');
+const bookshelf = require('../../src/lib/bookshelf');
 
 let testsInit = false;
-
-function setupTests() {
-    sslConfig('test', 'test');
-
-    return bookshelf.knex.seed
-        .run()
-        .then(() => addDevice({ admin: true, deviceName: 'test', password: 'test' }));
-}
 
 module.exports = () => {
     if (testsInit) {
@@ -24,7 +13,7 @@ module.exports = () => {
     return bookshelf
         .sync()
         .then(() => bookshelf.knex('periods').count())
-        .then(count => (count === 0 ? setupTests() : Promise.resolve()))
+        .then(count => (count === 0 ? bookshelf.knex.seed.run() : Promise.resolve()))
         .then(() => app.start())
         .catch((err) => {
             console.error(err);
