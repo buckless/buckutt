@@ -28,8 +28,8 @@ export default {
                 },
                 {
                     icon: 'security',
-                    title: 'Certificat SSL actif',
-                    content: this.focusedDevice.fingerprint ? 'Oui' : 'Non'
+                    title: 'Clé unique',
+                    content: this.focusedDevice.fingerprint
                 }
             ];
 

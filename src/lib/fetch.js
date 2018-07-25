@@ -1,7 +1,8 @@
 const authData = {
     headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Fingerprint': 'admin'
     }
 };
 

@@ -1,4 +1,3 @@
-import { get } from '../../lib/fetch';
 import routeToRelation from '../../lib/routeToRelation';
 
 /**

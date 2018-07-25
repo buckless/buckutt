@@ -1,4 +1,4 @@
-import { get, post } from '../../lib/fetch';
+import { post } from '../../lib/fetch';
 
 /**
  * Users actions

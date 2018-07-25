@@ -60,6 +60,7 @@ export default {
             return this.devices.filter(
                 device =>
                     device.name !== 'manager' &&
+                    device.name !== 'admin' &&
                     ((this.displayWiket && !device.isUser) || (this.displayAdmin && device.isUser))
             );
         }
