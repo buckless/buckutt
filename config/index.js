@@ -1,15 +1,7 @@
 'use strict'
 
 // see http://vuejs-templates.github.io/webpack for documentation.
-const fs = require('fs')
 const path = require('path')
-const https = require('https')
-
-const certPath = path.join(__dirname, '../../server/ssl/certificates/chrome/chrome.p12')
-const sslAgent = process.env.DEV_PROXY && new https.Agent({
-  pfx       : fs.readFileSync(certPath),
-  passphrase: 'test'
-})
 
 module.exports = {
   build: {
@@ -39,32 +31,28 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: process.env.DEV_PROXY ? {
       '/api/login': {
-        target      : 'https://0.0.0.0:3000/services/',
+        target      : 'http://0.0.0.0:3000/services/',
         changeOrigin: true,
-        secure      : false,
-        agent       : sslAgent,
-        pathRewrite : { '/api': '' }
+        pathRewrite : { '/api': '' },
+        headers     : { 'X-fingerprint': 'manager' }
       },
       '/api/callback': {
-        target      : 'https://0.0.0.0:3000/provider/callback',
+        target      : 'http://0.0.0.0:3000/provider/callback',
         changeOrigin: true,
-        secure      : false,
-        agent       : sslAgent,
-        pathRewrite : { '/api/callback': '' }
+        pathRewrite : { '/api/callback': '' },
+        headers     : { 'X-fingerprint': 'manager' }
       },
       '/api/**': {
-        target      : 'https://0.0.0.0:3000/services/manager/',
+        target      : 'http://0.0.0.0:3000/services/manager/',
         changeOrigin: true,
-        secure      : false,
-        agent       : sslAgent,
-        pathRewrite : { '/api': '' }
+        pathRewrite : { '/api': '' },
+        headers     : { 'X-fingerprint': 'manager' }
       },
       '/socket.io': {
-        target      : 'https://0.0.0.0:3000/',
-        secure      : false,
+        target      : 'http://0.0.0.0:3000/',
         changeOrigin: true,
         ws          : true,
-        agent       : sslAgent
+        headers     : { 'X-fingerprint': 'manager' }
       }
     } : {},
     // CSS Sourcemaps off by default because relative paths are "buggy"
