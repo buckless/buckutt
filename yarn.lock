@@ -2,12 +2,11 @@
 # yarn lockfile v1
 
 
-"@buckless/offline-queue@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@buckless/offline-queue/-/offline-queue-0.5.1.tgz#cae32b6e76243f12250d9d0a78c055b0027108c8"
+"@buckless/offline-queue@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@buckless/offline-queue/-/offline-queue-1.0.2.tgz#2740614c59ff0a88fccd8d12318f1c30f86c5584"
   dependencies:
     eventemitter3 "^3.0.1"
-    is-promise "^2.1.0"
 
 "@buckless/signed-data@^2.2.0":
   version "2.2.0"
