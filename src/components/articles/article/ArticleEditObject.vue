@@ -4,9 +4,7 @@
             <h5>Modifier l'article {{ focusedArticle.name }}</h5>
             <form @submit.prevent="updateArticle(focusedArticle)">
                 <mdl-textfield floating-label="Nom" :value="focusedArticle.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })"  required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
-                <mdl-textfield floating-label="Stock" :value="focusedArticle.stock" @input="updateDeepestFocusedElement({ field: 'stock', value: $event })"></mdl-textfield><br />
                 <mdl-textfield floating-label="Alcool" :value="focusedArticle.alcohol" @input="updateDeepestFocusedElement({ field: 'alcohol', value: $event })"></mdl-textfield>
-                <mdl-textfield floating-label="TVA (%, ex: 5.5)" :value="displayedVat" @input="updateDeepestFocusedElement({ field: 'vat', value: $event / 100 })"></mdl-textfield><br />
                 <mdl-button colored raised>Modifier</mdl-button>
             </form>
         </div>
@@ -31,7 +29,7 @@ export default {
         ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateArticle(article) {
-            const fields = ['id', 'name', 'stock', 'alcohol', 'vat'];
+            const fields = ['id', 'name', 'alcohol'];
 
             this.updateObject({ route: 'articles', value: pick(article, fields) })
                 .then(() => this.notify({ message: "L'article a bien été modifié" }))
@@ -58,11 +56,7 @@ export default {
     computed: {
         ...mapState({
             focusedArticle: state => state.app.focusedElements[0]
-        }),
-
-        displayedVat() {
-            return +(this.focusedArticle.vat * 100).toFixed(2);
-        }
+        })
     }
 };
 </script>

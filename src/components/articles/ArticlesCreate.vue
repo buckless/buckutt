@@ -15,10 +15,7 @@ export default {
     data() {
         return {
             newArticle: {
-                name: '',
-                stock: 0,
-                vat: 0,
-                alcohol: 0
+                name: ''
             }
         };
     },

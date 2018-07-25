@@ -34,18 +34,17 @@
             <mdl-button colored raised>Rechercher</mdl-button>
         </form>
 
-        <h4>Ventes <span class="small">(total TTC: {{ totalSell | price(true) }}, total HT: {{ totalSellWT | price(true) }})</span></h4>
+        <h4>Ventes <span class="small">(total: {{ totalSell | price(true) }})</span></h4>
 
         <b-table
             :headers="[
                 { title: 'Quantité', field: 'count' },
                 { title: 'Article', field: 'name'},
                 { title: 'Prix unitaire TTC', field: 'price', type: 'price' },
-                { title: 'Total TTC', field: 'totalTI', type: 'price' },
-                { title: 'Total HT', field: 'totalWT', type: 'price' }
+                { title: 'Total TTC', field: 'totalTI', type: 'price' }
             ]"
             :paging="25"
-            :data="displayedPurchases">
+            :data="purchases">
         </b-table>
 
         <h4>Catering</h4>
@@ -93,22 +92,14 @@ export default {
             'event'
         ]),
 
-        displayedPurchases() {
-            return this.purchases.map(purchase => {
-                purchase.totalWT = purchase.totalTI - purchase.totalVAT;
-
-                return purchase;
-            });
-        },
-
         totalSell() {
-            return this.displayedPurchases
+            return this.purchases
                 .map(purchase => parseInt(purchase.totalTI, 10))
                 .reduce((a, b) => a + b, 0);
         },
 
         totalSellWT() {
-            return this.displayedPurchases
+            return this.purchases
                 .map(purchase => parseInt(purchase.totalWT, 10))
                 .reduce((a, b) => a + b, 0);
         },

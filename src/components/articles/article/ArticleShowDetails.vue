@@ -41,16 +41,6 @@ export default {
                         this.focusedArticle.alcohol > 0
                             ? this.focusedArticle.alcohol
                             : 'Non définie'
-                },
-                {
-                    icon: 'inbox',
-                    title: 'Stock',
-                    content: this.focusedArticle.stock
-                },
-                {
-                    icon: 'account_balance',
-                    title: 'TVA',
-                    content: this.focusedArticle.vat > 0 ? this.focusedArticle.vat : 'Non définie'
                 }
             ];
         }
