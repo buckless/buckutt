@@ -62,7 +62,6 @@ router.get('/services/treasury/purchases', (req, res, next) => {
                     price: p[0].price.amount,
                     id: p[0].price.id,
                     totalTI: sumBy(p, 'price.amount'),
-                    totalVAT: sumBy(p, 'vat'),
                     count: p.length,
                     name: p[0].price.article ? p[0].price.article.name : p[0].price.promotion.name
                 }))

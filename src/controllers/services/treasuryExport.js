@@ -84,7 +84,6 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
                         `${purchase.seller.firstname} ${purchase.seller.lastname}`,
                         `${purchase.buyer.firstname} ${purchase.buyer.lastname}`,
                         item.name,
-                        purchase.price.amount / (1 + purchase.vat) / 100,
                         purchase.price.amount / 100
                     ].join(',');
                 })

@@ -3,7 +3,6 @@ const { countBy } = require('lodash');
 const APIError = require('../../errors/APIError');
 const log = require('../../lib/log')(module);
 const createUser = require('../../lib/createUser');
-const vat = require('../../lib/vat');
 const { bookshelf } = require('../../lib/bookshelf');
 const rightsDetails = require('../../lib/rightsDetails');
 const dbCatch = require('../../lib/dbCatch');
@@ -216,7 +215,6 @@ router.post('/services/basket', (req, res, next) => {
                 promotion_id: item.promotion_id || null,
                 seller_id: req.user.id,
                 alcohol: item.alcohol,
-                vat: vat(item),
                 created_at: req.body.created_at || new Date(),
                 updated_at: req.body.created_at || new Date()
             });

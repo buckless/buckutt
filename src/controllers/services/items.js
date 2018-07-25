@@ -112,7 +112,6 @@ router.get('/services/items', (req, res, next) => {
                             articles.push({
                                 id: price.article.id,
                                 name: price.article.name,
-                                vat: price.article.vat,
                                 alcohol: price.article.alcohol,
                                 price: {
                                     id: price.id,
