@@ -3,9 +3,8 @@ process.env.TARGET = 'electron';
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
-const config = require('../config');
 const NFC = require('./lib/nfc');
-const io = require('./lib/socket');
+const fingerprint = require('./lib/fingerprint');
 // const updater = require('./lib/updater') TODO: updater
 
 function createWindow() {
@@ -39,25 +38,10 @@ function createWindow() {
     });
 
     window.nfc = new NFC();
-    window.io = io;
+    window.fingerprint = fingerprint;
     // window.updater = updater(); TODO: updater
-
-    const opts = {
-        certificate: JSON.parse(config.certificate.path),
-        password: JSON.parse(config.certificate.password)
-    };
-
-    // On macOS, use `$ security import buckless-certificate.p12 -P password`
-    if (process.platform !== 'darwin') {
-        app.importCertificate(opts, result => console.log(result));
-    }
 }
 
 app.on('ready', createWindow);
-
-app.on('certificate-error', (e, webContents, reqUrl, error, certificate, callback) => {
-    e.preventDefault();
-    callback(true);
-});
 
 app.on('window-all-closed', () => app.quit());
