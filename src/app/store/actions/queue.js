@@ -10,11 +10,11 @@ export const initQueue = store => {
 
     queue = new Queue({
         process(job) {
-            return store.dispatch('currentTokenAxios', job);
+            return store.dispatch('currentTokenAxios', job.data);
         },
 
-        syncInterval: 60000,
-        syncToStorage: localForage
+        interval: 60000,
+        storage: localForage
     });
 
     queue.on('processed', (job, result) => {
@@ -70,12 +70,15 @@ export const sendRequest = (store, job) => {
 
     job.data.created_at = new Date();
 
-    return queue
-        .method(job.method)
-        .url(job.url)
-        .data(job.data)
-        .setImmediate(!forceOffline && job.immediate)
-        .push({
-            mock: job.offlineAnswer
-        });
+    return queue.push({
+        data: {
+            method: job.method,
+            url: job.url,
+            data: job.data
+        },
+
+        immediate: !forceOffline && job.immediate,
+
+        mock: job.offlineAnswer
+    });
 };
