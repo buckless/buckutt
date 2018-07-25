@@ -61,6 +61,7 @@
     "lodash.sumby": "^4.6.0",
     "lodash.uniqby": "^4.7.0",
     "msgpack-lite": "^0.1.26",
+    "node-machine-id": "^1.1.10",
     "normalize.css": "^8.0.0",
     "postcss-mixins": "^6.2.0",
     "raven-js": "^3.25.1",

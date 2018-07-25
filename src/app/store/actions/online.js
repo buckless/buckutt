@@ -9,19 +9,23 @@ export const setupSocket = (store, token) => {
         socket.close();
     }
 
-    let opts = {};
+    const extraHeaders = {};
 
     if (token) {
-        opts = {
-            transportOptions: {
-                polling: {
-                    extraHeaders: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            }
-        };
+        extraHeaders.Authorization = `Bearer ${token}`;
     }
+
+    if (window.fingerprint) {
+        extraHeaders['X-fingerprint'] = window.fingerprint;
+    }
+
+    const opts = {
+        transportOptions: {
+            polling: {
+                extraHeaders
+            }
+        }
+    };
 
     socket = io(config.api, { rejectUnauthorized: false, ...opts });
 
@@ -85,7 +89,11 @@ export const currentTokenAxios = (store, job) => {
             method: job.method || 'get',
             url: job.url,
             data: job.data,
-            ...Object.assign({}, store.getters.tokenHeaders, job.params)
+            ...Object.assign(
+                { headers: { 'X-fingerprint': window.fingerprint } },
+                store.getters.tokenHeaders,
+                job.params
+            )
         })
     );
 };
