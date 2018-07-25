@@ -84,13 +84,12 @@ export default {
 
 @media (max-width: 768px) {
     .b-sidebar-validate {
-        bottom: 24px;
-        right: 24px;
+        bottom: 0;
+        left: 0;
+        width: 100%;
         position: fixed;
-        justify-content: flex-start;
+        justify-content: center;
         padding: 0 24px;
-        border-radius: 55px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 }
 </style>
