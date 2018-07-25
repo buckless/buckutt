@@ -33,7 +33,7 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
         pin: password
     };
 
-    dispatch('sendRequest', {
+    return dispatch('sendRequest', {
         method: 'post',
         url: 'services/login',
         data: credentials,

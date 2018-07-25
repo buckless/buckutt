@@ -35,7 +35,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 
-import Currency from './Currency';
+import Currency from '@/components/Currency';
 
 export default {
     components: {

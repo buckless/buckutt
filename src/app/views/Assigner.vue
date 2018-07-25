@@ -1,23 +1,22 @@
 <template>
     <div class="b-assigner">
         <div class="b-assigner__home">
-            <div class="b-assigner__home__button" :class="scanClasses" @click="barcode">
+            <div class="b-assigner__home__button" @click="barcode">
                 <img src="../assets/qrcode.png" height="48" width="48" />
                 <h3>Scanner un billet</h3>
             </div>
             <div class="b-assigner__home__spacing"></div>
-            <div class="b-assigner__home__button" :class="searchClasses" @click="subpage = 'search'">
+            <div class="b-assigner__home__button" :class="searchClasses" @click="toggleSearch">
                 <i class="b-icon">create</i>
                 <h3>Recherche manuelle</h3>
             </div>
             <div class="b-assigner__home__spacing"></div>
-            <div class="b-assigner__home__button" :class="createClasses" @click="subpage = 'create'">
+            <div class="b-assigner__home__button" :class="createClasses" @click="toggleCreate">
                 <i class="b-icon">person_add</i>
                 <h3>Compte anonyme</h3>
             </div>
         </div>
-        <create-account v-show="subpage === 'create'" ref="create" @ok="ok"/>
-        <search v-show="subpage === 'search'" @assign="setAssignModal"/>
+        <router-view @ok="ok" @assign="setAssignModal" />
         <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModal.opened" disableSignCheck>
             <p class="b-assigner-modal__modal__text__head">
                 <strong>{{ assignModal.name }}</strong><br />
@@ -44,16 +43,12 @@ import { mapState, mapActions } from 'vuex';
 
 import barcode from '@/../lib/barcode';
 import formatOfflineResults from '@/utils/formatOfflineResults';
-import CreateAccount from './Assigner-CreateAccount';
-import Search from './Assigner-Search';
-import Ok from './Ok';
-import Currency from './Currency';
+import Ok from '@/components/Ok';
+import Currency from '@/components/Currency';
 
 export default {
     components: {
-        CreateAccount,
         Currency,
-        Search,
         Ok
     },
 
@@ -61,27 +56,22 @@ export default {
         return {
             showOkModal: false,
             assignModal: { opened: false },
-            subpage: 'search',
             activeGroups: [],
             precheckedGroups: []
         };
     },
 
     computed: {
-        scanClasses() {
-            return this.subpage === 'scan' ? 'b-assigner__home__button--active' : '';
-        },
-
         searchClasses() {
-            return this.subpage === 'search' ? 'b-assigner__home__button--active' : '';
+            return this.$route.path === '/assigner' || this.$route.path === '/assigner/search'
+                ? 'b-assigner__home__button--active'
+                : '';
         },
 
         createClasses() {
-            return this.subpage === 'create' ? 'b-assigner__home__button--active' : '';
-        },
-
-        barcodeClasses() {
-            return this.subpage === 'barcode' ? 'b-assigner__home__button--active' : '';
+            return this.$route.path === '/assigner/create'
+                ? 'b-assigner__home__button--active'
+                : '';
         },
 
         ...mapState({
@@ -99,6 +89,14 @@ export default {
     },
 
     methods: {
+        toggleSearch() {
+            this.$router.push('/assigner/search');
+        },
+
+        toggleCreate() {
+            this.$router.push('/assigner/create');
+        },
+
         assignCard(cardId, _, options) {
             this.$store.commit('SET_DATA_LOADED', false);
 

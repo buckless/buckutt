@@ -1,7 +1,3 @@
-export const toggleHistory = ({ commit }) => {
-    commit('TOGGLE_HISTORY');
-};
-
 export const setHistory = ({ commit }, payload) => {
     commit('SET_HISTORY', payload);
 };

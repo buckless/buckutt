@@ -10,7 +10,7 @@
                 <div>
                     Aucun entrée pour cette carte. Vous pouvez essayer sur une autre carte.
                     <br/>
-                    <a href="#" @click.prevent="toggleHistory">Retour au mode vente</a>
+                    <a href="#" @click.prevent="closeHistory">Retour au mode vente</a>
                 </div>
             </div>
             <div class="b-history__list" v-else>
@@ -45,7 +45,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Currency from './Currency';
+import Currency from '@/components/Currency';
 
 export default {
     components: {
@@ -171,7 +171,11 @@ export default {
             return -1 * (entry.reload - entry.cost);
         },
 
-        ...mapActions(['toggleHistory', 'cancelEntry', 'removeFromHistory', 'interfaceLoader'])
+        closeHistory() {
+            this.$router.push('items');
+        },
+
+        ...mapActions(['cancelEntry', 'removeFromHistory', 'interfaceLoader'])
     }
 };
 </script>

@@ -11,7 +11,7 @@
             <div class="b-disconnect-warning__modal__buttons">
                 <button @click="cancelLogout">Annuler</button>
                 <div></div>
-                <button @click="pursueLogout">Se déconnecter</button>
+                <button @click="logout">Se déconnecter</button>
             </div>
         </div>
         <div class="b-disconnect-warning__drop"></div>
@@ -27,7 +27,13 @@ export default {
         seller: state => state.auth.seller
     }),
 
-    methods: mapActions(['pursueLogout', 'cancelLogout'])
+    methods: {
+        logout() {
+            this.pursueLogout().then(() => this.$router.push('/login'));
+        },
+
+        ...mapActions(['pursueLogout', 'cancelLogout'])
+    }
 };
 </script>
 

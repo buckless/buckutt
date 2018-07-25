@@ -1,5 +1,4 @@
 const initialState = {
-    opened: false,
     history: [],
     pendingCancellations: [],
     catering: {}
@@ -62,10 +61,6 @@ const mutations = {
                 transactionIds: payload.basketData.transactionIds
             });
         }
-    },
-
-    TOGGLE_HISTORY(state) {
-        state.opened = !state.opened;
     },
 
     INCREMENT_CATERING(state, id) {

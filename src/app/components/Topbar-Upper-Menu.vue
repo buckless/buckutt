@@ -1,7 +1,7 @@
 <template>
     <div class="b-menu-wrapper" v-if="hasActions">
-        <div class="b-menu__drop" v-if="showMenu && !history && !treasury && !catering && !onlyLogout" @click="showMenu = false"></div>
-        <div class="b-menu" v-if="!history && !treasury && !catering && !onlyLogout">
+        <div class="b-menu__drop" v-if="showMenu && !canClose && !onlyLogout" @click="showMenu = false"></div>
+        <div class="b-menu" v-if="!canClose && !onlyLogout">
             <div class="b-menu__icon b-icon" @click="showMenu = !showMenu">menu</div>
             <div class="b-menu__actions" v-if="showMenu">
                 <div
@@ -65,16 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="b-menu" @click="close(toggleTreasury)" v-else-if="treasury && !onlyLogout">
-            <div class="b-menu__icon b-icon">close</div>
-        </div>
-        <div class="b-menu" @click="close(toggleHistory)" v-else-if="history && !onlyLogout">
-            <div class="b-menu__icon b-icon">close</div>
-        </div>
-        <div class="b-menu" @click="close(toggleCatering)" v-else-if="catering && !onlyLogout">
-            <div class="b-menu__icon b-icon">close</div>
-        </div>
-        <div class="b-menu" @click="close(logoutSeller)" v-else>
+        <div class="b-menu" @click="back" v-if="canClose">
             <div class="b-menu__icon b-icon">close</div>
         </div>
     </div>
@@ -89,9 +80,6 @@ export default {
         isReloaderMode: Boolean,
         displayLogout: Boolean,
         onlyLogout: Boolean,
-        history: Boolean,
-        treasury: Boolean,
-        catering: Boolean,
         useCardData: Boolean
     },
 
@@ -104,6 +92,15 @@ export default {
     computed: {
         hasActions() {
             return this.isSellerMode || this.isReloaderMode || this.displayLogout;
+        },
+
+        canClose() {
+            return (
+                this.$route.path !== '/items' &&
+                this.$route.path !== '/reload' &&
+                !this.$route.path.startsWith('/assigner') &&
+                this.$route.path !== '/controller'
+            );
         },
 
         displayCatering() {
@@ -131,15 +128,27 @@ export default {
             return this.$store.commit('FIRST_LOGOUT_SELLER');
         },
 
-        ...mapActions([
-            'openReloadModal',
-            'toggleHistory',
-            'toggleTreasury',
-            'toggleCatering',
-            'clearBasket',
-            'logout',
-            'syncQueue'
-        ])
+        back() {
+            this.$router.push('items');
+        },
+
+        toggleHistory() {
+            this.$router.push('history');
+        },
+
+        toggleTreasury() {
+            this.$router.push('treasury');
+        },
+
+        toggleCatering() {
+            this.$router.push('catering');
+        },
+
+        openReloadModal() {
+            this.$router.push('/items/reload');
+        },
+
+        ...mapActions(['clearBasket', 'logout', 'syncQueue'])
     }
 };
 </script>
@@ -167,6 +176,7 @@ export default {
     cursor: pointer;
     display: flex;
     height: 28px;
+    line-height: 16px !important;
     padding: 6px 8px;
     position: relative;
 }

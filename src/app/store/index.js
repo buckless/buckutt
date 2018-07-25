@@ -15,8 +15,6 @@ import ui from './modules/ui';
 import basket from './modules/basket';
 import online from './modules/online';
 import history from './modules/history';
-import treasury from './modules/treasury';
-import catering from './modules/catering';
 
 Vue.use(Vuex);
 
@@ -52,9 +50,7 @@ const store = new Vuex.Store({
         ui,
         basket,
         online,
-        history,
-        treasury,
-        catering
+        history
     },
     strict: debug,
     plugins: debug ? [createLogger(), vuexPersist.plugin] : [vuexPersist.plugin]
@@ -66,35 +62,29 @@ if (module.hot) {
         [
             './modules/auth',
             './modules/basket',
-            './modules/catering',
             './modules/history',
             './modules/items',
             './modules/online',
             './modules/reload',
-            './modules/treasury',
             './modules/ui'
         ],
         () => {
             const newAuth = require('./modules/auth').default;
             const newBasket = require('./modules/basket').default;
-            const newCatering = require('./modules/catering').default;
             const newHistory = require('./modules/history').default;
             const newItems = require('./modules/items').default;
             const newOnline = require('./modules/online').default;
             const newReload = require('./modules/reload').default;
-            const newTreasury = require('./modules/treasury').default;
             const newUi = require('./modules/ui').default;
 
             store.hotUpdate({
                 modules: {
                     auth: newAuth,
                     basket: newBasket,
-                    catering: newCatering,
                     history: newHistory,
                     items: newItems,
                     online: newOnline,
                     reload: newReload,
-                    treasury: newTreasury,
                     ui: newUi
                 }
             });

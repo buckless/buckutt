@@ -2,19 +2,8 @@
     <div id="app">
         <topbar />
         <main class="b-main">
-            <login v-if="loginState" ref="login" />
-            <history v-if="isCashMode && history && !treasury && !catering" ref="history" />
-            <treasury v-if="isCashMode && treasury && !history && !catering" ref="treasury" />
-            <catering v-if="isSellerMode && catering && !history && !treasury" ref="catering" />
-            <items v-if="isSellerMode && !history && !treasury && !catering" />
-            <sidebar v-if="isSellerMode && !history && !treasury && !catering" />
-            <controller v-if="isControllerMode" ref="controller" />
-            <assigner v-if="isAssignerMode" ref="assign" />
-            <reload
-                v-if="isReloaderMode && reloadOnly && !history && !treasury"
-                reloadOnly />
+            <router-view />
         </main>
-        <reload v-if="isReloaderMode && !reloadOnly && reloadState !== 'closed'" />
         <transition name="b--fade">
             <loading v-if="loaded === false" />
         </transition>
@@ -32,70 +21,37 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 
 import OfflineData from '@/../lib/offlineData';
 
-import Items from './components/Items';
 import Topbar from './components/Topbar';
-import Sidebar from './components/Sidebar';
-import Reload from './components/Reload';
-import Login from './components/Login';
 import Loading from './components/Loading';
 import Error from './components/Error';
 import Alert from './components/Alert';
-import Assigner from './components/Assigner';
-import Controller from './components/Controller';
 import AlcoholWarning from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
 import Ticket from './components/Ticket';
-import History from './components/History';
-import Treasury from './components/Treasury';
-import Catering from './components/Catering';
 
 export default {
     name: 'App',
 
     components: {
-        Items,
         Topbar,
-        Sidebar,
-        Reload,
-        Login,
         Loading,
         Error,
         Alert,
-        Assigner,
-        Controller,
         AlcoholWarning,
         DisconnectWarning,
-        Ticket,
-        History,
-        Treasury,
-        Catering
+        Ticket
     },
 
     computed: {
         ...mapState({
-            buyer: state => state.auth.buyer,
             seller: state => state.auth.seller,
-            basketStatus: state => state.basket.basketStatus,
             loaded: state => state.ui.dataLoaded,
             lastUser: state => state.ui.lastUser,
-            doubleValidation: state => state.auth.device.config.doubleValidation,
-            useCardData: state => state.auth.device.event.config.useCardData,
-            online: state => state.online.status,
-            history: state => state.history.opened,
-            treasury: state => state.treasury.opened,
-            catering: state => state.catering.opened,
             reloadState: state => state.reload.reloadState,
             alert: state => state.auth.alert
         }),
 
-        ...mapGetters([
-            'loginState',
-            'isAssignerMode',
-            'isSellerMode',
-            'isReloaderMode',
-            'isControllerMode',
-            'isCashMode'
-        ]),
+        ...mapGetters(['isSellerMode', 'isReloaderMode', 'isCashMode']),
 
         reloadOnly() {
             return !this.isSellerMode && this.isReloaderMode;

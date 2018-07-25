@@ -1,7 +1,3 @@
-export const openReloadModal = ({ commit }) => {
-    commit('OPEN_RELOAD_MODAL');
-};
-
 export const confirmReloadModal = ({ commit }) => {
     commit('CONFIRM_RELOAD_MODAL');
 };

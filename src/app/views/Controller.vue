@@ -21,7 +21,7 @@
 import { mapActions, mapState } from 'vuex';
 
 import Chooser from './Controller-Chooser';
-import Ok from './Ok';
+import Ok from '@/components/Ok';
 
 export default {
     components: {

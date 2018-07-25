@@ -25,7 +25,7 @@
                     +<currency :value="reloadGiftAmount"></currency>
                 </span>
             </div>
-            <div v-show="reloadState === 'opened' || reloadOnly">
+            <div>
                 <div class="b-reload__modal__numerical-input">
                     <unit-input
                         v-if="meanOfPayment === 'returned'"
@@ -56,10 +56,10 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 
-import Currency from './Currency';
-import Methods from './Reload-Methods';
-import NumericalInput from './NumericalInput';
-import UnitInput from './UnitInput';
+import Currency from '@/components/Currency';
+import Methods from '@/components/Reload-Methods';
+import NumericalInput from '@/components/NumericalInput';
+import UnitInput from '@/components/UnitInput';
 
 export default {
     props: {
@@ -111,7 +111,12 @@ export default {
             if (this.$refs.input) {
                 this.$refs.input.clear();
             }
+
             this.closeReloadModal();
+
+            if (!this.reloadOnly) {
+                this.$router.push('/items');
+            }
         },
 
         reload() {
@@ -152,7 +157,7 @@ export default {
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
                 options
-            });
+            }).then(() => this.closeReload());
         },
 
         cancelReload() {

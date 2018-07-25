@@ -10,10 +10,6 @@ const mutations = {
         state.meansOfPayment = payload;
     },
 
-    OPEN_RELOAD_MODAL(state) {
-        state.reloadState = 'opened';
-    },
-
     CANCEL_RELOAD_MODAL(state) {
         state.reloadState = 'opened';
     },

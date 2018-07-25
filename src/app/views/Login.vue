@@ -30,8 +30,8 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 
-import Ticket from './Ticket';
-import NumericalInput from './NumericalInput';
+import Ticket from '@/components/Ticket';
+import NumericalInput from '@/components/NumericalInput';
 
 export default {
     components: {
@@ -104,6 +104,7 @@ export default {
                 password
             }).then(() => {
                 this.authingSeller = false;
+                this.$router.push('/');
             });
         },
 

@@ -18,9 +18,6 @@
               :isReloaderMode="isReloaderMode"
               :displayLogout="displayLogout"
               :onlyLogout="onlyLogout"
-              :history="history"
-              :treasury="treasury"
-              :catering="catering"
               :useCardData="useCardData"/>
         </div>
     </div>
@@ -44,9 +41,6 @@ export default {
         ...mapGetters(['isSellerMode', 'isReloaderMode']),
 
         ...mapState({
-            history: state => state.history.opened,
-            treasury: state => state.treasury.opened,
-            catering: state => state.catering.opened,
             useCardData: state => state.auth.device.event.config.useCardData,
             seller: state => state.auth.seller,
             displayLogout: state => state.auth.seller.meanOfLogin.length > 0,

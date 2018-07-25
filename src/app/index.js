@@ -5,6 +5,7 @@ import RavenVue from 'raven-js/plugins/vue';
 import App from './App';
 import Nfc from './components/Nfc.vue';
 import store from './store';
+import router from './router';
 import { getPlatform } from '../lib/platform';
 
 function init() {
@@ -20,6 +21,7 @@ function init() {
     /* eslint-disable no-new */
     window.app = new Vue({
         store,
+        router,
         el: '#app',
         template: '<App/>',
         components: { App }

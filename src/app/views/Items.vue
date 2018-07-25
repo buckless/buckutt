@@ -1,16 +1,20 @@
 <template>
-    <div class="b-items">
-        <div class="b-items__search" v-if="tabItems.length > itemsPerTab">
-            <i class="b-icon">search</i>
-            <input type="text" v-model="filter" placeholder="Filtre" />
-            <i class="b-icon" @click="filter = ''">highlight_off</i>
+    <div class="b-items-wrapper">
+        <div class="b-items">
+            <div class="b-items__search" v-if="tabItems.length > itemsPerTab">
+                <i class="b-icon">search</i>
+                <input type="text" v-model="filter" placeholder="Filtre" />
+                <i class="b-icon" @click="filter = ''">highlight_off</i>
+            </div>
+            <item
+                v-for="item in displayedItems"
+                :item="item"
+                :key="item.id"></item>
+            <nfc mode="read" @read="logBuyer" v-if="isWaiting && !isWriting" key="read" />
+            <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
         </div>
-        <item
-            v-for="item in displayedItems"
-            :item="item"
-            :key="item.id"></item>
-        <nfc mode="read" @read="logBuyer" v-if="isWaiting && !isWriting" key="read" />
-        <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
+        <sidebar />
+        <router-view />
     </div>
 </template>
 
@@ -18,11 +22,13 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import fuzzy from 'fuzzy';
 
-import Item from './Items-Item';
+import Item from '@/components/Items-Item';
+import Sidebar from '@/components/Sidebar';
 
 export default {
     components: {
-        Item
+        Item,
+        Sidebar
     },
 
     data() {
@@ -85,6 +91,11 @@ export default {
 </script>
 
 <style scoped>
+.b-items-wrapper {
+    display: flex;
+    flex: 1;
+}
+
 .b-items {
     width: 100%;
     height: 100%;

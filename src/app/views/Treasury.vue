@@ -67,7 +67,7 @@ import { saveAs } from 'file-saver';
 import groupBy from 'lodash.groupby';
 import sumBy from 'lodash.sumby';
 import { mapState } from 'vuex';
-import Currency from './Currency';
+import Currency from '@/components/Currency';
 
 export default {
     components: {
