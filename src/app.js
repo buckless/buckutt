@@ -7,7 +7,6 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const http = require('http');
-const https = require('https');
 const randomstring = require('randomstring');
 const config = require('../config');
 const controllers = require('./controllers');
@@ -18,8 +17,6 @@ const bookshelf = require('./lib/bookshelf');
 const redis = require('./lib/redis');
 const exposeResBody = require('./lib/exposeResBody');
 const APIError = require('./errors/APIError');
-const sslConfig = require('../scripts/sslConfig');
-const { addDevice } = require('../scripts/addDevice');
 const { unmarshal } = require('./middlewares/connectors/http');
 
 const log = logger(module);
@@ -36,7 +33,7 @@ app.locals.models = bookshelf.models;
  */
 app.use(
     cors({
-        allowedHeaders: ['content-type', 'Authorization'],
+        allowedHeaders: ['content-type', 'Authorization', 'X-Fingerprint'],
         credentials: true,
         exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
         origin: true
@@ -105,101 +102,57 @@ app.use((err, req, res, next) => {
         .end();
 });
 
-app.start = () => {
-    const sslFilesPath = {
-        key: './ssl/certificates/server/server-key.pem',
-        cert: './ssl/certificates/server/server-crt.pem',
-        ca: './ssl/certificates/ca/ca-crt.pem'
-    };
-
+app.start = async () => {
     // todo : promise.all
     // todo : abort on catch
-    let startingQueue = Promise.all([
+    await Promise.all([
         bookshelf.waitForDb(2, 15).then(() => bookshelf.sync()),
         redis.waitForCache(2, 15)
     ]); // 15 retries, one every 2 seconds
 
-    /* istanbul ignore if */
-    if (
-        !fs.existsSync(sslFilesPath.key) ||
-        !fs.existsSync(sslFilesPath.cert) ||
-        !fs.existsSync(sslFilesPath.ca)
-    ) {
-        startingQueue = startingQueue
-            .then(() => {
-                log.info('No SSL certificates found, generating new ones...');
-                const result = sslConfig(null, null, true);
-                log.info(`[ chalPassword ] ${result.chalPassword}`);
-                log.info(`[ outPassword ] ${result.outPassword}`);
-            })
-            .then(() => {
-                log.info('Seeding database...');
+    const databaseSeeded = await checkSeeds();
 
-                return bookshelf.knex.seed.run();
-            })
-            .then(() => {
-                log.info('Creating admin device...');
+    if (databaseSeeded) {
+        log.info('Seeding database...');
 
-                const password =
-                    process.env.NODE_ENV === 'development'
-                        ? 'development'
-                        : randomstring.generate();
-
-                return addDevice({ admin: true, deviceName: 'admin', password });
-            })
-            .then(adminPassword => {
-                log.info(`[ admin .p12 password ] ${adminPassword}`);
-            })
-            .then(() => {
-                log.info('Creating manager certificate...');
-
-                return addDevice({ admin: true, deviceName: 'manager', password: 'manager' });
-            });
+        await bookshelf.knex.seed.run();
     }
 
-    return startingQueue.then(() => {
-        const server =
-            process.env.SERVER_PROTOCOL === 'http'
-                ? http.createServer(app)
-                : https.createServer(
-                      {
-                          key: fs.readFileSync(sslFilesPath.key),
-                          cert: fs.readFileSync(sslFilesPath.cert),
-                          ca: fs.readFileSync(sslFilesPath.ca),
-                          requestCert: true,
-                          rejectUnauthorized: false
-                      },
-                      app
-                  );
+    const server = http.createServer(app);
 
-        app.locals.modelChanges = new EventEmitter();
-        app.locals.server = server;
+    app.locals.modelChanges = new EventEmitter();
+    app.locals.server = server;
 
-        socketServer.ioServer(server, app);
+    socketServer.ioServer(server, app);
 
-        purchaseWebservices(app);
+    purchaseWebservices(app);
 
-        return new Promise((resolve, reject) => {
-            server.listen(config.http.port, config.http.host, err => {
-                /* istanbul ignore if */
-                if (err) {
-                    return reject(err);
-                }
+    return new Promise((resolve, reject) => {
+        server.listen(config.http.port, config.http.host, err => {
+            /* istanbul ignore if */
+            if (err) {
+                return reject(err);
+            }
 
-                log.info(
-                    'Server is listening %s://%s:%d',
-                    process.env.SERVER_PROTOCOL || 'https',
-                    config.http.host,
-                    config.http.port
-                );
+            log.info(
+                'Server is listening %s://%s:%d',
+                process.env.SERVER_PROTOCOL,
+                config.http.host,
+                config.http.port
+            );
 
-                fs.writeFileSync(LOCK_FILE, '1');
+            fs.writeFileSync(LOCK_FILE, '1');
 
-                resolve(app);
-            });
+            resolve(app);
         });
     });
 };
+
+const checkSeeds = () =>
+    app.locals.models.Device.where({ fingerprint: 'admin' })
+        .count()
+        .then(c => c === 0)
+        .catch(() => false);
 
 /* istanbul ignore next */
 const clearLock = status => {

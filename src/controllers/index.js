@@ -12,7 +12,7 @@ const router = new express.Router('/');
  */
 for (const key of Object.keys(middlewares)) {
     // Skip 6_idempotency which is http only
-    if (key === '6') {
+    if (key === '5') {
         router.use(middlewares[key]);
         continue;
     }

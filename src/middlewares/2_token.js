@@ -94,23 +94,31 @@ module.exports = function token(connector) {
 
             connector.connectType = connectType;
 
-            connector.user.rights = connector.user.rights.filter(right => {
-                // If pin is not allowed with this right, pass
-                if (connectType === 'pin' && pinLoggingAllowed.indexOf(right.name) === -1) {
-                    return false;
-                }
-
-                if (right.period.start <= now && right.period.end > now) {
-                    if (right.name !== 'admin' && right.point) {
-                        return !right.point.isRemoved && right.point.id === connector.point_id;
+            // Rights are deactivated if the request comes from manager or from admin with pin login
+            if (
+                connector.device.name === 'manager' ||
+                (connector.device.name === 'admin' && connectType === 'pin')
+            ) {
+                connector.user.rights = [];
+            } else {
+                connector.user.rights = connector.user.rights.filter(right => {
+                    // If pin is not allowed with this right, pass
+                    if (connectType === 'pin' && pinLoggingAllowed.indexOf(right.name) === -1) {
+                        return false;
                     }
 
-                    return true;
-                }
+                    if (right.period.start <= now && right.period.end > now) {
+                        if (right.name !== 'admin' && right.point) {
+                            return !right.point.isRemoved && right.point.id === connector.point_id;
+                        }
 
-                // This right should not be added as it is over
-                return false;
-            });
+                        return true;
+                    }
+
+                    // This right should not be added as it is over
+                    return false;
+                });
+            }
 
             connector.details.operator = {
                 id: user.id,
