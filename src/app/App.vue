@@ -20,6 +20,7 @@ import 'normalize.css';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 import OfflineData from '@/../lib/offlineData';
+import Fingerprint from '@/../lib/fingerprint';
 
 import Topbar from './components/Topbar';
 import Loading from './components/Loading';
@@ -73,14 +74,19 @@ export default {
             on() {}
         };
 
+        let fingerprint = '';
+
         if (process.env.TARGET === 'electron') {
             const remote = require('electron').remote.getCurrentWindow();
             nfc = remote.nfc;
+            fingerprint = remote.fingerprint;
         } else {
             const NFC = require('../lib/nfc');
             nfc = new NFC();
+            fingerprint = Fingerprint;
         }
 
+        window.fingerprint = fingerprint;
         window.nfc = nfc;
         window.appId = Date.now();
         window.database = new OfflineData();
