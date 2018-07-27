@@ -33,7 +33,7 @@ app.locals.models = bookshelf.models;
  */
 app.use(
     cors({
-        allowedHeaders: ['content-type', 'Authorization', 'X-Fingerprint'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Fingerprint', 'Idempotency-Key'],
         credentials: true,
         exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
         origin: true
@@ -134,12 +134,7 @@ app.start = async () => {
                 return reject(err);
             }
 
-            log.info(
-                'Server is listening %s://%s:%d',
-                process.env.SERVER_PROTOCOL,
-                config.http.host,
-                config.http.port
-            );
+            log.info('Server is listening http://%s:%d', config.http.host, config.http.port);
 
             fs.writeFileSync(LOCK_FILE, '1');
 
