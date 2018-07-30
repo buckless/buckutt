@@ -5,8 +5,8 @@
         </div>
         <upper />
         <div class="b-header__buyer-credit" v-if="buyer.isAuth">
-            <span :class="{ 'b-header__buyer__credit--negative': credit < 0 }">
-                <currency :value="credit"></currency>
+            <span :class="{ 'b-header__buyer__credit--negative': buyer.credit < 0 }">
+                <currency :value="buyer.credit"></currency>
             </span>
         </div>
         <lower />
@@ -36,8 +36,6 @@ export default {
         isMobile() {
             return isMobile();
         },
-
-        ...mapGetters(['credit']),
 
         ...mapState({
             showPicture: state => state.auth.device.config.showPicture,
