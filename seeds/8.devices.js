@@ -1,11 +1,11 @@
-const uuid = require('uuid').v4;
+const { admin_id, manager_id, item } = require('./utils/_data');
 
 exports.seed = function (knex) {
     return knex('devices').del()
         .then(() =>
             knex('devices').insert([
-                item({ id: uuid(), name: 'admin', fingerprint: 'admin', isUser: true }),
-                item({ id: uuid(), name: 'manager', name: 'manager', isUser: true })
+                item({ id: admin_id, name: 'admin', fingerprint: 'admin', isUser: true }),
+                item({ id: manager_id, name: 'manager', fingerprint: 'manager', isUser: true })
             ])
         );
 };

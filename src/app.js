@@ -112,7 +112,7 @@ app.start = async () => {
 
     const databaseSeeded = await checkSeeds();
 
-    if (databaseSeeded) {
+    if (!databaseSeeded) {
         log.info('Seeding database...');
 
         await bookshelf.knex.seed.run();
