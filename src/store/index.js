@@ -4,7 +4,6 @@ import Vuex from 'vuex';
 import * as actions from './actions';
 
 import app from './modules/app';
-import changes from './modules/changes';
 import notifications from './modules/notifications';
 import register from './modules/register';
 
@@ -14,7 +13,6 @@ export default new Vuex.Store({
     actions,
     modules: {
         app,
-        changes,
         notifications,
         register
     }

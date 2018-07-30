@@ -34,26 +34,26 @@ module.exports = {
         target      : 'http://0.0.0.0:3000/services/',
         changeOrigin: true,
         pathRewrite : { '/api': '' },
-        headers     : { 'X-fingerprint': 'manager' }
+        headers     : { 'X-Fingerprint': 'manager' }
       },
       '/api/callback': {
         target      : 'http://0.0.0.0:3000/provider/callback',
         changeOrigin: true,
         pathRewrite : { '/api/callback': '' },
-        headers     : { 'X-fingerprint': 'manager' }
+        headers     : { 'X-Fingerprint': 'manager' }
       },
       '/api/**': {
         target      : 'http://0.0.0.0:3000/services/manager/',
         changeOrigin: true,
         pathRewrite : { '/api': '' },
-        headers     : { 'X-fingerprint': 'manager' }
+        headers     : { 'X-Fingerprint': 'manager' }
       },
-      '/socket.io': {
+      '/live/**': {
+        logLevel: 'debug',
         target      : 'http://0.0.0.0:3000/',
         changeOrigin: true,
-        ws          : true,
-        headers     : { 'X-fingerprint': 'manager' }
-      }
+        headers     : { 'X-Fingerprint': 'manager' }
+      },
     } : {},
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
