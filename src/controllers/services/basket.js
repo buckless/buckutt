@@ -274,13 +274,17 @@ router.post('/services/basket', (req, res, next) => {
 
     Promise.all([updateCredit].concat(purchases).concat(reloads))
         .then(() => {
-            req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id: req.buyer.id,
-                credit: req.buyer.credit,
-                pending: newCredit - req.buyer.credit
-            });
+            req.app.locals.pub.publish(
+                'userCreditUpdate',
+                JSON.stringify({
+                    id: req.buyer.id,
+                    credit: req.buyer.credit,
+                    pending: newCredit - req.buyer.credit
+                })
+            );
 
             req.details.basket = req.body.basket;
+            console.log('logging');
             log.info(`Processing basket of ${req.buyer.id} sold by ${req.user.id}`, req.details);
 
             return res

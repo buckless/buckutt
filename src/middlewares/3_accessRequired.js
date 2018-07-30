@@ -3,29 +3,28 @@ const config = require('../../config');
 
 /**
  * Check for the current user wether he can do what he wants
- * @param {Object} connector HTTP/Socket.IO connector
  */
-module.exports = connector => {
+module.exports = (req, res, next) => {
     const authorize = config.rights;
 
-    const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1);
+    const needToken = !(config.rights.openUrls.indexOf(req.path) > -1);
 
     if (!needToken) {
-        return Promise.resolve();
+        return next();
     }
 
-    if (connector.user && config.rights.loggedUrls.indexOf(connector.path) > -1) {
-        return Promise.resolve();
+    if (req.user && config.rights.loggedUrls.indexOf(req.path) > -1) {
+        return next();
     }
 
-    const rights = (connector.user || {}).rights || [];
-    let url = connector.path;
-    const method = connector.method;
+    const rights = (req.user || {}).rights || [];
+    let url = req.path;
+    const method = req.method;
 
     let handled = false;
 
     for (const right of rights) {
-        if (right.period.start > connector.date || right.period.end < connector.date) {
+        if (right.period.start > req.date || right.period.end < req.date) {
             return;
         }
 
@@ -33,7 +32,7 @@ module.exports = connector => {
         if (authorize.all.indexOf(right.name) > -1) {
             handled = true;
 
-            return Promise.resolve();
+            return next();
         }
 
         const uuid = /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i;
@@ -47,15 +46,15 @@ module.exports = connector => {
         if (method.toLowerCase() === 'get' && authorize[right.name].read.indexOf(url) > -1) {
             handled = true;
 
-            return Promise.resolve();
+            return next();
         } else if (authorize[right.name].write.indexOf(url) > -1) {
             handled = true;
 
-            return Promise.resolve();
+            return next();
         }
     }
 
     if (!handled) {
-        return Promise.reject(new APIError(module, 401, 'Unauthorized: insufficient rights'));
+        return next(new APIError(module, 401, 'Unauthorized: insufficient rights'));
     }
 };

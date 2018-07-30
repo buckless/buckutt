@@ -1,27 +1,36 @@
+const express = require('express');
+const sseExpress = require('sse-express');
+const uuid = require('uuid');
 const log = require('../../lib/log')(module);
 
-const send = (clients, userId, credit) => {
-    const client = Object.keys(clients)
-        .map(id => clients[id])
-        .filter(c => c.userCredit)
-        .find(c => c.user.id === userId);
+/**
+ * User credit update
+ */
+const router = new express.Router();
 
-    if (client && credit) {
-        client.client.emit('userCredit', credit);
-    }
-};
+router.get('/live/credit', sseExpress(), (req, res, next) => {
+    req.details.sse = true;
 
-module.exports = {
-    route: 'userCredit',
+    const handler = (channel, msg) => {
+        if (channel !== 'userCreditUpdate') {
+            return;
+        }
 
-    setup(app, clients) {
-        app.locals.modelChanges.on('userCreditUpdate', update => {
-            // update has : id, credit, update
-            send(clients, update.id, update);
-        });
-    },
+        if (!msg || msg.length === 0) {
+            return;
+        }
 
-    client(clients, client) {
-        clients[client.id].userCredit = true;
-    }
-};
+        const { id, credit, pending } = JSON.parse(msg);
+
+        if (id === req.user.id) {
+            res.sse({
+                data: { credit, pending }
+            });
+        }
+    };
+
+    req.app.locals.sub.on('message', handler);
+    res.on('close', () => req.app.locals.sub.off('message', handler));
+});
+
+module.exports = router;

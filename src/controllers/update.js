@@ -29,11 +29,13 @@ router.put('/:model/:id', (req, res, next) => {
             // Has to be set manually because of the previous select
             inst.set('updated_at', new Date());
 
-            req.app.locals.modelChanges.emit(
+            req.app.locals.pub.publish(
                 'data',
-                'update',
-                modelParser.modelsNames[req.params.model],
-                { from: previous, to: inst.toJSON() }
+                JSON.stringify({
+                    action: 'update',
+                    model: modelParser.modelsNames[req.params.model],
+                    data: { from: previous, to: inst.toJSON() }
+                })
             );
 
             return inst.save();

@@ -1,10 +1,10 @@
-module.exports = function headers(connector) {
-    connector.header('point', connector.point_id);
-    connector.header('pointName', connector.point.name);
-    connector.header('event', connector.event_id);
-    connector.header('eventName', connector.event.name);
-    connector.header('wiket', connector.wiket.id);
-    connector.header('device', connector.device.id);
+module.exports = (req, res, next) => {
+    req.header('point', req.point_id);
+    req.header('pointName', req.point.name);
+    req.header('event', req.event_id);
+    req.header('eventName', req.event.name);
+    req.header('wiket', req.wiket.id);
+    req.header('device', req.device.id);
 
-    return Promise.resolve();
+    return next();
 };

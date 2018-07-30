@@ -128,6 +128,8 @@ router.post('/services/login', async (req, res, next) => {
         req.details
     );
 
+    console.log('GENERATE', req);
+
     return res
         .status(200)
         .json({
@@ -135,7 +137,7 @@ router.post('/services/login', async (req, res, next) => {
             linkedUsers: users,
             token: generateToken({
                 id: user.id,
-                point: req.point.id,
+                point: req.point_id,
                 // Will be used by middleware (else how could middleware know if pin or password ?)
                 connectType
             })

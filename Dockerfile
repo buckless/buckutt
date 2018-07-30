@@ -1,8 +1,8 @@
-FROM node:alpine
+FROM keymetrics/pm2:latest-alpine
 
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["pm2-runtime", "process.yml"]
 
 WORKDIR /usr/src/buckless-server
 

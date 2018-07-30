@@ -10,18 +10,14 @@ const http = require('http');
 const randomstring = require('randomstring');
 const config = require('../config');
 const controllers = require('./controllers');
-const socketServer = require('./socketServer');
 const purchaseWebservices = require('./lib/purchaseWebservices');
 const logger = require('./lib/log');
 const bookshelf = require('./lib/bookshelf');
 const redis = require('./lib/redis');
 const exposeResBody = require('./lib/exposeResBody');
 const APIError = require('./errors/APIError');
-const { unmarshal } = require('./middlewares/connectors/http');
 
 const log = logger(module);
-
-const LOCK_FILE = path.join(__dirname, '..', 'ready.lock');
 
 const app = express();
 
@@ -42,7 +38,12 @@ app.use(
 app.use(bodyParser.msgpack({ limit: '5mb' }));
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(cookieParser());
-app.use(compression());
+app.use(
+    compression({
+        // do not compress event-source request, non supported by browsers
+        filter: req => req.path.indexOf('/live') === -1
+    })
+);
 app.use(exposeResBody);
 
 /**
@@ -60,18 +61,6 @@ app.use((req, res, next) => {
 
 // Internal error
 app.use((err, req, res, next) => {
-    // In case of an error occuring during the middleware chain, unmarshal has not been made
-    try {
-        unmarshal(req, res, () => {});
-    } catch (err_) {
-        // unmarshal has failed, thus req.details is undefined
-        if (!req.details) {
-            req.details = {};
-        }
-
-        log.error(err_);
-    }
-
     let error = err;
 
     /* istanbul ignore next */
@@ -94,6 +83,10 @@ app.use((err, req, res, next) => {
         }
 
         logger(err.module).error(err.message, req.details);
+    }
+
+    if (req.details.sse) {
+        return;
     }
 
     res
@@ -120,10 +113,12 @@ app.start = async () => {
 
     const server = http.createServer(app);
 
-    app.locals.modelChanges = new EventEmitter();
+    app.locals.pub = await redis.getClient().duplicate();
+    app.locals.sub = await redis.getClient().duplicate();
     app.locals.server = server;
 
-    socketServer.ioServer(server, app);
+    // app.locals.sub.subscribe('userCreditUpdate');
+    app.locals.sub.subscribe('data');
 
     purchaseWebservices(app);
 
@@ -136,9 +131,8 @@ app.start = async () => {
 
             log.info('Server is listening http://%s:%d', config.http.host, config.http.port);
 
-            fs.writeFileSync(LOCK_FILE, '1');
-
             resolve(app);
+            process.send('ready');
         });
     });
 };
@@ -149,30 +143,11 @@ const checkSeeds = () =>
         .then(c => c === 0)
         .catch(() => false);
 
-/* istanbul ignore next */
-const clearLock = status => {
-    if (status instanceof Error) {
-        log.error(status);
-    }
-
-    try {
-        fs.unlinkSync(LOCK_FILE);
-    } catch (e) {
-        process.exit(1);
-    }
-
-    process.exit(status || 0);
-};
-
-/* istanbul ignore next */
-process.on('unhandledRejection', err => {
-    if (
-        err.name === 'ReqlDriverError' &&
-        err.message === 'None of the pools have an opened connection and failed to open a new one.'
-    ) {
-        log.error('Cannot open connection to database');
-        process.exit(1);
-    }
+process.on('SIGINT', () => {
+    bookshelf.knex
+        .destroy()
+        .then(() => process.exit(0))
+        .catch(() => process.exit(1));
 });
 
 module.exports = app;
@@ -180,12 +155,6 @@ module.exports = app;
 // Start the application
 /* istanbul ignore if */
 if (require.main === module) {
-    process.on('exit', clearLock);
-    process.on('SIGINT', clearLock);
-    process.on('SIGTERM', clearLock);
-    process.on('uncaughtException', clearLock);
-    process.on('unhandledRejection', clearLock);
-
     app.start().catch(err => {
         log.error('Start error: %s', err);
     });

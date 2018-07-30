@@ -140,7 +140,8 @@ router.post('/services/cancelTransaction', (req, res, next) => {
                 .returning('credit')
                 .then(credit => ({
                     id: user,
-                    credit
+                    credit,
+                    pending: null
                 }));
         }
 
@@ -152,7 +153,7 @@ router.post('/services/cancelTransaction', (req, res, next) => {
     Promise.all(queries)
         .then(results => {
             results.forEach(result => {
-                req.app.locals.modelChanges.emit('userCreditUpdate', result);
+                req.app.locals.pub.publish('userCreditUpdate', JSON.stringify(result));
             });
 
             return new Model({ id: req.transaction.data.id }).save(

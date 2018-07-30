@@ -109,11 +109,14 @@ router.post('/services/manager/accountRefund', async (req, res, next) => {
         return dbCatch(module, err, next);
     }
 
-    req.app.locals.modelChanges.emit('userCreditUpdate', {
-        id: req.user.id,
-        credit: newCredit,
-        pending: 0
-    });
+    req.app.locals.pub.publish(
+        'userCreditUpdate',
+        JSON.stringify({
+            id: req.user.id,
+            credit: newCredit,
+            pending: null
+        })
+    );
 
     return res
         .status(200)

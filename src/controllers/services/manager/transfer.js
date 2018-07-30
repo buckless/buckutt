@@ -101,15 +101,23 @@ router.post('/services/manager/transfer', (req, res, next) => {
 
     return Promise.all([updateSender.save(), updateReciever.save(), newTransfer.save()])
         .then(() => {
-            req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id: req.user.id,
-                pending: -1 * amount
-            });
+            req.app.locals.pub.publish(
+                'userCreditUpdate',
+                JSON.stringify({
+                    id: req.user.id,
+                    credit: null,
+                    pending: -1 * amount
+                })
+            );
 
-            req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id: req.recieverUser.id,
-                pending: amount
-            });
+            req.app.locals.pub.publish(
+                'userCreditUpdate',
+                JSON.stringify({
+                    id: req.recieverUser.id,
+                    credit: null,
+                    pending: amount
+                })
+            );
 
             req.details.user1 = req.user.id;
             req.details.user2 = req.body.reciever_id;

@@ -16,24 +16,21 @@ const interpolate = {
 
 /**
  * Parses the query to build the future rethink call
- * @param {Object} connector HTTP/Socket.IO connector
  */
-module.exports = function query(connector) {
+module.exports = (req, res, next) => {
     for (const q of Object.keys(types)) {
-        if (connector.query.hasOwnProperty(q)) {
-            if (typeof connector.query[q] !== types[q]) {
+        if (req.query.hasOwnProperty(q)) {
+            if (typeof req.query[q] !== types[q]) {
                 const interpolater = interpolate[types[q]];
 
                 try {
-                    connector.query[q] = interpolater(connector.query[q]);
+                    req.query[q] = interpolater(req.query[q]);
                 } catch (e) {
-                    return Promise.reject(
-                        new APIError(module, 400, 'Bad Input', `Invalid query ${q}`)
-                    );
+                    return next(new APIError(module, 400, 'Bad Input', `Invalid query ${q}`));
                 }
             }
         }
     }
 
-    return Promise.resolve();
+    return next();
 };

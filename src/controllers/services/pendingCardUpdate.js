@@ -58,11 +58,14 @@ router.get('/services/pendingCardUpdate', (req, res, next) => {
                 .returning('credit');
         })
         .then(credit => {
-            req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id: req.buyer.id,
-                pending: 0,
-                credit
-            });
+            req.app.locals.pub.publish(
+                'userCreditUpdate',
+                JSON.stringify({
+                    id: req.buyer.id,
+                    pending: null,
+                    credit
+                })
+            );
 
             log.info(`Processing pendingCardUpdate ${req.buyer.id}`, req.details);
 

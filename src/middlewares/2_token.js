@@ -5,21 +5,22 @@ const config = require('../../config');
 
 /**
  * Parses the client token
- * @param {Object} connector HTTP/Socket.IO connector
  */
-module.exports = function token(connector) {
+module.exports = async (req, res, next) => {
     const secret = config.app.secret;
 
     // OpenUrls : no token required
-    const needToken = !(config.rights.openUrls.indexOf(connector.path) > -1);
+    const needToken = !(config.rights.openUrls.indexOf(req.path) > -1);
 
-    if (!needToken && !connector.headers.authorization) {
-        return Promise.resolve();
+    const authorization = req.headers.authorization || req.query.authorization;
+
+    if (!needToken && !authorization) {
+        return next();
     }
 
     // Skip token at login
-    if (connector.path === '/services/login') {
-        return Promise.resolve();
+    if (req.path === '/services/login') {
+        return next();
     }
 
     // Config is invalid
@@ -29,111 +30,118 @@ module.exports = function token(connector) {
     }
 
     // Missing header
-    if (!(connector.headers && connector.headers.authorization)) {
-        const err = new APIError(
-            module,
-            400,
-            'No token or scheme provided. Header format is Authorization: Bearer [token]'
+    if (!(req.headers && authorization)) {
+        return next(
+            new APIError(
+                module,
+                400,
+                'No token or scheme provided. Header format is Authorization: Bearer [token]'
+            )
         );
-        return Promise.reject(err);
     }
 
-    const parts = connector.headers.authorization.split(' ');
+    const parts = authorization.split(' ');
     // Invalid format (`Bearer Token`)
     if (parts.length !== 2) {
-        const err = new APIError(
-            module,
-            400,
-            'No token or scheme provided. Header format is Authorization: Bearer [token]'
+        return next(
+            new APIError(
+                module,
+                400,
+                'No token or scheme provided. Header format is Authorization: Bearer [token]'
+            )
         );
-        return Promise.reject(err);
     }
 
     const scheme = parts[0];
     const bearer = parts[1];
     // Invalid format (`Bearer Token`)
     if (scheme.toLowerCase() !== 'bearer') {
-        const err = new APIError(
-            module,
-            400,
-            'Scheme is `Bearer`. Header format is Authorization: Bearer [token]'
+        return next(
+            new APIError(
+                module,
+                400,
+                'Scheme is `Bearer`. Header format is Authorization: Bearer [token]'
+            )
         );
-        return Promise.reject(err);
     }
 
     let connectType;
 
     const pinLoggingAllowed = config.rights.pinLoggingAllowed;
-    const now = connector.date;
+    const now = req.date;
 
-    return jwt
-        .verifyAsync(bearer, secret)
-        .then(decoded => {
-            const userId = decoded.id;
-            connectType = decoded.connectType;
+    let decoded;
 
-            return Promise.all([
-                connector.models.User.where({ id: userId }).fetch({
-                    withRelated: ['rights', 'rights.period', 'rights.point']
-                }),
-                connector.models.Point.where({ id: decoded.point }).fetch()
-            ]);
-        })
-        .then(([resUser, resPoint]) => [
-            resUser ? resUser.toJSON() : null,
-            resPoint ? resPoint.toJSON() : null
-        ])
-        .then(([user, point]) => {
-            if (!user) {
-                return Promise.reject(new APIError(module, 500, 'User has been deleted'));
-            }
-            connector.user = user;
+    try {
+        decoded = await jwt.verifyAsync(bearer, secret);
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            return next(new APIError(module, 401, 'Token expired'));
+        }
 
-            connector.point_id = point.id;
-            connector.point = point;
+        if (err instanceof jwt.JsonWebTokenError) {
+            return next(new APIError(module, 401, 'Invalid token', { bearer }));
+        }
 
-            connector.connectType = connectType;
+        next(err);
+    }
 
-            // Rights are deactivated if the request comes from manager or from admin with pin login
-            if (
-                connector.device.name === 'manager' ||
-                (connector.device.name === 'admin' && connectType === 'pin')
-            ) {
-                connector.user.rights = [];
-            } else {
-                connector.user.rights = connector.user.rights.filter(right => {
-                    // If pin is not allowed with this right, pass
-                    if (connectType === 'pin' && pinLoggingAllowed.indexOf(right.name) === -1) {
-                        return false;
-                    }
+    const userId = decoded.id;
+    connectType = decoded.connectType;
 
-                    if (right.period.start <= now && right.period.end > now) {
-                        if (right.name !== 'admin' && right.point) {
-                            return !right.point.isRemoved && right.point.id === connector.point_id;
-                        }
+    console.log(decoded);
 
-                        return true;
-                    }
+    const [user, point] = await Promise.all([
+        req.app.locals.models.User.where({ id: userId }).fetch({
+            withRelated: ['rights', 'rights.period', 'rights.point']
+        }),
+        req.app.locals.models.Point.where({ id: decoded.point }).fetch()
+    ]).then(([resUser, resPoint]) => [
+        resUser ? resUser.toJSON() : null,
+        resPoint ? resPoint.toJSON() : null
+    ]);
 
-                    // This right should not be added as it is over
-                    return false;
-                });
+    if (!user) {
+        return next(new APIError(module, 500, 'User has been deleted'));
+    }
+
+    req.user = user;
+
+    req.point_id = point.id;
+    req.point = point;
+
+    req.connectType = connectType;
+
+    // Rights are deactivated if the request comes from manager or from admin with pin login
+    if (req.device.name === 'manager' || (req.device.name === 'admin' && connectType === 'pin')) {
+        req.user.rights = [];
+    } else {
+        req.user.rights = req.user.rights.filter(right => {
+            // If pin is not allowed with this right, pass
+            if (connectType === 'pin' && pinLoggingAllowed.indexOf(right.name) === -1) {
+                return false;
             }
 
-            connector.details.operator = {
-                id: user.id,
-                rights: connector.user.rights.map(right => ({
-                    name: right.name,
-                    end: right.period.end
-                }))
-            };
+            if (right.period.start <= now && right.period.end > now) {
+                if (right.name !== 'admin' && right.point) {
+                    return !right.point.isRemoved && right.point.id === req.point_id;
+                }
 
-            return Promise.resolve();
-        })
-        .catch(jwt.TokenExpiredError, () =>
-            Promise.reject(new APIError(module, 401, 'Token expired'))
-        )
-        .catch(jwt.JsonWebTokenError, () =>
-            Promise.reject(new APIError(module, 401, 'Invalid token', { bearer }))
-        );
+                return true;
+            }
+
+            // This right should not be added as it is over
+            return false;
+        });
+    }
+
+    req.details.operator = {
+        id: user.id,
+        rights: req.user.rights.map(right => ({
+            name: right.name,
+            end: right.period.end
+        }))
+    };
+
+    return next();
 };

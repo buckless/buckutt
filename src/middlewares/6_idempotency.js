@@ -13,13 +13,13 @@ module.exports = async (req, res, next) => {
         return next();
     }
 
-    const cacheKey = 'idempotency/' + idempotencyKey + req.url;
+    const cacheKey = `idempotency/${idempotencyKey}${req.url}`;
 
     let storedResponse;
     try {
         storedResponse = JSON.parse(await redis.getClient().getAsync(cacheKey));
-    } catch (e) {
-        return Promise.reject(e);
+    } catch (err) {
+        return next(err);
     }
 
     if (!storedResponse) {
@@ -46,8 +46,8 @@ module.exports = async (req, res, next) => {
 
             try {
                 await redis.getClient().setAsync(cacheKey, responseToStore);
-            } catch (e) {
-                return Promise.reject(e);
+            } catch (err) {
+                return next(err);
             }
 
             log.info(`request ${cacheKey} stored in cache`);
@@ -58,7 +58,7 @@ module.exports = async (req, res, next) => {
 
     log.info(`request ${cacheKey} served from cache`);
 
-    res
+    return res
         .set(storedResponse.headers)
         .status(storedResponse.statusCode)
         .json(storedResponse.body)

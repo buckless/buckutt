@@ -9,7 +9,7 @@
           "read": [
               "/services/items",
               "/services/pendingCardUpdate",
-              "alert"
+              "/live/alert"
           ],
           "write": [
               "/services/basket",
@@ -25,7 +25,7 @@
           "read": [
               "/services/items",
               "/services/pendingCardUpdate",
-              "alert"
+              "/live/alert"
           ],
           "write": [
               "/services/basket",
@@ -42,7 +42,7 @@
               "/services/items",
               "/services/pendingCardUpdate",
               "/services/assigner",
-              "alert"
+              "/live/alert"
           ],
           "write": [
               "/meansoflogin",
@@ -57,7 +57,7 @@
           "read": [
               "/services/items",
               "/services/controller",
-              "alert"
+              "/live/alert"
           ],
           "write": [
               "/services/controller"
@@ -70,6 +70,7 @@
           "/services/manager/generatepin",
           "/services/manager/register",
           "/services/deviceEssentials",
+          "/live/status",
           "/provider/callback"
       ],
       "loggedUrls": [
@@ -84,7 +85,7 @@
           "/services/manager/block",
           "/services/manager/accountRefund",
           "/services/manager/groups",
-          "userCredit"
+          "/live/credit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
    }

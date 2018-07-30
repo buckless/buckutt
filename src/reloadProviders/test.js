@@ -91,10 +91,14 @@ module.exports = {
                         transaction.related('user').save(),
                         reloadGiftSave
                     ]).then(() => {
-                        app.locals.modelChanges.emit('userCreditUpdate', {
-                            id: transaction.get('user_id'),
-                            pending: amount
-                        });
+                        req.app.locals.pub.publish(
+                            'userCreditUpdate',
+                            JSON.stringify({
+                                id: transaction.get('user_id'),
+                                credit: null,
+                                pending: amount
+                            })
+                        );
                     });
                 }
 

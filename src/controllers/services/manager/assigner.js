@@ -49,9 +49,14 @@ router.post('/services/manager/assigner', (req, res, next) => {
                 mail: user.mail
             };
 
-            req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id: user.id
-            });
+            req.app.locals.pub.publish(
+                'userCreditUpdate',
+                JSON.stringify({
+                    id: user.id,
+                    credit: null,
+                    pending: null
+                })
+            );
 
             log.info(`Assign user ${user.firstname} ${user.lastname}`, req.details);
 

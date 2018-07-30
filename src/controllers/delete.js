@@ -16,11 +16,13 @@ router.delete('/:model/:id', (req, res, next) => {
     new req.Model({ id: req.params.id })
         .destroy()
         .then(inst => {
-            req.app.locals.modelChanges.emit(
+            req.app.locals.pub.publish(
                 'data',
-                'delete',
-                modelParser.modelsNames[req.params.model],
-                { from: inst, to: null }
+                JSON.stringify({
+                    action: 'delete',
+                    model: modelParser.modelsNames[req.params.model],
+                    data: { from: inst, to: null }
+                })
             );
 
             res

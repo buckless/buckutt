@@ -1,33 +1,42 @@
+const express = require('express');
+const sseExpress = require('sse-express');
+const uuid = require('uuid');
+const invert = require('lodash.invert');
 const { modelsNames } = require('../../lib/modelParser');
 const log = require('../../lib/log')(module);
 
-const broadcast = (clients, action, model, data) => {
-    Object.keys(clients)
-        .map(id => clients[id])
-        .filter(client => Array.isArray(client.listenForModelChanges))
-        .filter(client => client.listenForModelChanges.indexOf(model) > -1)
-        .forEach(client => {
-            client.client.emit(action, { model, data });
-        });
-};
+/**
+ * Model update
+ */
+const router = new express.Router();
 
-module.exports = {
-    route: 'listen',
+const routeNames = invert(modelsNames);
 
-    setup(app, clients) {
-        app.locals.modelChanges.on('data', (action, model, data) => {
-            broadcast(clients, action, model, data);
-        });
-    },
+router.get('/live/models', sseExpress(), (req, res, next) => {
+    req.details.sse = true;
 
-    client(clients, client, models) {
-        /* istanbul ignore else */
-        if (Array.isArray(models)) {
-            clients[client.id].listenForModelChanges = models.map(
-                m => modelsNames[m.toLowerCase()]
-            );
+    const models = (req.query.models || '').split(',').map(m => modelsNames[m.toLowerCase()]);
 
-            client.emit('listening', clients[client.id].listenForModelChanges);
+    const handler = (channel, msg) => {
+        if (channel !== 'data') {
+            return;
         }
-    }
-};
+
+        if (!msg || msg.length === 0) {
+            return;
+        }
+
+        const { action, model, data } = JSON.parse(msg);
+
+        const route = routeNames.hasOwnProperty(model) ? routeNames[model] : null;
+
+        res.sse({
+            data: { action, model, route, data }
+        });
+    };
+
+    req.app.locals.sub.on('message', handler);
+    res.on('close', () => req.app.locals.sub.off('message', handler));
+});
+
+module.exports = router;

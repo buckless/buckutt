@@ -32,11 +32,13 @@ router.post('/:model/', (req, res, next) => {
         )
         .then(results => embedFilter(embedFilters, results.toJSON()))
         .then(results => {
-            req.app.locals.modelChanges.emit(
+            req.app.locals.pub.publish(
                 'data',
-                'create',
-                modelParser.modelsNames[req.params.model],
-                { from: null, to: results }
+                JSON.stringify({
+                    action: 'create',
+                    model: modelParser.modelsNames[req.params.model],
+                    data: { from: null, to: results }
+                })
             );
 
             req.details.body = req.body;

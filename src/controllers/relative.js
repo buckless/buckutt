@@ -157,12 +157,14 @@ router.delete('/:model/:id/:submodel/:subId', (req, res, next) => {
             return left[submodel]().detach(right);
         })
         .then(() => {
-            // req.app.locals.modelChanges.emit(
-            //     'data',
-            //     'create',
-            //     modelParser.modelsNames[req.params.model],
-            //     { from: null, to: right }
-            // );
+            req.app.locals.pub.publish(
+                'data',
+                JSON.stringify({
+                    action: 'create',
+                    model: modelParser.modelsNames[req.params.model],
+                    data: { from: null, to: right }
+                })
+            );
 
             log.info(
                 `Delete relative ${req.params.submodel}(${req.params.subId}) of

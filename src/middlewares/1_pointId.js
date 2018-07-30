@@ -1,89 +1,93 @@
+const moment = require('moment');
 const { bookshelf } = require('../lib/bookshelf');
 const APIError = require('../errors/APIError');
 
 /**
  * Retrieve the point id from the device fingerprint
- * @param {Object} connector HTTP/Socket.IO connector
  */
-module.exports = connector => {
-    let event;
-
-    connector.details = {
-        path: connector.path,
-        method: connector.method
+module.exports = async (req, res, next) => {
+    req.details = {
+        path: req.path,
+        method: req.method
     };
 
-    if (!connector.headers['x-fingerprint']) {
-        return Promise.reject(new APIError(module, 401, 'Missing device fingerprint'));
+    if (!req.headers['x-fingerprint'] && !req.query.fingerprint) {
+        return next(new APIError(module, 401, 'Missing device fingerprint'));
     }
 
-    connector.fingerprint = connector.headers['x-fingerprint'];
+    req.fingerprint = req.headers['x-fingerprint'] || req.query.fingerprint;
 
-    return bookshelf
-        .knex('events')
-        .limit(1)
-        .then(res => (res ? res[0] : null))
-        .then(event_ => {
-            event = event_;
+    let event;
+    let device;
 
-            return connector.models.Device.where({ fingerprint: connector.fingerprint }).fetch({
-                withRelated: ['wikets', 'wikets.point', 'wikets.period']
-            });
-        })
-        .then(res => (res ? res.toJSON() : null))
-        .then(device => {
-            /* istanbul ignore if */
-            if (!device || (!device.isUser && device.wikets.length === 0)) {
-                return Promise.reject(
-                    new APIError(module, 404, 'Device not found', {
-                        fingerprint: connector.fingerprint
-                    })
-                );
-            }
-            let minPeriod = Infinity;
-            let handled = false;
+    try {
+        event = await bookshelf
+            .knex('events')
+            .limit(1)
+            .then(res => (res ? res[0] : null));
 
-            connector.device = device;
-            connector.point = {};
-            connector.event = event;
-            connector.wiket = {};
-            connector.details.device = connector.device.name;
+        device = await req.app.locals.models.Device.where({ fingerprint: req.fingerprint })
+            .fetch({ withRelated: ['wikets', 'wikets.point', 'wikets.period'] })
+            .then(res => (res ? res.toJSON() : null));
+    } catch (err) {
+        return next(err);
+    }
 
-            // Filters: allow an empty point but not a deleted point
-            device.wikets
-                .filter(wiket => (wiket.point_id && wiket.point.id) || !wiket.point_id)
-                .forEach(wiket => {
-                    const period = wiket.period;
-                    const point = wiket.point;
+    /* istanbul ignore if */
+    if (!device || (!device.isUser && device.wikets.length === 0)) {
+        return next(
+            new APIError(module, 404, 'Device not found', {
+                fingerprint: req.fingerprint
+            })
+        );
+    }
 
-                    const diff = period.end - period.start;
+    let minPeriod = Infinity;
+    let handled = false;
 
-                    if (period.start > connector.date || period.end < connector.date) {
-                        return;
-                    }
+    req.device = device;
+    req.point = {};
+    req.event = event;
+    req.wiket = {};
+    req.details.device = req.device.name;
 
-                    if (diff < minPeriod) {
-                        connector.point_id = point.id;
-                        connector.event_id = event.id;
-                        minPeriod = diff;
+    const headerDate = moment(req.headers.date);
+    req.date = headerDate.isValid() ? headerDate.toDate() : new Date();
 
-                        connector.point = point;
-                        connector.wiket = wiket;
-                        connector.device.defaultGroup_id = wiket.defaultGroup_id;
+    // Filters: allow an empty point but not a deleted point
+    device.wikets
+        .filter(wiket => (wiket.point_id && wiket.point.id) || !wiket.point_id)
+        .forEach(wiket => {
+            const period = wiket.period;
+            const point = wiket.point;
 
-                        connector.details = {
-                            ...connector.details,
-                            point: connector.point.name
-                        };
+            const diff = period.end - period.start;
 
-                        handled = true;
-                    }
-                });
-
-            if (!handled && !device.isUser) {
-                return Promise.reject(new APIError(module, 404, 'No assigned points'));
+            if (period.start > req.date || period.end < req.date) {
+                return;
             }
 
-            return Promise.resolve();
+            if (diff < minPeriod) {
+                req.point_id = point.id;
+                req.event_id = event.id;
+                minPeriod = diff;
+
+                req.point = point;
+                req.wiket = wiket;
+                req.device.defaultGroup_id = wiket.defaultGroup_id;
+
+                req.details = {
+                    ...req.details,
+                    point: req.point.name
+                };
+
+                handled = true;
+            }
         });
+
+    if (!handled && !device.isUser) {
+        return next(new APIError(module, 404, 'No assigned points'));
+    }
+
+    return next();
 };
