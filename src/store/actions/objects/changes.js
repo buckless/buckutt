@@ -1,64 +1,39 @@
-import io from 'socket.io-client';
-
-export function registerModels({ commit, state }, routes) {
-    state.changes.socket.emit('listen', routes);
-
-    state.changes.socket.on('listening', models => {
-        const modelsToRoutes = {};
-
-        models.forEach((model, index) => {
-            console.log(`Listen to ${model} changes`);
-            modelsToRoutes[model] = routes[index];
-        });
-
-        commit('ADDMODELSTOROUTES', modelsToRoutes);
-    });
-}
-
-export function initListeners({ dispatch, state }) {
-    state.changes.socket.on('create', doc => {
-        const route = state.changes.modelsToRoutes[doc.model];
-        const objects = Array.isArray ? doc.data.to : [doc.data.to];
-
-        dispatch('checkAndAddObjects', { route, objects });
-    });
-
-    state.changes.socket.on('update', doc => {
-        const route = state.changes.modelsToRoutes[doc.model];
-        dispatch('checkAndUpdateObjects', { route, objects: [doc.data.to] });
-    });
-
-    state.changes.socket.on('delete', doc => {
-        const route = state.changes.modelsToRoutes[doc.model];
-        dispatch('checkAndDeleteObjects', { route, objects: [doc.data.from] });
-    });
-}
+let changes;
 
 export function initSocket({ commit, dispatch, state }, token) {
-    commit(
-        'CHANGESOCKET',
-        io(config.api, {
-            transportOptions: {
-                polling: {
-                    extraHeaders: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            }
-        })
+    if (changes && typeof changes.close === 'function') {
+        changes.close();
+    }
+
+    changes = new EventSource(
+        `${
+            config.api
+        }/live/models?authorization=Bearer ${token}&fingerprint=admin&handshake-interval=10000&lastEventId=12345&retry=3000`
     );
 
-    state.changes.socket.on('connected', () => {
-        dispatch('initListeners');
-    });
+    changes.addEventListener('message', e => {
+        try {
+            const doc = JSON.parse(e.data);
+            const route = doc.route;
 
-    state.changes.socket.on('APIError', error => {
-        console.error(error);
+            if (doc.action === 'create') {
+                const objects = Array.isArray ? doc.data.to : [doc.data.to];
+                dispatch('checkAndAddObjects', { route, objects });
+            }
+
+            if (doc.action === 'update') {
+                dispatch('checkAndUpdateObjects', { route, objects: [doc.data.to] });
+            }
+
+            if (doc.action === 'delete') {
+                dispatch('checkAndDeleteObjects', { route, objects: [doc.data.from] });
+            }
+        } catch (err) {
+            console.error('invalid model detected', e.data, err);
+        }
     });
 }
 
-export function closeSocket({ commit, state }) {
-    state.changes.socket.close();
-
-    commit('REMOVESOCKET');
+export function closeSocket() {
+    changes.close();
 }

@@ -38,8 +38,6 @@ export function load({ state, dispatch }) {
     Promise.all(objectsToFetch).then(() =>
         dispatch('fetchObjectsAndRelations', { route: 'events' })
     );
-
-    dispatch('registerModels', routes);
 }
 
 export function checkAndCreateNeededRouterData({ state, commit, dispatch }) {
