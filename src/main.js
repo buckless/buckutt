@@ -4,8 +4,6 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
 const NFC = require('./lib/nfc');
-const fingerprint = require('./lib/fingerprint');
-// const updater = require('./lib/updater') TODO: updater
 
 function createWindow() {
     const isDev = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
@@ -38,8 +36,6 @@ function createWindow() {
     });
 
     window.nfc = new NFC();
-    window.fingerprint = fingerprint;
-    // window.updater = updater(); TODO: updater
 }
 
 app.on('ready', createWindow);

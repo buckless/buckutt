@@ -21,7 +21,8 @@ Vue.use(Vuex);
 const debug = process.env.NODE_ENV === 'development';
 
 const vuexPersist = new VuexPersistence({
-    strictMode: debug,
+    // see https://github.com/championswimmer/vuex-persist#support-strict-mode
+    strictMode: true,
     storage: localForage,
     reducer: state => ({
         ...state,
@@ -54,6 +55,12 @@ const store = new Vuex.Store({
     },
     strict: debug,
     plugins: debug ? [createLogger(), vuexPersist.plugin] : [vuexPersist.plugin]
+});
+
+store.subscribe(mutation => {
+    if (mutation.type === 'RESTORE_MUTATION') {
+        store.dispatch('setupSocket');
+    }
 });
 
 if (module.hot) {

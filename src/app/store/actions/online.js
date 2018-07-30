@@ -1,56 +1,68 @@
-import io from 'socket.io-client/dist/socket.io.js';
 import axios from '@/utils/axios';
+import merge from 'lodash.merge';
 
-let socket = null;
+let status;
+let alert;
 
-export const setupSocket = (store, token) => {
-    if (socket) {
-        socket.off('disconnect');
-        socket.close();
+export const setupSocket = ({ state, commit, dispatch }, token = '') => {
+    const fingerprint = window.fingerprint || '';
+
+    if (status && typeof status.close === 'function') {
+        status.close();
     }
 
-    const extraHeaders = {};
+    status = new EventSource(
+        `${
+            config.api
+        }/live/status?fingerprint=${fingerprint}&handshake-interval=20000&lastEventId=12345&retry=3000`
+    );
 
-    if (token) {
-        extraHeaders.Authorization = `Bearer ${token}`;
+    status.addEventListener('open', () => {
+        if (!state.online.status) {
+            commit('SET_ONLINE');
+        }
+
+        dispatch('logOperator')
+            .then(() => {
+                dispatch('updateEssentials');
+                dispatch('syncQueue');
+            })
+            .then(() => dispatch('listenAlerts'));
+    });
+
+    status.addEventListener('error', (...args) => {
+        if (state.online.status) {
+            commit('SET_OFFLINE');
+        }
+    });
+};
+
+export const listenAlerts = ({ state, commit, dispatch }) => {
+    const token = state.auth.seller.token;
+
+    if (alert && typeof alert.close === 'function') {
+        alert.close();
     }
 
-    if (window.fingerprint) {
-        extraHeaders['X-fingerprint'] = window.fingerprint;
-    }
+    if (token && token.length > 0) {
+        alert = new EventSource(
+            `${
+                config.api
+            }/live/alert?authorization=Bearer ${token}&fingerprint=${fingerprint}&handshake-interval=20000&lastEventId=12345&retry=3000`
+        );
 
-    const opts = {
-        transportOptions: {
-            polling: {
-                extraHeaders
+        alert.addEventListener('message', e => {
+            try {
+                const data = JSON.parse(e.data);
+
+                if (data && data.minimumViewTime) {
+                    dispatch('alert', data);
+                }
+            } catch (err) {
+                console.error('invalid alert detected', e.data, err);
             }
-        }
-    };
-
-    socket = io(config.api, { rejectUnauthorized: false, ...opts });
-
-    socket.on('connect', () => {
-        store.commit('SET_ONLINE');
-        store.dispatch('logOperator').then(() => {
-            store.dispatch('updateEssentials');
-            store.dispatch('syncQueue');
         });
-        socket.emit('alert');
-    });
-
-    socket.on('alert', alert => {
-        store.commit('SET_ALERT', alert);
-    });
-
-    socket.on('disconnect', () => {
-        store.commit('SET_OFFLINE');
-
-        if (!store.state.auth.device.event.config.useCardData) {
-            store.commit('ERROR', {
-                message: 'Server not reacheable'
-            });
-        }
-    });
+    }
 };
 
 export const logOperator = store => {
@@ -89,7 +101,7 @@ export const currentTokenAxios = (store, job) => {
             method: job.method || 'get',
             url: job.url,
             data: job.data,
-            ...Object.assign(
+            ...merge(
                 { headers: { 'X-fingerprint': window.fingerprint } },
                 store.getters.tokenHeaders,
                 job.params

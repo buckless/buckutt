@@ -65,6 +65,9 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
 
             return dispatch('updateEssentials', true).then(() => dispatch('interfaceLoader'));
         })
+        .then(() => {
+            console.log('setup socket');
+        })
         .then(() => dispatch('setupSocket', state.auth.seller.token))
         .then(() => commit('SET_DATA_LOADED', true))
         .catch(err => {
@@ -156,7 +159,7 @@ export const sellerId = ({ commit }, meanOfLogin) => {
 };
 
 export const alert = ({ commit }, alert) => {
-    commit('ALERT', alert);
+    commit('SET_ALERT', alert);
 };
 
 export const closeAlert = ({ commit }) => {
