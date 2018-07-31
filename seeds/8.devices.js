@@ -1,4 +1,6 @@
-const { admin_id, manager_id, item } = require('./utils/_data');
+const uuid = require('uuid').v4;
+
+const { admin_id, manager_id, point_id, period_id, item } = require('./utils/_data');
 
 exports.seed = function (knex) {
     return knex('devices').del()
@@ -7,5 +9,12 @@ exports.seed = function (knex) {
                 item({ id: admin_id, name: 'admin', fingerprint: 'admin', isUser: true }),
                 item({ id: manager_id, name: 'manager', fingerprint: 'manager', isUser: true })
             ])
-        );
+        )
+        .then(() => knex('wikets').del())
+        .then(() =>
+            knex('wikets').insert([
+                item({ id: uuid(), device_id: admin_id, point_id, period_id  }),
+                item({ id: uuid(), device_id: manager_id, point_id, period_id  })
+            ])
+        )
 };
