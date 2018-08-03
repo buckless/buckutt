@@ -132,7 +132,10 @@ app.start = async () => {
             log.info('Server is listening http://%s:%d', config.http.host, config.http.port);
 
             resolve(app);
-            process.send('ready');
+
+            if (process.send && typeof process.send === 'function') {
+                process.send('ready');
+            }
         });
     });
 };

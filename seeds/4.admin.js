@@ -3,9 +3,9 @@ const uuid = require('uuid').v4;
 const { user_id, period_id, item } = require('./utils/_data');
 
 exports.seed = function (knex) {
-    return knex('users').del()
-        .then(() => knex('meansoflogin').del())
+    return knex('meansoflogin').del()
         .then(() => knex('rights').del())
+        .then(() => knex('users').del())
         .then(() =>
             knex('users').insert([
                 item({

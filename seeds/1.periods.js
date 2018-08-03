@@ -1,7 +1,9 @@
 const { event_id, period_id, item } = require('./utils/_data');
 
 exports.seed = function (knex) {
-    return knex('periods').del()
+    return knex('rights').del()
+        .then(() => knex('wikets').del())
+        .then(() => knex('periods').del())
         .then(() =>
             knex('periods').insert([
                 item({
