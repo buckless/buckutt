@@ -91,7 +91,7 @@ module.exports = {
                         transaction.related('user').save(),
                         reloadGiftSave
                     ]).then(() => {
-                        req.app.locals.pub.publish(
+                        app.locals.pub.publish(
                             'userCreditUpdate',
                             JSON.stringify({
                                 id: transaction.get('user_id'),
