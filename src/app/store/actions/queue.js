@@ -18,9 +18,9 @@ export const initQueue = store => {
     });
 
     queue.on('processed', (job, result) => {
-        if (job.data.localId) {
+        if (job.data.data.localId) {
             store.dispatch('updateOfflineEntry', {
-                localId: job.data.localId,
+                localId: job.data.data.localId,
                 basketData: result.data
             });
         }

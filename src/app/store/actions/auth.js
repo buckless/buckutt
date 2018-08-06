@@ -63,7 +63,9 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
                 canControl: res.data.user.canControl
             });
 
-            return dispatch('updateEssentials', true).then(() => dispatch('interfaceLoader'));
+            return dispatch('updateEssentials', true)
+                .then(() => dispatch('updateStoredItems'))
+                .then(() => dispatch('loadDefaultItems'));
         })
         .then(() => {
             console.log('setup socket');
@@ -90,7 +92,7 @@ export const logoutBuyer = store => {
         store.commit('LOGOUT_BUYER');
         store.commit('UPDATE_TOKEN', '');
 
-        return store.dispatch('clearBasket').then(() => store.dispatch('interfaceLoader'));
+        return store.dispatch('clearBasket').then(() => store.dispatch('loadDefaultItems'));
     }
 
     return Promise.resolve();
@@ -113,7 +115,7 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyer = (store, { cardNumber, credit }) => {
+export const buyerLogin = (store, { cardNumber, credit }) => {
     const doubleValidation = store.state.auth.device.config.doubleValidation;
 
     // if double validation, then a user2 can't eject/replace user1
@@ -123,35 +125,92 @@ export const buyer = (store, { cardNumber, credit }) => {
 
     store.commit('SET_DATA_LOADED', false);
 
-    let initialPromise = Promise.resolve();
-    if (doubleValidation) {
-        initialPromise = initialPromise.then(() =>
-            store.dispatch('checkPendingCardUpdates', { cardNumber })
-        );
-    }
-
-    initialPromise
-        .then(() =>
-            store.dispatch('interfaceLoader', {
-                type: config.buyerMeanOfLogin,
-                mol: cardNumber,
-                credit
-            })
-        )
-        .catch(err => {
-            console.log(err);
-
-            if (err.message === 'Network Error') {
-                store.commit('ERROR', { message: 'Server not reacheable' });
-                return;
+    const params = `?buyer=${cardNumber.trim()}&molType=${config.buyerMeanOfLogin}`;
+    const offlineAnswer = window.database.cardAccesses(cardNumber.trim()).then(memberships => ({
+        data: {
+            buyer: {
+                firstname: 'Client',
+                lastname: 'Anonyme',
+                credit,
+                memberships: memberships
+                    .concat([
+                        {
+                            group: store.state.auth.device.event.defaultGroup_id,
+                            start: new Date(0),
+                            end: new Date(21474000000000)
+                        }
+                    ])
+                    .map(membership => ({
+                        group_id: membership.group,
+                        period: {
+                            start: membership.start,
+                            end: membership.end
+                        }
+                    }))
             }
+        }
+    }));
 
-            store.commit('ERROR', err.response.data);
-        })
-        .then(() => {
-            store.commit('EMPTY_TICKET');
-            store.commit('SET_DATA_LOADED', true);
-        });
+    return (
+        store
+            .dispatch('sendRequest', {
+                url: `/services/buyer${params}`,
+                offlineAnswer,
+                noQueue: true,
+                // If use card data, always use local data
+                forceOffline: store.state.auth.device.event.config.useCardData
+            })
+            .then(res => {
+                const memberships = res.data.buyer.memberships.map(membership => ({
+                    start: membership.period.start,
+                    end: membership.period.end,
+                    group: membership.group_id
+                }));
+
+                const buyerCredit = typeof credit === 'number' ? credit : res.data.buyer.credit;
+
+                store.commit('ID_BUYER', {
+                    id: res.data.buyer.id || '',
+                    credit: buyerCredit,
+                    firstname: res.data.buyer.firstname || '',
+                    lastname: res.data.buyer.lastname || '',
+                    memberships,
+                    purchases: res.data.buyer.purchases || []
+                });
+                store.commit('SET_BUYER_MOL', cardNumber.trim());
+            })
+            .catch(err => {
+                if (err.message === 'Network Error') {
+                    store.commit('ERROR', { message: 'Server not reacheable' });
+                    return;
+                }
+
+                if (
+                    err.response.data &&
+                    err.response.data.message === 'Buyer not found' &&
+                    store.state.auth.device.event.config.useCardData &&
+                    typeof credit === 'number'
+                ) {
+                    store.commit('ID_BUYER', {
+                        id: '',
+                        credit,
+                        firstname: '',
+                        lastname: '',
+                        memberships: [],
+                        purchases: []
+                    });
+                    store.commit('SET_BUYER_MOL', payload.mol.trim());
+                    return;
+                }
+
+                store.commit('ERROR', err.response.data);
+            })
+            // .then(() => store.dispatch('loadDefaultItems')) don't update during a transaction
+            .then(() => {
+                store.commit('EMPTY_TICKET');
+                store.commit('SET_DATA_LOADED', true);
+            })
+    );
 };
 
 export const sellerId = ({ commit }, meanOfLogin) => {

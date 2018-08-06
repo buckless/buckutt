@@ -1,11 +1,3 @@
-export const setPendingCardUpdates = ({ commit }, payload) => {
-    commit('SET_PENDINGCARDUPDATES', payload);
-};
-
-export const removePendingCardUpdate = ({ commit }, cardId) => {
-    commit('REMOVE_PENDINGCARDUPDATE', cardId);
-};
-
 export const addItemToBasket = ({ commit, dispatch }, item) => {
     commit('ADD_ITEM', item);
 };
@@ -41,25 +33,35 @@ export const checkBuyerCredit = store => {
     return Promise.resolve();
 };
 
-export const checkPendingCardUpdates = (store, { cardNumber }) => {
-    const pendingUrl = `services/pendingCardUpdate?molType=${
-        config.buyerMeanOfLogin
-    }&buyer=${cardNumber}`;
+export const checkPendingCardUpdates = (store, { cardNumber, version }) =>
+    window.database.pendingCardUpdates(cardNumber.trim()).then(pendingCardUpdates => {
+        const pendingPromise = Promise.resolve();
+        let updatedCredit = store.state.auth.buyer.credit;
+        let updatedVersion = version;
 
-    return store
-        .dispatch('sendRequest', {
-            url: pendingUrl,
-            noQueue: true,
-            offlineAnswer: { fake: true }
-        })
-        .then(res => {
-            if (res.fake) {
-                return Promise.resolve();
-            }
-            store.commit('OVERRIDE_BUYER_CREDIT', store.state.auth.buyer.credit + res.data.amount);
-            return store.dispatch('removePendingCardUpdate', cardNumber);
-        });
-};
+        pendingCardUpdates
+            .filter(pcu => pcu.incrId > version)
+            .sort((a, b) => a.incrId - b.incrId)
+            .forEach(pcu => {
+                pendingPromise.then(() =>
+                    store.dispatch('sendRequest', {
+                        method: 'post',
+                        url: 'services/pendingCardUpdate',
+                        data: {
+                            id: pcu.id
+                        }
+                    })
+                );
+
+                updatedCredit += pcu.amount;
+                updatedVersion = parseInt(pcu.incrId);
+            });
+
+        return pendingPromise.then(() => ({
+            credit: updatedCredit,
+            version: updatedVersion
+        }));
+    });
 
 export const addNfcSupportToBasket = store => {
     const now = new Date();
@@ -89,7 +91,7 @@ export const addNfcSupportToBasket = store => {
     }
 };
 
-export const validateBasket = (store, { cardNumber, credit, options }) => {
+export const validateBasket = (store, { cardNumber, credit, options, version }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
         (store.getters.reloadAmount === 0 && store.getters.basketAmount === 0)
@@ -99,14 +101,13 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
 
     store.commit('SET_DATA_LOADED', false);
 
+    let cardVersion = version;
     let initialPromise = Promise.resolve();
 
-    // Offline interfaceLoader to update user prices
-    initialPromise = store.dispatch('interfaceLoader', {
-        type: config.buyerMeanOfLogin,
-        mol: cardNumber,
-        credit,
-        forceOffline: true
+    // Log-in buyer to update user prices
+    initialPromise = store.dispatch('buyerLogin', {
+        cardNumber,
+        credit
     });
 
     const shouldPayCard = !options.paidCard && store.state.auth.device.event.config.useCardData;
@@ -116,14 +117,15 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
     }
 
     const shouldCheckPending =
-        options.assignedCard &&
-        store.state.basket.pendingCardUpdates.indexOf(cardNumber) > -1 &&
-        store.state.auth.device.event.config.useCardData;
+        options.assignedCard && store.state.auth.device.event.config.useCardData;
 
     if (shouldCheckPending) {
-        initialPromise = initialPromise.then(() =>
-            store.dispatch('checkPendingCardUpdates', { cardNumber })
-        );
+        initialPromise = initialPromise
+            .then(() => store.dispatch('checkPendingCardUpdates', { cardNumber, version }))
+            .then(newValues => {
+                store.commit('OVERRIDE_BUYER_CREDIT', newValues.credit);
+                cardVersion = newValues.version;
+            });
     }
 
     initialPromise = initialPromise.then(() => store.dispatch('checkBuyerCredit'));
@@ -138,7 +140,12 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
         initialPromise = initialPromise.then(
             () =>
                 new Promise(resolve => {
-                    window.app.$root.$emit('readyToWrite', store.getters.credit, newOptions);
+                    window.app.$root.$emit(
+                        'readyToWrite',
+                        store.getters.credit,
+                        newOptions,
+                        cardVersion
+                    );
                     window.app.$root.$on('writeCompleted', () => resolve());
                 })
         );
@@ -152,7 +159,7 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
             store.commit('LOGOUT_BUYER');
             store.commit('SET_BASKET_STATUS', 'WAITING');
             store.dispatch('clearBasket');
-            store.dispatch('interfaceLoader');
+            return store.dispatch('loadDefaultItems');
         })
         .catch(err => {
             console.log(err);
@@ -162,7 +169,22 @@ export const validateBasket = (store, { cardNumber, credit, options }) => {
                 return;
             }
 
-            store.commit('ERROR', err.response.data);
+            let errorPromise = Promise.resolve();
+
+            // If a PCU has been ack, write it
+            if (cardVersion > version) {
+                errorPromise = new Promise(resolve => {
+                    window.app.$root.$emit(
+                        'readyToWrite',
+                        store.state.auth.buyer.credit,
+                        options,
+                        cardVersion
+                    );
+                    window.app.$root.$on('writeCompleted', () => resolve());
+                });
+            }
+
+            return errorPromise.then(() => store.commit('ERROR', err.response.data));
         })
         .then(() => {
             store.commit('SET_DATA_LOADED', true);

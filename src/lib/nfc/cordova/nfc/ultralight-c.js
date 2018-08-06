@@ -62,7 +62,7 @@ module.exports = class UltralightC extends EventEmitter {
     }
 
     read() {
-        const { firstWritablePage, cardLength, creditSize } = config.ultralight;
+        const { firstWritablePage, cardLength } = config.ultralight;
 
         const repeat = Math.ceil(cardLength / 4);
 
@@ -71,7 +71,7 @@ module.exports = class UltralightC extends EventEmitter {
         const bufs = [];
 
         // add 4 each time (read 16 bytes each time)
-        for (let page = 4; page < repeat; page += 4) {
+        for (let page = firstWritablePage; page < repeat; page += 4) {
             initialPromise = initialPromise
                 .then(() => this._readPage(page))
                 .then(data => bufs.push(data));

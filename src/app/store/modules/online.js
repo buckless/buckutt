@@ -8,7 +8,8 @@ const initialState = {
             articles: [],
             promotions: []
         }
-    }
+    },
+    lastUsersUpdate: null
 };
 
 const mutations = {
@@ -34,6 +35,10 @@ const mutations = {
 
     SET_BLOCKED_CARDS(state, payload) {
         state.offline.blockedCards = payload;
+    },
+
+    SET_LAST_USERS_UPDATE(state, date) {
+        state.lastUsersUpdate = date;
     }
 };
 

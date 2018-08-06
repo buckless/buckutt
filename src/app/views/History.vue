@@ -1,6 +1,6 @@
 <template>
     <div class="b-history">
-        <div class="b-history__text" v-if="!buyer.isAuth">
+        <div class="b-history__text" v-if="!loggedBuyer.isAuth">
             Approchez la carte cashless
             <div>Pour visualiser les derniers achats sur cette borne</div>
             <nfc mode="read" @read="onCard" />
@@ -61,32 +61,28 @@ export default {
     computed: {
         entries() {
             return this.history
-                .filter(e => e.cardNumber === this.buyer.meanOfLogin)
+                .filter(e => e.cardNumber === this.loggedBuyer.meanOfLogin)
                 .sort((a, b) => b.date - a.date)
                 .map(e => this.resume(e));
         },
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            buyer: state => state.auth.buyer,
+            loggedBuyer: state => state.auth.buyer,
             history: state => state.history.history
         })
     },
 
     methods: {
         onCard(value, credit, options) {
-            if (!this.buyer.isAuth) {
+            if (!this.loggedBuyer.isAuth) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                return this.interfaceLoader({ type: config.buyerMeanOfLogin, mol: value, credit })
+                return this.buyerLogin({ cardNumber: value, credit })
                     .then(() => {
-                        if (typeof credit === 'number') {
-                            this.$store.commit('OVERRIDE_BUYER_CREDIT', credit);
-                        }
-
                         this.$store.commit('SET_DATA_LOADED', true);
                     })
                     .catch(() => this.$store.commit('SET_DATA_LOADED', true));
-            } else if (this.buyer.meanOfLogin !== value) {
+            } else if (this.loggedBuyer.meanOfLogin !== value) {
                 this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
             }
@@ -95,7 +91,7 @@ export default {
                 return;
             }
 
-            let selectedCredit = credit || this.buyer.credit;
+            let selectedCredit = credit || this.loggedBuyer.credit;
 
             if (!Number.isInteger(selectedCredit)) {
                 selectedCredit = 0;
@@ -123,7 +119,7 @@ export default {
                 .then(() => this.cancelEntry(this.selectedEntry))
                 .then(() => this.removeFromHistory(this.selectedEntry))
                 .then(() => {
-                    if (this.buyer.isAuth) {
+                    if (this.loggedBuyer.isAuth) {
                         this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
                     }
 
@@ -175,7 +171,7 @@ export default {
             this.$router.push('items');
         },
 
-        ...mapActions(['cancelEntry', 'removeFromHistory', 'interfaceLoader'])
+        ...mapActions(['cancelEntry', 'removeFromHistory', 'buyerLogin'])
     }
 };
 </script>

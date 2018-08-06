@@ -60,25 +60,23 @@ export default {
     },
 
     methods: {
-        ...mapActions({
-            setBuyer: 'buyer',
-            validateBasket: 'validateBasket'
-        }),
+        ...mapActions(['buyerLogin', 'validateBasket']),
 
         logBuyer(cardNumber, credit, options) {
             console.log('items-buyer-login', cardNumber, credit, options);
-            this.setBuyer({
+            this.buyerLogin({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null
             });
         },
 
-        validate(cardNumber, credit, options) {
+        validate(cardNumber, credit, options, version) {
             console.log('items-validate', cardNumber, credit, options);
             this.validateBasket({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
-                options
+                options,
+                version
             });
         },
 

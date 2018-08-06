@@ -59,7 +59,8 @@ export default {
             success: false,
             dataToWrite: {
                 credit: null,
-                options: null
+                options: null,
+                version: null
             },
             timer: 15,
             currentTimer: null,
@@ -90,11 +91,11 @@ export default {
             }
         },
 
-        onCard(credit = null, options = {}) {
+        onCard(credit = null, options = {}, version = null) {
             if (this.rewrite) {
                 this.write();
             } else {
-                this.$emit('read', this.inputValue, credit, options);
+                this.$emit('read', this.inputValue, credit, options, version);
             }
 
             if (this.mode === 'read') {
@@ -155,15 +156,16 @@ export default {
                             card.options.locked = true;
                         }
 
+                        this.dataToWrite = card;
+
                         if (card.options.locked && !this.disableLockCheck) {
                             if (cardToLock) {
-                                this.dataToWrite = card;
                                 this.write();
                             }
                             throw 'Locked card';
                         }
 
-                        this.onCard(card.credit, card.options);
+                        this.onCard(card.credit, card.options, card.version);
                     } catch (err) {
                         if (err === 'Locked card') {
                             this.$store.commit('ERROR', { message: 'Locked card' });
@@ -175,7 +177,11 @@ export default {
                                 return this.onCard(0, { catering: [] });
                             }
 
-                            return this.onCard(err.value.credit, err.value.options);
+                            return this.onCard(
+                                err.value.credit,
+                                err.value.options,
+                                err.value.version
+                            );
                         } else if (this.disablePinCheck) {
                             return this.onCard(0, { catering: [] });
                         } else {
@@ -196,8 +202,19 @@ export default {
                 console.error(err);
             });
 
-            this.$root.$on('readyToWrite', (credit, options) => {
-                this.dataToWrite = { credit, options };
+            this.$root.$on('readyToWrite', (credit, options, version) => {
+                if (typeof credit === 'number') {
+                    this.dataToWrite.credit = credit;
+                }
+
+                if (options) {
+                    this.dataToWrite.options = options;
+                }
+
+                if (typeof version === 'number') {
+                    this.dataToWrite.version = version;
+                }
+
                 this.write();
             });
         },
@@ -216,6 +233,7 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
+            console.log(this.dataToWrite);
             nfc
                 .write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {

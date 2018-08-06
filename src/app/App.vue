@@ -60,15 +60,21 @@ export default {
     },
 
     methods: {
-        ...mapActions(['setupSocket', 'updateEssentials', 'initQueue'])
+        ...mapActions([
+            'setupSocket',
+            'updateEssentials',
+            'updateStoredItems',
+            'updateUsersData',
+            'initQueue'
+        ])
     },
 
     mounted() {
         this.setupSocket();
         this.initQueue();
         this.updateEssentials();
-
-        setInterval(() => this.updateEssentials(!this.seller.isAuth), 60000);
+        this.updateStoredItems();
+        this.updateUsersData();
 
         let nfc = {
             on() {}

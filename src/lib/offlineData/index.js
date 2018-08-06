@@ -9,8 +9,9 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            users: 'uid,name,username,barcode,credit,physicalId',
+            tickets: 'id,barcode,userId,name,username,credit,physicalId',
             accesses: 'id,userId,cardId,group,start,end',
+            pendingCardUpdates: 'id,incrId,cardId,amount',
             images: 'id,blob'
         });
 
@@ -37,7 +38,7 @@ class OfflineData {
     findByName(name) {
         const reg = new RegExp(`(.*)${name}(.*)`, 'i');
 
-        return this.db.users
+        return this.db.tickets
             .filter(user => reg.test(user.name))
             .limit(5)
             .toArray();
@@ -45,7 +46,7 @@ class OfflineData {
 
     findByBarcode(barcode) {
         return (
-            this.db.users
+            this.db.tickets
                 // user.username === barcode is when user scan their manager qrcode
                 .filter(
                     user =>
@@ -66,37 +67,24 @@ class OfflineData {
         return this.db.accesses.filter(access => access.cardId === cardId).toArray();
     }
 
+    pendingCardUpdates(cardId) {
+        return this.db.pendingCardUpdates.filter(pcu => pcu.cardId === cardId).toArray();
+    }
+
     insert(table, data) {
-        // dexie wants object and not array, restore from table schema (todo: send objects at first)
-        if (table === 'users') {
-            data = data.map(entry => ({
-                uid: entry[0],
-                name: entry[1],
-                username: entry[2],
-                barcode: entry[3],
-                credit: entry[4],
-                physicalId: entry[5]
-            }));
-        } else if (table === 'accesses') {
-            data = data.map(entry => ({
-                id: entry[0],
-                userId: entry[1],
-                cardId: entry[2],
-                group: entry[3],
-                start: entry[4],
-                end: entry[5]
-            }));
+        if (Array.isArray(data)) {
+            return this.db[table].bulkAdd(data);
         }
 
-        return this.db[table].bulkAdd(data);
+        return this.db[table].add(data);
     }
 
-    update(table, primaryKey, data) {
-        return this.db[table].update(primaryKey, data);
-    }
+    delete(table, keys) {
+        if (Array.isArray(keys)) {
+            return this.db[table].bulkDelete(keys);
+        }
 
-    delete(table, primaryKey) {
-        return this.db[table].delete(primaryKey);
+        return this.db[table].delete(keys);
     }
 }
 

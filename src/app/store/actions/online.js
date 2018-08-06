@@ -78,7 +78,7 @@ export const logOperator = store => {
 
     // Use axios to avoid a logOperator loop
     return axios
-        .post('services/login', credentials)
+        .post('services/login', credentials, { headers: { 'X-fingerprint': window.fingerprint } })
         .then(res => store.commit('UPDATE_TOKEN', res.data.token));
 };
 

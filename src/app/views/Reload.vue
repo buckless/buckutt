@@ -145,7 +145,7 @@ export default {
 
         logBuyer(cardNumber, credit, options) {
             console.log('reload-buyer-login', cardNumber, credit, options);
-            this.buyer({
+            this.buyerLogin({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null
             });
@@ -174,7 +174,7 @@ export default {
             'cancelReloadModal',
             'validateBasket',
             'basketClickValidation',
-            'buyer'
+            'buyerLogin'
         ])
     },
 

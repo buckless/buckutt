@@ -3,7 +3,7 @@
         <div v-if="!seller.isAuth">
             <div v-if="seller.meanOfLogin.length > 0" class="b-login__card b-login__card--sellerPassword">
                 <div class="b-login__card__title">
-                    Connexion vendeur
+                    Connexion opérateur
                 </div>
                 <div class="b-login__card__password">&nbsp;{{ passwordMask }}&nbsp;</div>
                 <div class="b-login__card__input">
@@ -79,12 +79,12 @@ export default {
             console.log('login-validate', cardNumber, credit);
             if (this.seller.isAuth) {
                 if (Number.isInteger(credit)) {
-                    this.setBuyer({
+                    this.buyerLogin({
                         cardNumber,
                         credit
                     });
                 } else {
-                    this.setBuyer({
+                    this.buyerLogin({
                         cardNumber
                     });
                 }
@@ -102,17 +102,17 @@ export default {
             this.login({
                 meanOfLogin: this.seller.meanOfLogin,
                 password
-            }).then(() => {
-                this.authingSeller = false;
-                this.$router.push('/');
-            });
+            })
+                .then(() => {
+                    this.authingSeller = false;
+                    this.$router.push('/');
+                })
+                .catch(() => {
+                    this.authingSeller = false;
+                });
         },
 
-        ...mapActions({
-            sellerId: 'sellerId',
-            setBuyer: 'buyer',
-            login: 'login'
-        })
+        ...mapActions(['sellerId', 'buyerLogin', 'login'])
     },
 
     mounted() {

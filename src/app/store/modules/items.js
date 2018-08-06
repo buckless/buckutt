@@ -40,7 +40,9 @@ const mutations = {
     REMOVE_ITEM(state, { id }) {
         const index = state.basket.itemList.findIndex(item => item.id === id);
 
-        state.basket.itemList.splice(index, 1);
+        if (index > -1) {
+            state.basket.itemList.splice(index, 1);
+        }
     },
 
     CLEAR_ITEMS(state) {

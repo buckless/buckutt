@@ -3,7 +3,7 @@
         <div class="b-lower-bar__tabs">
             <tab
                 v-for="tab in tabs"
-                v-if="!loginState && isSellerMode"
+                v-if="!loginState && isSelling"
                 :name="tab.name"
                 :id="tab.id"
                 :key="tab.id"></tab>
@@ -37,7 +37,11 @@ export default {
             buyer: state => state.auth.buyer
         }),
 
-        ...mapGetters(['tabs', 'loginState', 'isSellerMode'])
+        ...mapGetters(['tabs', 'loginState']),
+
+        isSelling() {
+            return this.$route.matched[0].path === '/items';
+        }
     },
 
     components: {
