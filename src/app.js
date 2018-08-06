@@ -143,7 +143,7 @@ app.start = async () => {
 const checkSeeds = () =>
     app.locals.models.Device.where({ fingerprint: 'admin' })
         .count()
-        .then(c => c === 0)
+        .then(c => c === '1')
         .catch(() => false);
 
 process.on('SIGINT', () => {

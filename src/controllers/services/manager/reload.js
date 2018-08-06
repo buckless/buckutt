@@ -13,8 +13,6 @@ const router = new express.Router();
 router.post('/services/manager/reload', (req, res, next) => {
     log.info(`Reload ${req.user.id} ${req.body.amount}`);
 
-    return next(new APIError(module, 400, 'Le rechargement en ligne est désactivé'));
-
     if (!req.body.amount || !parseInt(req.body.amount, 10)) {
         return next(new APIError(module, 400, 'Invalid amount', { receiver: req.reciever_id }));
     }
