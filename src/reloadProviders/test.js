@@ -1,6 +1,7 @@
 const express = require('express');
 const uuid = require('uuid');
 const config = require('../../config');
+const creditUser = require('../lib/creditUser');
 
 module.exports = {
     makePayment(app, data) {
@@ -35,9 +36,10 @@ module.exports = {
         const Transaction = app.locals.models.Transaction;
         const GiftReload = app.locals.models.GiftReload;
         const Reload = app.locals.models.Reload;
-        const PendingCardUpdate = app.locals.models.PendingCardUpdate;
+        const Event = app.locals.models.Event;
 
         let giftReloads;
+        let useCardData;
 
         return GiftReload.fetchAll()
             .then(
@@ -46,7 +48,12 @@ module.exports = {
             .then(giftReloads_ => {
                 giftReloads = giftReloads_;
 
-                return Transaction.where({ id }).fetch({ withRelated: ['user'] });
+                return Event.fetchAll();
+            })
+            .then(events => {
+                useCardData = events.toJSON()[0].useCardData;
+
+                return Transaction.where({ id }).fetch();
             })
             .then(transaction => {
                 transaction.set('transactionId', uuid());
@@ -79,27 +86,26 @@ module.exports = {
 
                     const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
 
-                    const pendingCardUpdate = new PendingCardUpdate({
-                        user_id: transaction.get('user_id'),
+                    const updateUser = creditUser(
+                        {
+                            app,
+                            event: {
+                                useCardData
+                            },
+                            point: {
+                                name: 'Internet'
+                            }
+                        },
+                        transaction.get('user_id'),
                         amount
-                    });
+                    );
 
                     return Promise.all([
                         newReload.save(),
                         transaction.save(),
-                        pendingCardUpdate.save(),
-                        transaction.related('user').save(),
+                        updateUser,
                         reloadGiftSave
-                    ]).then(() => {
-                        app.locals.pub.publish(
-                            'userCreditUpdate',
-                            JSON.stringify({
-                                id: transaction.get('user_id'),
-                                credit: null,
-                                pending: amount
-                            })
-                        );
-                    });
+                    ]);
                 }
 
                 return transaction.save();

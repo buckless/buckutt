@@ -3,6 +3,7 @@ const Payline = require('flav-payline');
 const moment = require('moment');
 const APIError = require('../errors/APIError');
 const dbCatch = require('../lib/dbCatch');
+const creditUser = require('../lib/creditUser');
 const ns = require('../lib/ns');
 const config = require('../../config');
 
@@ -124,9 +125,7 @@ module.exports = {
                 .then(result => {
                     paymentDetails = result;
 
-                    return Transaction.where({ transactionId: req.query.token }).fetch({
-                        withRelated: ['user']
-                    });
+                    return Transaction.where({ transactionId: req.query.token }).fetch();
                 })
                 .then(transaction => {
                     transaction.set('state', paymentDetails.result.shortMessage);
@@ -161,27 +160,14 @@ module.exports = {
                             ? reloadGift.save()
                             : Promise.resolve();
 
-                        const pendingCardUpdate = new PendingCardUpdate({
-                            user_id: transaction.get('user_id'),
-                            amount
-                        });
+                        const updateUser = creditUser(req, transaction.get('user_id'), amount);
 
                         return Promise.all([
                             newReload.save(),
                             transaction.save(),
-                            pendingCardUpdate.save(),
-                            transaction.related('user').save(),
+                            updateUser,
                             reloadGiftSave
-                        ]).then(() => {
-                            req.app.locals.pub.publish(
-                                'userCreditUpdate',
-                                JSON.stringify({
-                                    id: transaction.get('user_id'),
-                                    credit: null,
-                                    pending: amount
-                                })
-                            );
-                        });
+                        ]);
                     }
 
                     return transaction.save();

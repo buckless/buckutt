@@ -13,6 +13,7 @@ bookshelf.plugin('registry');
 bookshelf.plugin('virtuals');
 bookshelf.plugin('pagination');
 bookshelf.plugin(require('bookshelf-uuid'));
+bookshelf.plugin(require('bookshelf-eloquent'));
 bookshelf.plugin(require('bookshelf-signals')());
 
 bookshelf.plugin('bookshelf-manager', { root: modelsPath });

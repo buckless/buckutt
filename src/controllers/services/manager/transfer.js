@@ -1,6 +1,7 @@
 const bcrypt_ = require('bcryptjs');
 const express = require('express');
 const promisifyAll = require('util-promisifyall');
+const creditUser = require('../../../lib/creditUser');
 const log = require('../../../lib/log')(module);
 const dbCatch = require('../../../lib/dbCatch');
 const APIError = require('../../../errors/APIError');
@@ -89,36 +90,11 @@ router.post('/services/manager/transfer', (req, res, next) => {
     newTransfer.set('sender_id', req.user.id);
     newTransfer.set('reciever_id', req.recieverUser.id);
 
-    const updateSender = new models.PendingCardUpdate({
-        user_id: req.user.id,
-        amount: -1 * amount
-    });
+    const updateSender = creditUser(req, req.user.id, -1 * amount);
+    const updateReciever = creditUser(req, req.recieverUser.id, amount);
 
-    const updateReciever = new models.PendingCardUpdate({
-        user_id: req.recieverUser.id,
-        amount
-    });
-
-    return Promise.all([updateSender.save(), updateReciever.save(), newTransfer.save()])
+    return Promise.all([updateSender, updateReciever, newTransfer.save()])
         .then(() => {
-            req.app.locals.pub.publish(
-                'userCreditUpdate',
-                JSON.stringify({
-                    id: req.user.id,
-                    credit: null,
-                    pending: -1 * amount
-                })
-            );
-
-            req.app.locals.pub.publish(
-                'userCreditUpdate',
-                JSON.stringify({
-                    id: req.recieverUser.id,
-                    credit: null,
-                    pending: amount
-                })
-            );
-
             req.details.user1 = req.user.id;
             req.details.user2 = req.body.reciever_id;
             req.details.amount = amount;

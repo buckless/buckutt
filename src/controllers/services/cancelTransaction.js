@@ -1,7 +1,7 @@
 const express = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
+const creditUser = require('../../lib/creditUser');
 const APIError = require('../../errors/APIError');
-const rightsDetails = require('../../lib/rightsDetails');
 const log = require('../../lib/log')(module);
 const dbCatch = require('../../lib/dbCatch');
 
@@ -55,9 +55,8 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 
 router.post('/services/cancelTransaction', (req, res, next) => {
     const models = req.app.locals.models;
-    const isFromAdmin = req.query.addPendingCardUpdate && rightsDetails(req.user).admin;
     // Don't check if from client and card data are used
-    const checkApiCredit = isFromAdmin || !req.event.useCardData;
+    const checkApiCredit = req.point.name === 'Internet' || !req.event.useCardData;
 
     let amountPromise;
     switch (req.transaction.model) {
@@ -115,55 +114,22 @@ router.post('/services/cancelTransaction', (req, res, next) => {
 });
 
 router.post('/services/cancelTransaction', (req, res, next) => {
-    const queries = [];
-
-    Object.keys(req.pendingCardUpdates).forEach(user => {
-        let query;
-        if (req.query.addPendingCardUpdate && rightsDetails(req.user).admin) {
-            query = new req.app.locals.models.PendingCardUpdate({
-                user_id: user,
-                amount: req.pendingCardUpdates[user]
-            })
-                .save()
-                .then(() => ({
-                    id: user,
-                    pending: req.pendingCardUpdates[user]
-                }));
-        } else {
-            query = bookshelf
-                .knex('users')
-                .where({ id: user })
-                .update({
-                    updated_at: req.body.created_at || new Date(),
-                    credit: bookshelf.knex.raw(`credit + ${req.pendingCardUpdates[user]}`)
-                })
-                .returning('credit')
-                .then(credit => ({
-                    id: user,
-                    credit,
-                    pending: null
-                }));
-        }
-
-        queries.push(query);
-    });
+    const queries = Object.keys(req.pendingCardUpdates).map(user =>
+        creditUser(req, user, req.pendingCardUpdates[user])
+    );
 
     const Model = req.app.locals.models[req.transaction.model];
 
     Promise.all(queries)
-        .then(results => {
-            results.forEach(result => {
-                req.app.locals.pub.publish('userCreditUpdate', JSON.stringify(result));
-            });
-
-            return new Model({ id: req.transaction.data.id }).save(
+        .then(() =>
+            new Model({ id: req.transaction.data.id }).save(
                 {
                     active: null,
                     deleted_at: req.body.created_at || new Date()
                 },
                 { patch: true }
-            );
-        })
+            )
+        )
         .then(() => {
             req.details.rawType = req.body.rawType;
             req.details.objectId = req.body.id;

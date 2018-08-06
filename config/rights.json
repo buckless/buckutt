@@ -8,12 +8,14 @@
           "canControl": false,
           "read": [
               "/services/items",
-              "/services/pendingCardUpdate",
+              "/services/buyer",
+              "/services/usersData",
               "/live/alert"
           ],
           "write": [
               "/services/basket",
               "/services/catering",
+              "/services/pendingCardUpdate",
               "/services/cancelTransaction"
           ]
       },
@@ -24,11 +26,13 @@
           "canControl": false,
           "read": [
               "/services/items",
-              "/services/pendingCardUpdate",
+              "/services/buyer",
+              "/services/usersData",
               "/live/alert"
           ],
           "write": [
               "/services/basket",
+              "/services/pendingCardUpdate",
               "/services/cancelTransaction"
           ]
       },
@@ -40,12 +44,14 @@
           "read": [
               "/users",
               "/services/items",
-              "/services/pendingCardUpdate",
+              "/services/buyer",
               "/services/assigner",
+              "/services/usersData",
               "/live/alert"
           ],
           "write": [
               "/meansoflogin",
+              "/services/pendingCardUpdate",
               "/services/basket"
           ]
       },
@@ -56,7 +62,9 @@
           "canControl": true,
           "read": [
               "/services/items",
+              "/services/buyer",
               "/services/controller",
+              "/services/usersData",
               "/live/alert"
           ],
           "write": [
@@ -69,7 +77,7 @@
           "/services/manager/askpin",
           "/services/manager/generatepin",
           "/services/manager/register",
-          "/services/deviceEssentials",
+          "/services/eventEssentials",
           "/live/status",
           "/provider/callback"
       ],

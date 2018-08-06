@@ -1,5 +1,6 @@
 const express = require('express');
 const dbCatch = require('../lib/dbCatch');
+const creditUser = require('../lib/creditUser');
 const config = require('../../config');
 
 const providerConfig = config.provider.etupay;
@@ -46,7 +47,6 @@ module.exports = {
             const Transaction = req.app.locals.models.Transaction;
             const Reload = req.app.locals.models.Reload;
             const GiftReload = req.app.locals.models.GiftReload;
-            const PendingCardUpdate = req.app.locals.models.PendingCardUpdate;
 
             let giftReloads;
 
@@ -58,9 +58,7 @@ module.exports = {
                 .then(giftReloads_ => {
                     giftReloads = giftReloads_;
 
-                    return Transaction.where({ id: req.etupay.serviceData }).fetch({
-                        withRelated: ['user']
-                    });
+                    return Transaction.where({ id: req.etupay.serviceData }).fetch();
                 })
                 .then(transaction => {
                     // this should not happen \o
@@ -103,27 +101,14 @@ module.exports = {
                             ? reloadGift.save()
                             : Promise.resolve();
 
-                        const pendingCardUpdate = new PendingCardUpdate({
-                            user_id: transaction.get('user_id'),
-                            amount
-                        });
+                        const updateUser = creditUser(req, transaction.get('user_id'), amount);
 
                         return Promise.all([
                             newReload.save(),
                             transaction.save(),
-                            pendingCardUpdate.save(),
-                            transaction.related('user').save(),
+                            updateUser,
                             reloadGiftSave
-                        ]).then(() => {
-                            req.app.locals.pub.publish(
-                                'userCreditUpdate',
-                                JSON.stringify({
-                                    id: transaction.get('user_id'),
-                                    credit: null,
-                                    pending: amount
-                                })
-                            );
-                        });
+                        ]);
                     }
 
                     return transaction.save();

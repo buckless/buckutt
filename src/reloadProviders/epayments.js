@@ -4,6 +4,7 @@ const { promisify } = require('util');
 const APIError = require('../errors/APIError');
 const log = require('../lib/log')(module);
 const dbCatch = require('../lib/dbCatch');
+const creditUser = require('../lib/creditUser');
 const config = require('../../config');
 
 connectSdk.hostedcheckouts.create = promisify(connectSdk.hostedcheckouts.create);
@@ -109,8 +110,8 @@ module.exports = {
 
         router.get('/provider/callback', (req, res, next) => {
             const Transaction = req.app.locals.models.Transaction;
+            const GiftReload = req.app.locals.models.GiftReload;
             const Reload = req.app.locals.models.Reload;
-            const PendingCardUpdate = req.app.locals.models.PendingCardUpdate;
 
             const isNotification = req.query.isNotification;
             const hostedCheckoutId = req.query.hostedCheckoutId;
@@ -143,7 +144,7 @@ module.exports = {
 
                     return Transaction.where({
                         transactionId: `${req.query.hostedCheckoutId}_${req.query.RETURNMAC}`
-                    }).fetch({ withRelated: ['user'] });
+                    }).fetch();
                 })
                 .then(transaction => {
                     if (!transaction) {
@@ -200,27 +201,14 @@ module.exports = {
                             ? reloadGift.save()
                             : Promise.resolve();
 
-                        const pendingCardUpdate = new PendingCardUpdate({
-                            user_id: transaction.get('user_id'),
-                            amount
-                        });
+                        const updateUser = creditUser(req, transaction.get('user_id'), amount);
 
                         return Promise.all([
                             newReload.save(),
                             transaction.save(),
-                            pendingCardUpdate.save(),
-                            transaction.related('user').save(),
+                            updateUser,
                             reloadGiftSave
-                        ]).then(() => {
-                            req.app.locals.pub.publish(
-                                'userCreditUpdate',
-                                JSON.stringify({
-                                    id: transaction.get('user_id'),
-                                    credit: null,
-                                    pending: amount
-                                })
-                            );
-                        });
+                        ]);
                     }
 
                     return transaction.save();

@@ -2,6 +2,7 @@ const express = require('express');
 const { bookshelf } = require('../../lib/bookshelf');
 const log = require('../../lib/log')(module);
 const dbCatch = require('../../lib/dbCatch');
+const creditUser = require('../../lib/creditUser');
 const APIError = require('../../errors/APIError');
 
 /**
@@ -9,72 +10,32 @@ const APIError = require('../../errors/APIError');
  */
 const router = new express.Router();
 
-// Get the buyer
-router.get('/services/pendingCardUpdate', (req, res, next) => {
-    if (!req.query.buyer && !req.query.molType) {
-        return next(new APIError(module, 401, 'Invalid parameters'));
+router.post('/services/pendingCardUpdate', async (req, res, next) => {
+    const models = req.app.locals.models;
+
+    if (!req.body.id) {
+        return next(new APIError(module, 400, 'Missing id'));
     }
 
-    req.app.locals.models.MeanOfLogin.where({
-        type: req.query.molType,
-        data: req.query.buyer,
-        blocked: false
-    })
-        .fetch({
-            withRelated: ['user']
-        })
-        .then(mol => (mol ? mol.toJSON() : null))
-        .then(mol => {
-            if (!mol || !mol.user.id) {
-                return next(new APIError(module, 400, 'Invalid buyer'));
-            }
+    try {
+        const pendingCardUpdate = await models.PendingCardUpdate.where({ id: req.body.id })
+            .fetch()
+            .then(pcu => (pcu ? pcu.toJSON() : null));
 
-            req.buyer = mol.user;
-            req.details.buyer = mol.user.id;
+        if (!pendingCardUpdate) {
+            return next(new APIError(module, 404, 'PendingCardUpdate not found'));
+        }
 
-            next();
-        });
-});
+        await models.PendingCardUpdate.where({ id: req.body.id }).destroy();
+        await creditUser(req, pendingCardUpdate.user_id, pendingCardUpdate.amount);
+    } catch (err) {
+        return dbCatch(module, err, next);
+    }
 
-router.get('/services/pendingCardUpdate', (req, res, next) => {
-    let amount;
-
-    return bookshelf
-        .knex('pendingCardUpdates')
-        .update({ active: null, deleted_at: new Date() })
-        .where({ user_id: req.buyer.id, active: true })
-        .returning('amount')
-        .then(amounts => (amounts || []).reduce((a, b) => a + b, 0))
-        .then(amount_ => {
-            amount = amount_;
-
-            return bookshelf
-                .knex('users')
-                .where({ id: req.buyer.id })
-                .update({
-                    updated_at: new Date(),
-                    credit: bookshelf.knex.raw(`credit + ${amount}`)
-                })
-                .returning('credit');
-        })
-        .then(credit => {
-            req.app.locals.pub.publish(
-                'userCreditUpdate',
-                JSON.stringify({
-                    id: req.buyer.id,
-                    pending: null,
-                    credit
-                })
-            );
-
-            log.info(`Processing pendingCardUpdate ${req.buyer.id}`, req.details);
-
-            return res
-                .status(200)
-                .json({ amount })
-                .end();
-        })
-        .catch(err => dbCatch(module, err, next));
+    return res
+        .status(200)
+        .json({})
+        .end();
 });
 
 module.exports = router;

@@ -3,6 +3,7 @@ const { countBy } = require('lodash');
 const APIError = require('../../errors/APIError');
 const log = require('../../lib/log')(module);
 const createUser = require('../../lib/createUser');
+const creditUser = require('../../lib/creditUser');
 const { bookshelf } = require('../../lib/bookshelf');
 const rightsDetails = require('../../lib/rightsDetails');
 const dbCatch = require('../../lib/dbCatch');
@@ -259,32 +260,13 @@ router.post('/services/basket', (req, res, next) => {
         }
     });
 
-    const updatedAt = req.body.created_at || new Date();
-
-    const updateCredit = bookshelf
-        .knex('users')
-        .where({ id: req.buyer.id })
-        .update({
-            credit: newCredit,
-            updated_at: updatedAt
-        });
+    const updateCredit = creditUser(req, req.buyer.id, -1 * totalCost);
 
     req.buyer.credit = newCredit;
-    req.buyer.updated_at = updatedAt;
 
     Promise.all([updateCredit].concat(purchases).concat(reloads))
         .then(() => {
-            req.app.locals.pub.publish(
-                'userCreditUpdate',
-                JSON.stringify({
-                    id: req.buyer.id,
-                    credit: req.buyer.credit,
-                    pending: newCredit - req.buyer.credit
-                })
-            );
-
             req.details.basket = req.body.basket;
-            console.log('logging');
             log.info(`Processing basket of ${req.buyer.id} sold by ${req.user.id}`, req.details);
 
             return res
