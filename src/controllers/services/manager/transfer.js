@@ -34,24 +34,6 @@ router.post('/services/manager/transfer', (req, res, next) => {
 });
 
 router.post('/services/manager/transfer', (req, res, next) => {
-    if (!req.body.currentPin) {
-        return next(new APIError(module, 400, 'Current PIN has to be sent'));
-    }
-
-    if (req.body.currentPin.length !== 4) {
-        return next(new APIError(module, 400, 'Current PIN has to be clear, not crypted'));
-    }
-
-    bcrypt.compareAsync(req.body.currentPin.toString(), req.user.pin).then(match => {
-        if (match) {
-            next();
-        } else {
-            next(new APIError(module, 400, 'Current PIN is wrong'));
-        }
-    });
-});
-
-router.post('/services/manager/transfer', (req, res, next) => {
     const models = req.app.locals.models;
 
     const amount = parseInt(req.body.amount, 10);
