@@ -38,6 +38,7 @@ const canRefund = async (req, res) => {
     const allowed =
         date >= start &&
         date <= end &&
+        req.event.minimumAccountRefund > 0 &&
         refundable >= req.event.minimumAccountRefund &&
         !alreadyAsked;
 
