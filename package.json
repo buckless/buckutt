@@ -88,8 +88,5 @@
     "mocha": "^5.0.0",
     "nodemon": "^1.14.11",
     "prettier": "1.11.1"
-  },
-  "resolutions": {
-    "uws": "0.14.5"
   }
 }
