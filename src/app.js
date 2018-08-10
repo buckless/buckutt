@@ -117,7 +117,7 @@ app.start = async () => {
     app.locals.sub = await redis.getClient().duplicate();
     app.locals.server = server;
 
-    // app.locals.sub.subscribe('userCreditUpdate');
+    app.locals.sub.subscribe('userCreditUpdate');
     app.locals.sub.subscribe('data');
 
     purchaseWebservices(app);

@@ -20,7 +20,7 @@ function generateMessage(mail, key) {
     const subject = config.askpin.subject;
     const { html, text } = template('pinLink', {
         brandname: config.merchantName,
-        link: `${config.urls.managerUrl}/forgot-pin?key=${key}`
+        link: `${config.urls.managerUrl}/forgot?key=${key}`
     });
 
     return {

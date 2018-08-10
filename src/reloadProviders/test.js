@@ -14,7 +14,7 @@ module.exports = {
         });
 
         return transaction.save().then(() => {
-            setTimeout(() => module.exports.fakeCallback(app, transaction.get('id'), data), 1000);
+            setTimeout(() => module.exports.fakeCallback(app, transaction.get('id'), data), 5000);
 
             return {
                 type: 'url',

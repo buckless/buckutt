@@ -29,6 +29,8 @@ router.get('/live/credit', sseExpress(), (req, res, next) => {
         }
     };
 
+    res.sse({ data: { status: 'ok' } });
+
     req.app.locals.sub.on('message', handler);
     res.on('close', () => req.app.locals.sub.off('message', handler));
 });
