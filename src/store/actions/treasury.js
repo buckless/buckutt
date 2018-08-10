@@ -13,15 +13,9 @@ export function getPurchases({ commit, dispatch }, fields) {
     return get(`services/treasury/purchases?${qString}`)
         .then(purchases => {
             commit('CLEAROBJECT', 'purchases');
-            const purchasesWT = purchases.map(purchase => {
-                const newPurchase = Object.assign({}, purchase);
-                newPurchase.totalWT = newPurchase.totalTI - newPurchase.totalVAT;
+            dispatch('checkAndAddObjects', { route: 'purchases', objects: purchases });
 
-                return newPurchase;
-            });
-            dispatch('checkAndAddObjects', { route: 'purchases', objects: purchasesWT });
-
-            return get(`services/treasury/withdrawals?${qString}`)
+            return get(`services/treasury/withdrawals?${qString}`);
         })
         .then(withdrawals => {
             commit('CLEAROBJECT', 'withdrawals');
