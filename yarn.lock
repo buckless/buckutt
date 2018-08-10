@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@buckless/offline-queue@^1.0.1":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@buckless/offline-queue/-/offline-queue-1.0.2.tgz#2740614c59ff0a88fccd8d12318f1c30f86c5584"
+"@buckless/offline-queue@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@buckless/offline-queue/-/offline-queue-1.0.3.tgz#0582759d59c4cf2f0e0548325045d6114fe33793"
   dependencies:
     eventemitter3 "^3.0.1"
 
