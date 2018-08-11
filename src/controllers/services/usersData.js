@@ -49,7 +49,7 @@ router.get('/services/usersData', async (req, res, next) => {
             },
             {
                 embed: 'user.meansOfLogin',
-                filters: [['type', '=', 'cardId']],
+                filters: [['type', '=', 'cardId'], ['active', '=', true]],
                 required: true
             },
             {
@@ -125,7 +125,11 @@ router.get('/services/usersData', async (req, res, next) => {
             },
             {
                 embed: 'user.meansOfLogin',
-                filters: [['blocked', '=', false], ['type', '=', 'username']],
+                filters: [
+                    ['blocked', '=', false],
+                    ['type', '=', 'username'],
+                    ['active', '=', true]
+                ],
                 required: true
             }
         ];
