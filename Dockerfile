@@ -16,6 +16,6 @@ COPY config/profiles/development.json.example /usr/src/buckless-manager/config/p
 COPY config/profiles/production.json.example /usr/src/buckless-manager/config/profiles/production.json
 
 RUN yarn global add node-gyp
-RUN yarn
+RUN yarn --ignore-engines
 
 COPY . /usr/src/buckless-client/
