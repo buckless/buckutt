@@ -6,8 +6,8 @@ exports.seed = function (knex) {
     return knex('devices').del()
         .then(() =>
             knex('devices').insert([
-                item({ id: admin_id, name: 'admin', fingerprint: 'admin', isUser: true }),
-                item({ id: manager_id, name: 'manager', fingerprint: 'manager', isUser: true })
+                item({ id: admin_id, name: 'admin', fingerprint: 'admin' }),
+                item({ id: manager_id, name: 'manager', fingerprint: 'manager' })
             ])
         )
         .then(() => knex('wikets').del())

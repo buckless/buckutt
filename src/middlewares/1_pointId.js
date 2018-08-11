@@ -34,7 +34,7 @@ module.exports = async (req, res, next) => {
     }
 
     /* istanbul ignore if */
-    if (!device || (!device.isUser && device.wikets.length === 0)) {
+    if (!device) {
         return next(
             new APIError(module, 404, 'Device not found', {
                 fingerprint: req.fingerprint
@@ -85,7 +85,7 @@ module.exports = async (req, res, next) => {
             }
         });
 
-    if (!handled && !device.isUser) {
+    if (!handled) {
         return next(new APIError(module, 404, 'No assigned points'));
     }
 
