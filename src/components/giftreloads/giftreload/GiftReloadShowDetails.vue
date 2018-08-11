@@ -20,11 +20,13 @@ export default {
                 {
                     icon: 'keyboard_arrow_right',
                     title: 'Montant',
+                    type: 'price',
                     content: this.focusedGiftReload.amount
                 },
                 {
                     icon: 'keyboard_arrow_right',
                     title: 'Intervale',
+                    type: 'price',
                     content: this.focusedGiftReload.everyAmount
                 }
             ];
