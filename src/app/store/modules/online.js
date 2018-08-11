@@ -1,15 +1,29 @@
 const initialState = {
     status: false,
-    syncing: false,
     offline: {
         blockedCards: [],
         sellers: [],
         defaultItems: {
             articles: [],
             promotions: []
+        },
+        eventEssentials: {
+            locked: false,
+            lastUpdate: null
+        },
+        usersData: {
+            locked: false,
+            lastUpdate: null
+        },
+        items: {
+            locked: false,
+            lastUpdate: null
+        },
+        queue: {
+            locked: false,
+            lastUpdate: null
         }
-    },
-    lastUsersUpdate: null
+    }
 };
 
 const mutations = {
@@ -19,10 +33,6 @@ const mutations = {
 
     SET_OFFLINE(state) {
         state.status = false;
-    },
-
-    SET_SYNCING(state, payload) {
-        state.syncing = payload;
     },
 
     SET_SELLERS(state, payload) {
@@ -37,8 +47,36 @@ const mutations = {
         state.offline.blockedCards = payload;
     },
 
-    SET_LAST_USERS_UPDATE(state, date) {
-        state.lastUsersUpdate = date;
+    LOCK_ITEMS_UPDATE(state, payload) {
+        state.offline.items.locked = payload;
+    },
+
+    LOCK_ESSENTIALS_UPDATE(state, payload) {
+        state.offline.eventEssentials.locked = payload;
+    },
+
+    LOCK_USERS_UPDATE(state, payload) {
+        state.offline.usersData.locked = payload;
+    },
+
+    LOCK_QUEUE(state, payload) {
+        state.offline.queue.locked = payload;
+    },
+
+    SET_LAST_ITEMS_UPDATE(state, payload) {
+        state.offline.items.lastUpdate = payload;
+    },
+
+    SET_LAST_ESSENTIALS_UPDATE(state, payload) {
+        state.offline.eventEssentials.lastUpdate = payload;
+    },
+
+    SET_LAST_USERS_UPDATE(state, payload) {
+        state.offline.usersData.lastUpdate = payload;
+    },
+
+    SET_LAST_QUEUE(state, payload) {
+        state.offline.queue.lastUpdate = payload;
     }
 };
 

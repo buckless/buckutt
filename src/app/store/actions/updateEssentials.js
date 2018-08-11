@@ -1,3 +1,4 @@
+// Locks are duplicated locally to ensure that persistent doesn't lock updates forever in case of page refresh
 let lockUsers = false;
 let loopUsers;
 
@@ -32,11 +33,12 @@ export const updateUsersData = store => {
     }
 
     lockUsers = true;
+    store.commit('LOCK_USERS_UPDATE', true);
     clearTimeout(loopUsers);
 
     let params = '';
     if (store.state.online.lastUsersUpdate) {
-        params = `?lastUpdate=${store.state.online.lastUsersUpdate}`;
+        params = `?lastUpdate=${store.state.online.usersData.lastUpdate.toISOString()}`;
     }
 
     let lastUpdate;
@@ -48,7 +50,7 @@ export const updateUsersData = store => {
         })
         .then(res => {
             const promises = [];
-            lastUpdate = res.data.time;
+            lastUpdate = new Date(res.data.time);
 
             if (res.data.blockedCards) {
                 promises.push(store.dispatch('setBlockedCards', res.data.blockedCards));
@@ -93,6 +95,7 @@ export const updateUsersData = store => {
 
             loopUsers = setTimeout(() => store.dispatch('updateUsersData'), 5 * 60 * 1000);
             lockUsers = false;
+            store.commit('LOCK_USERS_UPDATE', false);
         });
 };
 
@@ -105,6 +108,7 @@ export const updateStoredItems = store => {
     }
 
     lockItems = true;
+    store.commit('LOCK_ITEMS_UPDATE', true);
     clearTimeout(loopItems);
 
     return store
@@ -121,8 +125,11 @@ export const updateStoredItems = store => {
         .catch(err => console.log(err))
         .then(() => {
             // Poll every 10 minutes
+            store.commit('SET_LAST_ITEMS_UPDATE', new Date());
+
             loopItems = setTimeout(() => store.dispatch('updateStoredItems'), 10 * 60 * 1000);
             lockItems = false;
+            store.commit('LOCK_ITEMS_UPDATE', false);
         });
 };
 
@@ -135,6 +142,7 @@ export const updateEssentials = (store, force) => {
     }
 
     lockEvent = true;
+    store.commit('LOCK_ESSENTIALS_UPDATE', true);
     clearTimeout(loopEvent);
 
     return store
@@ -199,7 +207,10 @@ export const updateEssentials = (store, force) => {
         .catch(err => console.log(err))
         .then(() => {
             // Poll every 20 minutes
+            store.commit('SET_LAST_ESSENTIALS_UPDATE', new Date());
+
             loopEvent = setTimeout(() => store.dispatch('updateEssentials'), 20 * 60 * 1000);
             lockEvent = false;
+            store.commit('LOCK_ESSENTIALS_UPDATE', false);
         });
 };

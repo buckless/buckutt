@@ -14,6 +14,7 @@ import Controller from '../views/Controller';
 import History from '../views/History';
 import Treasury from '../views/Treasury';
 import Catering from '../views/Catering';
+import Developpers from '../views/Developpers';
 
 Vue.use(VueRouter);
 
@@ -51,6 +52,11 @@ const routes = [
         path: '/catering',
         component: Catering,
         beforeEnter: (_, __, next) => next(getters.isSellerMode || '/')
+    },
+    {
+        path: '/developpers',
+        component: Developpers,
+        beforeEnter: (_, __, next) => next(!getters.loginState || '/')
     },
     {
         path: '/controller',

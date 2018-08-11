@@ -27,20 +27,21 @@ export const initQueue = store => {
     });
 
     queue.on('synchronizing', () => {
-        store.commit('SET_SYNCING', true);
+        store.commit('LOCK_QUEUE', true);
     });
 
     queue.on('synchronized', () => {
         store.dispatch('sendValidCancellations').then(() => {
             setTimeout(() => {
-                store.commit('SET_SYNCING', false);
+                store.commit('LOCK_QUEUE', false);
+                store.commit('SET_LAST_QUEUE', new Date());
             }, 200);
         });
     });
 };
 
 export const syncQueue = store => {
-    if (store.state.online.syncing) {
+    if (store.state.online.offline.queue.locked) {
         return;
     }
 

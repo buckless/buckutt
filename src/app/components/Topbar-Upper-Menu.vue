@@ -46,14 +46,9 @@
                 <div class="b-menu__actions__separator"></div>
                 <div
                     class="b-menu__actions__action"
-                    @click="syncQueue">
-                    <i class="b-icon">sync</i>
-                    <template v-if="syncing">
-                        Synchronisation en cours
-                    </template>
-                    <template v-else>
-                        Resynchroniser manuellement
-                    </template>
+                    @click="close(toogleDeveloppers)">
+                    <i class="b-icon">settings</i>
+                    Développeurs
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
@@ -144,11 +139,15 @@ export default {
             this.$router.push('catering');
         },
 
+        toogleDeveloppers() {
+            this.$router.push('developpers');
+        },
+
         openReloadModal() {
             this.$router.push('/items/reload');
         },
 
-        ...mapActions(['clearBasket', 'logout', 'syncQueue'])
+        ...mapActions(['clearBasket', 'logout'])
     }
 };
 </script>

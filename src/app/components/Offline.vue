@@ -15,7 +15,11 @@ export default {
 
         ...mapState({
             online: state => state.online.status,
-            syncing: state => state.online.syncing
+            syncing: state =>
+                state.online.offline.usersData.locked ||
+                state.online.offline.eventEssentials.locked ||
+                state.online.offline.items.locked ||
+                state.online.offline.queue.locked
         })
     }
 };
