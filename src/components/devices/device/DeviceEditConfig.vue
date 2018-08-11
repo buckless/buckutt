@@ -1,10 +1,6 @@
 <template>
     <div>
         <h5>Configurer l'équipement</h5>
-        <b-detailedswitch label="Équipement administrateur" icon="perm_device_information" :value="focusedDevice.isUser" @input="updateAndSaveFocusedElement({ field: 'isUser', value: $event })">
-            Activez cette option uniquement si cet équipement n'est pas un terminal de vente mais un équipement administrateur pour se connecter à l'interface d’administration.
-        </b-detailedswitch>
-
         <b-detailedswitch label="Badgeage avant achat" icon="done_all" :value="focusedDevice.doubleValidation" @input="updateAndSaveFocusedElement({ field: 'doubleValidation', value: $event })">
             Oblige l'acheteur à badger une première fois, afin de permettre au vendeur de connaître les articles et tarifs disponibles pour celui-ci, ainsi que de connaître son solde ou vérifier son identité, avant de prendre sa commande. Si cette option n'est pas activée, les tarifs du groupe par défaut défini dans le point de vente sera utilisé.
         </b-detailedswitch>
@@ -34,7 +30,7 @@ export default {
         },
 
         updateDevice(device) {
-            const fields = ['id', 'doubleValidation', 'alcohol', 'showPicture', 'isUser'];
+            const fields = ['id', 'doubleValidation', 'alcohol', 'showPicture'];
 
             this.updateObject({ route: 'devices', value: pick(device, fields) })
                 .then(() => this.notify({ message: 'La modification a bien été prise en compte' }))

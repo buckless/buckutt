@@ -5,7 +5,9 @@ export const categoryOptions = state =>
     state.objects.categories.map(category => ({ name: category.name, value: category }));
 
 export const deviceOptions = state =>
-    state.objects.devices.map(device => ({ name: device.name, value: device }));
+    state.objects.devices
+        .filter(device => device.name !== 'manager' && device.name !== 'admin')
+        .map(device => ({ name: device.name, value: device }));
 
 export const groupOptions = state =>
     state.objects.groups.map(group => ({ name: group.name, value: group }));

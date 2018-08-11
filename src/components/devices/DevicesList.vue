@@ -1,11 +1,6 @@
 <template>
     <div>
         <h5>Liste des équipements</h5>
-        <div class="b-devices-options">
-            <span>Type d'équipement:</span>
-            <mdl-checkbox v-model="displayWiket">Point de vente</mdl-checkbox>
-            <mdl-checkbox v-model="displayAdmin">Administrateur</mdl-checkbox>
-        </div>
 
         <div class="b-table-search">
             <i class="material-icons">search</i>
@@ -14,8 +9,7 @@
 
         <b-table
             :headers="[
-                { title: 'Équipement', field: 'name', object: true },
-                { title: 'Équipement administrateur', field: 'isUser', type: 'checkbox' }
+                { title: 'Équipement', field: 'name', object: true }
             ]"
             :data="displayedDevices"
             :filter="{ val: this.name, field: 'name' }"
@@ -38,9 +32,7 @@ import { mapState, mapActions } from 'vuex';
 export default {
     data() {
         return {
-            name: '',
-            displayWiket: true,
-            displayAdmin: true
+            name: ''
         };
     },
 
@@ -60,23 +52,9 @@ export default {
             return this.devices.filter(
                 device =>
                     device.name !== 'manager' &&
-                    device.name !== 'admin' &&
-                    ((this.displayWiket && !device.isUser) || (this.displayAdmin && device.isUser))
+                    device.name !== 'admin'
             );
         }
     }
 };
 </script>
-
-<style>
-.b-devices-options {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    & > label {
-        width: 150px;
-        margin-left: 15px;
-    }
-}
-</style>

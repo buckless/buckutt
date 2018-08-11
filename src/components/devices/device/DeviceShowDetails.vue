@@ -22,11 +22,6 @@ export default {
                     content: this.focusedDevice.name
                 },
                 {
-                    icon: 'perm_device_information',
-                    title: 'Équipement administrateur',
-                    content: this.focusedDevice.isUser ? 'Oui' : 'Non'
-                },
-                {
                     icon: 'security',
                     title: 'Clé unique',
                     content: this.focusedDevice.fingerprint
