@@ -1,10 +1,10 @@
 module.exports = (req, res, next) => {
-    req.header('point', req.point_id);
-    req.header('pointName', req.point.name);
-    req.header('event', req.event_id);
-    req.header('eventName', req.event.name);
-    req.header('wiket', req.wiket.id);
-    req.header('device', req.device.id);
+    res.header('point', req.point_id);
+    res.header('pointName', req.point.name);
+    res.header('event', req.event_id);
+    res.header('eventName', req.event.name);
+    res.header('wiket', req.wiket.id);
+    res.header('device', req.device.id);
 
     return next();
 };
