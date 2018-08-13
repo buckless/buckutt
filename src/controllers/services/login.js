@@ -121,7 +121,7 @@ router.post('/services/login', async (req, res, next) => {
         username: (u.meansOfLogin.find(mol => mol.type === 'username') || {}).data
     }));
 
-    user = sanitizeUser(user, req.point_id);
+    user = sanitizeUser(user, req.wiket.point.id);
 
     log.info(
         `Login with mol ${infos.meanOfLogin}(${infos.data}) and ${infos.connectType}`,
@@ -137,7 +137,7 @@ router.post('/services/login', async (req, res, next) => {
             linkedUsers: users,
             token: generateToken({
                 id: user.id,
-                point: req.point_id,
+                wiket: req.wiket.id,
                 // Will be used by middleware (else how could middleware know if pin or password ?)
                 connectType
             })

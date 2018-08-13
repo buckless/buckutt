@@ -17,7 +17,7 @@ router.post('/services/manager/switchuser', (req, res, next) => {
 
     const errDetails = {
         mol: infos.type,
-        point: req.Point_id
+        point: req.point.id
     };
 
     if (req.connectType !== 'pin') {
@@ -47,7 +47,7 @@ router.post('/services/manager/switchuser', (req, res, next) => {
             user.pin = '';
             user.password = '';
 
-            const userRights = rightsDetails(user, req.point_id);
+            const userRights = rightsDetails(user, req.point.id);
 
             user.canSell = userRights.sell;
             user.canReload = userRights.reload;

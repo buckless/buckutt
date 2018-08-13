@@ -174,7 +174,7 @@ router.post('/services/basket', (req, res, next) => {
         return next(new APIError(module, 400, `Credit is not a number`));
     }
 
-    const userRights = rightsDetails(req.user, req.point_id);
+    const userRights = rightsDetails(req.user, req.point.id);
 
     // Allow purchase of NFC supports only if the operator is reloader or assigner
     const onlyNfcDevice =
@@ -212,7 +212,7 @@ router.post('/services/basket', (req, res, next) => {
             const purchase = new models.Purchase({
                 buyer_id: req.buyer.id,
                 price_id: item.price_id,
-                point_id: req.point_id,
+                point_id: req.point.id,
                 promotion_id: item.promotion_id || null,
                 seller_id: req.user.id,
                 alcohol: item.alcohol,
@@ -247,7 +247,7 @@ router.post('/services/basket', (req, res, next) => {
                 credit: item.credit,
                 type: item.type,
                 trace: item.trace || '',
-                point_id: req.point_id,
+                point_id: req.point.id,
                 buyer_id: req.buyer.id,
                 seller_id: req.user.id,
                 created_at: req.body.created_at || new Date(),

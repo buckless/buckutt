@@ -33,7 +33,7 @@ router.post('/services/manager/reload', (req, res, next) => {
         buyer: req.user,
         amount,
         // Used by test reloadProvider
-        point: req.point_id
+        point: req.point.id
     })
         .then(result => {
             res

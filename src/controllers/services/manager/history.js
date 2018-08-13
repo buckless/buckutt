@@ -200,7 +200,7 @@ router.get('/services/manager/history', (req, res, next) => {
             res
                 .status(200)
                 .json({
-                    user: sanitizeUser(req.target, req.point_id),
+                    user: sanitizeUser(req.target, req.point.id),
                     pending,
                     history
                 })

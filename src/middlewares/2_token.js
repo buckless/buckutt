@@ -91,14 +91,17 @@ module.exports = async (req, res, next) => {
 
     console.log(decoded);
 
-    const [user, point] = await Promise.all([
+    const [user, wiket] = await Promise.all([
         req.app.locals.models.User.where({ id: userId }).fetch({
             withRelated: ['rights', 'rights.period', 'rights.point']
         }),
-        req.app.locals.models.Point.where({ id: decoded.point }).fetch()
-    ]).then(([resUser, resPoint]) => [
+        req.app.locals.models.Wiket.where({ id: decoded.wiket }).fetch({
+            withRelated: ['point', 'period'],
+            withDeleted: true
+        })
+    ]).then(([resUser, resWiket]) => [
         resUser ? resUser.toJSON() : null,
-        resPoint ? resPoint.toJSON() : null
+        resWiket ? resWiket.toJSON() : null
     ]);
 
     if (!user) {
@@ -106,9 +109,8 @@ module.exports = async (req, res, next) => {
     }
 
     req.user = user;
-
-    req.point_id = point.id;
-    req.point = point;
+    req.wiket = wiket;
+    req.point = wiket.point;
 
     req.connectType = connectType;
 
@@ -124,7 +126,7 @@ module.exports = async (req, res, next) => {
 
             if (right.period.start <= now && right.period.end > now) {
                 if (right.name !== 'admin' && right.point) {
-                    return !right.point.isRemoved && right.point.id === req.point_id;
+                    return !right.point.isRemoved && right.point.id === req.wiket.point.id;
                 }
 
                 return true;

@@ -78,7 +78,7 @@ router.post('/services/catering', (req, res, next) => {
     new models.Withdrawal({
         seller_id: req.user.id,
         buyer_id: req.buyer.id,
-        point_id: req.point_id,
+        point_id: req.point.id,
         name: req.body.name,
         cateringId: req.body.cateringId,
         created_at: req.body.created_at || new Date(),

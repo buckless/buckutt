@@ -46,7 +46,6 @@ module.exports = async (req, res, next) => {
     let handled = false;
 
     req.device = device;
-    req.point = {};
     req.event = event;
     req.wiket = {};
     req.details.device = req.device.name;
@@ -59,8 +58,6 @@ module.exports = async (req, res, next) => {
         .filter(wiket => (wiket.point_id && wiket.point.id) || !wiket.point_id)
         .forEach(wiket => {
             const period = wiket.period;
-            const point = wiket.point;
-
             const diff = period.end - period.start;
 
             if (period.start > req.date || period.end < req.date) {
@@ -68,17 +65,14 @@ module.exports = async (req, res, next) => {
             }
 
             if (diff < minPeriod) {
-                req.point_id = point.id;
-                req.event_id = event.id;
                 minPeriod = diff;
 
-                req.point = point;
                 req.wiket = wiket;
-                req.device.defaultGroup_id = wiket.defaultGroup_id;
+                req.point = wiket.point;
 
                 req.details = {
                     ...req.details,
-                    point: req.point.name
+                    point: wiket.point.name
                 };
 
                 handled = true;

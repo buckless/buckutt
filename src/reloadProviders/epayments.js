@@ -179,7 +179,7 @@ module.exports = {
                             credit: amount,
                             type: 'card',
                             trace: transaction.get('id'),
-                            point_id: req.point_id,
+                            point_id: req.point.id,
                             buyer_id: transaction.get('user_id'),
                             seller_id: transaction.get('user_id')
                         });
@@ -192,7 +192,7 @@ module.exports = {
                             credit: reloadGiftAmount,
                             type: 'gift',
                             trace: `card-${amount}`,
-                            point_id: req.point_id,
+                            point_id: req.point.id,
                             buyer_id: transaction.get('user_id'),
                             seller_id: transaction.get('user_id')
                         });

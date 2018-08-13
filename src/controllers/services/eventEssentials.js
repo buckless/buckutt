@@ -1,6 +1,7 @@
 const express = require('express');
 const { pick } = require('lodash');
 const dbCatch = require('../../lib/dbCatch');
+const rightsDetails = require('../../lib/rightsDetails');
 const { embedParser, embedFilter } = require('../../lib/embedParser');
 const log = require('../../lib/log')(module);
 
@@ -8,13 +9,6 @@ const router = new express.Router();
 
 // Polling every 20 minutes
 router.get('/services/eventEssentials', async (req, res, next) => {
-    if (!req.user) {
-        return res
-            .status(200)
-            .json({})
-            .end();
-    }
-
     const models = req.app.locals.models;
     const now = new Date();
 
@@ -75,69 +69,77 @@ router.get('/services/eventEssentials', async (req, res, next) => {
             });
         }
 
-        // Step 5: fetch operators
-        const embedRights = [
-            {
-                embed: 'user',
-                required: true
-            },
-            {
-                embed: 'user.meansOfLogin',
-                filters: [['blocked', '=', false]],
-                required: true
-            },
-            {
-                embed: 'period',
-                filters: [['end', '>', now]],
-                required: true
-            }
-        ];
+        if (req.user && rightsDetails(req.user, req.point.id).operator) {
+            // Step 5: fetch operators
+            const embedRights = [
+                {
+                    embed: 'user',
+                    required: true
+                },
+                {
+                    embed: 'user.meansOfLogin',
+                    filters: [['blocked', '=', false]],
+                    required: true
+                },
+                {
+                    embed: 'period',
+                    filters: [['end', '>', now]],
+                    required: true
+                }
+            ];
 
-        const embedRightsFilters = embedRights.filter(rel => rel.required).map(rel => rel.embed);
+            const embedRightsFilters = embedRights
+                .filter(rel => rel.required)
+                .map(rel => rel.embed);
 
-        const rights = await models.Right.where({ point_id: req.point.id })
-            .where('name', '!=', 'admin')
-            .fetchAll({
-                withRelated: embedParser(embedRights)
-            })
-            .then(rights => embedFilter(embedRightsFilters, rights.toJSON()));
+            const rights = await models.Right.where({ point_id: req.point.id })
+                .where('name', '!=', 'admin')
+                .fetchAll({
+                    withRelated: embedParser(embedRights)
+                })
+                .then(rights => embedFilter(embedRightsFilters, rights.toJSON()));
 
-        rights.forEach(right => {
-            const foundOperatorId = operators.findIndex(operator => operator.id === right.user.id);
-            const formattedRight = {
-                name: right.name,
-                start: right.period.start,
-                end: right.period.end
-            };
-
-            if (foundOperatorId === -1) {
-                const newOperator = {
-                    id: right.user.id,
-                    firstname: right.user.firstname,
-                    lastname: right.user.lastname,
-                    nickname: right.user.nickname,
-                    pin: right.user.pin,
-                    rights: [formattedRight],
-                    meansOfLogin: right.user.meansOfLogin.map(mol => ({
-                        type: mol.type,
-                        data: mol.data
-                    }))
+            rights.forEach(right => {
+                const foundOperatorId = operators.findIndex(
+                    operator => operator.id === right.user.id
+                );
+                const formattedRight = {
+                    name: right.name,
+                    start: right.period.start,
+                    end: right.period.end
                 };
 
-                operators.push(newOperator);
-            } else {
-                const newOperator = operators[foundOperatorId];
-                newOperator.rights.push(formattedRight);
-                operators[foundOperatorId] = newOperator;
-            }
-        });
+                if (foundOperatorId === -1) {
+                    const newOperator = {
+                        id: right.user.id,
+                        firstname: right.user.firstname,
+                        lastname: right.user.lastname,
+                        nickname: right.user.nickname,
+                        pin: right.user.pin,
+                        rights: [formattedRight],
+                        meansOfLogin: right.user.meansOfLogin.map(mol => ({
+                            type: mol.type,
+                            data: mol.data
+                        }))
+                    };
+
+                    operators.push(newOperator);
+                } else {
+                    const newOperator = operators[foundOperatorId];
+                    newOperator.rights.push(formattedRight);
+                    operators[foundOperatorId] = newOperator;
+                }
+            });
+        }
     } catch (err) {
         return dbCatch(module, err, next);
     }
 
-    // Step 5: prepare device
+    // Step 5: prepare device and wiket
+    wiket = req.wiket;
     device = req.device;
     delete device.wikets;
+    delete wiket.period;
 
     log.info('Get eventEssentials', req.details);
 
@@ -150,6 +152,7 @@ router.get('/services/eventEssentials', async (req, res, next) => {
             nfcCosts,
             operators,
             device,
+            wiket,
             event: req.event
         })
         .end();

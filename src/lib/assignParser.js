@@ -38,7 +38,7 @@ module.exports = async function assignParser(req) {
         targetUser = userData;
     }
 
-    const userRights = rightsDetails(req.user, req.point_id);
+    const userRights = rightsDetails(req.user, req.point.id);
     const isFromAssigner = userRights.assign;
     let cardAccount;
 

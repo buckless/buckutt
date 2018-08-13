@@ -73,7 +73,7 @@ router.get('/services/controller', (req, res, next) => {
 
 router.post('/services/controller', (req, res, next) => {
     req.details.mol = req.body.cardId.toLowerCase().trim();
-    req.details.point = req.Point_id;
+    req.details.point = req.point.id;
 
     req.app.locals.models.MeanOfLogin.query(q =>
         q.where(bookshelf.knex.raw('lower(data)'), '=', req.body.cardId.toLowerCase().trim())
