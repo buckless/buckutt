@@ -40,6 +40,7 @@ export default {
 
     computed: {
         ...mapState({
+            useCardData: state => state.auth.device.event.config.useCardData,
             wiket: state => state.auth.device.wiket,
             seller: state => state.auth.seller.id
         })
@@ -52,14 +53,12 @@ export default {
         },
 
         onCard(cardId) {
-            console.log('onCARD');
-            // this.sendRequest({
-            //     url: `services/controller?user=${cardId}`,
-            //     noQueue: true,
-            //     offlineAnswer: window.database.cardAccesses(cardId)
-            // })
-            window.database
-                .cardAccesses(cardId)
+            this.sendRequest({
+                url: `services/controller?user=${cardId}`,
+                noQueue: true,
+                forceOffline: this.useCardData,
+                offlineAnswer: window.database.cardAccesses(cardId)
+            })
                 .then(res => res.data || res)
                 .then(accesses => {
                     let match = false;
