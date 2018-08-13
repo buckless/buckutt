@@ -11,6 +11,14 @@ export const clearBasket = ({ commit }) => {
     commit('REMOVE_RELOADS');
 };
 
+export const removeUnavailableItemsFromBasket = store => {
+    const removals = store.getters.sidebar.items
+        .filter(item => !item.price.amount)
+        .map(item => store.dispatch('removeItemFromBasket', item));
+
+    return Promise.all(removals);
+};
+
 export const checkBuyerCredit = store => {
     if (store.state.auth.device.event.config.useCardData) {
         const minReload = store.state.auth.device.event.config.minReload;
@@ -91,6 +99,30 @@ export const addNfcSupportToBasket = store => {
     }
 };
 
+export const checkSidebar = store => {
+    if (
+        store.getters.sidebar.items.some(item => !item.price.amount) ||
+        store.getters.sidebar.promotions.some(promotion => !promotion.price.amount)
+    ) {
+        const items = store.getters.sidebar.items
+            .filter(item => !item.price.amount)
+            .map(item => item.name);
+
+        const promotions = store.getters.sidebar.promotions
+            .filter(promotion => !promotion.price.amount)
+            .map(promotion => promotion.name);
+
+        const unallowed = items
+            .concat(promotions)
+            .filter((item, index, original) => original.indexOf(item) === index);
+
+        store.commit('SET_UNALLOWED_ITEMS_NAMES', unallowed);
+        return Promise.reject({ response: { data: { message: 'User unallowed to buy this' } } });
+    }
+
+    return Promise.resolve();
+};
+
 export const validateBasket = (store, { cardNumber, credit, options, version }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
@@ -105,10 +137,16 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
     let initialPromise = Promise.resolve();
 
     // Log-in buyer to update user prices
-    initialPromise = store.dispatch('buyerLogin', {
-        cardNumber,
-        credit
-    });
+    initialPromise = store
+        .dispatch('buyerLogin', {
+            cardNumber,
+            credit
+        })
+        .then(() => store.dispatch('checkSidebar'))
+        // If it fails, throw an error and then remove items from the basket
+        .catch(err =>
+            store.dispatch('removeUnavailableItemsFromBasket').then(() => Promise.reject(err))
+        );
 
     const shouldPayCard = !options.paidCard && store.state.auth.device.event.config.useCardData;
 

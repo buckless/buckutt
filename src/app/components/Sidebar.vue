@@ -38,9 +38,10 @@ export default {
             const counts = countBy(this.sidebar.items.map(item => item.id));
 
             return Object.keys(counts).map(id => {
+                const item = this.sidebar.items.find(item => item.id === id);
                 return {
                     id: id,
-                    name: this.sidebar.items.find(item => item.id === id).name,
+                    name: item.name,
                     count: counts[id]
                 };
             });

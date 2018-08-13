@@ -77,5 +77,17 @@ export default (state, getters, error) => {
         return "Le solde de cet article est épuisé pour aujourd'hui.";
     }
 
+    if (error.message === 'User unallowed to buy this') {
+        if (state.basket.unallowedItemsNames.length === 1) {
+            return `Cet utilisateur n'a pas le droit d'acheter l'article suivant: ${
+                state.basket.unallowedItemsNames[0]
+            }.`;
+        }
+
+        return `Cet utilisateur n'a pas le droit d'acheter les articles suivants: ${state.basket.unallowedItemsNames.join(
+            ', '
+        )}.`;
+    }
+
     return error.message;
 };

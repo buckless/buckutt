@@ -25,6 +25,7 @@ export default {
         clearError() {
             // Show green button after error
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
+            this.$store.commit('SET_UNALLOWED_ITEMS_NAMES', []);
             this.$store.commit('ERROR', '');
         }
     }
