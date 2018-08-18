@@ -49,6 +49,10 @@ export const syncQueue = store => {
 };
 
 export const sendRequest = (store, job) => {
+    if (job.data) {
+        job.data.clientTime = new Date();
+    }
+
     if (!store.state.auth.device.event.config.useCardData) {
         return store.dispatch('currentTokenAxios', job);
     }
@@ -68,8 +72,6 @@ export const sendRequest = (store, job) => {
             return job.offlineAnswer || Promise.reject(err);
         });
     }
-
-    job.data.created_at = new Date();
 
     return queue.push({
         data: {
