@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from "vuex";
 
 export default {
     props: {
@@ -86,15 +86,17 @@ export default {
 
     computed: {
         hasActions() {
-            return this.isSellerMode || this.isReloaderMode || this.displayLogout;
+            return (
+                this.isSellerMode || this.isReloaderMode || this.displayLogout
+            );
         },
 
         canClose() {
             return (
-                this.$route.path !== '/items' &&
-                this.$route.path !== '/reload' &&
-                !this.$route.path.startsWith('/assigner') &&
-                this.$route.path !== '/controller'
+                this.$route.path !== "/items" &&
+                this.$route.path !== "/reload" &&
+                !this.$route.path.startsWith("/assigner") &&
+                this.$route.path !== "/controller"
             );
         },
 
@@ -117,37 +119,37 @@ export default {
 
         logoutSeller() {
             if (this.onlyLogout) {
-                return this.$store.dispatch('pursueLogout');
+                return this.$store.dispatch("pursueLogout");
             }
 
-            return this.$store.commit('FIRST_LOGOUT_SELLER');
+            return this.$store.commit("FIRST_LOGOUT_SELLER");
         },
 
         back() {
-            this.$router.push('items');
+            this.$router.push("items");
         },
 
         toggleHistory() {
-            this.$router.push('history');
+            this.$router.push("history");
         },
 
         toggleTreasury() {
-            this.$router.push('treasury');
+            this.$router.push("treasury");
         },
 
         toggleCatering() {
-            this.$router.push('catering');
+            this.$router.push("catering");
         },
 
         toogleDeveloppers() {
-            this.$router.push('developpers');
+            this.$router.push("developpers");
         },
 
         openReloadModal() {
-            this.$router.push('/items/reload');
+            this.$router.push("/items/reload");
         },
 
-        ...mapActions(['clearBasket', 'logout'])
+        ...mapActions(["clearBasket", "logout"])
     }
 };
 </script>
@@ -198,7 +200,7 @@ export default {
     bottom: 100%;
     right: 22px;
     border: solid transparent;
-    content: '';
+    content: "";
     height: 0;
     width: 0;
     position: absolute;

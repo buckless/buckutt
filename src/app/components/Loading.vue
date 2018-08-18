@@ -21,14 +21,14 @@ export default {
 
     methods: {
         forceClose() {
-            this.$store.commit('SET_DATA_LOADED', true);
+            this.$store.commit("SET_DATA_LOADED", true);
         }
     }
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 $loadingSize: 50px;
 

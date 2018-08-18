@@ -1,43 +1,60 @@
-process.env.TARGET = 'electron';
+process.env.TARGET = "electron";
 
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const url = require('url');
-const NFC = require('./lib/nfc');
+const { app, BrowserWindow } = require("electron");
+const path = require("path");
+const url = require("url");
 
 function createWindow() {
-    const isDev = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
+    const isDev =
+        process.env.NODE_ENV && process.env.NODE_ENV.trim() === "development";
 
-    window = new BrowserWindow({
+    let win = new BrowserWindow({
         fullscreen: !isDev,
         kiosk: !isDev
     });
 
+    let uri = "";
+
     if (isDev) {
-        uri = process.env.URI || 'http://localhost:8081';
+        uri = url.format({
+            pathname: path.join(
+                process.env.URI || "localhost:8080",
+                __dirname,
+                "dist",
+                "electron",
+                "index.html"
+            ),
+            protocol: "http:",
+            slashes: true
+        });
+        console.log(uri);
     } else {
         uri = url.format({
-            pathname: path.join(__dirname, '..', 'dist', 'electron', 'index.html'),
-            protocol: 'file:',
+            pathname: path.join(
+                __dirname,
+                "..",
+                "dist",
+                "electron",
+                "index.html"
+            ),
+            protocol: "file:",
             slashes: true
         });
     }
 
-    window.loadURL(uri);
-    window.setMenu(null);
+    win.loadURL(uri);
+    win.setMenu(null);
 
     if (isDev || process.env.DEVTOOLS) {
-        window.webContents.openDevTools();
+        win.webContents.openDevTools();
     }
 
-    window.on('closed', () => {
+    win.on("closed", () => {
         // dereference
-        window = null;
+        win = null;
     });
-
-    window.nfc = new NFC();
 }
 
-app.on('ready', createWindow);
+app.on("ready", createWindow);
 
-app.on('window-all-closed', () => app.quit());
+app.on("window-all-closed", () => app.quit());

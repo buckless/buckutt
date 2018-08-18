@@ -1,19 +1,28 @@
-const config = require('../../../../../config');
+// const config = require("../../../../../config");
 
-module.exports.read = (transmit, log, callback, err) => {
-    const readBuf = Buffer.from([0xff, 0xb0, 0x00, 0x00, config.ultralight.cardLength]);
+export function read(transmit, log, callback) {
+    const readBuf = Buffer.from([
+        0xff,
+        0xb0,
+        0x00,
+        0x00,
+        config.ultralight.cardLength
+    ]);
 
-    log(`out: ${readBuf.toString('hex')}`);
+    log(`out: ${readBuf.toString("hex")}`);
     return transmit(readBuf).then(data => {
         // remove first pages (uid, etc.) and success code
-        data = data.slice(config.ultralight.firstWritablePage * 4, -2).toString('hex');
+        data = data
+            .slice(config.ultralight.firstWritablePage * 4, -2)
+            .toString("hex");
 
         callback(data);
     });
-};
+}
 
-module.exports.write = (data, transmit, log, callback, err) => {
-    const dataLength = config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
+export function write(data, transmit, log) {
+    const dataLength =
+        config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
 
     const buf = Buffer.from(data);
     const newBuf = Buffer.alloc(dataLength, 0);
@@ -57,13 +66,13 @@ module.exports.write = (data, transmit, log, callback, err) => {
                     0x04,
                     ...page
                 ]);
-                log(`out: ${writeBuf.toString('hex')}`);
+                log(`out: ${writeBuf.toString("hex")}`);
                 return transmit(writeBuf);
             })
             .then(res => {
-                log(`res: ${res.toString('hex')}`);
-                if (res.toString('hex') !== '9000') {
-                    throw new Error(`Write failed : ${res.toString('hex')}`);
+                log(`res: ${res.toString("hex")}`);
+                if (res.toString("hex") !== "9000") {
+                    throw new Error(`Write failed : ${res.toString("hex")}`);
                 }
 
                 i = i + 1;
@@ -74,9 +83,9 @@ module.exports.write = (data, transmit, log, callback, err) => {
     }
 
     return sequence.then(() => newBuf);
-};
+}
 
-module.exports.ATR = Buffer.from([
+export const ATR = Buffer.from([
     0x3b,
     0x8f,
     0x80,

@@ -1,3 +1,3 @@
 export const selectTab = ({ commit }, index) => {
-    commit('CHANGE_TAB', index);
+    commit("CHANGE_TAB", index);
 };

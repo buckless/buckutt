@@ -1,5 +1,5 @@
-import axios from '@/utils/axios';
-import memoize from 'lodash.memoize';
+import axios from "@/utils/axios";
+import { memoize } from "lodash/function";
 
 const cachedGetImage = memoize((id, token) => {
     return axios
@@ -20,7 +20,7 @@ const cachedGetImage = memoize((id, token) => {
         })
         .catch(err => {
             if (!window.database || !window.database.getImage) {
-                return Promise.reject();
+                return Promise.reject(err);
             }
 
             return window.database.getImage(id).then(image => image.blob);
@@ -30,5 +30,5 @@ const cachedGetImage = memoize((id, token) => {
 export const getImage = (store, id) => {
     const token = store.getters.tokenHeaders;
 
-    return cachedGetImage(id, store.getters.tokenHeaders);
+    return cachedGetImage(id, token);
 };

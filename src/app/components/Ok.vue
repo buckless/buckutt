@@ -17,8 +17,8 @@ export default {
     computed: {
         classes() {
             return {
-                'b-ok': true,
-                'b-ok--not-ok': !this.status
+                "b-ok": true,
+                "b-ok--not-ok": !this.status
             };
         }
     }
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-ok {
     position: absolute;

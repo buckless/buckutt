@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from "vuex";
 
 export default {
     computed: mapState({
@@ -29,16 +29,16 @@ export default {
 
     methods: {
         logout() {
-            this.pursueLogout().then(() => this.$router.push('/login'));
+            this.pursueLogout().then(() => this.$router.push("/login"));
         },
 
-        ...mapActions(['pursueLogout', 'cancelLogout'])
+        ...mapActions(["pursueLogout", "cancelLogout"])
     }
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-disconnect-warning__modal {
     padding: 15px !important;

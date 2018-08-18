@@ -1,1 +1,1 @@
-module.exports = () => Promise.resolve(null);
+export default () => Promise.resolve(null);

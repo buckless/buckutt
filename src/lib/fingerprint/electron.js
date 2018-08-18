@@ -1,3 +1,3 @@
-const { machineIdSync } = require('node-machine-id');
+import { machineIdSync } from "node-machine-id";
 
-module.exports = machineIdSync();
+export default machineIdSync();

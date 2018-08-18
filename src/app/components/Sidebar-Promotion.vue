@@ -16,6 +16,7 @@
             v-if="toggled">
             <div
                 v-for="item of content"
+                :key="item.id"
                 class="b-sidebar-promotion__row__details__item">
                 {{ item.name }}
             </div>
@@ -24,7 +25,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 
 export default {
     props: {
@@ -48,13 +49,13 @@ export default {
             });
         },
 
-        ...mapActions(['removeItemFromBasket'])
+        ...mapActions(["removeItemFromBasket"])
     }
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-sidebar-promotion {
     background-color: #fff;
@@ -102,7 +103,7 @@ export default {
 
     &:after {
         background-color: #fff;
-        content: ' ';
+        content: " ";
         height: 3px;
         left: 50%;
         position: absolute;

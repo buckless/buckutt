@@ -18,10 +18,10 @@ export default {
             let value = this.value / 100;
 
             if (this.input) {
-                value = parseInt(this.input.join(''), 10) / 100;
+                value = parseInt(this.input.join(""), 10) / 100;
             }
 
-            const plus = this.showPlus && value > 0 ? '+' : '';
+            const plus = this.showPlus && value > 0 ? "+" : "";
 
             return `${plus}${value.toFixed(2)}€`;
         }

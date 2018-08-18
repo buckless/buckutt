@@ -1,18 +1,18 @@
 export const loadDefaultItems = store => {
     const defaultItems = store.state.online.offline.defaultItems;
-    store.commit('SET_ITEMS', defaultItems.articles || []);
-    store.commit('SET_PROMOTIONS', defaultItems.promotions || []);
+    store.commit("SET_ITEMS", defaultItems.articles || []);
+    store.commit("SET_PROMOTIONS", defaultItems.promotions || []);
 
-    store.dispatch('setWiketItems').then(() => {
+    store.dispatch("setWiketItems").then(() => {
         if (store.getters.tabs.length > 0) {
-            store.commit('CHANGE_TAB', store.getters.tabs[0].id);
+            store.commit("CHANGE_TAB", store.getters.tabs[0].id);
         }
     });
 };
 
 export const clearInterface = store => {
-    store.commit('CLEAR_ITEMS');
-    store.commit('CLEAR_PROMOTIONS');
+    store.commit("CLEAR_ITEMS");
+    store.commit("CLEAR_PROMOTIONS");
 };
 
 export const setWiketItems = ({ state, commit }) => {
@@ -22,7 +22,11 @@ export const setWiketItems = ({ state, commit }) => {
 
     if (state.auth.buyer.isAuth && state.auth.buyer.memberships) {
         groupsToKeep = state.auth.buyer.memberships
-            .filter(m => new Date(m.start) <= Date.now() && new Date(m.end) >= Date.now())
+            .filter(
+                m =>
+                    new Date(m.start) <= Date.now() &&
+                    new Date(m.end) >= Date.now()
+            )
             .map(m => m.group);
     }
 
@@ -44,7 +48,8 @@ export const setWiketItems = ({ state, commit }) => {
                     initialObjects.findIndex(
                         object2 =>
                             object1.id === object2.id &&
-                            (!object1.category || object1.category.id === object2.category.id)
+                            (!object1.category ||
+                                object1.category.id === object2.category.id)
                     )
             )
     );
@@ -59,5 +64,5 @@ export const setWiketItems = ({ state, commit }) => {
         }))
     }));
 
-    return commit('SET_WIKETITEMS', { items: res[0], promotions });
+    return commit("SET_WIKETITEMS", { items: res[0], promotions });
 };

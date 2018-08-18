@@ -1,1 +1,1 @@
-module.exports = require('./' + process.env.TARGET);
+export default require("./" + process.env.TARGET).default;

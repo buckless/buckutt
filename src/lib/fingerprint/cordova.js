@@ -1,1 +1,2 @@
-module.exports = device.uuid;
+/* global device */
+export default device.uuid;

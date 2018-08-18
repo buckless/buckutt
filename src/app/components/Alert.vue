@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from "vuex";
 
 export default {
     data() {
@@ -38,7 +38,7 @@ export default {
             }
         },
 
-        ...mapActions(['closeAlert'])
+        ...mapActions(["closeAlert"])
     },
 
     mounted() {
@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-alert__drop {
     @add-mixin modal-drop;
