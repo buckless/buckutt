@@ -1,8 +1,12 @@
 import q from '../../utils/q';
 import offlineLogin from '../../utils/offline/login';
 
-export const setPoint = ({ commit }, payload) => {
+export const setDevice = ({ commit }, payload) => {
     commit('SET_DEVICE', payload);
+};
+
+export const setWiket = ({ commit }, payload) => {
+    commit('SET_WIKET', payload);
 };
 
 export const setGiftReloads = ({ commit }, payload) => {
@@ -11,10 +15,6 @@ export const setGiftReloads = ({ commit }, payload) => {
 
 export const setNfcCosts = ({ commit }, payload) => {
     commit('SET_NFCCOSTS', payload);
-};
-
-export const setFullDevice = ({ commit }, payload) => {
-    commit('SET_FULL_DEVICE', payload);
 };
 
 export const setEvent = ({ commit }, payload) => {
@@ -63,7 +63,7 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
                 canControl: res.data.user.canControl
             });
 
-            return dispatch('updateEssentials', true)
+            return dispatch('updateEssentials')
                 .then(() => dispatch('updateStoredItems'))
                 .then(() => dispatch('loadDefaultItems'));
         })
@@ -90,7 +90,6 @@ export const login = ({ commit, dispatch, state, getters }, { meanOfLogin, passw
 export const logoutBuyer = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
-        store.commit('UPDATE_TOKEN', '');
 
         return store.dispatch('clearBasket').then(() => store.dispatch('loadDefaultItems'));
     }
@@ -100,6 +99,7 @@ export const logoutBuyer = store => {
 
 export const pursueLogout = ({ commit, dispatch }) => {
     commit('LOGOUT_SELLER');
+    commit('UPDATE_TOKEN', '');
     commit('ID_SELLER', '');
     // Remove disconnect warning
     commit('REMOVE_LOGOUT_WARNING');
@@ -152,13 +152,16 @@ export const buyerLogin = (store, { cardNumber, credit, removeUnavailable }) => 
     }));
 
     return store
-        .dispatch('sendRequest', {
-            url: `/services/buyer${params}`,
-            offlineAnswer,
-            noQueue: true,
-            // If use card data, always use local data
-            forceOffline: store.state.auth.device.event.config.useCardData
-        })
+        .dispatch('updateEssentials')
+        .then(() =>
+            store.dispatch('sendRequest', {
+                url: `/services/buyer${params}`,
+                offlineAnswer,
+                noQueue: true,
+                // If use card data, always use local data
+                forceOffline: store.state.auth.device.event.config.useCardData
+            })
+        )
         .then(res => {
             const memberships = res.data.buyer.memberships.map(membership => ({
                 start: membership.period.start,

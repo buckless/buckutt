@@ -83,7 +83,7 @@ export default {
                     if (match) {
                         const access = {
                             operator_id: this.seller,
-                            wiket_id: this.wiket,
+                            wiket_id: this.wiket.id,
                             cardId
                         };
 

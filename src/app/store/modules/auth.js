@@ -2,11 +2,14 @@ const initialState = {
     alert: null,
     device: {
         id: null,
-        point: {
+        wiket: {
             id: null,
-            name: null
+            defaultGroup_id: null,
+            point: {
+                id: null,
+                name: null
+            }
         },
-        wiket: null,
         event: {
             id: null,
             name: null,
@@ -53,18 +56,20 @@ const initialState = {
 };
 
 const mutations = {
-    SET_DEVICE(state, payload) {
-        state.device.id = payload.id;
-        state.device.point = payload.point;
-        state.device.wiket = payload.wiket;
-        state.device.event.id = payload.event.id;
-        state.device.event.name = payload.event.name;
-    },
-
-    SET_FULL_DEVICE(state, payload) {
-        const keys = ['alcohol', 'doubleValidation', 'showPicture'];
+    SET_WIKET(state, payload) {
+        const keys = ['id', 'defaultGroup_id', 'point'];
 
         keys.forEach(key => {
+            state.device.wiket[key] = payload[key];
+        });
+    },
+
+    SET_DEVICE(state, payload) {
+        state.device.id = payload.id;
+
+        const configKeys = ['alcohol', 'doubleValidation', 'showPicture'];
+
+        configKeys.forEach(key => {
             state.device.config[key] = payload[key];
         });
     },

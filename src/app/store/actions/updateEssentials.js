@@ -136,7 +136,7 @@ export const updateStoredItems = store => {
 let lockEvent = false;
 let loopEvent;
 
-export const updateEssentials = (store, force) => {
+export const updateEssentials = store => {
     if (lockEvent) {
         return Promise.resolve();
     }
@@ -151,29 +151,9 @@ export const updateEssentials = (store, force) => {
             noQueue: true
         })
         .then(res => {
-            if (!store.state.auth.device.point.id || !store.state.auth.seller.isAuth || force) {
-                return store
-                    .dispatch('setPoint', {
-                        id: res.headers.device,
-                        wiket: res.headers.wiket,
-                        point: {
-                            id: res.headers.point,
-                            name: res.headers.pointname
-                        },
-                        event: {
-                            id: res.headers.event,
-                            name: res.headers.eventname
-                        }
-                    })
-                    .then(() => res);
-            }
-
-            return Promise.resolve(res);
-        })
-        .then(res => {
             const promises = [];
 
-            if (res.data.operators) {
+            if (res.data.operators && res.data.operators.length > 0) {
                 promises.push(store.dispatch('setSellers', res.data.operators));
             }
 
@@ -182,7 +162,11 @@ export const updateEssentials = (store, force) => {
             }
 
             if (res.data.device) {
-                promises.push(store.dispatch('setFullDevice', res.data.device));
+                promises.push(store.dispatch('setDevice', res.data.device));
+            }
+
+            if (res.data.wiket) {
+                promises.push(store.dispatch('setWiket', res.data.wiket));
             }
 
             if (res.data.event) {

@@ -32,7 +32,7 @@ import Tab from './Topbar-Lower-Tab';
 export default {
     computed: {
         ...mapState({
-            point: state => state.auth.device.point.name,
+            point: state => state.auth.device.wiket.point.name,
             seller: state => state.auth.seller,
             buyer: state => state.auth.buyer
         }),
