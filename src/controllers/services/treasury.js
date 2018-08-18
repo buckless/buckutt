@@ -19,8 +19,8 @@ router.get('/services/treasury/purchases', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -88,8 +88,8 @@ router.get('/services/treasury/withdrawals', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -143,8 +143,8 @@ router.get('/services/treasury/reloads', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -180,8 +180,8 @@ router.get('/services/treasury/refunds', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }

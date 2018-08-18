@@ -73,6 +73,7 @@ router.get('/services/controller', (req, res, next) => {
 
 router.post('/services/controller', (req, res, next) => {
     req.details.mol = req.body.cardId.toLowerCase().trim();
+    req.details.clientTime = req.body.clientTime;
     req.details.point = req.point.id;
 
     req.app.locals.models.MeanOfLogin.query(q =>
@@ -93,8 +94,7 @@ router.post('/services/controller', (req, res, next) => {
                 meanOfLogin_id: mol.id,
                 operator_id: req.user.id,
                 wiket_id: req.body.wiket_id,
-                created_at: req.body.created_at || new Date(),
-                updated_at: req.body.created_at || new Date()
+                clientTime: req.body.clientTime
             });
 
             return access.save();

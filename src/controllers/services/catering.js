@@ -81,8 +81,7 @@ router.post('/services/catering', (req, res, next) => {
         point_id: req.point.id,
         name: req.body.name,
         cateringId: req.body.cateringId,
-        created_at: req.body.created_at || new Date(),
-        updated_at: req.body.created_at || new Date()
+        clientTime: req.body.clientTime
     })
         .save()
         .then(() => {

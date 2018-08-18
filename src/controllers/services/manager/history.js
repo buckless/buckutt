@@ -97,7 +97,7 @@ router.get('/services/manager/history', (req, res, next) => {
             history = result.toJSON().map(purchase => ({
                 id: purchase.id,
                 type: purchase.price.promotion ? 'promotion' : 'purchase',
-                date: purchase.created_at,
+                date: purchase.clientTime,
                 amount: -1 * purchase.price.amount,
                 point: purchase.point.name,
                 seller: {
@@ -117,7 +117,7 @@ router.get('/services/manager/history', (req, res, next) => {
             const reloads = result.toJSON().map(reload => ({
                 id: reload.id,
                 type: 'reload',
-                date: reload.created_at,
+                date: reload.clientTime,
                 amount: reload.credit,
                 point: reload.point.name,
                 mop: reload.type,
@@ -136,7 +136,7 @@ router.get('/services/manager/history', (req, res, next) => {
             const refunds = result.toJSON().map(refund => ({
                 id: refund.id,
                 type: 'refund',
-                date: refund.created_at,
+                date: refund.clientTime,
                 amount: -1 * refund.amount,
                 point: 'Internet',
                 mop: refund.type,
@@ -155,7 +155,7 @@ router.get('/services/manager/history', (req, res, next) => {
             const transfersFrom = result.toJSON().map(transfer => ({
                 id: transfer.id,
                 type: 'transfer',
-                date: transfer.created_at,
+                date: transfer.clientTime,
                 amount: transfer.amount,
                 point: 'Internet',
                 mop: '',
@@ -174,7 +174,7 @@ router.get('/services/manager/history', (req, res, next) => {
             const transfersTo = result.toJSON().map(transfer => ({
                 id: transfer.id,
                 type: 'transfer',
-                date: transfer.created_at,
+                date: transfer.clientTime,
                 amount: -1 * transfer.amount,
                 point: 'Internet',
                 mop: '',

@@ -54,8 +54,8 @@ router.get('/services/stats/purchases', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             baseQuery = baseQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -138,7 +138,7 @@ router.get('/services/stats/purchases', (req, res, next) => {
                         const end = moment(startBoundary).add(divider * index, 'minutes');
 
                         const dividedPurchases = filteredPurchases.filter(purchase =>
-                            moment(purchase.created_at).isBetween(start, end, null, '[)')
+                            moment(purchase.clientTime).isBetween(start, end, null, '[)')
                         );
 
                         return {

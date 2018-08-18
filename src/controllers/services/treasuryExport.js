@@ -9,7 +9,7 @@ const router = new express.Router();
 router.get('/services/treasury/csv/purchases', (req, res, next) => {
     const models = req.app.locals.models;
 
-    let initialQuery = models.Purchase.query('orderBy', 'created_at', 'DESC');
+    let initialQuery = models.Purchase.query('orderBy', 'clientTime', 'DESC');
     let price = 'price';
 
     if (req.query.dateIn && req.query.dateOut) {
@@ -18,8 +18,8 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -79,7 +79,7 @@ router.get('/services/treasury/csv/purchases', (req, res, next) => {
                         : purchase.price.promotion;
 
                     return [
-                        purchase.created_at.toISOString(),
+                        purchase.clientTime.toISOString(),
                         purchase.point.name,
                         `${purchase.seller.firstname} ${purchase.seller.lastname}`,
                         `${purchase.buyer.firstname} ${purchase.buyer.lastname}`,
@@ -110,8 +110,8 @@ router.get('/services/treasury/csv/withdrawals', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -133,7 +133,7 @@ router.get('/services/treasury/csv/withdrawals', (req, res, next) => {
             const csv = withdrawals
                 .map(withdrawal =>
                     [
-                        withdrawal.created_at.toISOString(),
+                        withdrawal.clientTime.toISOString(),
                         withdrawal.point.name,
                         `${withdrawal.seller.firstname} ${withdrawal.seller.lastname}`,
                         `${withdrawal.buyer.firstname} ${withdrawal.buyer.lastname}`,
@@ -153,7 +153,7 @@ router.get('/services/treasury/csv/withdrawals', (req, res, next) => {
 router.get('/services/treasury/csv/reloads', (req, res, next) => {
     const models = req.app.locals.models;
 
-    let initialQuery = models.Reload.query('orderBy', 'created_at', 'DESC');
+    let initialQuery = models.Reload.query('orderBy', 'clientTime', 'DESC');
 
     let logString = 'Export reloads';
 
@@ -172,8 +172,8 @@ router.get('/services/treasury/csv/reloads', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -197,7 +197,7 @@ router.get('/services/treasury/csv/reloads', (req, res, next) => {
                 .toJSON()
                 .map(reload =>
                     [
-                        reload.created_at.toISOString(),
+                        reload.clientTime.toISOString(),
                         reload.point.name,
                         `${reload.seller.firstname} ${reload.seller.lastname}`,
                         `${reload.buyer.firstname} ${reload.buyer.lastname}`,
@@ -220,7 +220,7 @@ router.get('/services/treasury/csv/reloads', (req, res, next) => {
 router.get('/services/treasury/csv/refunds', (req, res, next) => {
     const models = req.app.locals.models;
 
-    let initialQuery = models.Refund.query('orderBy', 'created_at', 'DESC');
+    let initialQuery = models.Refund.query('orderBy', 'clientTime', 'DESC');
 
     if (req.query.dateIn && req.query.dateOut) {
         const dateIn = new Date(req.query.dateIn);
@@ -228,8 +228,8 @@ router.get('/services/treasury/csv/refunds', (req, res, next) => {
 
         if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
             initialQuery = initialQuery
-                .where('created_at', '>=', dateIn)
-                .where('created_at', '<=', dateOut);
+                .where('clientTime', '>=', dateIn)
+                .where('clientTime', '<=', dateOut);
         } else {
             return next(new APIError(module, 400, 'Invalid dates'));
         }
@@ -246,7 +246,7 @@ router.get('/services/treasury/csv/refunds', (req, res, next) => {
                 .toJSON()
                 .map(refund =>
                     [
-                        refund.created_at.toISOString(),
+                        refund.clientTime.toISOString(),
                         `${refund.seller.firstname} ${refund.seller.lastname}`,
                         `${refund.buyer.firstname} ${refund.buyer.lastname}`,
                         refund.type,

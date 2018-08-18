@@ -123,16 +123,15 @@ router.post('/services/cancelTransaction', (req, res, next) => {
     Promise.all(queries)
         .then(() =>
             new Model({ id: req.transaction.data.id }).save(
-                {
-                    active: null,
-                    deleted_at: req.body.created_at || new Date()
-                },
+                { clientDeletion: req.body.clientTime },
                 { patch: true }
             )
         )
+        .then(() => new Model({ id: req.transaction.data.id }).destroy())
         .then(() => {
             req.details.rawType = req.body.rawType;
             req.details.objectId = req.body.id;
+            req.details.clientTime = req.body.clientTime;
 
             log.info(`Canceling ${req.body.rawType} ${req.body.id}`, req.details);
 

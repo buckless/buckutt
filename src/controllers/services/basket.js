@@ -26,6 +26,7 @@ router.post('/services/basket', (req, res, next) => {
 
     req.details.buyer = req.body.buyer;
     req.details.basket = req.body.basket;
+    req.details.clientTime = req.body.clientTime;
 
     if (req.body.basket.length === 0) {
         log.info(`Processing empty basket`, req.details);
@@ -216,8 +217,7 @@ router.post('/services/basket', (req, res, next) => {
                 promotion_id: item.promotion_id || null,
                 seller_id: req.user.id,
                 alcohol: item.alcohol,
-                created_at: req.body.created_at || new Date(),
-                updated_at: req.body.created_at || new Date()
+                clientTime: req.body.clientTime
             });
 
             const savePurchase = purchase
@@ -232,8 +232,6 @@ router.post('/services/basket', (req, res, next) => {
                                 article_id: articleId,
                                 purchase_id: purchase.id,
                                 count,
-                                created_at: req.body.created_at || new Date(),
-                                updated_at: req.body.created_at || new Date(),
                                 deleted_at: null
                             });
                         })
@@ -250,8 +248,7 @@ router.post('/services/basket', (req, res, next) => {
                 point_id: req.point.id,
                 buyer_id: req.buyer.id,
                 seller_id: req.user.id,
-                created_at: req.body.created_at || new Date(),
-                updated_at: req.body.created_at || new Date()
+                clientTime: req.body.clientTime
             });
 
             const saveReload = reload.save().then(() => transactionIds.reloads.push(reload.id));
