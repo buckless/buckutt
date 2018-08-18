@@ -2,7 +2,7 @@
     <div class="b-controller-chooser">
         <h4 v-if="groups.length > 0">Groupes :</h4>
         <div class="b-controller-chooser__groups" v-if="groups.length > 0">
-            <div class="b-controller-chooser__groups__group" v-for="group in groups">
+            <div class="b-controller-chooser__groups__group" v-for="group in groups" :key="group.id">
                 <input type="checkbox" name="group" class="b--out-of-screen" :id="group.id" v-model="activeGroups" :value="group">
                 <label :for="group.id">
                     {{ group.name }}
@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
 export default {
-    props: ['defaultGroups'],
+    props: ["defaultGroups"],
 
     data() {
         return {
@@ -31,23 +31,25 @@ export default {
 
     methods: {
         ok() {
-            this.$emit('groups', this.activeGroups);
+            this.$emit("groups", this.activeGroups);
         },
 
         cancel() {
-            this.$emit('cancel');
+            this.$emit("cancel");
         }
     },
 
     computed: mapState({
         groups: state =>
-            state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
+            state.auth.groups.filter(
+                group => group.name !== state.auth.device.event.name
+            )
     })
 };
 </script>
 
 <style>
-@import '../main.css';
+@import "../main.css";
 
 .b-controller-chooser {
     position: absolute;

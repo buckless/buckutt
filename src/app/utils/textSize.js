@@ -1,14 +1,14 @@
-import memoize from 'lodash.memoize';
+import { memoize } from "lodash/function";
 
 export default memoize((text, fontSize = 16) => {
-    const $el = document.createElement('div');
+    const $el = document.createElement("div");
 
     document.body.appendChild($el);
 
     $el.style.fontSize = `${fontSize}px`;
-    $el.style.position = 'absolute';
-    $el.style.left = '-1000px';
-    $el.style.top = '-1000px';
+    $el.style.position = "absolute";
+    $el.style.left = "-1000px";
+    $el.style.top = "-1000px";
 
     $el.innerHTML = text;
 

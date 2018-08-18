@@ -28,10 +28,10 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from "vuex";
 
-import Ticket from '@/components/Ticket';
-import NumericalInput from '@/components/NumericalInput';
+import Ticket from "@/components/Ticket";
+import NumericalInput from "@/components/NumericalInput";
 
 export default {
     components: {
@@ -42,7 +42,7 @@ export default {
     data() {
         return {
             authingSeller: false,
-            passwordMask: ''
+            passwordMask: ""
         };
     },
 
@@ -59,24 +59,24 @@ export default {
             clearTimeout(this.timeout);
 
             if (t.length === 0) {
-                this.passwordMask = '';
+                this.passwordMask = "";
                 return;
             }
 
-            this.passwordMask = '*'.repeat(t.length - 1) + t.slice(-1);
+            this.passwordMask = "*".repeat(t.length - 1) + t.slice(-1);
 
             this.timeout = setTimeout(() => {
-                this.passwordMask = '*'.repeat(this.passwordMask.length);
+                this.passwordMask = "*".repeat(this.passwordMask.length);
             }, 500);
         },
 
         validate(cardNumber, credit) {
-            console.log('validate');
+            console.log("validate");
             if (!this.seller.isAuth && this.seller.meanOfLogin.length === 0) {
                 this.sellerId(cardNumber);
             }
 
-            console.log('login-validate', cardNumber, credit);
+            console.log("login-validate", cardNumber, credit);
             if (this.seller.isAuth) {
                 if (Number.isInteger(credit)) {
                     this.buyerLogin({
@@ -97,7 +97,7 @@ export default {
             }
 
             this.authingSeller = true;
-            this.passwordMask = '';
+            this.passwordMask = "";
 
             this.login({
                 meanOfLogin: this.seller.meanOfLogin,
@@ -105,26 +105,26 @@ export default {
             })
                 .then(() => {
                     this.authingSeller = false;
-                    this.$router.push('/');
+                    this.$router.push("/");
                 })
                 .catch(() => {
                     this.authingSeller = false;
                 });
         },
 
-        ...mapActions(['sellerId', 'buyerLogin', 'login'])
+        ...mapActions(["sellerId", "buyerLogin", "login"])
     },
 
     mounted() {
         this.timeout = 0;
 
-        document.body.addEventListener('click', this.refocus, false);
+        document.body.addEventListener("click", this.refocus, false);
     }
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-login {
     flex: 1;

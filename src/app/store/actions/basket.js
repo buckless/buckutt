@@ -1,39 +1,42 @@
-export const addItemToBasket = ({ commit, dispatch }, item) => {
-    commit('ADD_ITEM', item);
+export const addItemToBasket = ({ commit }, item) => {
+    commit("ADD_ITEM", item);
 };
 
-export const removeItemFromBasket = ({ commit, dispatch }, item) => {
-    commit('REMOVE_ITEM', item);
+export const removeItemFromBasket = ({ commit }, item) => {
+    commit("REMOVE_ITEM", item);
 };
 
 export const clearBasket = ({ commit }) => {
-    commit('CLEAR_BASKET');
-    commit('REMOVE_RELOADS');
-};
-
-export const removeUnavailableItemsFromBasket = store => {
-    const removals = store.getters.sidebar.items
-        .filter(item => !item.price.amount)
-        .map(item => store.dispatch('removeItemFromBasket', item));
-
-    return Promise.all(removals);
+    commit("CLEAR_BASKET");
+    commit("REMOVE_RELOADS");
 };
 
 export const checkBuyerCredit = store => {
     if (store.state.auth.device.event.config.useCardData) {
         const minReload = store.state.auth.device.event.config.minReload;
-        const maxPerAccount = store.state.auth.device.event.config.maxPerAccount;
+        const maxPerAccount =
+            store.state.auth.device.event.config.maxPerAccount;
         if (store.getters.credit < 0) {
-            return Promise.reject({ response: { data: { message: 'Not enough credit' } } });
-        } else if (store.getters.credit > maxPerAccount && store.getters.reloadAmount > 0) {
+            return Promise.reject({
+                response: { data: { message: "Not enough credit" } }
+            });
+        } else if (
+            store.getters.credit > maxPerAccount &&
+            store.getters.reloadAmount > 0
+        ) {
             const max = (maxPerAccount / 100).toFixed(2);
             return Promise.reject({
                 response: { data: { message: `Maximum exceeded : ${max}€` } }
             });
-        } else if (store.getters.reloadAmount > 0 && store.getters.reloadAmount < minReload) {
+        } else if (
+            store.getters.reloadAmount > 0 &&
+            store.getters.reloadAmount < minReload
+        ) {
             const min = (minReload / 100).toFixed(2);
             return Promise.reject({
-                response: { data: { message: `Can not reload less than : ${min}€` } }
+                response: {
+                    data: { message: `Can not reload less than : ${min}€` }
+                }
             });
         }
     }
@@ -42,39 +45,45 @@ export const checkBuyerCredit = store => {
 };
 
 export const checkPendingCardUpdates = (store, { cardNumber, version }) =>
-    window.database.pendingCardUpdates(cardNumber.trim()).then(pendingCardUpdates => {
-        const pendingPromise = Promise.resolve();
-        let updatedCredit = store.state.auth.buyer.credit;
-        let updatedVersion = version;
+    window.database
+        .pendingCardUpdates(cardNumber.trim())
+        .then(pendingCardUpdates => {
+            const pendingPromise = Promise.resolve();
+            let updatedCredit = store.state.auth.buyer.credit;
+            let updatedVersion = version;
 
-        pendingCardUpdates
-            .filter(pcu => pcu.incrId > version)
-            .sort((a, b) => a.incrId - b.incrId)
-            .forEach(pcu => {
-                pendingPromise.then(() =>
-                    store.dispatch('sendRequest', {
-                        method: 'post',
-                        url: 'services/pendingCardUpdate',
-                        data: {
-                            id: pcu.id
-                        }
-                    })
-                );
+            pendingCardUpdates
+                .filter(pcu => pcu.incrId > version)
+                .sort((a, b) => a.incrId - b.incrId)
+                .forEach(pcu => {
+                    pendingPromise.then(() =>
+                        store.dispatch("sendRequest", {
+                            method: "post",
+                            url: "services/pendingCardUpdate",
+                            data: {
+                                id: pcu.id
+                            }
+                        })
+                    );
 
-                updatedCredit += pcu.amount;
-                updatedVersion = parseInt(pcu.incrId);
-            });
+                    updatedCredit += pcu.amount;
+                    updatedVersion = parseInt(pcu.incrId);
+                });
 
-        return pendingPromise.then(() => ({
-            credit: updatedCredit,
-            version: updatedVersion
-        }));
-    });
+            return pendingPromise.then(() => ({
+                credit: updatedCredit,
+                version: updatedVersion
+            }));
+        });
 
 export const addNfcSupportToBasket = store => {
     const now = new Date();
     const currentBuyerGroups = store.state.auth.buyer.memberships
-        .filter(membership => new Date(membership.start) <= now && new Date(membership.end) >= now)
+        .filter(
+            membership =>
+                new Date(membership.start) <= now &&
+                new Date(membership.end) >= now
+        )
         .map(membership => ({ id: membership.group }));
 
     const validCosts = store.state.items.nfcCosts
@@ -87,86 +96,70 @@ export const addNfcSupportToBasket = store => {
         .sort((a, b) => a.amount - b.amount);
 
     if (validCosts.length > 0) {
-        store.dispatch('addItemToBasket', {
+        store.dispatch("addItemToBasket", {
             price: validCosts[0],
             id: store.state.auth.device.event.nfc_id,
             vat: 0.2,
             alcohol: 0,
-            name: 'Support NFC'
+            name: "Support NFC"
         });
 
-        store.commit('SET_LAST_USER_CARD_PAID', validCosts[0].amount);
+        store.commit("SET_LAST_USER_CARD_PAID", validCosts[0].amount);
     }
 };
 
-export const checkSidebar = store => {
+export const validateBasket = (
+    store,
+    { cardNumber, credit, options, version }
+) => {
     if (
-        store.getters.sidebar.items.some(item => !item.price.amount) ||
-        store.getters.sidebar.promotions.some(promotion => !promotion.price.amount)
-    ) {
-        const items = store.getters.sidebar.items
-            .filter(item => !item.price.amount)
-            .map(item => item.name);
-
-        const promotions = store.getters.sidebar.promotions
-            .filter(promotion => !promotion.price.amount)
-            .map(promotion => promotion.name);
-
-        const unallowed = items
-            .concat(promotions)
-            .filter((item, index, original) => original.indexOf(item) === index);
-
-        store.commit('SET_UNALLOWED_ITEMS_NAMES', unallowed);
-        return Promise.reject({ response: { data: { message: 'User unallowed to buy this' } } });
-    }
-
-    return Promise.resolve();
-};
-
-export const validateBasket = (store, { cardNumber, credit, options, version }) => {
-    if (
-        store.state.basket.basketStatus === 'DOING' ||
+        store.state.basket.basketStatus === "DOING" ||
         (store.getters.reloadAmount === 0 && store.getters.basketAmount === 0)
     ) {
         return;
     }
 
-    store.commit('SET_DATA_LOADED', false);
+    store.commit("SET_DATA_LOADED", false);
 
     let cardVersion = version;
     let initialPromise = Promise.resolve();
 
     // Log-in buyer to update user prices
-    initialPromise = store
-        .dispatch('buyerLogin', {
-            cardNumber,
-            credit
-        })
-        .then(() => store.dispatch('checkSidebar'))
-        // If it fails, throw an error and then remove items from the basket
-        .catch(err =>
-            store.dispatch('removeUnavailableItemsFromBasket').then(() => Promise.reject(err))
-        );
+    initialPromise = store.dispatch("buyerLogin", {
+        cardNumber,
+        credit
+    });
 
-    const shouldPayCard = !options.paidCard && store.state.auth.device.event.config.useCardData;
+    const shouldPayCard =
+        !options.paidCard && store.state.auth.device.event.config.useCardData;
 
     if (shouldPayCard) {
-        initialPromise = initialPromise.then(() => store.dispatch('addNfcSupportToBasket'));
+        initialPromise = initialPromise.then(() =>
+            store.dispatch("addNfcSupportToBasket")
+        );
     }
 
     const shouldCheckPending =
-        options.assignedCard && store.state.auth.device.event.config.useCardData;
+        options.assignedCard &&
+        store.state.auth.device.event.config.useCardData;
 
     if (shouldCheckPending) {
         initialPromise = initialPromise
-            .then(() => store.dispatch('checkPendingCardUpdates', { cardNumber, version }))
+            .then(() =>
+                store.dispatch("checkPendingCardUpdates", {
+                    cardNumber,
+                    version
+                })
+            )
             .then(newValues => {
-                store.commit('OVERRIDE_BUYER_CREDIT', newValues.credit);
+                store.commit("OVERRIDE_BUYER_CREDIT", newValues.credit);
                 cardVersion = newValues.version;
             });
     }
 
-    initialPromise = initialPromise.then(() => store.dispatch('checkBuyerCredit'));
+    initialPromise = initialPromise.then(() =>
+        store.dispatch("checkBuyerCredit")
+    );
 
     if (store.state.auth.device.event.config.useCardData) {
         const newOptions = {
@@ -179,31 +172,34 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
             () =>
                 new Promise(resolve => {
                     window.app.$root.$emit(
-                        'readyToWrite',
+                        "readyToWrite",
                         store.getters.credit,
                         newOptions,
                         cardVersion
                     );
-                    window.app.$root.$on('writeCompleted', () => resolve());
+                    window.app.$root.$on("writeCompleted", () => resolve());
                 })
         );
     }
 
     return initialPromise
         .then(() =>
-            store.dispatch('sendBasket', { cardNumber, assignedCard: options.assignedCard })
+            store.dispatch("sendBasket", {
+                cardNumber,
+                assignedCard: options.assignedCard
+            })
         )
         .then(() => {
-            store.commit('LOGOUT_BUYER');
-            store.commit('SET_BASKET_STATUS', 'WAITING');
-            store.dispatch('clearBasket');
-            return store.dispatch('loadDefaultItems');
+            store.commit("LOGOUT_BUYER");
+            store.commit("SET_BASKET_STATUS", "WAITING");
+            store.dispatch("clearBasket");
+            return store.dispatch("loadDefaultItems");
         })
         .catch(err => {
             console.log(err);
 
-            if (err.message === 'Network Error') {
-                store.commit('ERROR', { message: 'Server not reacheable' });
+            if (err.message === "Network Error") {
+                store.commit("ERROR", { message: "Server not reacheable" });
                 return;
             }
 
@@ -213,21 +209,23 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
             if (cardVersion > version) {
                 errorPromise = new Promise(resolve => {
                     window.app.$root.$emit(
-                        'readyToWrite',
+                        "readyToWrite",
                         store.state.auth.buyer.credit,
                         options,
                         cardVersion
                     );
-                    window.app.$root.$on('writeCompleted', () => resolve());
+                    window.app.$root.$on("writeCompleted", () => resolve());
                 });
             }
 
-            return errorPromise.then(() => store.commit('ERROR', err.response.data));
+            return errorPromise.then(() =>
+                store.commit("ERROR", err.response.data)
+            );
         })
         .then(() => {
-            store.commit('SET_DATA_LOADED', true);
-            store.commit('SET_WRITING', false);
-            return store.dispatch('removeItemFromBasket', {
+            store.commit("SET_DATA_LOADED", true);
+            store.commit("SET_WRITING", false);
+            return store.dispatch("removeItemFromBasket", {
                 id: store.state.auth.device.event.nfc_id
             });
         });
@@ -237,7 +235,7 @@ export const sendBasket = (store, payload = {}) => {
     const now = payload.now || new Date();
     const cardNumber = payload.cardNumber || store.state.auth.buyer.meanOfLogin;
 
-    store.commit('SET_BASKET_STATUS', 'DOING');
+    store.commit("SET_BASKET_STATUS", "DOING");
 
     const basket = store.getters.sidebar;
     const reloads = store.state.reload.reloads;
@@ -260,7 +258,7 @@ export const sendBasket = (store, payload = {}) => {
             ],
             alcohol: article.alcohol,
             cost: article.price.amount,
-            type: 'purchase'
+            type: "purchase"
         });
     });
 
@@ -284,7 +282,7 @@ export const sendBasket = (store, payload = {}) => {
             name: promotion.name,
             articles: articlesInside,
             cost: promotion.price.amount,
-            type: 'purchase',
+            type: "purchase",
             alcohol
         });
     });
@@ -309,9 +307,9 @@ export const sendBasket = (store, payload = {}) => {
     };
 
     return store
-        .dispatch('sendRequest', {
-            method: 'post',
-            url: 'services/basket',
+        .dispatch("sendRequest", {
+            method: "post",
+            url: "services/basket",
             data: transactionToSend,
             offlineAnswer: {
                 data: {
@@ -323,7 +321,7 @@ export const sendBasket = (store, payload = {}) => {
             }
         })
         .then(lastBuyer => {
-            store.commit('SET_LAST_USER', {
+            store.commit("SET_LAST_USER", {
                 display: true,
                 name: lastBuyer.data.firstname
                     ? `${lastBuyer.data.firstname} ${lastBuyer.data.lastname}`
@@ -335,7 +333,7 @@ export const sendBasket = (store, payload = {}) => {
             });
 
             // store last lastBuyer + transactionIds
-            return store.dispatch('addToHistory', {
+            return store.dispatch("addToHistory", {
                 cardNumber,
                 basketToSend,
                 date: new Date(),
@@ -347,12 +345,12 @@ export const sendBasket = (store, payload = {}) => {
 
 export const basketClickValidation = store => {
     if (!store.state.auth.device.config.doubleValidation) {
-        store.commit('SET_WRITING', true);
-        store.commit('SET_BASKET_STATUS', 'WAITING_FOR_BUYER');
+        store.commit("SET_WRITING", true);
+        store.commit("SET_BASKET_STATUS", "WAITING_FOR_BUYER");
         return;
     }
 
-    return store.dispatch('validateBasket', {
+    return store.dispatch("validateBasket", {
         cardNumber: store.state.auth.buyer.meanOfLogin,
         credit: store.state.auth.buyer.credit,
         options: {

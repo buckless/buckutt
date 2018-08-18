@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
-import fuzzy from 'fuzzy';
+import { mapState, mapGetters, mapActions } from "vuex";
+import fuzzy from "fuzzy";
 
-import Item from '@/components/Items-Item';
-import Sidebar from '@/components/Sidebar';
+import Item from "@/components/Items-Item";
+import Sidebar from "@/components/Sidebar";
 
 export default {
     components: {
@@ -33,22 +33,26 @@ export default {
 
     data() {
         return {
-            filter: '',
+            filter: "",
             itemsPerTab: 50
         };
     },
 
     computed: {
-        ...mapGetters(['tabItems']),
+        ...mapGetters(["tabItems"]),
 
         ...mapState({
             buyer: state => state.auth.buyer,
-            isWaiting: state => state.basket.basketStatus === 'WAITING',
+            isWaiting: state => state.basket.basketStatus === "WAITING",
             isWriting: state => state.basket.writing
         }),
 
         displayedItems() {
-            const strongify = { extract: el => el.name, pre: '<strong>', post: '</strong>' };
+            const strongify = {
+                extract: el => el.name,
+                pre: "<strong>",
+                post: "</strong>"
+            };
             return fuzzy
                 .filter(this.filter, this.tabItems, strongify)
                 .map(item => ({
@@ -60,10 +64,10 @@ export default {
     },
 
     methods: {
-        ...mapActions(['buyerLogin', 'validateBasket']),
+        ...mapActions(["buyerLogin", "validateBasket"]),
 
         logBuyer(cardNumber, credit, options) {
-            console.log('items-buyer-login', cardNumber, credit, options);
+            console.log("items-buyer-login", cardNumber, credit, options);
             this.buyerLogin({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
@@ -72,7 +76,7 @@ export default {
         },
 
         validate(cardNumber, credit, options, version) {
-            console.log('items-validate', cardNumber, credit, options);
+            console.log("items-validate", cardNumber, credit, options);
             this.validateBasket({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
@@ -82,8 +86,8 @@ export default {
         },
 
         cancelBuy() {
-            this.$store.commit('SET_WRITING', false);
-            this.$store.commit('SET_BASKET_STATUS', 'WAITING');
+            this.$store.commit("SET_WRITING", false);
+            this.$store.commit("SET_BASKET_STATUS", "WAITING");
         }
     }
 };

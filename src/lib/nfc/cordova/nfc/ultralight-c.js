@@ -1,9 +1,9 @@
-const EventEmitter = require('events');
-const chunk = require('lodash.chunk');
+const EventEmitter = require("events");
+const { chunk } = require("lodash/array");
 
-let config = require('../../../../../config');
+let config = require("../../../../../config");
 
-module.exports = class UltralightC extends EventEmitter {
+export class UltralightC extends EventEmitter {
     constructor() {
         super();
 
@@ -11,33 +11,40 @@ module.exports = class UltralightC extends EventEmitter {
         this.shouldUnlock = false;
         this.pin = parseInt(config.ultralight.pin, 16);
 
-        document.addEventListener('mifareTagDiscovered', tag => {
+        document.addEventListener("mifareTagDiscovered", tag => {
             console.log(tag);
 
-            console.time('NFC Write');
+            console.time("NFC Write");
             this.connect()
                 .then(() => {
                     this.emit(
-                        'uid',
-                        tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
+                        "uid",
+                        tag.tag
+                            .map(dec => dec.toString(16).padStart(2, "0"))
+                            .join("")
                     );
                     this.emit(
-                        'log',
-                        tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
+                        "log",
+                        tag.tag
+                            .map(dec => dec.toString(16).padStart(2, "0"))
+                            .join("")
                     );
-                    this.emit('atr', module.exports.ATR);
-                    this.emit('cardType', 'ultralightC');
+                    this.emit("atr", module.exports.ATR);
+                    this.emit("cardType", "ultralightC");
 
                     return this.read();
                 })
                 .then(data => {
-                    console.log('fulldata', data);
-                    const pages = chunk(data.split(''), 8);
+                    console.log("fulldata", data);
+                    const pages = chunk(data.split(""), 8);
 
-                    this.emit('locked', pages[12][7] === '4');
-                    this.emit('data', data.slice(0, config.ultralight.creditSize));
+                    this.emit("locked", pages[12][7] === "4");
+                    this.emit(
+                        "data",
+                        data.slice(0, config.ultralight.creditSize)
+                    );
                 })
-                .catch(err => this.emit('error', err));
+                .catch(err => this.emit("error", err));
         });
     }
 
@@ -57,7 +64,10 @@ module.exports = class UltralightC extends EventEmitter {
 
     connect() {
         return new Promise((resolve, reject) => {
-            window.mifare.connect(() => resolve(), err => reject(err));
+            window.mifare.connect(
+                () => resolve(),
+                err => reject(err)
+            );
         });
     }
 
@@ -77,7 +87,7 @@ module.exports = class UltralightC extends EventEmitter {
                 .then(data => bufs.push(data));
         }
 
-        return initialPromise.then(() => bufs.join(''));
+        return initialPromise.then(() => bufs.join(""));
     }
 
     _readPage(page) {
@@ -88,7 +98,7 @@ module.exports = class UltralightC extends EventEmitter {
                     resolve(res.data);
                 },
                 err => {
-                    console.log('err', err);
+                    console.log("err", err);
                     reject(err);
                 }
             );
@@ -96,7 +106,9 @@ module.exports = class UltralightC extends EventEmitter {
     }
 
     write(data) {
-        const dataLength = config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
+        const dataLength =
+            config.ultralight.cardLength -
+            config.ultralight.firstWritablePage * 4;
 
         const buf = Buffer.from(data);
         const newBuf = Buffer.alloc(dataLength, 0);
@@ -141,13 +153,13 @@ module.exports = class UltralightC extends EventEmitter {
                             Array.from(page).map(int => int.toString(16)),
                             res => resolve(res),
                             err => {
-                                console.log('error from write', err);
+                                console.log("error from write", err);
                                 reject(err);
                             }
                         );
                     });
                 })
-                .then(res => {
+                .then(() => {
                     i = i + 1;
                 });
         }
@@ -165,16 +177,16 @@ module.exports = class UltralightC extends EventEmitter {
         let pin = this.intTo4BytesArray(pinData);
 
         try {
-            console.log('write', '0x11', ['00', '00', '00', '00']);
-            console.log('write', '0x13', ['99', '99', '00', '00']);
-            console.log('write', '0x12', pin);
-            console.log('write', '0x10', ['00', '00', '00', '04']);
-            await window.mifare.write(0x11, ['00', '00', '00', '00']);
-            await window.mifare.write(0x13, ['99', '99', '00', '00']);
+            console.log("write", "0x11", ["00", "00", "00", "00"]);
+            console.log("write", "0x13", ["99", "99", "00", "00"]);
+            console.log("write", "0x12", pin);
+            console.log("write", "0x10", ["00", "00", "00", "04"]);
+            await window.mifare.write(0x11, ["00", "00", "00", "00"]);
+            await window.mifare.write(0x13, ["99", "99", "00", "00"]);
             await window.mifare.write(0x12, pin);
-            await window.mifare.write(0x10, ['00', '00', '00', '04']);
+            await window.mifare.write(0x10, ["00", "00", "00", "04"]);
         } catch (err) {
-            console.error('got err during write', err);
+            console.error("got err during write", err);
             return Promise.reject(err);
         }
     }
@@ -185,7 +197,7 @@ module.exports = class UltralightC extends EventEmitter {
 
         do {
             i = i - 1;
-            bytes[i] = (int & 255).toString('16');
+            bytes[i] = (int & 255).toString("16");
             int = int >> 8;
         } while (i);
 
@@ -197,9 +209,9 @@ module.exports = class UltralightC extends EventEmitter {
             window.mifare.unlock(pin, () => resolve(), err => reject(err));
         });
     }
-};
+}
 
-module.exports.ATR = Buffer.from([
+export const ATR = Buffer.from([
     0x3b,
     0x8f,
     0x80,

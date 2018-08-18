@@ -1,20 +1,20 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-import store from '../store';
-import { reloadOnly, reloadNotOnly, routeChooser } from './chooser';
+import store from "../store";
+import { reloadOnly, reloadNotOnly, routeChooser } from "./chooser";
 
-import Items from '../views/Items';
-import Reload from '../views/Reload';
-import Login from '../views/Login';
-import Assigner from '../views/Assigner';
-import AssignerSearch from '../views/Assigner-Search';
-import AssignerCreate from '../views/Assigner-CreateAccount';
-import Controller from '../views/Controller';
-import History from '../views/History';
-import Treasury from '../views/Treasury';
-import Catering from '../views/Catering';
-import Developpers from '../views/Developpers';
+import Items from "../views/Items";
+import Reload from "../views/Reload";
+import Login from "../views/Login";
+import Assigner from "../views/Assigner";
+import AssignerSearch from "../views/Assigner-Search";
+import AssignerCreate from "../views/Assigner-CreateAccount";
+import Controller from "../views/Controller";
+import History from "../views/History";
+import Treasury from "../views/Treasury";
+import Catering from "../views/Catering";
+import Developpers from "../views/Developpers";
 
 Vue.use(VueRouter);
 
@@ -22,65 +22,65 @@ const { getters } = store;
 
 const routes = [
     {
-        path: '/items',
+        path: "/items",
         component: Items,
-        beforeEnter: (_, __, next) => next(getters.isSellerMode || '/'),
+        beforeEnter: (_, __, next) => next(getters.isSellerMode || "/"),
         children: [
             {
-                path: 'reload',
+                path: "reload",
                 component: Reload,
-                beforeEnter: (_, __, next) => next(reloadNotOnly() || '/')
+                beforeEnter: (_, __, next) => next(reloadNotOnly() || "/")
             }
         ]
     },
     {
-        path: '/login',
+        path: "/login",
         component: Login,
-        beforeEnter: (_, __, next) => next(getters.loginState || '/')
+        beforeEnter: (_, __, next) => next(getters.loginState || "/")
     },
     {
-        path: '/history',
+        path: "/history",
         component: History,
-        beforeEnter: (_, __, next) => next(getters.isCashMode || '/')
+        beforeEnter: (_, __, next) => next(getters.isCashMode || "/")
     },
     {
-        path: '/treasury',
+        path: "/treasury",
         component: Treasury,
-        beforeEnter: (_, __, next) => next(getters.isCashMode || '/')
+        beforeEnter: (_, __, next) => next(getters.isCashMode || "/")
     },
     {
-        path: '/catering',
+        path: "/catering",
         component: Catering,
-        beforeEnter: (_, __, next) => next(getters.isSellerMode || '/')
+        beforeEnter: (_, __, next) => next(getters.isSellerMode || "/")
     },
     {
-        path: '/developpers',
+        path: "/developpers",
         component: Developpers,
-        beforeEnter: (_, __, next) => next(!getters.loginState || '/')
+        beforeEnter: (_, __, next) => next(!getters.loginState || "/")
     },
     {
-        path: '/controller',
+        path: "/controller",
         component: Controller,
-        beforeEnter: (_, __, next) => next(getters.isControllerMode || '/')
+        beforeEnter: (_, __, next) => next(getters.isControllerMode || "/")
     },
     {
-        path: '/assigner',
+        path: "/assigner",
         component: Assigner,
-        beforeEnter: (_, __, next) => next(getters.isAssignerMode || '/'),
+        beforeEnter: (_, __, next) => next(getters.isAssignerMode || "/"),
         children: [
-            { path: '/', component: AssignerSearch },
-            { path: 'search', component: AssignerSearch },
-            { path: 'create', component: AssignerCreate }
+            { path: "/", component: AssignerSearch },
+            { path: "search", component: AssignerSearch },
+            { path: "create", component: AssignerCreate }
         ]
     },
     {
-        path: '/reload',
+        path: "/reload",
         component: Reload,
-        beforeEnter: (_, __, next) => next(reloadOnly() || '/'),
+        beforeEnter: (_, __, next) => next(reloadOnly() || "/"),
         props: { reloadOnly: true }
     },
     {
-        path: '/',
+        path: "/",
         beforeEnter: routeChooser
     }
 ];
@@ -91,8 +91,8 @@ const router = new VueRouter({
 
 // if page is reloaded, go back to / to know what page to restore
 store.subscribe(mutation => {
-    if (mutation.type === 'RESTORE_MUTATION') {
-        router.push('/');
+    if (mutation.type === "RESTORE_MUTATION") {
+        router.push("/");
     }
 });
 

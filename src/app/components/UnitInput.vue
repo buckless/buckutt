@@ -27,20 +27,20 @@ export default {
 
     methods: {
         increment() {
-            this.$emit('input', this.value + this.unitPrice);
+            this.$emit("input", this.value + this.unitPrice);
         },
 
         decrement() {
-            this.$emit('input', this.value - this.unitPrice);
+            this.$emit("input", this.value - this.unitPrice);
         },
 
         clear() {
-            this.$emit('input', 0);
-            this.$emit('clear');
+            this.$emit("input", 0);
+            this.$emit("clear");
         },
 
         validate() {
-            this.$emit('validate', this.value);
+            this.$emit("validate", this.value);
         }
     },
 
@@ -57,7 +57,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-unit-input {
     width: 100%;

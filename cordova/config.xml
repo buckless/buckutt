@@ -31,6 +31,6 @@
     </plugin>
     <plugin name="cordova-plugin-mifare-ultralight" spec="^1.0.2" />
     <plugin name="cordova-plugin-x-socialsharing" spec="^5.4.0" />
-    <engine name="android" spec="^6.4.0" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
+    <engine name="android" spec="^6.4.0" />
 </widget>

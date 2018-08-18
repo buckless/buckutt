@@ -10,7 +10,11 @@ export const warnAlcohol = state => {
     }
 
     const fromPurchases = state.auth.buyer.purchases
-        .filter(p => p.price.period && p.price.period.event_id === state.auth.device.event.id)
+        .filter(
+            p =>
+                p.price.period &&
+                p.price.period.event_id === state.auth.device.event.id
+        )
         .map(p => p.alcohol)
         .reduce((a, b) => a + b, 0);
 
@@ -21,21 +25,27 @@ export const warnAlcohol = state => {
     return fromPurchases + fromBasket > maxAlcohol;
 };
 
-export const alcoholAmount = state => {
+export const alcoholAmount = () => {
     return 0;
-
-    if (!state.auth.buyer.id || !state.auth.seller.id) {
-        return false;
-    }
-
-    const fromPurchases = state.auth.buyer.purchases
-        .filter(p => p.price.period && p.price.period.event_id === state.auth.device.event.id)
-        .map(p => p.alcohol)
-        .reduce((a, b) => a + b, 0);
-
-    const fromBasket = state.items.basket.itemList
-        .map(item => item.alcohol)
-        .reduce((a, b) => a + b, 0);
-
-    return fromPurchases + fromBasket;
 };
+
+// export const alcoholAmount = state => {
+//     if (!state.auth.buyer.id || !state.auth.seller.id) {
+//         return false;
+//     }
+
+//     const fromPurchases = state.auth.buyer.purchases
+//         .filter(
+//             p =>
+//                 p.price.period &&
+//                 p.price.period.event_id === state.auth.device.event.id
+//         )
+//         .map(p => p.alcohol)
+//         .reduce((a, b) => a + b, 0);
+
+//     const fromBasket = state.items.basket.itemList
+//         .map(item => item.alcohol)
+//         .reduce((a, b) => a + b, 0);
+
+//     return fromPurchases + fromBasket;
+// };

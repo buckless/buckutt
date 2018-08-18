@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import Currency from './Currency';
+import Currency from "./Currency";
 
 export default {
     props: {
@@ -43,14 +43,14 @@ export default {
 
     methods: {
         close() {
-            this.$store.commit('EMPTY_TICKET');
+            this.$store.commit("EMPTY_TICKET");
         }
     }
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-ticket__modal {
     font-size: 18px;

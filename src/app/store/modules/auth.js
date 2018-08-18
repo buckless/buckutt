@@ -2,14 +2,11 @@ const initialState = {
     alert: null,
     device: {
         id: null,
-        wiket: {
+        point: {
             id: null,
-            defaultGroup_id: null,
-            point: {
-                id: null,
-                name: null
-            }
+            name: null
         },
+        wiket: null,
         event: {
             id: null,
             name: null,
@@ -36,16 +33,16 @@ const initialState = {
         lastname: null,
         memberships: [],
         purchases: [],
-        meanOfLogin: ''
+        meanOfLogin: ""
     },
     seller: {
         isAuth: false,
-        meanOfLogin: '',
-        pin: '',
-        id: '',
-        token: '',
-        firstname: '',
-        lastname: '',
+        meanOfLogin: "",
+        pin: "",
+        id: "",
+        token: "",
+        firstname: "",
+        lastname: "",
         canSell: false,
         canReload: false,
         canAssign: false,
@@ -56,20 +53,18 @@ const initialState = {
 };
 
 const mutations = {
-    SET_WIKET(state, payload) {
-        const keys = ['id', 'defaultGroup_id', 'point'];
-
-        keys.forEach(key => {
-            state.device.wiket[key] = payload[key];
-        });
-    },
-
     SET_DEVICE(state, payload) {
         state.device.id = payload.id;
+        state.device.point = payload.point;
+        state.device.wiket = payload.wiket;
+        state.device.event.id = payload.event.id;
+        state.device.event.name = payload.event.name;
+    },
 
-        const configKeys = ['alcohol', 'doubleValidation', 'showPicture'];
+    SET_FULL_DEVICE(state, payload) {
+        const keys = ["alcohol", "doubleValidation", "showPicture"];
 
-        configKeys.forEach(key => {
+        keys.forEach(key => {
             state.device.config[key] = payload[key];
         });
     },
@@ -79,7 +74,12 @@ const mutations = {
     },
 
     SET_EVENT(state, payload) {
-        const keys = ['maxAlcohol', 'maxPerAccount', 'minReload', 'useCardData'];
+        const keys = [
+            "maxAlcohol",
+            "maxPerAccount",
+            "minReload",
+            "useCardData"
+        ];
 
         keys.forEach(key => {
             state.device.event.config[key] = payload[key];

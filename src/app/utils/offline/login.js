@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 export default (deviceSellers, credentials) =>
     new Promise((resolve, reject) => {
@@ -12,7 +12,9 @@ export default (deviceSellers, credentials) =>
         );
 
         if (!seller || !bcrypt.compareSync(credentials.pin, seller.pin)) {
-            return reject({ response: { data: { message: 'User not found' } } });
+            return reject({
+                response: { data: { message: "User not found" } }
+            });
         }
 
         const validRights = seller.rights.filter(
@@ -20,13 +22,17 @@ export default (deviceSellers, credentials) =>
         );
 
         if (validRights.length === 0) {
-            return reject({ response: { data: { message: 'Not enough rights' } } });
+            return reject({
+                response: { data: { message: "Not enough rights" } }
+            });
         }
 
-        const canSell = validRights.some(right => right.name === 'seller');
-        const canReload = validRights.some(right => right.name === 'reloader');
-        const canAssign = validRights.some(right => right.name === 'assigner');
-        const canControl = validRights.some(right => right.name === 'controller');
+        const canSell = validRights.some(right => right.name === "seller");
+        const canReload = validRights.some(right => right.name === "reloader");
+        const canAssign = validRights.some(right => right.name === "assigner");
+        const canControl = validRights.some(
+            right => right.name === "controller"
+        );
 
         return resolve({
             data: {

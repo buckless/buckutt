@@ -1,16 +1,16 @@
 <template>
-    <div class="b-offline" :class="syncingClass" v-if="!online || syncing">
+    <div class="b-offline" :class="syncingClass" v-if="!online || syncing">
         <i class="b-icon b-offline__icon">signal_wifi_off</i>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
 export default {
     computed: {
         syncingClass() {
-            return this.syncing ? { 'b-offline-syncing': true } : {};
+            return this.syncing ? { "b-offline-syncing": true } : {};
         },
 
         ...mapState({
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-offline {
     background-color: color($red a(0.9));

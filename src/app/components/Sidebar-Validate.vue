@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from "vuex";
 
-import Currency from './Currency';
+import Currency from "./Currency";
 
 export default {
     components: {
@@ -25,9 +25,10 @@ export default {
     computed: {
         statusClasses() {
             return {
-                'b-sidebar-validate--doing':
-                    this.basketStatus === 'DOING' || this.basketStatus === 'WAITING_FOR_BUYER',
-                'b-sidebar-validate--error': this.basketStatus === 'ERROR'
+                "b-sidebar-validate--doing":
+                    this.basketStatus === "DOING" ||
+                    this.basketStatus === "WAITING_FOR_BUYER",
+                "b-sidebar-validate--error": this.basketStatus === "ERROR"
             };
         },
 
@@ -35,7 +36,7 @@ export default {
             basketStatus: state => state.basket.basketStatus
         }),
 
-        ...mapGetters(['basketAmount', 'reloadAmount'])
+        ...mapGetters(["basketAmount", "reloadAmount"])
     },
 
     methods: {
@@ -44,13 +45,13 @@ export default {
             this.basketClickValidation();
         },
 
-        ...mapActions(['basketClickValidation', 'clearBasket'])
+        ...mapActions(["basketClickValidation", "clearBasket"])
     }
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-sidebar-validate {
     align-items: center;

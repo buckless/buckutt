@@ -1,7 +1,6 @@
 const initialState = {
-    basketStatus: 'WAITING',
-    writing: false,
-    unallowedItemsNames: []
+    basketStatus: "WAITING",
+    writing: false
 };
 
 const mutations = {
@@ -11,10 +10,6 @@ const mutations = {
 
     SET_WRITING(state, writing) {
         state.writing = writing;
-    },
-
-    SET_UNALLOWED_ITEMS_NAMES(state, payload) {
-        state.unallowedItemsNames = payload;
     }
 };
 

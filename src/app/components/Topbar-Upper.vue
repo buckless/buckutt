@@ -24,21 +24,21 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from "vuex";
 
-import LiveTime from './Topbar-Upper-Time';
-import Offline from './Offline';
-import Menu from './Topbar-Upper-Menu';
+import LiveTime from "./Topbar-Upper-Time";
+import Offline from "./Offline";
+import Menu from "./Topbar-Upper-Menu";
 
 export default {
     components: {
         LiveTime,
         Offline,
-        'b-menu': Menu
+        "b-menu": Menu
     },
 
     computed: {
-        ...mapGetters(['isSellerMode', 'isReloaderMode']),
+        ...mapGetters(["isSellerMode", "isReloaderMode"]),
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
@@ -48,8 +48,8 @@ export default {
         }),
 
         buyerName() {
-            if (this.buyer && this.buyer.lastname === 'Anonyme') {
-                return { firstname: '', lastname: '' };
+            if (this.buyer && this.buyer.lastname === "Anonyme") {
+                return { firstname: "", lastname: "" };
             }
 
             return this.buyer;
@@ -61,13 +61,13 @@ export default {
     },
 
     methods: {
-        ...mapActions(['logoutBuyer'])
+        ...mapActions(["logoutBuyer"])
     }
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-upper-bar {
     padding: 0 6px;

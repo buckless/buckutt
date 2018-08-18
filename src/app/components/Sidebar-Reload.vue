@@ -11,9 +11,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 
-import Currency from './Currency';
+import Currency from "./Currency";
 
 export default {
     components: {
@@ -24,12 +24,12 @@ export default {
         amount: { type: Number, required: true }
     },
 
-    methods: mapActions(['removeReloads'])
+    methods: mapActions(["removeReloads"])
 };
 </script>
 
 <style scoped>
-@import '../main.css';
+@import "../main.css";
 
 .b-sidebar-reload {
     background: #fff;
@@ -62,7 +62,7 @@ export default {
 
     &:after {
         background-color: #fff;
-        content: ' ';
+        content: " ";
         height: 3px;
         left: 50%;
         position: absolute;
