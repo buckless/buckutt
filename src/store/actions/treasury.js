@@ -32,7 +32,7 @@ export function getTreasury({ commit, dispatch }, fields) {
 
     if (fields.dateIn) {
         qt.push({
-            field: 'created_at',
+            field: 'clientTime',
             ge: fields.dateIn,
             date: true
         });
@@ -40,7 +40,7 @@ export function getTreasury({ commit, dispatch }, fields) {
 
     if (fields.dateOut) {
         qt.push({
-            field: 'created_at',
+            field: 'clientTime',
             le: fields.dateOut,
             date: true
         });

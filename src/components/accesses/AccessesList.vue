@@ -7,7 +7,7 @@
         </div>
 
         <b-table
-            :headers="[{ title: 'Heure d\'acces', field: 'created_at', type: 'date' }, { title: 'Utilisateur', field: 'user' }, { title: 'Opérateur', field: 'operator' }, { title: 'Lieu', field: 'point' }]"
+            :headers="[{ title: 'Heure d\'acces', field: 'clientTime', type: 'date' }, { title: 'Utilisateur', field: 'user' }, { title: 'Opérateur', field: 'operator' }, { title: 'Lieu', field: 'point' }]"
             :data="displayedAccesses"
             :filter="{ val: this.user, field: 'user' }"
             :sort="{ field: 'created_at', order: 'DESC' }"
@@ -40,7 +40,7 @@ export default {
                 .filter(access => access.wiket && access.wiket.period)
                 .map(access => ({
                     id: access.id,
-                    created_at: access.created_at,
+                    clientTime: access.clientTime,
                     operator: `${access.operator.firstname} ${access.operator.lastname}`,
                     user: `${access.meanOfLogin.user.firstname} ${
                         access.meanOfLogin.user.lastname
