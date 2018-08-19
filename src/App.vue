@@ -1,93 +1,71 @@
 <template>
-    <div class="mdl-layout mdl-js-layout">
-        <b-header />
-        <main class="mdl-layout__content" :class="{ 'b-forcedMain': !logged }">
-            <router-view></router-view>
-            <footer class="b-cgu">&copy; Studio Async — <a href="https://buckless.com/static/cgu.pdf">Conditions</a></footer>
-        </main>
-
-        <div class="mdc-snackbar"
-             aria-live="assertive"
-             aria-atomic="true"
-             aria-hidden="true"
-             ref="snackbar">
-          <div class="mdc-snackbar__text"></div>
-          <div class="mdc-snackbar__action-wrapper">
-            <button type="button" class="mdc-snackbar__action-button"></button>
-          </div>
-        </div>
-    </div>
+  <div id="app">
+    <header v-if="isRoot">
+      <img 
+        :src="logo" 
+        alt="Cashless" 
+        height="96" 
+        width="96" >
+    </header>
+    <Notification/>
+    <router-view/>
+  </div>
 </template>
 
 <script>
-import { MDCSnackbar } from '@material/snackbar/dist/mdc.snackbar.min.js';
-import { mapState } from 'vuex';
-import Header from './components/Header.vue';
+import { mapActions } from 'vuex';
+import afterUrl from '@/lib/redirectAfterLogin';
+import Notification from '@/components/Notification';
 
 export default {
+    name: 'App',
+
     components: {
-        'b-header': Header
+        Notification
     },
 
-    computed: {
-        ...mapState({
-            logged: state => !!state.app.loggedUser
+    data: () => ({
+        isRoot: false,
+        logo: null
+    }),
+
+    async mounted() {
+        const isLoggedIn = await this.autologin();
+
+        if (isLoggedIn && this.$route.meta.guest) {
+            this.$router.push(afterUrl());
+        }
+
+        this.isRoot = window.frameElement === null;
+
+        const logoUrl = process.env.BASE_URL + 'img/icons/android-chrome-192x192.png';
+        const logo = new Image();
+        logo.src = logoUrl;
+        logo.onload = () => (this.logo = logoUrl);
+    },
+
+    methods: {
+        ...mapActions({
+            autologin: 'user/autologin'
         })
-    },
-
-    mounted() {
-        const snackbar = MDCSnackbar.attachTo(this.$refs.snackbar);
-
-        this.$store.subscribe(mutation => {
-            switch (mutation.type) {
-                case 'UPDATENOTIFY':
-                    snackbar.show({
-                        message: mutation.payload.message,
-                        timeout: 3000
-                    });
-                    break;
-                default:
-                    break;
-            }
-        });
     }
 };
 </script>
 
-<style lang="scss">
-$mdc-theme-primary: #27ae60 !default;
-
-@import '@material/ripple/mdc-ripple.scss';
-@import '@material/list/mdc-list.scss';
-@import '@material/button/mdc-button.scss';
-@import '@material/card/mdc-card.scss';
-@import '@material/textfield/mdc-text-field.scss';
-@import '@material/snackbar/mdc-snackbar.scss';
-@import '@material/checkbox/mdc-checkbox.scss';
-@import '@material/menu/mdc-menu.scss';
-@import './main.css';
+<style lang="scss" src="./main.scss">
 </style>
 
-<style>
-main.mdl-layout__content {
-    overflow: visible;
+<style lang="scss" scoped>
+@import '@/theme.scss';
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $cardBackground;
 }
 
-.b-forcedMain {
-    width: 100%;
-    margin-left: 0px !important;
-}
-
-footer {
-    text-align: center;
-    color: #757575;
-    font-size: 14px;
-    margin-bottom: 24px;
-    font-weight: bold;
-    opacity: 0.7;
-}
-
-footer > a {
-    color: #757575;
+header > img:not([src]) {
+    display: none;
 }
 </style>

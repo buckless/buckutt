@@ -1,122 +1,71 @@
 {
-  "name": "buckless-manager",
-  "version": "1.0.0",
-  "description": "buckless-manager",
-  "author": "Buckless <contact@buckless.com> https://buckless.com",
-  "contributors": [
-    "Gabriel Juchault <gabriel@buckless.com>",
-    "Axel Mousset <axel@buckless.com>",
-    "Lucas Soulier <lucas@buckless.com>"
-  ],
-  "repository": "https://lab.buckless.com/core/manager.git",
-  "homepage": "https://buckless.com",
+  "name": "manager",
+  "version": "0.1.0",
   "private": true,
-  "license": "MIT",
   "scripts": {
-    "dev": "node build/dev-server.js",
-    "dev:proxy": "cross-env DEV_PROXY=1 node build/dev-server.js",
-    "start": "static dist --host-address 0.0.0.0 --port 8083 --gzip --spa --cache 86400",
-    "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\"",
+    "build": "vue-cli-service build",
     "build:docker": "docker build -t lab.buckless.com:4567/core/manager .",
-    "build": "node build/build.js"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,vue}": [
-      "prettier --single-quote --print-width 100 --tab-width 4 --write",
-      "git add"
-    ]
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service serve",
+    "dev:local": "cross-env DEV_PROXY=1 vue-cli-service serve",
+    "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
-    "@material/button": "^0.37.1",
-    "@material/card": "^0.37.1",
-    "@material/checkbox": "0.37.1",
-    "@material/elevation": "^0.36.1",
-    "@material/list": "^0.37.1",
-    "@material/menu": "^0.37.1",
-    "@material/ripple": "^0.37.1",
-    "@material/snackbar": "^0.37.1",
-    "@material/textfield": "^0.37.1",
-    "cross-env": "^5.1.3",
-    "fuzzy": "^0.1.3",
-    "lodash.debounce": "^4.0.8",
-    "lodash.get": "^4.4.2",
-    "node-sass": "^4.7.2",
-    "node-static": "gjuchault/node-static#patch-1",
-    "promise-polyfill": "^8.0.0",
-    "raven-js": "^3.24.1",
-    "sass-loader": "^7.0.3",
-    "socket.io-client": "^2.0.4",
-    "uuid": "^3.2.1",
-    "vue": "^2.5.2",
+    "@material/button": "^0.38.1",
+    "@material/checkbox": "^0.38.0",
+    "@material/elevation": "^0.38.0",
+    "@material/snackbar": "^0.38.0",
+    "debounce": "^1.2.0",
+    "jspdf": "^1.4.1",
+    "jspdf-autotable": "^3.0.0-alpha.3",
+    "normalize.css": "^8.0.0",
+    "pdfmake": "^0.1.37",
+    "register-service-worker": "^1.5.2",
+    "uuid": "^3.3.2",
+    "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "whatwg-fetch": "^2.0.3"
+    "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^9.0.1",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "chalk": "^2.1.0",
-    "compression-webpack-plugin": "^1.1.3",
-    "connect-history-api-fallback": "^1.4.0",
-    "copy-webpack-plugin": "^4.1.1",
-    "css-loader": "^1.0.0",
-    "cssnano": "^4.0.4",
-    "eventsource-polyfill": "^0.9.6",
-    "express": "^4.16.2",
-    "extract-text-webpack-plugin": "^3.0.0",
-    "file-loader": "^1.1.5",
-    "friendly-errors-webpack-plugin": "^1.6.1",
-    "html-webpack-plugin": "^3.2.0",
-    "http-proxy-middleware": "^0.18.0",
-    "husky": "^1.0.0-rc.2",
-    "lint-staged": "^7.0.5",
-    "opn": "^5.1.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.0",
-    "ora": "^3.0.0",
-    "postcss-calc": "^6.0.1",
-    "postcss-color-function": "^4.0.1",
-    "postcss-custom-media": "^6.0.0",
-    "postcss-custom-properties": "^7.0.0",
-    "postcss-import": "^11.0.0",
-    "postcss-mixins": "^6.2.0",
-    "postcss-nested": "^3.0.0",
-    "postcss-simple-vars": "^4.1.0",
-    "prettier": "1.13.7",
-    "raw-loader": "^0.5.1",
-    "rimraf": "^2.6.2",
-    "semver": "^5.4.1",
-    "shelljs": "^0.8.2",
-    "sw-precache-webpack-plugin": "^0.11.4",
-    "uglify-es": "^3.1.3",
-    "url-loader": "^1.0.1",
-    "vue-loader": "^15.2.6",
-    "vue-style-loader": "^4.1.1",
-    "vue-template-compiler": "^2.5.2",
-    "webpack": "^4.16.3",
-    "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-middleware": "^3.1.3",
-    "webpack-hot-middleware": "^2.19.1",
-    "webpack-merge": "^4.1.0",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "@vue/cli-plugin-babel": "^3.0.1",
+    "@vue/cli-plugin-e2e-cypress": "^3.0.1",
+    "@vue/cli-plugin-eslint": "^3.0.1",
+    "@vue/cli-plugin-pwa": "^3.0.1",
+    "@vue/cli-service": "^3.0.1",
+    "@vue/eslint-config-prettier": "^3.0.1",
+    "cross-env": "^5.2.0",
+    "lint-staged": "^7.2.2",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "^2.5.16"
   },
-  "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 4
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
 }
