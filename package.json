@@ -40,6 +40,26 @@
     "sass-loader": "^7.0.1",
     "vue-template-compiler": "^2.5.16"
   },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/prettier"
+    ],
+    "rules": {
+      "no-console": 0
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "globals": {
+      "config": true,
+      "cordova": true
+    }
+  },
   "postcss": {
     "plugins": {
       "autoprefixer": {}
