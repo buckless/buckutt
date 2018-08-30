@@ -23,7 +23,10 @@ module.exports = {
     lintOnSave: false,
     outputDir: `./dist/${target}`,
     baseUrl: publicPath,
-
+    devServer: {
+        port: 8081,
+        disableHostCheck: true
+    },
     configureWebpack: config => {
         if (target === "browser" || target === "cordova") {
             config.target = "web";
