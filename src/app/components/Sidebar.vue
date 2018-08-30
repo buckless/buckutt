@@ -22,17 +22,17 @@
 </template>
 
 <script>
-import { countBy } from "lodash/collection";
-import { mapGetters } from "vuex";
+import { countBy } from 'lodash/collection';
+import { mapGetters } from 'vuex';
 
-import SidebarItem from "./Sidebar-Item";
-import SidebarPromotion from "./Sidebar-Promotion";
-import SidebarReload from "./Sidebar-Reload";
-import SidebarValidate from "./Sidebar-Validate";
+import SidebarItem from './Sidebar-Item';
+import SidebarPromotion from './Sidebar-Promotion';
+import SidebarReload from './Sidebar-Reload';
+import SidebarValidate from './Sidebar-Validate';
 
 export default {
     computed: {
-        ...mapGetters(["reloadAmount", "sidebar"]),
+        ...mapGetters(['reloadAmount', 'sidebar']),
 
         sidebarItems() {
             const counts = countBy(this.sidebar.items.map(item => item.id));

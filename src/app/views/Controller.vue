@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState } from 'vuex';
 
-import Chooser from "./Controller-Chooser";
-import Ok from "@/components/Ok";
+import Chooser from './Controller-Chooser';
+import Ok from '@/components/Ok';
 
 export default {
     components: {
@@ -52,7 +52,7 @@ export default {
         },
 
         onCard(cardId) {
-            console.log("onCARD");
+            console.log('onCARD');
             // this.sendRequest({
             //     url: `services/controller?user=${cardId}`,
             //     noQueue: true,
@@ -66,12 +66,8 @@ export default {
 
                     for (let i = accesses.length - 1; i >= 0; i--) {
                         // check if group matches one of currentGroups
-                        if (
-                            !this.currentGroups.find(
-                                group => group.id === accesses[i].group
-                            )
-                        ) {
-                            console.log("not one of current groups");
+                        if (!this.currentGroups.find(group => group.id === accesses[i].group)) {
+                            console.log('not one of current groups');
                             continue;
                         }
 
@@ -93,8 +89,8 @@ export default {
                         };
 
                         this.sendRequest({
-                            method: "post",
-                            url: "services/controller",
+                            method: 'post',
+                            url: 'services/controller',
                             data: access
                         });
                     }
@@ -104,13 +100,13 @@ export default {
                 });
         },
 
-        ...mapActions(["updateEssentials", "sendRequest"])
+        ...mapActions(['updateEssentials', 'sendRequest'])
     }
 };
 </script>
 
 <style>
-@import "../main.css";
+@import '../main.css';
 
 .b-controller {
     width: 100%;
@@ -135,6 +131,6 @@ export default {
 }
 
 .b-controller-group:not(:last-of-type):after {
-    content: ", ";
+    content: ', ';
 }
 </style>

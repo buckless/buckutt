@@ -1,5 +1,5 @@
 const initialState = {
-    basketStatus: "WAITING",
+    basketStatus: 'WAITING',
     writing: false
 };
 

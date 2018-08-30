@@ -74,7 +74,7 @@
 <script>
 export default {
     data() {
-        return { value: "" };
+        return { value: '' };
     },
 
     methods: {
@@ -83,34 +83,34 @@ export default {
 
             e.currentTarget.blur();
 
-            this.$emit("input", v);
-            this.$emit("changed", this.value);
+            this.$emit('input', v);
+            this.$emit('changed', this.value);
         },
 
         clear(e) {
-            this.value = "";
+            this.value = '';
 
             if (e) {
                 e.currentTarget.blur();
             }
 
-            this.$emit("clear");
-            this.$emit("changed", this.value);
+            this.$emit('clear');
+            this.$emit('changed', this.value);
         },
 
         validate(e) {
             e.currentTarget.blur();
 
-            this.$emit("validate", this.value);
+            this.$emit('validate', this.value);
 
-            this.value = "";
+            this.value = '';
         }
     }
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-numerical-input {
     width: 100%;

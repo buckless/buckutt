@@ -119,6 +119,11 @@
     "last 2 versions",
     "not ie <= 8"
   ],
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 4
+  },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },

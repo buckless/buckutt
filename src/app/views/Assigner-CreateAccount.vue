@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from 'vuex';
 
-import Currency from "@/components/Currency";
+import Currency from '@/components/Currency';
 
 export default {
     components: {
@@ -59,13 +59,9 @@ export default {
             point: state => state.auth.device.point.id,
             nfcCosts: state => state.items.nfcCosts,
             defaultGroup: state =>
-                state.auth.groups.find(
-                    group => group.name === state.auth.device.event.name
-                ),
+                state.auth.groups.find(group => group.name === state.auth.device.event.name),
             groups: state =>
-                state.auth.groups.filter(
-                    group => group.name !== state.auth.device.event.name
-                ),
+                state.auth.groups.filter(group => group.name !== state.auth.device.event.name),
             useCardData: state => state.auth.device.event.config.useCardData
         }),
 
@@ -77,9 +73,7 @@ export default {
                     nfcCost =>
                         new Date(nfcCost.period.start) <= now &&
                         new Date(nfcCost.period.end) >= now &&
-                        groupsToCheck.find(
-                            group => group.id === nfcCost.group_id
-                        )
+                        groupsToCheck.find(group => group.id === nfcCost.group_id)
                 )
                 .sort((a, b) => a.amount - b.amount);
             return validCosts.length === 0 ? { amount: 0 } : validCosts[0];
@@ -89,7 +83,7 @@ export default {
     methods: {
         assignCard(cardId, _, options) {
             if (this.assignModalOpened) {
-                this.$store.commit("SET_DATA_LOADED", false);
+                this.$store.commit('SET_DATA_LOADED', false);
                 const groups = this.activeGroups.map(group => group.id);
 
                 const anon = {
@@ -100,58 +94,50 @@ export default {
                 };
 
                 if (options.assignedCard) {
-                    this.$store.commit("SET_DATA_LOADED", true);
-                    return this.$store.commit("ERROR", {
-                        message: "Card already assigned"
+                    this.$store.commit('SET_DATA_LOADED', true);
+                    return this.$store.commit('ERROR', {
+                        message: 'Card already assigned'
                     });
                 }
 
                 const assignPromise = this.useCardData
                     ? new Promise(resolve => {
-                          window.app.$root.$emit(
-                              "readyToWrite",
-                              this.numberCredit,
-                              {
-                                  assignedCard: true,
-                                  catering: options.catering
-                              }
-                          );
-                          window.app.$root.$on("writeCompleted", () =>
-                              resolve()
-                          );
+                          window.app.$root.$emit('readyToWrite', this.numberCredit, {
+                              assignedCard: true,
+                              catering: options.catering
+                          });
+                          window.app.$root.$on('writeCompleted', () => resolve());
                       })
                     : Promise.resolve();
 
                 assignPromise
                     .then(() =>
                         this.sendRequest({
-                            method: "post",
-                            url: "services/manager/assigner",
+                            method: 'post',
+                            url: 'services/manager/assigner',
                             data: anon
                         })
                     )
                     .then(() => this.ok())
-                    .catch(err =>
-                        this.$store.commit("ERROR", err.response.data)
-                    )
-                    .then(() => this.$store.commit("SET_DATA_LOADED", true));
+                    .catch(err => this.$store.commit('ERROR', err.response.data))
+                    .then(() => this.$store.commit('SET_DATA_LOADED', true));
             }
         },
 
         ok() {
-            this.$emit("ok");
+            this.$emit('ok');
             this.assignModalOpened = false;
             this.credit = null;
             this.activeGroups = [];
         },
 
-        ...mapActions(["sendRequest"])
+        ...mapActions(['sendRequest'])
     }
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-assigner-create-account {
     background-color: #f3f3f3;

@@ -11,9 +11,7 @@ export default (basket, promotions) => {
             const container = new Container(basket);
 
             // Get sets that have one item in basket
-            const matchSets = promotion.sets.map(set =>
-                container.pickSet(set.articles)
-            );
+            const matchSets = promotion.sets.map(set => container.pickSet(set.articles));
 
             // If promotion match
             if (allMatch(matchSets)) {

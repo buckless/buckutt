@@ -6,13 +6,13 @@ export default () => {
                     return resolve(result.text);
                 }
 
-                reject(new Error("Cancelled barcode scan"));
+                reject(new Error('Cancelled barcode scan'));
             },
             error => reject(error),
             {
                 preferFrontCamera: false,
                 showFlipCameraButton: false,
-                prompt: "Scanner le billet",
+                prompt: 'Scanner le billet',
                 resultDisplayDuration: 0
             }
         );

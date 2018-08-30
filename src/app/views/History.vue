@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import Currency from "@/components/Currency";
+import { mapActions, mapState } from 'vuex';
+import Currency from '@/components/Currency';
 
 export default {
     components: {
@@ -76,14 +76,14 @@ export default {
     methods: {
         onCard(value, credit, options) {
             if (!this.loggedBuyer.isAuth) {
-                this.$store.commit("SET_DATA_LOADED", false);
+                this.$store.commit('SET_DATA_LOADED', false);
                 return this.buyerLogin({ cardNumber: value, credit })
                     .then(() => {
-                        this.$store.commit("SET_DATA_LOADED", true);
+                        this.$store.commit('SET_DATA_LOADED', true);
                     })
-                    .catch(() => this.$store.commit("SET_DATA_LOADED", true));
+                    .catch(() => this.$store.commit('SET_DATA_LOADED', true));
             } else if (this.loggedBuyer.meanOfLogin !== value) {
-                this.$store.commit("ERROR", { message: "Different card used" });
+                this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
             }
 
@@ -97,12 +97,11 @@ export default {
                 selectedCredit = 0;
             }
 
-            const newCredit =
-                selectedCredit + this.creditDifference(this.selectedEntry);
+            const newCredit = selectedCredit + this.creditDifference(this.selectedEntry);
 
             if (newCredit < 0 && this.useCardData) {
                 this.selectedEntry = null;
-                this.$store.commit("ERROR", { message: "Not enough credit" });
+                this.$store.commit('ERROR', { message: 'Not enough credit' });
                 return;
             }
 
@@ -110,29 +109,29 @@ export default {
 
             if (this.useCardData) {
                 initialPromise = new Promise(resolve => {
-                    window.app.$root.$emit("readyToWrite", newCredit, options);
-                    window.app.$root.$on("writeCompleted", () => resolve());
+                    window.app.$root.$emit('readyToWrite', newCredit, options);
+                    window.app.$root.$on('writeCompleted', () => resolve());
                 });
             }
 
-            this.$store.commit("SET_DATA_LOADED", false);
+            this.$store.commit('SET_DATA_LOADED', false);
             initialPromise
                 .then(() => this.cancelEntry(this.selectedEntry))
                 .then(() => this.removeFromHistory(this.selectedEntry))
                 .then(() => {
                     if (this.loggedBuyer.isAuth) {
-                        this.$store.commit("OVERRIDE_BUYER_CREDIT", newCredit);
+                        this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
                     }
 
-                    this.$store.commit("SET_DATA_LOADED", true);
+                    this.$store.commit('SET_DATA_LOADED', true);
 
                     setTimeout(() => {
                         this.selectedEntry = null;
                     }, 1500);
                 })
                 .catch(err => {
-                    this.$store.commit("ERROR", err.response.data);
-                    this.$store.commit("SET_DATA_LOADED", true);
+                    this.$store.commit('ERROR', err.response.data);
+                    this.$store.commit('SET_DATA_LOADED', true);
                 });
         },
 
@@ -150,10 +149,8 @@ export default {
 
             const p = n => (n < 10 ? `0${n}` : n.toString());
 
-            let date = `${p(entry.date.getDate())}/${p(
-                entry.date.getMonth() + 1
-            )}`;
-            date += "-";
+            let date = `${p(entry.date.getDate())}/${p(entry.date.getMonth() + 1)}`;
+            date += '-';
             date += `${p(entry.date.getHours())}:${p(entry.date.getMinutes())}`;
 
             return {
@@ -171,16 +168,16 @@ export default {
         },
 
         closeHistory() {
-            this.$router.push("items");
+            this.$router.push('items');
         },
 
-        ...mapActions(["cancelEntry", "removeFromHistory", "buyerLogin"])
+        ...mapActions(['cancelEntry', 'removeFromHistory', 'buyerLogin'])
     }
 };
 </script>
 
 <style>
-@import "../main.css";
+@import '../main.css';
 
 .b-history {
     background-color: #f3f3f3;

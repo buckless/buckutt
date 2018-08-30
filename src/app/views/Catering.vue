@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from 'vuex';
 
 export default {
     data() {
@@ -19,14 +19,14 @@ export default {
             writeCatering: false,
             selectedArticle: null,
             lastArticle: {
-                name: "",
+                name: '',
                 balance: 0
             }
         };
     },
 
     methods: {
-        ...mapActions(["sendRequest", "incrementCatering"]),
+        ...mapActions(['sendRequest', 'incrementCatering']),
 
         toggleNfc(article) {
             this.selectedArticle = article;
@@ -45,9 +45,7 @@ export default {
             let rightDayIndex = -1;
 
             for (let i = 0; i < duration; i++) {
-                dayToCheck = new Date(
-                    dayOne.getTime() + i * (24 * 60 * 60 * 1000)
-                );
+                dayToCheck = new Date(dayOne.getTime() + i * (24 * 60 * 60 * 1000));
                 if (
                     dayToCheck.getDate() === today.getDate() &&
                     dayToCheck.getMonth() === today.getMonth() &&
@@ -59,8 +57,8 @@ export default {
 
             if (rightDayIndex < 0) {
                 this.closeWriter();
-                this.$store.commit("ERROR", {
-                    message: "Catering not available today"
+                this.$store.commit('ERROR', {
+                    message: 'Catering not available today'
                 });
                 return;
             }
@@ -74,32 +72,31 @@ export default {
 
             if (userArticleIndex < 0) {
                 this.closeWriter();
-                this.$store.commit("ERROR", {
-                    message: "Insufficient balance for today"
+                this.$store.commit('ERROR', {
+                    message: 'Insufficient balance for today'
                 });
                 return;
             }
 
             const deductedOptions = options;
-            deductedOptions.catering[userArticleIndex] =
-                options.catering[userArticleIndex];
+            deductedOptions.catering[userArticleIndex] = options.catering[userArticleIndex];
             deductedOptions.catering[userArticleIndex].balance -= 1;
 
             const cateringToSend = {
                 cateringId: this.selectedArticle.id,
                 name: this.selectedArticle.name,
-                molType: "cardId",
+                molType: 'cardId',
                 buyer: cardId
             };
 
             new Promise(resolve => {
-                window.app.$root.$emit("readyToWrite", credit, deductedOptions);
-                window.app.$root.$on("writeCompleted", () => resolve());
+                window.app.$root.$emit('readyToWrite', credit, deductedOptions);
+                window.app.$root.$on('writeCompleted', () => resolve());
             })
                 .then(() =>
                     this.sendRequest({
-                        method: "post",
-                        url: "services/catering",
+                        method: 'post',
+                        url: 'services/catering',
                         data: cateringToSend
                     })
                 )
@@ -112,8 +109,7 @@ export default {
                     this.incrementCatering(this.selectedArticle.id.toString());
                     this.lastArticle = {
                         name: this.selectedArticle.name,
-                        balance:
-                            deductedOptions.catering[userArticleIndex].balance
+                        balance: deductedOptions.catering[userArticleIndex].balance
                     };
                     this.selectedArticle = null;
                 });
@@ -126,22 +122,20 @@ export default {
         }),
 
         articles() {
-            return Object.values(config.catering.articles).sort(
-                (a, b) => a.name - b.name
-            );
+            return Object.values(config.catering.articles).sort((a, b) => a.name - b.name);
         },
 
         successText() {
-            return `L'article ${
-                this.lastArticle.name
-            } a bien été décompté (solde restant: ${this.lastArticle.balance})`;
+            return `L'article ${this.lastArticle.name} a bien été décompté (solde restant: ${
+                this.lastArticle.balance
+            })`;
         }
     }
 };
 </script>
 
 <style>
-@import "../main.css";
+@import '../main.css';
 
 .b-catering {
     background-color: #f3f3f3;
@@ -154,8 +148,7 @@ export default {
 
         & > div {
             background-color: #fff;
-            box-shadow: 0 0 2px color($black a(0.25)),
-                0 2px 3px color($black a(0.25));
+            box-shadow: 0 0 2px color($black a(0.25)), 0 2px 3px color($black a(0.25));
             border-radius: 2px;
             cursor: pointer;
             max-width: 300px;

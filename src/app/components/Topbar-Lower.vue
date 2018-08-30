@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from 'vuex';
 
-import Tab from "./Topbar-Lower-Tab";
+import Tab from './Topbar-Lower-Tab';
 
 export default {
     computed: {
@@ -37,10 +37,10 @@ export default {
             buyer: state => state.auth.buyer
         }),
 
-        ...mapGetters(["tabs", "loginState"]),
+        ...mapGetters(['tabs', 'loginState']),
 
         isSelling() {
-            return this.$route.matched[0].path === "/items";
+            return this.$route.matched[0].path === '/items';
         }
     },
 
@@ -51,7 +51,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-lower-bar {
     display: flex;

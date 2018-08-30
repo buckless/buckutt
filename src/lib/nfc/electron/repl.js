@@ -1,5 +1,5 @@
-const inquirer = require("inquirer");
-const NFC = require(".");
+const inquirer = require('inquirer');
+const NFC = require('.');
 
 process.env.NFC_TO_FILE = false;
 process.env.NFC_TO_CONSOLE = false;
@@ -10,13 +10,13 @@ const freeREPL = () => {
     inquirer
         .prompt([
             {
-                type: "input",
-                name: "adpu",
-                message: "ADPU to send « FF CA 00 00 00 »."
+                type: 'input',
+                name: 'adpu',
+                message: 'ADPU to send « FF CA 00 00 00 ».'
             }
         ])
         .then(({ adpu }) => {
-            adpu = adpu.split(" ").map(x => parseInt(x, 16));
+            adpu = adpu.split(' ').map(x => parseInt(x, 16));
 
             adpu = Buffer.from(adpu);
             nfc.pcsc
@@ -30,8 +30,8 @@ const freeREPL = () => {
 const getUid = () => {
     const nfc = new NFC();
 
-    nfc.pcsc.on("uid", uid => {
-        console.log(uid.toString("hex"));
+    nfc.pcsc.on('uid', uid => {
+        console.log(uid.toString('hex'));
 
         process.exit(0);
     });
@@ -40,11 +40,11 @@ const getUid = () => {
 const getAtr = () => {
     const nfc = new NFC();
 
-    nfc.pcsc.on("atr", data => {
-        console.log(data.toString("hex"));
+    nfc.pcsc.on('atr', data => {
+        console.log(data.toString('hex'));
     });
 
-    nfc.pcsc.on("cardtype", data => {
+    nfc.pcsc.on('cardtype', data => {
         console.log(data);
         process.exit(0);
     });
@@ -53,8 +53,8 @@ const getAtr = () => {
 const getAllData = () => {
     const nfc = new NFC();
 
-    nfc.pcsc.on("data", data => {
-        console.log(data.toString("hex"));
+    nfc.pcsc.on('data', data => {
+        console.log(data.toString('hex'));
         process.exit(0);
     });
 };
@@ -62,11 +62,9 @@ const getAllData = () => {
 const getCredit = () => {
     const nfc = new NFC();
 
-    nfc.pcsc.on("data", data => {
-        const { decode } = require("@buckless/signed-number");
-        const signingKey = JSON.parse(
-            require("../../../../config/profiles/production").signingKey
-        );
+    nfc.pcsc.on('data', data => {
+        const { decode } = require('@buckless/signed-number');
+        const signingKey = JSON.parse(require('../../../../config/profiles/production').signingKey);
 
         console.log(decode(data, signingKey));
 
@@ -78,22 +76,20 @@ const writeCredit = () => {
     const nfc = new NFC();
 
     inquirer
-        .prompt([{ type: "input", name: "credit", message: "Credit (in cts)" }])
+        .prompt([{ type: 'input', name: 'credit', message: 'Credit (in cts)' }])
         .then(({ credit }) => {
-            const { encode } = require("@buckless/signed-number");
+            const { encode } = require('@buckless/signed-number');
             const signingKey = JSON.parse(
-                require("../../../../config/profiles/production").signingKey
+                require('../../../../config/profiles/production').signingKey
             );
-            const {
-                creditSize
-            } = require("../../../../config/profiles/production").ultralight;
+            const { creditSize } = require('../../../../config/profiles/production').ultralight;
 
             const cipher = encode(parseInt(credit, 10), signingKey, creditSize);
 
             nfc.pcsc
                 .write(cipher)
                 .then(newData => {
-                    console.log("new Data: " + newData);
+                    console.log('new Data: ' + newData);
                     process.exit(0);
                 })
                 .catch(err => {
@@ -108,19 +104,19 @@ const writeData = () => {
 
     inquirer
         .prompt([
-            { type: "input", name: "data", message: "Data to write" },
-            { type: "confirm", name: "isHex", message: "Raw hex ?" }
+            { type: 'input', name: 'data', message: 'Data to write' },
+            { type: 'confirm', name: 'isHex', message: 'Raw hex ?' }
         ])
         .then(({ data, isHex }) => {
-            data = isHex ? Buffer.from(data, "hex") : data;
+            data = isHex ? Buffer.from(data, 'hex') : data;
 
-            console.log("input:", data);
+            console.log('input:', data);
 
             nfc.pcsc
                 .write(data)
                 .then(newData => {
-                    console.log("old data:", nfc.pcsc.data);
-                    console.log("new data:", newData.toString("hex"));
+                    console.log('old data:', nfc.pcsc.data);
+                    console.log('new data:', newData.toString('hex'));
                     process.exit(0);
                 })
                 .catch(err => {
@@ -133,46 +129,46 @@ const writeData = () => {
 inquirer
     .prompt([
         {
-            type: "list",
-            name: "action",
-            message: "Choose what to do",
+            type: 'list',
+            name: 'action',
+            message: 'Choose what to do',
             choices: [
-                "Free REPL",
-                "Get UID",
-                "Get ATR / Card Type",
-                "Read credit",
-                "Write credit",
-                "Get all data",
-                "Write data"
+                'Free REPL',
+                'Get UID',
+                'Get ATR / Card Type',
+                'Read credit',
+                'Write credit',
+                'Get all data',
+                'Write data'
             ]
         }
     ])
     .then(({ action }) => {
-        if (action === "Free REPL") {
+        if (action === 'Free REPL') {
             freeREPL();
         }
 
-        if (action === "Get UID") {
+        if (action === 'Get UID') {
             getUid();
         }
 
-        if (action === "Get ATR / Card Type") {
+        if (action === 'Get ATR / Card Type') {
             getAtr();
         }
 
-        if (action === "Read credit") {
+        if (action === 'Read credit') {
             getCredit();
         }
 
-        if (action === "Write credit") {
+        if (action === 'Write credit') {
             writeCredit();
         }
 
-        if (action === "Get all data") {
+        if (action === 'Get all data') {
             getAllData();
         }
 
-        if (action === "Write data") {
+        if (action === 'Write data') {
             writeData();
         }
     });

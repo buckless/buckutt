@@ -1,6 +1,6 @@
 const initialState = {
-    reloadState: "closed",
-    meanOfPayment: "card",
+    reloadState: 'closed',
+    meanOfPayment: 'card',
     meansOfPayment: [],
     reloads: []
 };
@@ -11,15 +11,15 @@ const mutations = {
     },
 
     CANCEL_RELOAD_MODAL(state) {
-        state.reloadState = "opened";
+        state.reloadState = 'opened';
     },
 
     CONFIRM_RELOAD_MODAL(state) {
-        state.reloadState = "confirm";
+        state.reloadState = 'confirm';
     },
 
     CLOSE_RELOAD_MODAL(state) {
-        state.reloadState = "closed";
+        state.reloadState = 'closed';
     },
 
     CHANGE_MEAN_OF_PAYMENT(state, meanOfPayment) {
@@ -35,7 +35,7 @@ const mutations = {
     },
 
     LOGOUT_BUYER(state) {
-        state.meanOfPayment = "card";
+        state.meanOfPayment = 'card';
         state.reloads = [];
     }
 };

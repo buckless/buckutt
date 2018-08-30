@@ -16,23 +16,23 @@
 </template>
 
 <script>
-import "normalize.css";
-import { mapActions, mapGetters, mapState } from "vuex";
+import 'normalize.css';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
-import OfflineData from "@/../lib/offlineData";
-import fingerprint from "@/../lib/fingerprint";
-import NFC from "@/../lib/nfc";
+import OfflineData from '@/../lib/offlineData';
+import fingerprint from '@/../lib/fingerprint';
+import NFC from '@/../lib/nfc';
 
-import Topbar from "./components/Topbar";
-import Loading from "./components/Loading";
-import Error from "./components/Error";
-import Alert from "./components/Alert";
-import AlcoholWarning from "./components/AlcoholWarning";
-import DisconnectWarning from "./components/DisconnectWarning";
-import Ticket from "./components/Ticket";
+import Topbar from './components/Topbar';
+import Loading from './components/Loading';
+import Error from './components/Error';
+import Alert from './components/Alert';
+import AlcoholWarning from './components/AlcoholWarning';
+import DisconnectWarning from './components/DisconnectWarning';
+import Ticket from './components/Ticket';
 
 export default {
-    name: "App",
+    name: 'App',
 
     components: {
         Topbar,
@@ -53,7 +53,7 @@ export default {
             alert: state => state.auth.alert
         }),
 
-        ...mapGetters(["isSellerMode", "isReloaderMode", "isCashMode"]),
+        ...mapGetters(['isSellerMode', 'isReloaderMode', 'isCashMode']),
 
         reloadOnly() {
             return !this.isSellerMode && this.isReloaderMode;
@@ -62,11 +62,11 @@ export default {
 
     methods: {
         ...mapActions([
-            "setupSocket",
-            "updateEssentials",
-            "updateStoredItems",
-            "updateUsersData",
-            "initQueue"
+            'setupSocket',
+            'updateEssentials',
+            'updateStoredItems',
+            'updateUsersData',
+            'initQueue'
         ])
     },
 
@@ -87,61 +87,61 @@ export default {
 </script>
 
 <style>
-@import "./app.css";
+@import './app.css';
 
 @font-face {
-    font-family: "Roboto";
-    src: url(./assets/fonts/Roboto-Light.woff2) format("woff2");
+    font-family: 'Roboto';
+    src: url(./assets/fonts/Roboto-Light.woff2) format('woff2');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
-    font-family: "Roboto";
-    src: url(./assets/fonts/Roboto-LightItalic.woff2) format("woff2");
+    font-family: 'Roboto';
+    src: url(./assets/fonts/Roboto-LightItalic.woff2) format('woff2');
     font-weight: 300;
     font-style: italic;
 }
 
 @font-face {
-    font-family: "Roboto";
-    src: url(./assets/fonts/Roboto-Regular.woff2) format("woff2");
+    font-family: 'Roboto';
+    src: url(./assets/fonts/Roboto-Regular.woff2) format('woff2');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
-    font-family: "Roboto";
-    src: url(./assets/fonts/Roboto-RegularItalic.woff2) format("woff2");
+    font-family: 'Roboto';
+    src: url(./assets/fonts/Roboto-RegularItalic.woff2) format('woff2');
     font-weight: 400;
     font-style: italic;
 }
 
 @font-face {
-    font-family: "Roboto";
-    src: url(./assets/fonts/Roboto-Bold.woff2) format("woff2");
+    font-family: 'Roboto';
+    src: url(./assets/fonts/Roboto-Bold.woff2) format('woff2');
     font-weight: 700;
     font-style: normal;
 }
 
 @font-face {
-    font-family: "Roboto";
-    src: url(./assets/fonts/Roboto-BoldItalic.woff2) format("woff2");
+    font-family: 'Roboto';
+    src: url(./assets/fonts/Roboto-BoldItalic.woff2) format('woff2');
     font-weight: 700;
     font-style: italic;
 }
 
 @font-face {
-    font-family: "Roboto";
-    src: url(./assets/fonts/Roboto-Medium.woff2) format("woff2");
+    font-family: 'Roboto';
+    src: url(./assets/fonts/Roboto-Medium.woff2) format('woff2');
     font-weight: 500;
     font-style: italic;
 }
 
 @font-face {
-    font-family: "Material Icons";
+    font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(./assets/icons/MaterialIcons-Regular.woff2) format("woff2");
+    src: url(./assets/icons/MaterialIcons-Regular.woff2) format('woff2');
 }
 </style>

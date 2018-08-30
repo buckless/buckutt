@@ -42,8 +42,8 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import SyncData from "@/components/SyncData";
+import { mapActions, mapState } from 'vuex';
+import SyncData from '@/components/SyncData';
 
 export default {
     components: {
@@ -57,17 +57,12 @@ export default {
         queueSync: state => state.online.offline.queue
     }),
 
-    methods: mapActions([
-        "updateEssentials",
-        "updateStoredItems",
-        "updateUsersData",
-        "syncQueue"
-    ])
+    methods: mapActions(['updateEssentials', 'updateStoredItems', 'updateUsersData', 'syncQueue'])
 };
 </script>
 
 <style>
-@import "../main.css";
+@import '../main.css';
 
 .b-developpers {
     background-color: #f3f3f3;

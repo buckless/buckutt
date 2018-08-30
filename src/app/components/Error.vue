@@ -16,23 +16,23 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-    computed: mapGetters(["error"]),
+    computed: mapGetters(['error']),
 
     methods: {
         clearError() {
             // Show green button after error
-            this.$store.commit("SET_BASKET_STATUS", "WAITING");
-            this.$store.commit("ERROR", "");
+            this.$store.commit('SET_BASKET_STATUS', 'WAITING');
+            this.$store.commit('ERROR', '');
         }
     }
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-error__drop {
     @add-mixin modal-drop;

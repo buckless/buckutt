@@ -33,7 +33,7 @@ export default {
     filters: {
         date: date => {
             if (!date) {
-                return "Non disponible";
+                return 'Non disponible';
             }
 
             const day = `0${date.getDate()}`.slice(-2);
@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style>
-@import "../main.css";
+@import '../main.css';
 
 .b-sync {
     display: flex;

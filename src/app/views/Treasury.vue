@@ -63,11 +63,11 @@
 </template>
 
 <script>
-import { saveAs } from "file-saver";
-import { groupBy } from "lodash/collection";
-import { sumBy } from "lodash/math";
-import { mapState } from "vuex";
-import Currency from "@/components/Currency";
+import { saveAs } from 'file-saver';
+import { groupBy } from 'lodash/collection';
+import { sumBy } from 'lodash/math';
+import { mapState } from 'vuex';
+import Currency from '@/components/Currency';
 
 export default {
     components: {
@@ -83,9 +83,8 @@ export default {
                 entry.basketToSend.forEach(transaction => {
                     if (transaction.credit) {
                         singleReloads.push({
-                            name: this.meansOfPayment.find(
-                                mop => mop.slug === transaction.type
-                            ).name,
+                            name: this.meansOfPayment.find(mop => mop.slug === transaction.type)
+                                .name,
                             amount: transaction.credit
                         });
                     } else {
@@ -97,15 +96,15 @@ export default {
                 });
             });
 
-            const groupedReloads = groupBy(singleReloads, "name");
-            const groupedPurchases = groupBy(singlePurchases, "name");
+            const groupedReloads = groupBy(singleReloads, 'name');
+            const groupedPurchases = groupBy(singlePurchases, 'name');
             const reloads = [];
             const purchases = [];
 
             Object.keys(groupedReloads).forEach(group => {
                 reloads.push({
                     name: group,
-                    amount: sumBy(groupedReloads[group], "amount"),
+                    amount: sumBy(groupedReloads[group], 'amount'),
                     count: groupedReloads[group].length
                 });
             });
@@ -113,7 +112,7 @@ export default {
             Object.keys(groupedPurchases).forEach(group => {
                 purchases.push({
                     name: group,
-                    amount: sumBy(groupedPurchases[group], "amount"),
+                    amount: sumBy(groupedPurchases[group], 'amount'),
                     count: groupedPurchases[group].length
                 });
             });
@@ -127,9 +126,7 @@ export default {
         displayedCatering() {
             const cat = Object.values(config.catering.articles);
             return Object.keys(this.catering).map(key => ({
-                name: cat.find(
-                    article => article.id.toString() === key.toString()
-                ).name,
+                name: cat.find(article => article.id.toString() === key.toString()).name,
                 count: this.catering[key]
             }));
         },
@@ -143,7 +140,7 @@ export default {
 
     methods: {
         historyExport() {
-            if (process.env.TARGET === "cordova") {
+            if (process.env.TARGET === 'cordova') {
                 window.plugins.socialsharing.shareWithOptions({
                     message: this.history
                 });
@@ -152,7 +149,7 @@ export default {
 
             const currentTime = Math.floor(Date.now() / 1000);
             const dataToSave = new Blob([JSON.stringify(this.history)], {
-                type: "application/json"
+                type: 'application/json'
             });
             saveAs(dataToSave, `history-${currentTime}.json`);
         }
@@ -161,7 +158,7 @@ export default {
 </script>
 
 <style>
-@import "../main.css";
+@import '../main.css';
 
 .b-treasury {
     background-color: #f3f3f3;
@@ -208,8 +205,7 @@ export default {
 
         & > .b-treasury__export {
             background-color: #fff;
-            box-shadow: 0 0 2px color($black a(0.25)),
-                0 2px 3px color($black a(0.25));
+            box-shadow: 0 0 2px color($black a(0.25)), 0 2px 3px color($black a(0.25));
             border-radius: 2px;
             cursor: pointer;
             width: 180px;

@@ -22,11 +22,11 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex';
 
-import textSize from "@/utils/textSize";
+import textSize from '@/utils/textSize';
 
-import Currency from "./Currency";
+import Currency from './Currency';
 
 export default {
     props: {
@@ -47,9 +47,9 @@ export default {
 
     methods: {
         ...mapActions({
-            add: "addItemToBasket",
-            remove: "removeItemFromBasket",
-            getImage: "getImage"
+            add: 'addItemToBasket',
+            remove: 'removeItemFromBasket',
+            getImage: 'getImage'
         })
     },
 
@@ -70,22 +70,22 @@ export default {
         }
 
         if (initialFontSize * (maxSize / size) < 9) {
-            $name.style.fontSize = "9px";
+            $name.style.fontSize = '9px';
         }
 
         this.getImage(this.item.id)
             .then(image => {
-                this.$el.querySelector("img").src = image;
+                this.$el.querySelector('img').src = image;
             })
             .catch(() => {
-                this.$el.querySelector("img").src = null;
+                this.$el.querySelector('img').src = null;
             });
     }
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-item {
     box-shadow: 0 0 2px color($black a(0.25)), 0 2px 3px color($black a(0.25));
@@ -111,9 +111,9 @@ export default {
 
     & > img {
         &:before {
-            background-image: url("../assets/placeholder.jpg");
+            background-image: url('../assets/placeholder.jpg');
             background-size: 100%;
-            content: " ";
+            content: ' ';
             position: absolute;
             top: 0;
             left: 0;
@@ -145,7 +145,7 @@ export default {
 
     &:after {
         background-color: #fff;
-        content: " ";
+        content: ' ';
         height: 3px;
         left: 50%;
         position: absolute;

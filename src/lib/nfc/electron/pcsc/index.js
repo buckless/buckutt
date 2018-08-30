@@ -1,10 +1,10 @@
 /* eslint-disable no-bitwise */
 
-import { EventEmitter } from "events";
-import pcsclite from "@pokusew/pcsclite";
-import * as classic from "./classic";
-import * as desfire from "./desfire";
-import * as ultralightC from "./ultralight-c";
+import { EventEmitter } from 'events';
+import pcsclite from '@pokusew/pcsclite';
+import * as classic from './classic';
+import * as desfire from './desfire';
+import * as ultralightC from './ultralight-c';
 
 const GET_ATR = Buffer.from([0xff, 0xca, 0xfa, 0x00, 0x00]);
 const GET_UID = Buffer.from([0xff, 0xca, 0x00, 0x00, 0x00]);
@@ -21,19 +21,19 @@ export default class PCSCLite extends EventEmitter {
         this.atr = null;
         this.data = null;
 
-        this.pcsc.on("reader", reader => {
+        this.pcsc.on('reader', reader => {
             this.reader = reader;
 
-            this.reader.on("error", err => {
-                this.emit("error", {
-                    name: "Reader error",
+            this.reader.on('error', err => {
+                this.emit('error', {
+                    name: 'Reader error',
                     message: err.message.toString()
                 });
             });
 
-            this.reader.on("status", status => {
+            this.reader.on('status', status => {
                 const changes = this.reader.state ^ status.state;
-                this.emit("reader");
+                this.emit('reader');
 
                 if (changes) {
                     if (
@@ -53,33 +53,27 @@ export default class PCSCLite extends EventEmitter {
             });
         });
 
-        this.pcsc.on("error", err => {
-            this.emit("error", {
-                name: "PCSC error",
+        this.pcsc.on('error', err => {
+            this.emit('error', {
+                name: 'PCSC error',
                 message: err.message.toString()
             });
         });
     }
 
     connect(...args) {
-        return Promise.promisify(this.reader.connect.bind(this.reader))(
-            ...args
-        );
+        return Promise.promisify(this.reader.connect.bind(this.reader))(...args);
     }
 
     transmit(buf, size = 255) {
-        return Promise.promisify(this.reader.transmit.bind(this.reader))(
-            buf,
-            size,
-            this.protocol
-        );
+        return Promise.promisify(this.reader.transmit.bind(this.reader))(buf, size, this.protocol);
     }
 
     disconnect() {
         this.reader.disconnect(this.reader.SCARD_LEAVE_CARD, err => {
             if (err) {
-                this.emit("error", {
-                    name: "Disconnect error",
+                this.emit('error', {
+                    name: 'Disconnect error',
                     message: err.message.toString()
                 });
             }
@@ -96,7 +90,7 @@ export default class PCSCLite extends EventEmitter {
             .then(uid => {
                 // remove 90 00 success code
                 uid = uid.slice(0, -2);
-                this.emit("uid", uid);
+                this.emit('uid', uid);
 
                 this.uid = uid;
 
@@ -111,39 +105,38 @@ export default class PCSCLite extends EventEmitter {
                 let method;
 
                 if (Buffer.compare(ATR, ultralightC.ATR) === 0) {
-                    this.cardType = "ultralightC";
+                    this.cardType = 'ultralightC';
 
                     method = ultralightC;
                 } else if (Buffer.compare(ATR, desfire.ATR) === 0) {
-                    this.cardType = "desfire";
+                    this.cardType = 'desfire';
 
                     method = desfire;
                 } else if (Buffer.compare(ATR, classic.ATR) === 0) {
-                    this.cardType = "classic";
+                    this.cardType = 'classic';
 
                     method = classic;
                 } else {
-                    this.emit("error", { name: "Unknown card", message: ATR });
+                    this.emit('error', { name: 'Unknown card', message: ATR });
                     return;
                 }
 
-                this.emit("atr", this.atr);
-                this.emit("cardtype", this.cardType);
+                this.emit('atr', this.atr);
+                this.emit('cardtype', this.cardType);
 
                 return method.read(
                     (...args) => this.transmit(...args),
-                    log => this.emit("log", log),
+                    log => this.emit('log', log),
                     data => {
                         this.data = data;
-                        this.emit("data", data);
+                        this.emit('data', data);
                     },
-                    err =>
-                        this.emit("error", { name: "Card error", message: err })
+                    err => this.emit('error', { name: 'Card error', message: err })
                 );
             })
             .catch(err => {
-                this.emit("error", {
-                    name: "Reader error",
+                this.emit('error', {
+                    name: 'Reader error',
                     message: err.message.toString()
                 });
             });
@@ -152,15 +145,15 @@ export default class PCSCLite extends EventEmitter {
     write(data) {
         let method;
 
-        if (this.cardType === "ultralightC") {
+        if (this.cardType === 'ultralightC') {
             method = ultralightC;
         }
 
         return method.write(
             data,
             (...args) => this.transmit(...args),
-            log => this.emit("log", log),
-            err => this.emit("error", { name: "Card error", message: err })
+            log => this.emit('log', log),
+            err => this.emit('error', { name: 'Card error', message: err })
         );
     }
 }

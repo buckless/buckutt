@@ -39,12 +39,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from 'vuex';
 
-import barcode from "@/../lib/barcode";
-import formatOfflineResults from "@/utils/formatOfflineResults";
-import Ok from "@/components/Ok";
-import Currency from "@/components/Currency";
+import barcode from '@/../lib/barcode';
+import formatOfflineResults from '@/utils/formatOfflineResults';
+import Ok from '@/components/Ok';
+import Currency from '@/components/Currency';
 
 export default {
     components: {
@@ -63,16 +63,15 @@ export default {
 
     computed: {
         searchClasses() {
-            return this.$route.path === "/assigner" ||
-                this.$route.path === "/assigner/search"
-                ? "b-assigner__home__button--active"
-                : "";
+            return this.$route.path === '/assigner' || this.$route.path === '/assigner/search'
+                ? 'b-assigner__home__button--active'
+                : '';
         },
 
         createClasses() {
-            return this.$route.path === "/assigner/create"
-                ? "b-assigner__home__button--active"
-                : "";
+            return this.$route.path === '/assigner/create'
+                ? 'b-assigner__home__button--active'
+                : '';
         },
 
         ...mapState({
@@ -80,61 +79,53 @@ export default {
             useCardData: state => state.auth.device.event.config.useCardData,
             defaultGroup: state =>
                 state.auth.groups.find(
-                    group =>
-                        group.id === state.auth.device.event.defaultGroup_id
+                    group => group.id === state.auth.device.event.defaultGroup_id
                 ),
             groups: state =>
                 state.auth.groups.filter(
-                    group =>
-                        group.id !== state.auth.device.event.defaultGroup_id
+                    group => group.id !== state.auth.device.event.defaultGroup_id
                 )
         })
     },
 
     methods: {
         toggleSearch() {
-            this.$router.push("/assigner/search");
+            this.$router.push('/assigner/search');
         },
 
         toggleCreate() {
-            this.$router.push("/assigner/create");
+            this.$router.push('/assigner/create');
         },
 
         assignCard(cardId, _, options) {
-            this.$store.commit("SET_DATA_LOADED", false);
+            this.$store.commit('SET_DATA_LOADED', false);
 
             if (options.assignedCard) {
-                this.$store.commit("SET_DATA_LOADED", true);
-                return this.$store.commit("ERROR", {
-                    message: "Card already assigned"
+                this.$store.commit('SET_DATA_LOADED', true);
+                return this.$store.commit('ERROR', {
+                    message: 'Card already assigned'
                 });
             }
 
             const assignPromise = this.useCardData
                 ? new Promise(resolve => {
-                      window.app.$root.$emit(
-                          "readyToWrite",
-                          this.assignModal.credit,
-                          {
-                              assignedCard: true,
-                              catering: options.catering
-                          }
-                      );
-                      window.app.$root.$on("writeCompleted", () => resolve());
+                      window.app.$root.$emit('readyToWrite', this.assignModal.credit, {
+                          assignedCard: true,
+                          catering: options.catering
+                      });
+                      window.app.$root.$on('writeCompleted', () => resolve());
                   })
                 : Promise.resolve();
 
             const groupsToAdd = this.activeGroups
-                .filter(
-                    g => !this.precheckedGroups.some(group => g.id === group.id)
-                )
+                .filter(g => !this.precheckedGroups.some(group => g.id === group.id))
                 .map(g => g.id);
 
             assignPromise
                 .then(() =>
                     this.sendRequest({
-                        method: "post",
-                        url: "services/manager/assigner",
+                        method: 'post',
+                        url: 'services/manager/assigner',
                         data: {
                             userId: this.assignModal.id,
                             ticketNumber: this.assignModal.ticketId,
@@ -144,12 +135,12 @@ export default {
                     })
                 )
                 .then(() => this.ok())
-                .catch(err => this.$store.commit("ERROR", err.response.data))
-                .then(() => this.$store.commit("SET_DATA_LOADED", true));
+                .catch(err => this.$store.commit('ERROR', err.response.data))
+                .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
         ticketScanned(value) {
-            this.$store.commit("SET_DATA_LOADED", false);
+            this.$store.commit('SET_DATA_LOADED', false);
 
             this.sendRequest({
                 url: `services/assigner?ticketOrMail=${value}`,
@@ -160,7 +151,7 @@ export default {
             })
                 .then(res => (res.data.length > 0 ? res.data[0] : {}))
                 .then(user => {
-                    if (typeof user.credit === "number") {
+                    if (typeof user.credit === 'number') {
                         this.setAssignModal(
                             user.credit,
                             user.name || `${user.firstname} ${user.lastname}`,
@@ -172,15 +163,15 @@ export default {
                         return;
                     }
 
-                    return this.$store.commit("ERROR", {
+                    return this.$store.commit('ERROR', {
                         message: "Couldn't find ticket"
                     });
                 })
                 .catch(err => {
                     console.error(err);
-                    this.$store.commit("ERROR", err.response.data);
+                    this.$store.commit('ERROR', err.response.data);
                 })
-                .then(() => this.$store.commit("SET_DATA_LOADED", true));
+                .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
         closeModal() {
@@ -222,7 +213,7 @@ export default {
             this.closeModal();
         },
 
-        ...mapActions(["sendRequest"])
+        ...mapActions(['sendRequest'])
     },
 
     mounted() {

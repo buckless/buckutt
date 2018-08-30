@@ -1,19 +1,17 @@
 // const config = require("../../../../../config");
 
 export function read(transmit, log, callback) {
-    return transmit(Buffer.from(JSON.parse(config.classic.fileId)), 40).then(
-        data => {
-            const code = data.toString().replace(/\D+/g, "");
+    return transmit(Buffer.from(JSON.parse(config.classic.fileId)), 40).then(data => {
+        const code = data.toString().replace(/\D+/g, '');
 
-            if (code.length > 0) {
-                callback(code);
+        if (code.length > 0) {
+            callback(code);
 
-                return true;
-            }
-
-            return false;
+            return true;
         }
-    );
+
+        return false;
+    });
 }
 
 export function write() {}

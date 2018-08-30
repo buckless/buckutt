@@ -14,23 +14,23 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from 'vuex';
 
-import Currency from "./Currency";
+import Currency from './Currency';
 
 export default {
     components: {
         Currency
     },
 
-    computed: mapGetters(["reloadAmount"]),
+    computed: mapGetters(['reloadAmount']),
 
-    methods: mapActions(["removeReloads"])
+    methods: mapActions(['removeReloads'])
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-lower-bar__reload {
     align-items: center;

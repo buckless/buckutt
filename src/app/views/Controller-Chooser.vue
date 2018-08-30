@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
-    props: ["defaultGroups"],
+    props: ['defaultGroups'],
 
     data() {
         return {
@@ -31,25 +31,23 @@ export default {
 
     methods: {
         ok() {
-            this.$emit("groups", this.activeGroups);
+            this.$emit('groups', this.activeGroups);
         },
 
         cancel() {
-            this.$emit("cancel");
+            this.$emit('cancel');
         }
     },
 
     computed: mapState({
         groups: state =>
-            state.auth.groups.filter(
-                group => group.name !== state.auth.device.event.name
-            )
+            state.auth.groups.filter(group => group.name !== state.auth.device.event.name)
     })
 };
 </script>
 
 <style>
-@import "../main.css";
+@import '../main.css';
 
 .b-controller-chooser {
     position: absolute;

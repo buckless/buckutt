@@ -1,18 +1,18 @@
-let Dexie = require("dexie");
+let Dexie = require('dexie');
 
 Dexie = Dexie.default ? Dexie.default : Dexie;
 
 class OfflineData {
     constructor() {
-        this.db = new Dexie("buckless.db");
+        this.db = new Dexie('buckless.db');
     }
 
     init() {
         this.db.version(1).stores({
-            tickets: "id,barcode,userId,name,username,credit,physicalId",
-            accesses: "id,userId,cardId,group,start,end",
-            pendingCardUpdates: "id,incrId,cardId,amount",
-            images: "id,blob"
+            tickets: 'id,barcode,userId,name,username,credit,physicalId',
+            accesses: 'id,userId,cardId,group,start,end',
+            pendingCardUpdates: 'id,incrId,cardId,amount',
+            images: 'id,blob'
         });
 
         return Promise.resolve();
@@ -36,7 +36,7 @@ class OfflineData {
     }
 
     findByName(name) {
-        const reg = new RegExp(`(.*)${name}(.*)`, "i");
+        const reg = new RegExp(`(.*)${name}(.*)`, 'i');
 
         return this.db.tickets
             .filter(user => reg.test(user.name))
@@ -60,21 +60,15 @@ class OfflineData {
     }
 
     userMemberships(userId) {
-        return this.db.accesses
-            .filter(access => access.userId === userId)
-            .toArray();
+        return this.db.accesses.filter(access => access.userId === userId).toArray();
     }
 
     cardAccesses(cardId) {
-        return this.db.accesses
-            .filter(access => access.cardId === cardId)
-            .toArray();
+        return this.db.accesses.filter(access => access.cardId === cardId).toArray();
     }
 
     pendingCardUpdates(cardId) {
-        return this.db.pendingCardUpdates
-            .filter(pcu => pcu.cardId === cardId)
-            .toArray();
+        return this.db.pendingCardUpdates.filter(pcu => pcu.cardId === cardId).toArray();
     }
 
     insert(table, data) {

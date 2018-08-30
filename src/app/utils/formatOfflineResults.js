@@ -7,8 +7,7 @@ export default users => {
                 const currentGroups = memberships
                     .filter(
                         membership =>
-                            new Date(membership.start) <= now &&
-                            new Date(membership.end) >= now
+                            new Date(membership.start) <= now && new Date(membership.end) >= now
                     )
                     .map(membership => ({ id: membership.group }));
 

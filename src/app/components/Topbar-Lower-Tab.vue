@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState } from 'vuex';
 
 export default {
     props: {
@@ -26,12 +26,12 @@ export default {
         })
     },
 
-    methods: mapActions(["selectTab"])
+    methods: mapActions(['selectTab'])
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-tab {
     color: rgba(255, 255, 255, 0.6);
@@ -46,7 +46,7 @@ export default {
     &:after {
         background-color: transparent;
         bottom: 0;
-        content: " ";
+        content: ' ';
         height: 3px;
         left: 0;
         position: absolute;

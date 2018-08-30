@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState } from 'vuex';
 
 export default {
     props: {
@@ -27,19 +27,18 @@ export default {
     methods: {
         buttonClasses(mean) {
             return {
-                "b-reload-methods__method--active":
-                    this.meanOfPayment === mean.slug,
-                "b-reload-methods__method--disabled": this.disabled
+                'b-reload-methods__method--active': this.meanOfPayment === mean.slug,
+                'b-reload-methods__method--disabled': this.disabled
             };
         },
 
-        ...mapActions(["changeMeanOfPayment"])
+        ...mapActions(['changeMeanOfPayment'])
     }
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-reload-methods {
     display: flex;

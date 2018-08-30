@@ -54,12 +54,12 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from 'vuex';
 
-import Currency from "@/components/Currency";
-import Methods from "@/components/Reload-Methods";
-import NumericalInput from "@/components/NumericalInput";
-import UnitInput from "@/components/UnitInput";
+import Currency from '@/components/Currency';
+import Methods from '@/components/Reload-Methods';
+import NumericalInput from '@/components/NumericalInput';
+import UnitInput from '@/components/UnitInput';
 
 export default {
     props: {
@@ -83,20 +83,18 @@ export default {
         ...mapState({
             loggedBuyer: state => state.auth.buyer,
             reloadState: state => state.reload.reloadState,
-            isWaiting: state => state.basket.basketStatus === "WAITING",
+            isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing,
             giftReloads: state => state.items.giftReloads,
             meanOfPayment: state => state.reload.meanOfPayment
         }),
 
-        ...mapGetters(["reloadSum"]),
+        ...mapGetters(['reloadSum']),
 
         reloadGiftAmount() {
             return this.giftReloads
                 .map(gr => {
-                    const timesEveryAmount = Math.floor(
-                        this.reloadAmount / gr.everyAmount
-                    );
+                    const timesEveryAmount = Math.floor(this.reloadAmount / gr.everyAmount);
 
                     return timesEveryAmount * gr.amount;
                 })
@@ -117,7 +115,7 @@ export default {
             this.closeReloadModal();
 
             if (!this.reloadOnly) {
-                this.$router.push("/items");
+                this.$router.push('/items');
             }
         },
 
@@ -125,13 +123,13 @@ export default {
             this.addReload({
                 amount: this.reloadAmount,
                 type: this.meanOfPayment,
-                trace: ""
+                trace: ''
             });
 
             if (this.reloadGiftAmount) {
                 this.addReload({
                     amount: this.reloadGiftAmount,
-                    type: "gift",
+                    type: 'gift',
                     trace: `${this.meanOfPayment}-${this.reloadAmount}`
                 });
             }
@@ -146,7 +144,7 @@ export default {
         },
 
         logBuyer(cardNumber, credit, options) {
-            console.log("reload-buyer-login", cardNumber, credit, options);
+            console.log('reload-buyer-login', cardNumber, credit, options);
             this.buyerLogin({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null
@@ -154,7 +152,7 @@ export default {
         },
 
         validate(cardNumber, credit, options) {
-            console.log("reload-validate", cardNumber, credit, options);
+            console.log('reload-validate', cardNumber, credit, options);
             this.validateBasket({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
@@ -163,20 +161,20 @@ export default {
         },
 
         cancelReload() {
-            this.$store.commit("SET_WRITING", false);
-            this.$store.commit("SET_BASKET_STATUS", "WAITING");
+            this.$store.commit('SET_WRITING', false);
+            this.$store.commit('SET_BASKET_STATUS', 'WAITING');
             this.clearBasket();
         },
 
         ...mapActions([
-            "confirmReloadModal",
-            "closeReloadModal",
-            "addReload",
-            "clearBasket",
-            "cancelReloadModal",
-            "validateBasket",
-            "basketClickValidation",
-            "buyerLogin"
+            'confirmReloadModal',
+            'closeReloadModal',
+            'addReload',
+            'clearBasket',
+            'cancelReloadModal',
+            'validateBasket',
+            'basketClickValidation',
+            'buyerLogin'
         ])
     },
 
@@ -187,7 +185,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-reload--reloadOnly {
     flex: 1;

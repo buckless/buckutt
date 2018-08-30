@@ -1,5 +1,5 @@
-import axios from "@/utils/axios";
-import { memoize } from "lodash/function";
+import axios from '@/utils/axios';
+import { memoize } from 'lodash/function';
 
 const cachedGetImage = memoize((id, token) => {
     return axios

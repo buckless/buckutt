@@ -33,16 +33,16 @@ const initialState = {
         lastname: null,
         memberships: [],
         purchases: [],
-        meanOfLogin: ""
+        meanOfLogin: ''
     },
     seller: {
         isAuth: false,
-        meanOfLogin: "",
-        pin: "",
-        id: "",
-        token: "",
-        firstname: "",
-        lastname: "",
+        meanOfLogin: '',
+        pin: '',
+        id: '',
+        token: '',
+        firstname: '',
+        lastname: '',
         canSell: false,
         canReload: false,
         canAssign: false,
@@ -62,7 +62,7 @@ const mutations = {
     },
 
     SET_FULL_DEVICE(state, payload) {
-        const keys = ["alcohol", "doubleValidation", "showPicture"];
+        const keys = ['alcohol', 'doubleValidation', 'showPicture'];
 
         keys.forEach(key => {
             state.device.config[key] = payload[key];
@@ -74,12 +74,7 @@ const mutations = {
     },
 
     SET_EVENT(state, payload) {
-        const keys = [
-            "maxAlcohol",
-            "maxPerAccount",
-            "minReload",
-            "useCardData"
-        ];
+        const keys = ['maxAlcohol', 'maxPerAccount', 'minReload', 'useCardData'];
 
         keys.forEach(key => {
             state.device.event.config[key] = payload[key];

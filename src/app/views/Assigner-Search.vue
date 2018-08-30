@@ -44,15 +44,15 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { debounce } from "lodash/function";
-import formatOfflineResults from "@/utils/formatOfflineResults";
+import { mapActions } from 'vuex';
+import { debounce } from 'lodash/function';
+import formatOfflineResults from '@/utils/formatOfflineResults';
 
 export default {
     data() {
         return {
-            searchBy: "name",
-            searchInput: "",
+            searchBy: 'name',
+            searchInput: '',
             matches: []
         };
     },
@@ -68,7 +68,7 @@ export default {
             }
 
             let searchPromise;
-            if (this.searchBy === "name") {
+            if (this.searchBy === 'name') {
                 searchPromise = this.sendRequest({
                     url: `services/manager/searchuser?name=${this.searchInput}`,
                     noQueue: true,
@@ -94,11 +94,9 @@ export default {
                         }
 
                         if (user.memberships) {
-                            user.currentGroups = user.memberships.map(
-                                membership => ({
-                                    id: membership.group_id
-                                })
-                            );
+                            user.currentGroups = user.memberships.map(membership => ({
+                                id: membership.group_id
+                            }));
                         }
 
                         return user;
@@ -111,23 +109,23 @@ export default {
 
         selectUser(user) {
             this.$emit(
-                "assign",
+                'assign',
                 user.credit,
                 user.name,
                 user.username,
                 user.id,
                 user.currentGroups,
-                user.searchBy === "ticketId" ? this.searchInput : null
+                user.searchBy === 'ticketId' ? this.searchInput : null
             );
         },
 
-        ...mapActions(["sendRequest"])
+        ...mapActions(['sendRequest'])
     }
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-assigner-search__type {
     display: flex;

@@ -26,9 +26,7 @@ const mutations = {
     },
 
     REMOVE_FROM_HISTORY(state, payload) {
-        const index = state.history.findIndex(
-            entry => entry.localId === payload.localId
-        );
+        const index = state.history.findIndex(entry => entry.localId === payload.localId);
 
         state.history.splice(index, 1);
     },
@@ -42,9 +40,7 @@ const mutations = {
     },
 
     UPDATE_HISTORY_ENTRY(state, payload) {
-        const historyIndex = state.history.findIndex(
-            entry => payload.localId === entry.localId
-        );
+        const historyIndex = state.history.findIndex(entry => payload.localId === entry.localId);
 
         if (historyIndex > -1) {
             state.history.splice(historyIndex, 1, {

@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
     computed: {
         syncingClass() {
-            return this.syncing ? { "b-offline-syncing": true } : {};
+            return this.syncing ? { 'b-offline-syncing': true } : {};
         },
 
         ...mapState({
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-offline {
     background-color: color($red a(0.9));

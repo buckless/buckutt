@@ -12,17 +12,17 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex';
 
 export default {
-    props: ["id", "name", "count"],
+    props: ['id', 'name', 'count'],
 
-    methods: mapActions(["removeItemFromBasket"])
+    methods: mapActions(['removeItemFromBasket'])
 };
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-sidebar-item {
     background-color: #fff;
@@ -49,7 +49,7 @@ export default {
 
     &:after {
         background-color: #fff;
-        content: " ";
+        content: ' ';
         height: 3px;
         left: 50%;
         position: absolute;

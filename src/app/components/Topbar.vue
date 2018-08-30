@@ -15,14 +15,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
-import isMobile from "@/utils/isMobile";
+import isMobile from '@/utils/isMobile';
 
-import Currency from "./Currency";
-import Lower from "./Topbar-Lower";
-import Upper from "./Topbar-Upper";
-import Reload from "./Topbar-Reload";
+import Currency from './Currency';
+import Lower from './Topbar-Lower';
+import Upper from './Topbar-Upper';
+import Reload from './Topbar-Reload';
 
 export default {
     components: {
@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../main.css";
+@import '../main.css';
 
 .b-header {
     background-color: $blue;
