@@ -37,7 +37,7 @@
 </template>
 
 <script>
-/*  global Keyboard */
+/* global Keyboard */
 import { mapState } from 'vuex';
 
 const noSign = true;
@@ -255,12 +255,17 @@ export default {
         },
 
         destroyListeners() {
+            window.app.$root.$off('readyToWrite');
+            window.app.$root.$off('writeCompleted');
+
+            if (!nfc) {
+                return;
+            }
+
             nfc.removeAllListeners('data');
             nfc.removeAllListeners('locked');
             nfc.removeAllListeners('uid');
             nfc.removeAllListeners('error');
-            window.app.$root.$off('readyToWrite');
-            window.app.$root.$off('writeCompleted');
         },
 
         resetComponent() {
