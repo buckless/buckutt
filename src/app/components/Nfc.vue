@@ -39,6 +39,9 @@
 <script>
 /* global Keyboard */
 import { mapState } from 'vuex';
+import debug_ from 'debug';
+
+const debug = debug_('nfc:vue');
 
 const noSign = true;
 
@@ -96,8 +99,10 @@ export default {
 
         onCard(credit = null, options = {}, version = null) {
             if (this.rewrite) {
+                debug('onCard rewrite');
                 this.write();
             } else {
+                debug('onCard read');
                 this.$emit('read', this.inputValue, credit, options, version);
             }
 
@@ -107,6 +112,7 @@ export default {
         },
 
         cancel() {
+            debug('cancel');
             if (!this.rewrite || this.timer === 0) {
                 this.$emit('cancel');
             }
@@ -119,39 +125,48 @@ export default {
         },
 
         setListeners() {
+            debug('set listeners');
             if (!nfc) {
                 setTimeout(this.setListeners, 1000);
                 return;
             }
 
             if (this.useCardData) {
+                debug('use card data');
+
                 nfc.on('uid', data => {
+                    debug('on uid');
                     this.inputValue = data.toString();
                 });
 
                 nfc.on('locked', locked => {
+                    debug('on locked');
                     this.cardLocked = locked;
 
                     if (nfc.shouldUnlock) {
+                        debug('should unlock');
                         nfc.shouldUnlock(locked);
                     }
 
                     if (nfc.shouldLock) {
+                        debug('should lock');
                         nfc.shouldLock(!locked);
                     }
                 });
 
                 nfc.on('data', data => {
+                    debug('on data ', data);
                     try {
                         const card = nfc.dataToCard(
                             data.toLowerCase ? data.toLowerCase() : data,
                             this.inputValue + config.signingKey
                         );
 
-                        console.log('nfc-data', card);
+                        debug('card ', card);
 
                         let cardToLock = false;
                         if (this.forbiddenIds.indexOf(this.inputValue) > -1) {
+                            debug('lock card');
                             // Only write lock if it isn't already done
                             cardToLock = !card.options.locked;
                             card.options.locked = true;
@@ -169,6 +184,7 @@ export default {
                         this.onCard(card.credit, card.options, card.version);
                     } catch (err) {
                         if (err === 'Locked card') {
+                            debug('locked card');
                             this.$store.commit('ERROR', {
                                 message: 'Locked card'
                             });
@@ -176,18 +192,23 @@ export default {
                             this.signCheckDisabled &&
                             err.message === '[signed-data] signature does not match'
                         ) {
+                            debug('signature does not match');
                             if (!this.cardLocked) {
+                                debug('card not locked');
                                 return this.onCard(0, { catering: [] });
                             }
 
+                            debug('card locked');
                             return this.onCard(
                                 err.value.credit,
                                 err.value.options,
                                 err.value.version
                             );
                         } else if (this.disablePinCheck) {
+                            debug('pin check disabled');
                             return this.onCard(0, { catering: [] });
                         } else {
+                            debug('invalid card ', err);
                             this.$store.commit('ERROR', {
                                 message: 'Invalid card'
                             });
@@ -197,17 +218,22 @@ export default {
                     }
                 });
             } else {
+                debug('no use card data');
                 nfc.on('uid', data => {
+                    debug('on uid');
                     this.inputValue = data;
                     this.onCard();
                 });
             }
 
             nfc.on('error', err => {
+                debug('on error ', err);
                 console.error(err);
             });
 
             this.$root.$on('readyToWrite', (credit, options, version) => {
+                debug('ready to write');
+
                 if (typeof credit === 'number') {
                     this.dataToWrite.credit = credit;
                 }
@@ -225,8 +251,10 @@ export default {
         },
 
         write() {
+            debug('write');
             let restartDataLoader = false;
             if (!this.dataLoaded) {
+                debug('data loaded');
                 restartDataLoader = true;
                 this.$store.commit('SET_DATA_LOADED', true);
             }
@@ -238,12 +266,13 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            console.log(this.dataToWrite);
             nfc.write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
+                    debug('write completed');
                     this.success = true;
                     this.$root.$emit('writeCompleted');
                     if (restartDataLoader) {
+                        debug('data not loaded');
                         this.$store.commit('SET_DATA_LOADED', false);
                     }
                 })
@@ -255,6 +284,7 @@ export default {
         },
 
         destroyListeners() {
+            debug('destroy listeners');
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
 
@@ -262,6 +292,7 @@ export default {
                 return;
             }
 
+            debug('remove all listeners');
             nfc.removeAllListeners('data');
             nfc.removeAllListeners('locked');
             nfc.removeAllListeners('uid');
@@ -269,6 +300,7 @@ export default {
         },
 
         resetComponent() {
+            debug('reset component');
             this.inputValue = '';
             this.cardToRewrite = '';
             this.success = false;
@@ -301,16 +333,19 @@ export default {
     },
 
     mounted() {
+        debug('mounting component...');
         this.resetComponent();
         this.setListeners();
     },
 
     beforeDestroy() {
+        debug('destroying component...');
         this.destroyListeners();
     },
 
     watch: {
         useCardData() {
+            debug('useCardData changed');
             this.destroyListeners();
             this.setListeners();
         }
