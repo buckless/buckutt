@@ -11,7 +11,6 @@ module.exports = ticketOrMail => {
     }
 
     const parser = parse({ columns: true });
-    let result = null;
 
     if (config.url) {
         axios[config.url.method](config.url.url, { headers: config.url.headers }).then(res => {
@@ -22,20 +21,19 @@ module.exports = ticketOrMail => {
         fs.createReadStream(config.file).pipe(parser);
     }
 
-    parser.on('readable', () => {
-        let record = parser.read();
+    return new Promise(resolve => {
+        parser.on('readable', () => {
+            let record = parser.read();
+            let result = null;
 
-        while (record) {
-            if (record.ticket === ticketOrMail || record.mail === ticketOrMail) {
-                result = record;
+            while (record) {
+                if (record.ticket === ticketOrMail || record.mail === ticketOrMail) {
+                    result = record;
+                }
+
+                record = parser.read();
             }
 
-            record = parser.read();
-        }
-    });
-
-    return new Promise(resolve => {
-        parser.on('finish', () => {
             if (!result) {
                 return resolve(null);
             }
