@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-const signedData = require('../signedData');
+import signedData from '../signedData';
 const debug = require('debug')('nfc:browser');
 
 export default class NFC extends EventEmitter {

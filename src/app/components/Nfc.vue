@@ -46,8 +46,6 @@ const debug = debug_('nfc:vue');
 
 const noSign = true;
 
-const nfc = window.nfc;
-
 export default {
     props: {
         mode: String,
@@ -127,6 +125,8 @@ export default {
 
         setListeners() {
             debug('call');
+            const nfc = window.nfc;
+
             if (!nfc) {
                 debug('relance');
                 setTimeout(this.setListeners, 1000);
@@ -273,7 +273,7 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            nfc.write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
+            window.nfc.write(window.nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
                     debug('write completed');
                     this.success = true;
@@ -295,15 +295,15 @@ export default {
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
 
-            if (!nfc) {
+            if (!window.nfc) {
                 return;
             }
 
             debug('remove all listeners');
-            nfc.removeAllListeners('data');
-            nfc.removeAllListeners('locked');
-            nfc.removeAllListeners('uid');
-            nfc.removeAllListeners('error');
+            window.nfc.removeAllListeners('data');
+            window.nfc.removeAllListeners('locked');
+            window.nfc.removeAllListeners('uid');
+            window.nfc.removeAllListeners('error');
         },
 
         resetComponent() {
