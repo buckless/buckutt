@@ -1,6 +1,6 @@
 import offlineLogin from '../../utils/offline/login';
 
-export const setPoint = ({ commit }, payload) => {
+export const setDevice = ({ commit }, payload) => {
     commit('SET_DEVICE', payload);
 };
 

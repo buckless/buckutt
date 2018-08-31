@@ -153,16 +153,16 @@ export const updateEssentials = (store, force) => {
         .then(res => {
             if (!store.state.auth.device.point.id || !store.state.auth.seller.isAuth || force) {
                 return store
-                    .dispatch('setPoint', {
-                        id: res.headers.device,
-                        wiket: res.headers.wiket,
+                    .dispatch('setDevice', {
+                        id: res.data.device.id,
+                        wiket: res.data.wiket,
                         point: {
-                            id: res.headers.point,
-                            name: res.headers.pointname
+                            id: res.data.wiket.point.id,
+                            name: res.data.wiket.point.name
                         },
                         event: {
-                            id: res.headers.event,
-                            name: res.headers.eventname
+                            id: res.data.event.id,
+                            name: res.data.event.name
                         }
                     })
                     .then(() => res);
