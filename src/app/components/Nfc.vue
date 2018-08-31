@@ -39,6 +39,7 @@
 <script>
 /* global Keyboard */
 import { mapState } from 'vuex';
+import { EventEmitter } from 'events';
 import debug_ from 'debug';
 
 const debug = debug_('nfc:vue');
@@ -125,11 +126,17 @@ export default {
         },
 
         setListeners() {
-            debug('set listeners');
+            debug('call');
             if (!nfc) {
+                debug('relance');
                 setTimeout(this.setListeners, 1000);
                 return;
             }
+
+            debug('set listeners');
+            debug(EventEmitter.listenerCount(nfc, 'uid'));
+            debug(EventEmitter.listenerCount(nfc, 'locked'));
+            debug(EventEmitter.listenerCount(nfc, 'data'));
 
             if (this.useCardData) {
                 debug('use card data');
