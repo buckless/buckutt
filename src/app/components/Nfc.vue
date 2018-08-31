@@ -40,6 +40,7 @@
 /* global Keyboard */
 import { mapState } from 'vuex';
 import { EventEmitter } from 'events';
+import nfc from '@/../lib/nfc';
 import debug_ from 'debug';
 
 const debug = debug_('nfc:vue');
@@ -125,12 +126,8 @@ export default {
 
         setListeners() {
             debug('set listeners');
-            const nfc = window.nfc;
-
             if (!nfc) {
-                debug('nfc not available');
-                setTimeout(this.setListeners, 1000);
-                return;
+                throw new Error('nfc not available');
             }
 
             if (this.useCardData) {
@@ -273,8 +270,7 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            window.nfc
-                .write(window.nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
+            nfc.write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
                     debug('write completed');
                     this.success = true;
@@ -296,15 +292,15 @@ export default {
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
 
-            if (!window.nfc) {
+            if (!nfc) {
                 return;
             }
 
             debug('remove all listeners');
-            window.nfc.removeAllListeners('data');
-            window.nfc.removeAllListeners('locked');
-            window.nfc.removeAllListeners('uid');
-            window.nfc.removeAllListeners('error');
+            nfc.removeAllListeners('data');
+            nfc.removeAllListeners('locked');
+            nfc.removeAllListeners('uid');
+            nfc.removeAllListeners('error');
         },
 
         resetComponent() {

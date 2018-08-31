@@ -3,7 +3,7 @@ import PCSCReader from './pcsc';
 
 const signedData = require('../signedData');
 
-export default class NFC extends EventEmitter {
+class NFC extends EventEmitter {
     constructor() {
         super();
         this.pcsc = new PCSCReader();
@@ -31,6 +31,5 @@ export default class NFC extends EventEmitter {
     }
 }
 
-if (require.main === module) {
-    new NFC();
-}
+const inst = new NFC();
+export default inst;

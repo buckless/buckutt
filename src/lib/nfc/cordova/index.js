@@ -2,7 +2,7 @@ const { EventEmitter } = require('events');
 const NFCReader = require('./nfc');
 const signedData = require('../signedData');
 
-export default class NFC extends EventEmitter {
+class NFC extends EventEmitter {
     constructor() {
         super();
 
@@ -38,3 +38,7 @@ export default class NFC extends EventEmitter {
         return signedData.key(signingKey).encode(data);
     }
 }
+
+const inst = new NFC();
+
+export default inst;

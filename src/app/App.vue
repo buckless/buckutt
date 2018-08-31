@@ -21,7 +21,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 
 import OfflineData from '@/../lib/offlineData';
 import fingerprint from '@/../lib/fingerprint';
-import NFC from '@/../lib/nfc';
+import nfc from '@/../lib/nfc';
 
 import Topbar from './components/Topbar';
 import Loading from './components/Loading';
@@ -77,8 +77,8 @@ export default {
         this.updateStoredItems();
         this.updateUsersData();
 
+        window.nfc = nfc;
         window.fingerprint = fingerprint;
-        window.nfc = new NFC();
         window.appId = Date.now();
         window.database = new OfflineData();
         window.database.init();
