@@ -11,6 +11,6 @@ RUN apk update && \
 COPY package.json /usr/src/buckless-manager/
 COPY yarn.lock /usr/src/buckless-manager/
 
-RUN yarn
+RUN yarn --ignore-engines --ignore-optional
 
 COPY . /usr/src/buckless-manager/

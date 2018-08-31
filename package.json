@@ -87,5 +87,8 @@
       "vue-cli-service lint",
       "git add"
     ]
+  },
+  "optionalDependencies": {
+    "cypress": "3.1.0"
   }
 }
