@@ -124,19 +124,14 @@ export default {
         },
 
         setListeners() {
-            debug('call');
+            debug('set listeners');
             const nfc = window.nfc;
 
             if (!nfc) {
-                debug('relance');
+                debug('nfc not available');
                 setTimeout(this.setListeners, 1000);
                 return;
             }
-
-            debug('set listeners');
-            debug(EventEmitter.listenerCount(nfc, 'uid'));
-            debug(EventEmitter.listenerCount(nfc, 'locked'));
-            debug(EventEmitter.listenerCount(nfc, 'data'));
 
             if (this.useCardData) {
                 debug('use card data');
@@ -239,7 +234,7 @@ export default {
             });
 
             this.$root.$on('readyToWrite', (credit, options, version) => {
-                debug('ready to write');
+                debug('on ready to write');
 
                 if (typeof credit === 'number') {
                     this.dataToWrite.credit = credit;
@@ -255,6 +250,11 @@ export default {
 
                 this.write();
             });
+
+            debug('uid listener count: ', EventEmitter.listenerCount(nfc, 'uid'));
+            debug('locked listener count: ', EventEmitter.listenerCount(nfc, 'locked'));
+            debug('data listener count: ', EventEmitter.listenerCount(nfc, 'data'));
+            debug('error listener count: ', EventEmitter.listenerCount(nfc, 'error'));
         },
 
         write() {
@@ -273,7 +273,8 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            window.nfc.write(window.nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
+            window.nfc
+                .write(window.nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
                 .then(() => {
                     debug('write completed');
                     this.success = true;
