@@ -1,31 +1,32 @@
 <template>
   <div class="register-form">
     <form @submit.prevent="register(ticketNumber, card, cgu)">
-      <TextInput 
-        v-model="ticketNumber" 
-        :disabled="working" 
-        type="text" 
-        label="Numéro de billet" 
+      <TextInput
+        v-model="ticketNumber"
+        :disabled="working"
+        type="text"
+        label="Numéro de billet"
         autofocus />
-      <TextInput 
-        v-if="hasCard" 
-        v-model="card" 
-        :disabled="working" 
-        type="text" 
+      <TextInput
+        v-if="hasCard"
+        v-model="card"
+        :disabled="working"
+        type="text"
         label="Identifiant de carte" />
-      <Checkbox 
-        id="1" 
+      <Checkbox
+        id="1"
+        v-model="cgu"
         :disabled="working">
-        J'accepte les <a 
-          href="https://buckless.com/static/cgu.pdf" 
+        J'accepte les <a
+          href="https://buckless.com/static/cgu.pdf"
           rel="noopener noref nofollow">conditions générales d'utilisation</a>.
       </Checkbox>
       <div class="actions">
         <Button to="/register">
           Retour
         </Button>
-        <Button 
-          :disabled="working" 
+        <Button
+          :disabled="working"
           raised>
           Inscription
         </Button>
@@ -50,6 +51,7 @@ export default {
     },
 
     data: () => ({
+        cgu: false,
         ticketNumber: '',
         card: ''
     }),
