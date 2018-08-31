@@ -40,8 +40,6 @@ const routes = [
     { path: '/', redirect: '/dashboard' },
     { path: '/login', component: Login, meta: { guest: true } },
     { path: '/forgot', component: Forgot, meta: { guest: true } },
-    { path: '/reload/:status', component: DashboardReloadStatus },
-    { path: '/register/:status', component: RegisterStatus },
     {
         path: '/register',
         component: Register,
@@ -52,6 +50,8 @@ const routes = [
             { path: 'ticket', component: RegisterTicket }
         ]
     },
+    { path: '/reload/:status', component: DashboardReloadStatus },
+    { path: '/register/:status', component: RegisterStatus },
     {
         path: '/dashboard',
         component: Dashboard,
@@ -81,6 +81,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     const isLoggedIn = store.state.user.user;
+    console.log(to);
 
     if (to.matched.some(record => record.meta.auth) && !isLoggedIn) {
         const wantedUrl = to.matched[to.matched.length - 1].path;
