@@ -1,11 +1,12 @@
 import { EventEmitter } from 'events';
 const signedData = require('../signedData');
+const debug = require('debug')('nfc:browser');
 
 export default class NFC extends EventEmitter {
     constructor() {
         super();
 
-        console.warn('NFC is mocked in browser');
+        debug('NFC is mocked in browser');
         this.emit('reader');
 
         window.mock = {
@@ -40,7 +41,7 @@ export default class NFC extends EventEmitter {
                 throw new Error('name should bet set');
             }
 
-            console.warn(`Writing card ${name} to local storage : ${cardId}(${credit})`);
+            debug(`Writing card ${name} to local storage : ${cardId}(${credit})`);
 
             const cards = localStorage.hasOwnProperty('mocked-cards')
                 ? JSON.parse(localStorage.getItem('mocked-cards'))
@@ -86,6 +87,8 @@ export default class NFC extends EventEmitter {
             this.emit('atr', '0');
             this.emit('cardType', 'mockedCard');
             this.emit('data', cards[name].cardValue);
+
+            debug(`scan card ${name}`);
         };
 
         window.mock.print = () => {
@@ -95,7 +98,7 @@ export default class NFC extends EventEmitter {
 
             const cards = JSON.parse(localStorage.getItem('mocked-cards'));
 
-            console.log(cards);
+            debug(cards);
         };
 
         window.mock.clean = () => {
@@ -119,7 +122,7 @@ export default class NFC extends EventEmitter {
         const debugData = `${cards[window.mock.actualCard].cardId}(${
             cards[window.mock.actualCard].cardValue.credit
         })`;
-        console.warn(`Writing card to local storage : ${debugData}`);
+        debug(`Writing card to local storage : ${debugData}`);
 
         localStorage.setItem('mocked-cards', JSON.stringify(cards));
 
