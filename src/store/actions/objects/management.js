@@ -75,7 +75,10 @@ export function createObject({ dispatch, state }, object) {
 
     return post(`${object.route.toLowerCase()}${embed}`, object.value).then(result => {
         if (state.objects[object.route]) {
-            dispatch('checkAndAddObjects', { route: object.route, objects: [result] });
+            dispatch('checkAndAddObjects', {
+                route: object.route,
+                objects: [result]
+            });
         }
 
         state.app.focusedElements.forEach((element, depth) => {
@@ -105,7 +108,10 @@ export function updateObject({ dispatch, state }, object) {
 
     return put(`${object.route.toLowerCase()}/${object.value.id}${embed}`, object.value).then(
         result => {
-            dispatch('checkAndUpdateObjects', { route: object.route, objects: [result] });
+            dispatch('checkAndUpdateObjects', {
+                route: object.route,
+                objects: [result]
+            });
 
             state.app.focusedElements.forEach((element, depth) => {
                 if (element[object.route]) {
@@ -125,7 +131,10 @@ export function updateObject({ dispatch, state }, object) {
 
 export function removeObject({ dispatch, state }, object) {
     return del(`${object.route.toLowerCase()}/${object.value.id}`).then(() => {
-        dispatch('checkAndDeleteObjects', { route: object.route, objects: [object.value] });
+        dispatch('checkAndDeleteObjects', {
+            route: object.route,
+            objects: [object.value]
+        });
 
         state.app.focusedElements.forEach((element, depth) => {
             if (element[object.route]) {

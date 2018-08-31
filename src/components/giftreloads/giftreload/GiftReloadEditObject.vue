@@ -19,7 +19,10 @@ export default {
 
         updateGiftReload(giftReload) {
             const fields = ['id', 'amount', 'everyAmount'];
-            this.updateObject({ route: 'giftreloads', value: pick(giftReload, fields) })
+            this.updateObject({
+                route: 'giftreloads',
+                value: pick(giftReload, fields)
+            })
                 .then(() => this.notify({ message: "L'offre a bien été modifiée" }))
                 .catch(err =>
                     this.notifyError({

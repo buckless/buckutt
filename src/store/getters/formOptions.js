@@ -1,8 +1,14 @@
 export const articleOptions = state =>
-    state.objects.articles.map(article => ({ name: article.name, value: article }));
+    state.objects.articles.map(article => ({
+        name: article.name,
+        value: article
+    }));
 
 export const categoryOptions = state =>
-    state.objects.categories.map(category => ({ name: category.name, value: category }));
+    state.objects.categories.map(category => ({
+        name: category.name,
+        value: category
+    }));
 
 export const deviceOptions = state =>
     state.objects.devices
@@ -16,10 +22,16 @@ export const pointOptions = state =>
     state.objects.points.map(point => ({ name: point.name, value: point }));
 
 export const promotionOptions = state =>
-    state.objects.promotions.map(promotion => ({ name: promotion.name, value: promotion }));
+    state.objects.promotions.map(promotion => ({
+        name: promotion.name,
+        value: promotion
+    }));
 
 export const fundationOptions = state =>
-    state.objects.fundations.map(fundation => ({ name: fundation.name, value: fundation }));
+    state.objects.fundations.map(fundation => ({
+        name: fundation.name,
+        value: fundation
+    }));
 
 export const eventOptions = state =>
     state.objects.events.map(event => ({ name: event.name, value: event }));

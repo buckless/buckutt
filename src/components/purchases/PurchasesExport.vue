@@ -117,7 +117,9 @@ export default {
                 (inputFields.dateIn && !inputFields.dateOut) ||
                 (!inputFields.dateIn && inputFields.dateOut)
             ) {
-                return this.notifyError({ message: 'Vous devez choisir au moins un filtre' });
+                return this.notifyError({
+                    message: 'Vous devez choisir au moins un filtre'
+                });
             }
 
             const qString = treasuryQueryString(inputFields);
@@ -125,7 +127,9 @@ export default {
             download(`services/treasury/csv/${this.data}?${qString}`)
                 .then(result => {
                     const currentTime = Math.floor(Date.now() / 1000);
-                    this.notify({ message: 'Le téléchargement du document va commencer...' });
+                    this.notify({
+                        message: 'Le téléchargement du document va commencer...'
+                    });
                     saveAs(result, `treasury-${this.data}-${currentTime}.csv`);
                 })
                 .catch(err =>

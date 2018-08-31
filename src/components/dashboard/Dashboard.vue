@@ -59,7 +59,7 @@
                 </div>
                 <div class="b-curves__list">
                     <h5>Légende</h5>
-                    <div v-for="(curve, index) in curves">
+                    <div v-for="(curve, index) in curves" :key="index">
                         <span>
                             {{ index + 1 }}.
                             <i class="material-icons" :style="{ color: colorsPattern[index] }">lens</i>

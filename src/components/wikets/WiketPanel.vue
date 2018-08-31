@@ -30,7 +30,7 @@ export default {
 
         createPoint(point) {
             this.createObject({ route: 'points', value: point })
-                .then(createdPoint => {
+                .then(() => {
                     this.notify({ message: 'Le guichet a bien été créé' });
                     this.newPoint.name = '';
                 })

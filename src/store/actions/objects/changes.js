@@ -1,6 +1,6 @@
 let changes;
 
-export function initSocket({ commit, dispatch, state }, token) {
+export function initSocket({ dispatch }, token) {
     if (changes && typeof changes.close === 'function') {
         changes.close();
     }

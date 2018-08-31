@@ -166,7 +166,9 @@ export default {
                 (inputFields.dateIn && !inputFields.dateOut) ||
                 (!inputFields.dateIn && inputFields.dateOut)
             ) {
-                return this.notifyError({ message: 'Vous devez choisir au moins un filtre' });
+                return this.notifyError({
+                    message: 'Vous devez choisir au moins un filtre'
+                });
             }
 
             this.getTreasury(inputFields)

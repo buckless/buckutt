@@ -110,5 +110,5 @@
     };
     // The component registers itself. It can assume componentHandler is available
     // in the global scope.
-    componentHandler.registerUpgradedCallback(MaterialTextfield, function(textfield) {});
+    componentHandler.registerUpgradedCallback(MaterialTextfield, function() {});
 })();

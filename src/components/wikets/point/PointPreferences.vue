@@ -33,7 +33,9 @@ export default {
 
             this.updateObject({ route: 'points', value: pick(newPoint, fields) })
                 .then(() =>
-                    this.notify({ message: 'Les préférences du guichet ont bien été modifiées' })
+                    this.notify({
+                        message: 'Les préférences du guichet ont bien été modifiées'
+                    })
                 )
                 .catch(err =>
                     this.notifyError({

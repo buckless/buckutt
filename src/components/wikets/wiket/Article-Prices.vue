@@ -10,7 +10,7 @@
         <div class="b-pricesEditor__prices">
             <h4>Tarifs</h4>
             <span v-if="displayedPrices.length === 0">Aucun prix n'est encore défini pour cet article.</span>
-            <div v-for="price in displayedPrices">
+            <div v-for="(price, index) in displayedPrices" :key="index">
                 <span>
                     <i class="material-icons">attach_money</i> {{ price.amount | price(true) }} TTC
                 </span>
@@ -85,9 +85,7 @@ export default {
         ]),
 
         displayedPrices() {
-            return (this.item.prices || []).filter(
-                price => price.point_id === this.point.id
-            );
+            return (this.item.prices || []).filter(price => price.point_id === this.point.id);
         },
 
         disabledAdd() {

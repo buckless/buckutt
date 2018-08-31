@@ -10,7 +10,11 @@ export function createUserWithMol({ dispatch, getters }, user) {
     return post('users', user)
         .then(result => {
             if (result.mail) {
-                post('meansoflogin', { type: 'mail', data: result.mail, user_id: result.id });
+                post('meansoflogin', {
+                    type: 'mail',
+                    data: result.mail,
+                    user_id: result.id
+                });
             }
 
             dispatch('checkAndAddObjects', { route: 'users', objects: [result] });
@@ -68,8 +72,15 @@ export function loadUserHistory({ state, dispatch }, user) {
         if (results.history.length > 0) {
             const depth = state.app.focusedElements.findIndex(element => user.id === element.id);
 
-            dispatch('updateFocusedElement', { depth, field: 'credit', value: results.credit });
-            dispatch('checkAndAddObjects', { route: 'history', objects: results.history });
+            dispatch('updateFocusedElement', {
+                depth,
+                field: 'credit',
+                value: results.credit
+            });
+            dispatch('checkAndAddObjects', {
+                route: 'history',
+                objects: results.history
+            });
         }
         return [];
     });
@@ -85,7 +96,11 @@ export function cancelTransaction({ state, dispatch }, payload) {
         const newUserCredit = user.credit - currentTransaction.amount;
         const depth = state.app.focusedElements.findIndex(element => user.id === element.id);
 
-        dispatch('updateFocusedElement', { depth, field: 'credit', value: newUserCredit });
+        dispatch('updateFocusedElement', {
+            depth,
+            field: 'credit',
+            value: newUserCredit
+        });
 
         const canceledTransaction = { ...currentTransaction };
         canceledTransaction.isCanceled = true;

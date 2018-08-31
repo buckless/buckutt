@@ -10,9 +10,9 @@ RUN apk update && \
 
 COPY package.json /usr/src/buckless-admin/
 COPY yarn.lock /usr/src/buckless-admin/
-COPY config/profiles/development.json.example /usr/src/buckless-manager/config/profiles/development.json
-COPY config/profiles/production.json.example /usr/src/buckless-manager/config/profiles/production.json
+COPY config/profiles/development.json.example /usr/src/buckless-admin/config/profiles/development.json
+COPY config/profiles/production.json.example /usr/src/buckless-admin/config/profiles/production.json
 
-RUN yarn
+RUN yarn --ignore-engines --ignore-optional
 
 COPY . /usr/src/buckless-admin/

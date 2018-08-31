@@ -13,7 +13,7 @@
             </div>
             <div class="mdl-card__supporting-text">
                 Droits:
-                <div v-for="right in user.rights">
+                <div v-for="(right, index) in user.rights" :key="index">
                     <span><i class="material-icons">assignment_turned_in</i> {{ right.name }}</span>
                     <span><i class="material-icons">location_on</i> {{ right.point.name }}</span>
                     <span><i class="material-icons">alarm</i> {{ right.period.name }}</span>

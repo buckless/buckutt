@@ -6,7 +6,7 @@
                 <div class="b-responsive-table">
                     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" v-if="displayedPromotion.length > 0">
                         <tbody>
-                            <tr v-for="(set, index) in displayedPromotion">
+                            <tr v-for="(set, index) in displayedPromotion" :key="index">
                                 <td class="mdl-data-table__cell--non-numeric b-table__little">
                                     1 article parmi :
                                     <span class="mdl-chip b-chip--margin b-table-inter"
@@ -99,7 +99,11 @@ export default {
                 promotion: this.focusedPromotion,
                 articles: [article]
             })
-                .then(() => this.notify({ message: "L'article a bien été ajouté à la promotion." }))
+                .then(() =>
+                    this.notify({
+                        message: "L'article a bien été ajouté à la promotion."
+                    })
+                )
                 .catch(err =>
                     this.notifyError({
                         message: "Une erreur a eu lieu lors de l'ajout à la promotion",
@@ -114,7 +118,11 @@ export default {
                 step: this.displayedPromotion[this.chosenIndex],
                 promotion: this.focusedPromotion
             })
-                .then(() => this.notify({ message: "L'article a bien été ajouté à la promotion." }))
+                .then(() =>
+                    this.notify({
+                        message: "L'article a bien été ajouté à la promotion."
+                    })
+                )
                 .catch(err => {
                     let message;
                     switch (err.message) {
@@ -136,7 +144,9 @@ export default {
                 promotion: this.focusedPromotion
             })
                 .then(() =>
-                    this.notify({ message: "L'article a bien été supprimé de la promotion." })
+                    this.notify({
+                        message: "L'article a bien été supprimé de la promotion."
+                    })
                 )
                 .catch(err =>
                     this.notifyError({

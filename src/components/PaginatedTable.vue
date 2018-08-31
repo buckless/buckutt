@@ -3,21 +3,21 @@
         <transition name="fade">
             <div class="b-table">
                 <div class="b-table__paging" v-if="paging">
-                    Afficher <select v-model="chosenPaging" @input="pagingChanged"><option v-for="option in pagingOptions">{{ option }}</option></select> entrées
+                    Afficher <select v-model="chosenPaging" @input="pagingChanged"><option v-for="(option, optionIndex) in pagingOptions" :key="optionIndex">{{ option }}</option></select> entrées
                 </div>
                 <div class="b-responsive-table">
                     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" v-if="displayedData.length > 0">
                         <thead>
                             <tr>
-                                <th v-for="header in headers" class="mdl-data-table__cell--non-numeric">
+                                <th v-for="(header, headerIndex) in headers" :key="headerIndex" class="mdl-data-table__cell--non-numeric">
                                     {{ header.title }}
                                 </th>
                                 <th class="mdl-data-table__cell--non-numeric b-actions-cell" v-if="actions"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data, index) in displayedData">
-                                <td v-for="(header, index2) in headers" class="mdl-data-table__cell--non-numeric" :class="header.class">
+                            <tr v-for="(data, index) in displayedData" :key="index">
+                                <td v-for="(header, index2) in headers" :key="index2" class="mdl-data-table__cell--non-numeric" :class="header.class">
                                     <template v-if="data.warning && index2 === 0">
                                         <mdl-tooltip :target="data.id" v-html="data.warning" class="b--uncapitalize"></mdl-tooltip>
                                         <i :id="data.id" class="material-icons b-table__warning">warning</i>
@@ -34,7 +34,7 @@
                                     </router-link>
                                     <span v-else>{{ lodget(data, header.field) }}</span>
                                     <ul v-if="header.list" class="b-table__list">
-                                        <li v-for="article in lodget(data, header.list)">{{ article }}</li>
+                                        <li v-for="(article, articleIndex) in lodget(data, header.list)" :key="articleIndex">{{ article }}</li>
                                     </ul>
                                 </td>
                                 <td class="mdl-data-table__cell--non-numeric b-actions-cell" v-if="actions">
@@ -46,6 +46,7 @@
                                             <template v-if="action.type">
                                                 <b-confirm :disabled="!displayAction(action, data)"
                                                     v-if="action.type === 'confirm'"
+                                                    :key="`table_${index}_${index3}`"
                                                     @confirm="callback(action.action, data)">
                                                     <mdl-menu-item
                                                         :disabled="!displayAction(action, data)"
@@ -208,7 +209,9 @@ export default {
         filteredData() {
             if (this.filter) {
                 return fuzzy
-                    .filter(this.filter.val, this.data, { extract: el => el[this.filter.field] })
+                    .filter(this.filter.val, this.data, {
+                        extract: el => el[this.filter.field]
+                    })
                     .map(d => d.original);
             }
 

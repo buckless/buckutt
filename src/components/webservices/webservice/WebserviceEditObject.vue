@@ -17,7 +17,10 @@ export default {
         ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
         updateWebservice(webservice) {
             const fields = ['id', 'url'];
-            this.updateObject({ route: 'webservices', value: pick(webservice, fields) })
+            this.updateObject({
+                route: 'webservices',
+                value: pick(webservice, fields)
+            })
                 .then(() => this.notify({ message: 'Le webhook a bien été modifiée' }))
                 .catch(err =>
                     this.notifyError({

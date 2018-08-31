@@ -45,7 +45,9 @@ export default {
                 }
             })
                 .then(() => {
-                    this.notify({ message: "L'article a bien été supprimé de la catégorie" });
+                    this.notify({
+                        message: "L'article a bien été supprimé de la catégorie"
+                    });
                     this.$router.push(this.categoryPath);
                 })
                 .catch(err =>

@@ -40,6 +40,7 @@
                 </li>
                 <li
                     v-for="(suggestion, index) in suggestions"
+                    :key="`b-${index}-${suggestion.string}`"
                     @mousedown="select(suggestion.original)"
                     @mouseover="activeIndex = index"
                     class="b-completelist__item"
@@ -92,7 +93,11 @@ export default {
 
     computed: {
         suggestions() {
-            const strongify = { extract: el => el.name, pre: '<strong>', post: '</strong>' };
+            const strongify = {
+                extract: el => el.name,
+                pre: '<strong>',
+                post: '</strong>'
+            };
             const db = this.convertOptions(this.database);
             const opts = this.convertOptions(this.options);
 

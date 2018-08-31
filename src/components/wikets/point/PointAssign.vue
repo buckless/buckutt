@@ -91,7 +91,10 @@ export default {
             }
 
             if (this.event.useGroups) {
-                columns.push({ title: 'Groupe par défaut', field: 'defaultGroup.name' });
+                columns.push({
+                    title: 'Groupe par défaut',
+                    field: 'defaultGroup.name'
+                });
             }
 
             return columns;

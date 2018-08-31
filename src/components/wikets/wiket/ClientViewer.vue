@@ -67,7 +67,9 @@ export default {
                 }
             })
                 .then(() => {
-                    this.notify({ message: 'La catégorie a bien été supprimée du guichet' });
+                    this.notify({
+                        message: 'La catégorie a bien été supprimée du guichet'
+                    });
                     this.$router.push(this.addPath);
                 })
                 .catch(err =>

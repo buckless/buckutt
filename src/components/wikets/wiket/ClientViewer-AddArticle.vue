@@ -59,7 +59,9 @@ export default {
                 }
             })
                 .then(() => {
-                    this.notify({ message: "L'article a bien été ajouté à la catégorie" });
+                    this.notify({
+                        message: "L'article a bien été ajouté à la catégorie"
+                    });
                     this.article = '';
                 })
                 .catch(err =>

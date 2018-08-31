@@ -30,10 +30,10 @@
         </template>
 
         <h5 v-if="rights.length > 0">Résumé des droits pour l'événement</h5>
-        <template v-for="rightPerPoint in rights">
-            <h6 v-if="rightPerPoint.point === 'Aucun'">Droits du partipant</h6>
-            <h6 v-else>Droits du participant sur le point {{ rightPerPoint.point }}</h6>
-            <b-list :elements="rightPerPoint.rights" :columns="3"></b-list>
+        <template v-for="(rightPerPoint, index) in rights">
+            <h6 v-if="rightPerPoint.point === 'Aucun'" :key="index">Droits du partipant</h6>
+            <h6 v-else :key="index">Droits du participant sur le point {{ rightPerPoint.point }}</h6>
+            <b-list :elements="rightPerPoint.rights" :columns="3" :key="`b-list-${index}`"></b-list>
         </template>
     </div>
 </template>
@@ -99,7 +99,10 @@ export default {
             const groupedRights = groupBy(this.filteredRights, 'point.id');
 
             Object.keys(groupedRights).forEach(key => {
-                const rightPerPoint = { point: groupedRights[key][0].point.name, rights: [] };
+                const rightPerPoint = {
+                    point: groupedRights[key][0].point.name,
+                    rights: []
+                };
 
                 groupedRights[key].forEach(right =>
                     rightPerPoint.rights.push({

@@ -13,13 +13,19 @@ export function getPurchases({ commit, dispatch }, fields) {
     return get(`services/treasury/purchases?${qString}`)
         .then(purchases => {
             commit('CLEAROBJECT', 'purchases');
-            dispatch('checkAndAddObjects', { route: 'purchases', objects: purchases });
+            dispatch('checkAndAddObjects', {
+                route: 'purchases',
+                objects: purchases
+            });
 
             return get(`services/treasury/withdrawals?${qString}`);
         })
         .then(withdrawals => {
             commit('CLEAROBJECT', 'withdrawals');
-            dispatch('checkAndAddObjects', { route: 'withdrawals', objects: withdrawals });
+            dispatch('checkAndAddObjects', {
+                route: 'withdrawals',
+                objects: withdrawals
+            });
         });
 }
 
@@ -84,6 +90,9 @@ export function getTreasury({ commit, dispatch }, fields) {
         })
         .then(transfers => {
             commit('CLEAROBJECT', 'transfers');
-            dispatch('checkAndAddObjects', { route: 'transfers', objects: transfers });
+            dispatch('checkAndAddObjects', {
+                route: 'transfers',
+                objects: transfers
+            });
         });
 }

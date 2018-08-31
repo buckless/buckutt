@@ -14,7 +14,7 @@
             <div class="mdl-card__supporting-text">
                 <template v-if="point.wikets.length > 0">
                     Équipements:
-                    <div v-for="(wiket, index) in point.wikets">
+                    <div v-for="(wiket, index) in point.wikets" :key="index">
                         <span>
                             <i class="material-icons">devices</i> {{ wiket.device.name }}
                         </span>

@@ -78,7 +78,7 @@ const Admin = Vue.extend({
     router,
     store,
     components: { App },
-    template: '<App></App>',
+    render: h => h(App),
     methods: {
         goBack() {
             router.push(`/${store.state.route.path.split('/')[1].replace('points', 'wikets')}`);

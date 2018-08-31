@@ -1,5 +1,3 @@
-import routeToRelation from '../../lib/routeToRelation';
-
 /**
  * Global actions
  */
@@ -12,7 +10,7 @@ export function updateCreationData({ commit }, creationData) {
     commit('UPDATECREATIONDATA', creationData);
 }
 
-export function load({ state, dispatch }) {
+export function load({ dispatch }) {
     const routes = [
         'points',
         'devices',

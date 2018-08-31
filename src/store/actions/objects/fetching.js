@@ -1,7 +1,7 @@
 import { get } from '../../../lib/fetch';
 import routeToRelation from '../../../lib/routeToRelation';
 
-export function retrieveObject({ dispatch, state }, payload) {
+export function retrieveObject({ dispatch }, payload) {
     let embed = '';
 
     if (routeToRelation(payload.route)) {

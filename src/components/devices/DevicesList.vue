@@ -50,9 +50,7 @@ export default {
         }),
         displayedDevices() {
             return this.devices.filter(
-                device =>
-                    device.name !== 'manager' &&
-                    device.name !== 'admin'
+                device => device.name !== 'manager' && device.name !== 'admin'
             );
         }
     }
