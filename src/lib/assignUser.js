@@ -138,6 +138,9 @@ module.exports = async function assignUser(
             }
         );
 
+        // Remove the old account
+        await new models.User({ id: userAccount.id }).destroy();
+
         mergedAccount = anonymousData;
         molsToSkip = userAccount.meansOfLogin.map(mol => mol.type);
         molsToSkip.push('cardId');
@@ -164,15 +167,19 @@ module.exports = async function assignUser(
     }
 
     // Block old cards if a new one is assigned
-    //    if (meansOfLogin.some(mol => mol.type === 'cardId')) {
-    //        await models.MeanOfLogin.where({ user_id: mergedAccount.id, type: 'cardId' }).save(
-    //            { blocked: true },
-    //            {
-    //                patch: true,
-    //                require: false
-    //            }
-    //        );
-    //    }
+    const newCard = meansOfLogin.find(mol => mol.type === 'cardId');
+    if (newCard) {
+        await models.MeanOfLogin.where({ user_id: mergedAccount.id, type: 'cardId' })
+            // If it's a merge, keep the anonymous account card
+            .where('data', '<>', newCard.data)
+            .save(
+                { blocked: true },
+                {
+                    patch: true,
+                    require: false
+                }
+            );
+    }
 
     // Create requested mols
     await Promise.all(
