@@ -15,7 +15,7 @@
         "fileId": "[255, 243, 0, 5]"
     },
     "ultralight": {
-        "cardLength": 60,
+        "cardLength": 68,
         "firstWritablePage": 4,
         "creditSize": 23,
         "pin": "0x11223344"

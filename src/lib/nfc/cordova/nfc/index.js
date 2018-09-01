@@ -1,6 +1,5 @@
-const EventEmitter = require('events');
-
-const UltralightC = require('./ultralight-c');
+import { EventEmitter } from 'events';
+import { UltralightC } from './ultralight-c';
 
 export default class NFCReader extends EventEmitter {
     constructor() {

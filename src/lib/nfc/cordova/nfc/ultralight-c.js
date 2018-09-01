@@ -25,14 +25,14 @@ export class UltralightC extends EventEmitter {
                         'log',
                         tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
                     );
-                    this.emit('atr', module.exports.ATR);
+                    this.emit('atr', ATR);
                     this.emit('cardType', 'ultralightC');
 
                     return this.read();
                 })
                 .then(data => {
-                    console.log('fulldata', data);
                     const pages = chunk(data.split(''), 8);
+                    console.log('fulldata', pages);
 
                     this.emit('locked', pages[12][7] === '4');
                     this.emit('data', data.slice(0, config.ultralight.creditSize));

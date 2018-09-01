@@ -1,6 +1,6 @@
-const { EventEmitter } = require('events');
-const NFCReader = require('./nfc');
-const signedData = require('../signedData');
+import { EventEmitter } from 'events';
+import NFCReader from './nfc';
+import signedData from '../signedData';
 
 class NFC extends EventEmitter {
     constructor() {
