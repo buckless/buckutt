@@ -11,8 +11,6 @@ export const init = (ctx, token) => {
 
     ctx.commit('SET_SOURCE', source);
 
-    console.log(source);
-
     source.addEventListener('message', e => {
         try {
             const data = JSON.parse(e.data);

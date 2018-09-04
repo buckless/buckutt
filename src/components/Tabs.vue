@@ -101,7 +101,6 @@ export default {
 
         updateSizes() {
             if (!this.$refs.nav) {
-                console.log('nochildren');
                 return;
             }
 

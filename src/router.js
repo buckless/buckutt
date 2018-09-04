@@ -81,7 +81,6 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     const isLoggedIn = store.state.user.user;
-    console.log(to);
 
     if (to.matched.some(record => record.meta.auth) && !isLoggedIn) {
         const wantedUrl = to.matched[to.matched.length - 1].path;
