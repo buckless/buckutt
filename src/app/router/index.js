@@ -9,7 +9,7 @@ import Reload from '../views/Reload';
 import Login from '../views/Login';
 import Assigner from '../views/Assigner';
 import AssignerSearch from '../views/Assigner-Search';
-import AssignerCreate from '../views/Assigner-CreateAccount';
+import AssignerScan from '../views/Assigner-Scan';
 import Controller from '../views/Controller';
 import History from '../views/History';
 import Treasury from '../views/Treasury';
@@ -70,7 +70,7 @@ const routes = [
         children: [
             { path: '/', component: AssignerSearch },
             { path: 'search', component: AssignerSearch },
-            { path: 'create', component: AssignerCreate }
+            { path: 'scan', component: AssignerScan }
         ]
     },
     {

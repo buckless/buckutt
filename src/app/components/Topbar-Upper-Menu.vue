@@ -140,7 +140,7 @@ export default {
         },
 
         toogleDeveloppers() {
-            this.$router.push('developpers');
+            this.$router.push('/developpers');
         },
 
         openReloadModal() {

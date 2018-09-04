@@ -11,7 +11,7 @@ class OfflineData {
         this.db.version(1).stores({
             tickets: 'id,barcode,userId,name,username,credit,physicalId',
             accesses: 'id,userId,cardId,group,start,end',
-            pendingCardUpdates: 'id,incrId,cardId,amount',
+            pendingCardUpdates: 'id,incrId,userId,cardId,amount',
             images: 'id,blob'
         });
 
@@ -33,6 +33,21 @@ class OfflineData {
 
     empty(table) {
         return this.db[table].clear();
+    }
+
+    listTickets() {
+        return this.db.tickets.toArray();
+    }
+
+    find(input) {
+        const reg = new RegExp(`(.*)${input}(.*)`, 'i');
+
+        return this.db.tickets
+            .filter(
+                user => reg.test(user.name) || user.barcode === input || user.physicalId === input
+            )
+            .limit(5)
+            .toArray();
     }
 
     findByName(name) {
@@ -69,6 +84,10 @@ class OfflineData {
 
     pendingCardUpdates(cardId) {
         return this.db.pendingCardUpdates.filter(pcu => pcu.cardId === cardId).toArray();
+    }
+
+    pendingUserUpdates(userId) {
+        return this.db.pendingCardUpdates.filter(pcu => pcu.userId === userId).toArray();
     }
 
     insert(table, data) {

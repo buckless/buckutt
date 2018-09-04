@@ -1,19 +1,11 @@
 <template>
     <div class="b-assigner">
         <div class="b-assigner__home">
-            <div class="b-assigner__home__button" @click="barcode">
-                <img src="../assets/qrcode.png" height="48" width="48" />
-                <h3>Scanner un billet</h3>
+            <div class="b-assigner__home__button" :class="scanClasses" @click="toggleScan">
+                <h3>Scan</h3>
             </div>
-            <div class="b-assigner__home__spacing"></div>
             <div class="b-assigner__home__button" :class="searchClasses" @click="toggleSearch">
-                <i class="b-icon">create</i>
-                <h3>Recherche manuelle</h3>
-            </div>
-            <div class="b-assigner__home__spacing"></div>
-            <div class="b-assigner__home__button" :class="createClasses" @click="toggleCreate">
-                <i class="b-icon">person_add</i>
-                <h3>Compte anonyme</h3>
+                <h3>Recherche</h3>
             </div>
         </div>
         <router-view @ok="ok" @assign="setAssignModal" />
@@ -41,8 +33,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 
-import barcode from '@/../lib/barcode';
-import formatOfflineResults from '@/utils/formatOfflineResults';
 import Ok from '@/components/Ok';
 import Currency from '@/components/Currency';
 
@@ -62,14 +52,12 @@ export default {
     },
 
     computed: {
-        searchClasses() {
-            return this.$route.path === '/assigner' || this.$route.path === '/assigner/search'
-                ? 'b-assigner__home__button--active'
-                : '';
+        scanClasses() {
+            return this.$route.path === '/assigner/scan' ? 'b-assigner__home__button--active' : '';
         },
 
-        createClasses() {
-            return this.$route.path === '/assigner/create'
+        searchClasses() {
+            return this.$route.path === '/assigner' || this.$route.path === '/assigner/search'
                 ? 'b-assigner__home__button--active'
                 : '';
         },
@@ -93,8 +81,26 @@ export default {
             this.$router.push('/assigner/search');
         },
 
-        toggleCreate() {
-            this.$router.push('/assigner/create');
+        toggleScan() {
+            this.$router.push('/assigner/scan');
+        },
+
+        getPendingCardUpdates(userId) {
+            return window.database.pendingUserUpdates(userId.trim()).then(pendingCardUpdates => {
+                let amount = 0;
+                let version = 0;
+
+                pendingCardUpdates.sort((a, b) => a.incrId - b.incrId).forEach(pcu => {
+                    amount += pcu.amount;
+                    version = parseInt(pcu.incrId);
+                });
+
+                return {
+                    amount,
+                    version,
+                    pendingCardUpdates
+                };
+            });
         },
 
         assignCard(cardId, _, options) {
@@ -109,10 +115,15 @@ export default {
 
             const assignPromise = this.useCardData
                 ? new Promise(resolve => {
-                      window.app.$root.$emit('readyToWrite', this.assignModal.credit, {
-                          assignedCard: true,
-                          catering: options.catering
-                      });
+                      window.app.$root.$emit(
+                          'readyToWrite',
+                          this.assignModal.credit,
+                          {
+                              assignedCard: true,
+                              catering: options.catering
+                          },
+                          this.assignModal.version
+                      );
                       window.app.$root.$on('writeCompleted', () => resolve());
                   })
                 : Promise.resolve();
@@ -122,55 +133,37 @@ export default {
                 .map(g => g.id);
 
             assignPromise
-                .then(() =>
-                    this.sendRequest({
-                        method: 'post',
-                        url: 'services/manager/assigner',
-                        data: {
-                            userId: this.assignModal.id,
-                            ticketNumber: this.assignModal.ticketId,
-                            groups: groupsToAdd,
-                            cardId
-                        }
-                    })
-                )
+                .then(() => {
+                    const requests = [];
+                    requests.push(
+                        this.sendRequest({
+                            method: 'post',
+                            url: 'services/manager/assigner',
+                            data: {
+                                userId: this.assignModal.id,
+                                ticketNumber: this.assignModal.ticketId,
+                                groups: groupsToAdd,
+                                cardId
+                            }
+                        })
+                    );
+
+                    this.assignModal.pendingCardUpdates.forEach(pcu => {
+                        requests.push(
+                            this.sendRequest({
+                                method: 'post',
+                                url: 'services/pendingCardUpdate',
+                                data: {
+                                    id: pcu.id
+                                }
+                            })
+                        );
+                    });
+
+                    return Promise.all(requests);
+                })
                 .then(() => this.ok())
                 .catch(err => this.$store.commit('ERROR', err.response.data))
-                .then(() => this.$store.commit('SET_DATA_LOADED', true));
-        },
-
-        ticketScanned(value) {
-            this.$store.commit('SET_DATA_LOADED', false);
-
-            this.sendRequest({
-                url: `services/assigner?ticketOrMail=${value}`,
-                noQueue: true,
-                offlineAnswer: window.database
-                    .findByBarcode(this.searchInput)
-                    .then(users => formatOfflineResults(users))
-            })
-                .then(res => (res.data.length > 0 ? res.data[0] : {}))
-                .then(user => {
-                    if (typeof user.credit === 'number') {
-                        this.setAssignModal(
-                            user.credit,
-                            user.name || `${user.firstname} ${user.lastname}`,
-                            user.username,
-                            user.id,
-                            user.currentGroups,
-                            value
-                        );
-                        return;
-                    }
-
-                    return this.$store.commit('ERROR', {
-                        message: "Couldn't find ticket"
-                    });
-                })
-                .catch(err => {
-                    console.error(err);
-                    this.$store.commit('ERROR', err.response.data);
-                })
                 .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
@@ -179,33 +172,30 @@ export default {
             this.assignModal = { opened: false };
         },
 
-        onBarcode(value) {
-            if (!value) {
-                return;
-            }
-
-            this.ticketScanned(value);
-        },
-
         setAssignModal(credit, name, username, id, groups = [], ticketId) {
             const precheckedGroups = groups
                 .filter(group => group.id !== this.defaultGroup.id)
                 .map(group => this.groups.find(g => g.id === group.id));
 
-            this.assignModal = {
-                opened: true,
-                credit,
-                name,
-                username,
-                id,
-                ticketId
-            };
-            this.activeGroups = precheckedGroups;
-            this.precheckedGroups = groups;
-        },
+            let pendingPromise = Promise.resolve({ amount: 0, version: 0, ids: [] });
+            if (id) {
+                pendingPromise = this.getPendingCardUpdates(id);
+            }
 
-        barcode() {
-            barcode().then(value => this.onBarcode(value));
+            return pendingPromise.then(({ amount, version, pendingCardUpdates }) => {
+                this.assignModal = {
+                    opened: true,
+                    credit: credit + amount,
+                    name,
+                    username,
+                    id,
+                    ticketId,
+                    pendingCardUpdates,
+                    version
+                };
+                this.activeGroups = precheckedGroups;
+                this.precheckedGroups = groups;
+            });
         },
 
         ok() {
@@ -213,12 +203,10 @@ export default {
             this.closeModal();
         },
 
-        ...mapActions(['sendRequest'])
+        ...mapActions(['sendRequest', 'checkPendingCardUpdates'])
     },
 
-    mounted() {
-        window.mock.barcode = b => this.onBarcode(b);
-    }
+    mounted() {}
 };
 </script>
 
@@ -231,33 +219,27 @@ export default {
 
 .b-assigner__home {
     display: flex;
-    flex-wrap: wrap;
-    min-height: 170px;
-    padding: 10px;
+    min-height: 40px;
 
     background-color: #f3f3f3;
 }
 
-.b-assigner__home__spacing {
-    width: 10px;
-}
-
 .b-assigner__home__button {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    flex-direction: column;
     flex: 1;
-    height: 150px;
+    height: 40px;
     padding: 5px;
 
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid transparent;
     cursor: pointer;
     text-align: center;
 
     &.b-assigner__home__button--active {
-        border: 3px solid #2980b9;
+        border-bottom: 2px solid #2980b9;
     }
 
     & > i {
@@ -266,9 +248,11 @@ export default {
     }
 
     & > h3 {
-        margin: 10px 0 0 0;
         text-transform: uppercase;
         color: rgba(0, 0, 0, 0.6);
+        position: relative;
+        font-size: 14px;
+        top: 2px;
     }
 }
 
@@ -293,20 +277,6 @@ export default {
     & > input:checked + label {
         background-color: #2980b9;
         color: #fff;
-    }
-}
-
-@media (max-width: 768px) {
-    .b-assigner__home {
-        min-height: 140px;
-    }
-
-    .b-assigner__home__button {
-        height: 120px;
-    }
-
-    .b-assigner__home__button > h3 {
-        font-size: 14px;
     }
 }
 </style>

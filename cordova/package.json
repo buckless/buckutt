@@ -8,7 +8,6 @@
     ],
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "phonegap-plugin-barcodescanner": {},
       "cordova-plugin-keyboard": {},
       "cordova-sqlite-storage": {},
       "cordova-android-support-gradle-release": {
@@ -16,13 +15,14 @@
       },
       "cordova-plugin-mifare-ultralight": {},
       "cordova-plugin-x-socialsharing": {},
-      "cordova-plugin-device": {}
+      "cordova-plugin-device": {},
+      "phonegap-plugin-media-stream": {}
     }
   },
   "dependencies": {
     "cordova-android": "^6.4.0",
     "cordova-android-support-gradle-release": "^1.2.0",
-    "cordova-plugin-compat": "^1.1.0",
+    "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-keyboard": "^1.2.0",
     "cordova-plugin-mifare-ultralight": "^1.0.2",
@@ -30,6 +30,6 @@
     "cordova-plugin-x-socialsharing": "^5.4.0",
     "cordova-sqlite-storage": "^2.2.0",
     "es6-promise-plugin": "^4.2.2",
-    "phonegap-plugin-barcodescanner": "^7.0.2"
+    "phonegap-plugin-media-stream": "^1.2.1"
   }
 }

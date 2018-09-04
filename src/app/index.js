@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
+import Instascan from 'instascan';
+
+window.Instascan = Instascan;
 
 import App from './App';
 import Nfc from './components/Nfc.vue';

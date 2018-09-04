@@ -1,58 +1,64 @@
 <template>
     <div class="b-assigner-search">
-        <form @submit.prevent="closeSearch">
-            <div class="b-assigner-search__type">
-                <a
-                    :class="{ 'b--active': searchBy === 'ticketId' }"
-                    @click.prevent="searchBy = 'ticketId'">
-                    Par numéro de ticket
-                </a>
-                <a
-                    :class="{ 'b--active': searchBy === 'name' }"
-                    @click.prevent="searchBy = 'name'">
-                    Par nom
-                </a>
-            </div>
+        <input
+            type="text"
+            name="search"
+            @input="search"
+            class="b-assigner-search__input"
+            placeholder="Nom ou numéro de billet (4 caractères mini)"
+            ref="search"
+            v-model="searchInput">
 
-            <input
-                type="text"
-                name="search"
-                @input="search"
-                class="b-assigner-search__input"
-                :placeholder="searchBy === 'name' ? 'Nom' : 'Numéro de ticket'"
-                ref="search"
-                v-model="searchInput">
-
-            <h4>Résultats :</h4>
-            <div class="b-assigner-search__results" v-if="matches.length > 0 && searchInput.length > 2">
-                <div
-                    class="b-assigner-search__results__result"
-                    v-for="match in matches"
-                    :key="match.id"
-                    @click="selectUser(match)"
-                >
-                    {{ match.name }}
-                    <div v-if="match.mail">
-                        <em>{{ match.mail }}</em>
-                    </div>
+        <h4>
+            <template v-if="searchInput.length < 4">Tickets ({{ tickets.length }} entrées) :</template>
+            <template v-else>Résultats :</template>
+            <i class="b-icon" :disabled="updatingTickets" @click="updateTickets">refresh</i>
+        </h4>
+        <div class="b-assigner-search__results" v-if="matches.length > 0 && searchInput.length >= 4">
+            <div
+                class="b-assigner-search__results__result"
+                v-for="match in matches"
+                :key="match.id"
+                @click="selectUser(match)"
+            >
+                {{ match.name }}
+                <div v-if="match.mail">
+                    <em>{{ match.mail }}</em>
                 </div>
             </div>
-            <p v-else-if="searchInput.length <= 2">Cherchez un utilisateur par son nom et son prénom. Trois caractères minimums.</p>
-            <p v-else>Aucun résultat.</p>
-        </form>
+        </div>
+        <p v-else-if="searchInput.length >= 4">Aucun résultat.</p>
+        <div class="b-assigner-search__results" v-else>
+            <recycle-list class="scroller" :items="tickets" :buffer="60" :item-height="38" key-field="id">
+                <template slot-scope="{ item, index, active }">
+                    <div class="b-assigner-search__results__result" @click="selectUser(item)">
+                        {{ item.name }}
+                        <div v-if="item.mail">
+                            <em>{{ item.mail }}</em>
+                        </div>
+                    </div>
+                </template>
+            </recycle-list>
+        </div>
     </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
 import { debounce } from 'lodash/function';
+import { RecycleList } from 'vue-virtual-scroller';
 import formatOfflineResults from '@/utils/formatOfflineResults';
 
 export default {
+    components: {
+        RecycleList
+    },
+
     data() {
         return {
             searchBy: 'name',
             searchInput: '',
+            updatingTickets: false,
+            tickets: [],
             matches: []
         };
     },
@@ -63,32 +69,15 @@ export default {
         },
 
         search: debounce(function() {
-            if (this.searchInput.length <= 2) {
+            if (this.searchInput.length < 4) {
                 return;
             }
 
-            let searchPromise;
-            if (this.searchBy === 'name') {
-                searchPromise = this.sendRequest({
-                    url: `services/manager/searchuser?name=${this.searchInput}`,
-                    noQueue: true,
-                    offlineAnswer: window.database
-                        .findByName(this.searchInput)
-                        .then(users => formatOfflineResults(users))
-                });
-            } else {
-                searchPromise = this.sendRequest({
-                    url: `services/assigner?ticketOrMail=${this.searchInput}`,
-                    noQueue: true,
-                    offlineAnswer: window.database
-                        .findByBarcode(this.searchInput)
-                        .then(users => formatOfflineResults(users))
-                });
-            }
-
-            searchPromise
-                .then(res =>
-                    res.data.map(user => {
+            window.database
+                .find(this.searchInput)
+                .then(users => formatOfflineResults(users))
+                .then(users => {
+                    this.matches = users.data.map(user => {
                         if (user.firstname) {
                             user.name = `${user.firstname} ${user.lastname}`;
                         }
@@ -100,10 +89,7 @@ export default {
                         }
 
                         return user;
-                    })
-                )
-                .then(users => {
-                    this.matches = users;
+                    });
                 });
         }, 500),
 
@@ -119,7 +105,26 @@ export default {
             );
         },
 
-        ...mapActions(['sendRequest'])
+        updateTickets() {
+            this.updatingTickets = true;
+
+            window.database
+                .listTickets()
+                .then(
+                    tickets => (this.tickets = tickets.sort((a, b) => a.name.localeCompare(b.name)))
+                )
+                .then(() => this.unlock());
+        },
+
+        unlock() {
+            setTimeout(() => {
+                this.updatingTickets = false;
+            }, 400);
+        }
+    },
+
+    mounted() {
+        this.updateTickets();
     }
 };
 </script>
@@ -127,37 +132,29 @@ export default {
 <style scoped>
 @import '../main.css';
 
-.b-assigner-search__type {
-    display: flex;
-    justify-content: space-around;
-
-    & > a {
-        color: $lightblue;
-        padding: 5px 10px;
-        border-radius: 3px;
-
-        &.b--active {
-            background-color: $lightblue;
-            color: #fff;
-        }
-    }
-}
-
 .b-assigner-search {
     background-color: #f3f3f3;
     flex: 1;
+    padding: 10px;
+    max-height: calc(100% - 40px);
 }
 
 .b-assigner-search h4 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     text-transform: uppercase;
+    margin: 14px 0;
     color: rgba(0, 0, 0, 0.7);
     font-size: 14px;
 }
 
-.b-assigner-search > form {
-    width: 50%;
-    max-width: 500px;
-    margin: 40px auto;
+.b-icon {
+    cursor: pointer;
+
+    &[disabled] {
+        color: #ccc;
+    }
 }
 
 .b-assigner-search__input {
@@ -166,10 +163,6 @@ export default {
     padding: 10px;
     border-radius: 42px;
     border: 1px solid rgba(0, 0, 0, 0.2);
-
-    &:not(:first-child) {
-        margin-top: 16px;
-    }
 
     &:focus {
         outline: 0;
@@ -182,17 +175,19 @@ export default {
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 3px;
     margin: 16px 0;
+    height: calc(100% - 100px);
+    overflow: hidden;
+    position: relative;
+}
+
+.scroller {
+    max-height: 100%;
+    width: 100%;
+    position: absolute;
 }
 
 .b-assigner-search__results__result {
     padding: 10px;
     cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .b-assigner-search > form {
-        width: calc(100% - 20px);
-        margin: 10px auto;
-    }
 }
 </style>
