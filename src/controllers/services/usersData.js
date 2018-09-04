@@ -193,10 +193,13 @@ router.get('/services/usersData', async (req, res, next) => {
                 );
                 qb.as('incrId');
             });
-            knex.leftJoin('meansoflogin', 'meansoflogin.user_id', 'pendingCardUpdates.user_id');
-            knex.whereNull('meansoflogin.deleted_at');
-            knex.andWhere('meansoflogin.type', '=', 'cardId');
-            knex.andWhere('meansoflogin.blocked', '=', false);
+            // Put the condition in the on statement to return an answer even if the user has no card
+            knex.leftJoin('meansoflogin', qb => {
+                qb.on('meansoflogin.user_id', '=', 'pendingCardUpdates.user_id');
+                qb.onIn('meansoflogin.type', ['cardId']);
+                qb.onIn('meansoflogin.blocked', [false]);
+                qb.onNull('meansoflogin.deleted_at');
+            });
             knex.andWhere(subQuery => {
                 subQuery.where('meansoflogin.deleted_at', '>=', lastUpdate);
                 subQuery.orWhere('meansoflogin.updated_at', '>=', lastUpdate);
@@ -218,6 +221,7 @@ router.get('/services/usersData', async (req, res, next) => {
             pendingCardUpdates.insert.push({
                 id: pendingCardUpdates_[i].id,
                 incrId: pendingCardUpdates_[i].incrId,
+                userId: pendingCardUpdates_[i].user_id,
                 cardId: pendingCardUpdates_[i].data,
                 amount: pendingCardUpdates_[i].amount
             });
