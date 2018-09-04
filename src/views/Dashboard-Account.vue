@@ -43,9 +43,11 @@ export default {
         Button
     },
 
-    data: () => ({
-        showQrCode: process.env.VUE_APP_ACCOUNT_SHOW_QRCODE && this.qrcode
-    }),
+    data: function() {
+        return {
+            showQrCode: process.env.VUE_APP_ACCOUNT_SHOW_QRCODE && this.qrcode
+        };
+    },
 
     computed: {
         qrcode() {
