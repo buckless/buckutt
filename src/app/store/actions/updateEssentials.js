@@ -10,7 +10,7 @@ export const processInsertDelete = (store, payload) => {
 
     let prepareTable = Promise.resolve();
 
-    if (!store.state.online.usersData.lastUpdate) {
+    if (!store.state.online.offline.usersData.lastUpdate) {
         prepareTable = window.database.empty(payload.table);
     }
 
@@ -37,8 +37,8 @@ export const updateUsersData = store => {
     clearTimeout(loopUsers);
 
     let params = '';
-    if (store.state.online.usersData.lastUpdate) {
-        params = `?lastUpdate=${store.state.online.usersData.lastUpdate.toISOString()}`;
+    if (store.state.online.offline.usersData.lastUpdate) {
+        params = `?lastUpdate=${store.state.online.offline.usersData.lastUpdate.toISOString()}`;
     }
 
     let lastUpdate;
