@@ -347,6 +347,10 @@ $footerHeaderColor: get-foreground-color($cardBackground, rgba(0, 0, 0, 0.54), #
     }
 }
 
+.paging {
+    margin-top: 0.5rem;
+}
+
 .empty-content {
     text-align: center;
 
