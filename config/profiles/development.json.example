@@ -26,7 +26,7 @@
     },
     "catering": {
        "dayOne": "\"2018-06-02T00:00:00.000Z\"",
-       "days": "1",
+       "duration": "1",
        "articles": [
        ]
    }
