@@ -15,7 +15,7 @@ export default users => {
                     credit: user.credit,
                     name: user.name,
                     username: user.username,
-                    id: user.uid,
+                    id: user.userId,
                     currentGroups
                 };
             })
