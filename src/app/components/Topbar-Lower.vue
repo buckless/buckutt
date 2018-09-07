@@ -13,7 +13,7 @@
                 v-if="seller.isAuth"
                 class="b-lower-bar__device__seller">
                 <strong>Opérateur: </strong>
-                <span class="b--capitalized">{{ seller.firstname }}</span>
+                <span class="b--capitalized">{{ seller.firstname }} </span>
                 <span class="b--capitalized">{{ seller.lastname }}</span>
             </div>
             <div class="b-lower-bar__device__point">
