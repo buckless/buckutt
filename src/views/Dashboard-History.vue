@@ -25,6 +25,7 @@ export default {
         const data = {
             headers: [
                 { title: 'Date', field: 'date', type: 'date' },
+                { title: 'Point', field: 'point', type: 'plain' },
                 { title: 'Objet', field: 'object', list: 'articles' },
                 {
                     title: 'Valeur',
