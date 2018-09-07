@@ -120,8 +120,7 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
         initialPromise = initialPromise.then(() => store.dispatch('addNfcSupportToBasket'));
     }
 
-    const shouldCheckPending =
-        options.assignedCard && store.state.auth.device.event.config.useCardData;
+    const shouldCheckPending = store.state.auth.device.event.config.useCardData;
 
     if (shouldCheckPending) {
         initialPromise = initialPromise
