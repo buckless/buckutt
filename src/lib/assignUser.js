@@ -20,7 +20,7 @@ module.exports = async function assignUser(
     });
 
     if (!user) {
-        return Promise.reject(new APIError(module, 404, 'User not found', { body: req.body }));
+        return Promise.reject(new APIError(module, 404, 'User not found', { id: userId }));
     }
 
     await checkTicket(models, meansOfLogin);
