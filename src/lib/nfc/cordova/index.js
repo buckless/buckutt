@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import NFCReader from './nfc';
 import signedData from '../signedData';
+const debug = require('debug')('nfc:cordova:index');
 
 class NFC extends EventEmitter {
     constructor() {
@@ -14,8 +15,11 @@ class NFC extends EventEmitter {
         this.nfc.on('uid', uid => this.emit('uid', uid));
         this.nfc.on('atr', atr => this.emit('atr', atr));
         this.nfc.on('cardType', cardType => this.emit('cardType', cardType));
-        this.nfc.on('data', data => this.emit('data', data));
         this.nfc.on('locked', locked => this.emit('locked', locked));
+        this.nfc.on('data', data => {
+            debug('data event', data);
+            this.emit('data', data);
+        });
     }
 
     shouldLock(lock) {

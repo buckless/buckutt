@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const { chunk } = require('lodash/array');
+const debug = require('debug')('nfc:cordova:nfc:ultralight');
 
 let config = require('../../../../../config');
 
@@ -12,11 +13,12 @@ export class UltralightC extends EventEmitter {
         this.pin = parseInt(config.ultralight.pin, 16);
 
         document.addEventListener('mifareTagDiscovered', tag => {
-            console.log(tag);
+            debug('tag discovered', tag);
 
             console.time('NFC Write');
             this.connect()
                 .then(() => {
+                    debug('connect succeeded');
                     this.emit(
                         'uid',
                         tag.tag.map(dec => dec.toString(16).padStart(2, '0')).join('')
@@ -32,12 +34,15 @@ export class UltralightC extends EventEmitter {
                 })
                 .then(data => {
                     const pages = chunk(data.split(''), 8);
-                    console.log('fulldata', pages);
+                    debug('read succeeded', pages);
 
                     this.emit('locked', pages[12][7] === '4');
                     this.emit('data', data.slice(0, config.ultralight.creditSize));
                 })
-                .catch(err => this.emit('error', err));
+                .catch(err => {
+                    debug('connect/read/emit error', err);
+                    this.emit('error', err);
+                });
         });
     }
 
@@ -168,10 +173,6 @@ export class UltralightC extends EventEmitter {
         let pin = this.intTo4BytesArray(pinData);
 
         try {
-            console.log('write', '0x11', ['00', '00', '00', '00']);
-            console.log('write', '0x13', ['99', '99', '00', '00']);
-            console.log('write', '0x12', pin);
-            console.log('write', '0x10', ['00', '00', '00', '04']);
             await window.mifare.write(0x11, ['00', '00', '00', '00']);
             await window.mifare.write(0x13, ['99', '99', '00', '00']);
             await window.mifare.write(0x12, pin);

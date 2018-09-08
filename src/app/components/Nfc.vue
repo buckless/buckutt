@@ -41,9 +41,7 @@
 import { mapState } from 'vuex';
 import { EventEmitter } from 'events';
 import nfc from '@/../lib/nfc';
-import debug_ from 'debug';
-
-const debug = debug_('nfc:vue');
+const debug = require('debug')('nfc:vue');
 
 const noSign = true;
 

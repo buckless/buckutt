@@ -96,9 +96,7 @@ class NFC extends EventEmitter {
                 throw new Error('You need to use mock.addCard to create a mocked card first');
             }
 
-            const cards = JSON.parse(localStorage.getItem('mocked-cards'));
-
-            debug(cards);
+            return JSON.parse(localStorage.getItem('mocked-cards'));
         };
 
         window.mock.clean = () => {
@@ -122,6 +120,7 @@ class NFC extends EventEmitter {
         const debugData = `${cards[window.mock.actualCard].cardId}(${
             cards[window.mock.actualCard].cardValue.credit
         })`;
+
         debug(`Writing card to local storage : ${debugData}`);
 
         localStorage.setItem('mocked-cards', JSON.stringify(cards));
