@@ -124,6 +124,10 @@ export default {
         },
 
         back() {
+            if (this.onlyLogout) {
+                return this.$store.dispatch('pursueLogout');
+            }
+
             this.$router.push('items');
         },
 
