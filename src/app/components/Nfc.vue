@@ -153,6 +153,11 @@ export default {
 
                 nfc.on('data', data => {
                     debug('on data ', data);
+
+                    if (this.rewrite) {
+                        return this.onCard();
+                    }
+
                     try {
                         const card = nfc.dataToCard(
                             data.toLowerCase ? data.toLowerCase() : data,
