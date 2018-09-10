@@ -23,10 +23,6 @@ export default (state, getters, error) => {
         return 'Carte bloquée par son propriétaire ou un administrateur';
     }
 
-    if (error.message === "Couldn't find ticket") {
-        return 'Ticket introuvable';
-    }
-
     if (error.message === 'Invalid buyer' || error.message === 'Buyer not found') {
         return 'Client introuvable';
     }
@@ -51,6 +47,10 @@ export default (state, getters, error) => {
 
     if (error.message === 'Device not found') {
         return 'Équipement inconnu';
+    }
+
+    if (error.message === 'Barcode not found') {
+        return 'Code barre inconnu';
     }
 
     if (error.message === 'Server not reacheable') {

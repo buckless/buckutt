@@ -32,29 +32,35 @@ export default {
                 offlineAnswer: window.database
                     .findByBarcode(qrcode)
                     .then(users => formatOfflineResults(users))
-            }).then(res => {
-                const user = res.data[0];
+            })
+                .then(res => {
+                    const user = res.data[0];
 
-                if (user.firstname) {
-                    user.name = `${user.firstname} ${user.lastname}`;
-                }
+                    if (!user) {
+                        return Promise.reject({ response: { data: 'Barcode not found' } });
+                    }
 
-                if (user.memberships) {
-                    user.currentGroups = user.memberships.map(membership => ({
-                        id: membership.group_id
-                    }));
-                }
+                    if (user.firstname) {
+                        user.name = `${user.firstname} ${user.lastname}`;
+                    }
 
-                this.$emit(
-                    'assign',
-                    user.credit,
-                    user.name,
-                    user.username,
-                    user.id,
-                    user.currentGroups,
-                    qrcode
-                );
-            });
+                    if (user.memberships) {
+                        user.currentGroups = user.memberships.map(membership => ({
+                            id: membership.group_id
+                        }));
+                    }
+
+                    this.$emit(
+                        'assign',
+                        user.credit,
+                        user.name,
+                        user.username,
+                        user.id,
+                        user.currentGroups,
+                        qrcode
+                    );
+                })
+                .catch(err => this.$store.commit('ERROR', err.response.data));
         });
 
         Instascan.Camera.getCameras().then(cameras => {
