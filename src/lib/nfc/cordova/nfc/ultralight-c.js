@@ -37,7 +37,7 @@ export class UltralightC extends EventEmitter {
                     debug('read succeeded', pages);
 
                     this.emit('locked', pages[12][7] === '4');
-                    this.emit('data', data.slice(0, config.ultralight.creditSize));
+                    this.emit('data', data);
                 })
                 .catch(err => {
                     debug('connect/read/emit error', err);
