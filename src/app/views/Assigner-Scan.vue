@@ -19,13 +19,13 @@ export default {
     },
 
     mounted() {
-        const scanner = new Instascan.Scanner({
+        this.scanner = new Instascan.Scanner({
             video: this.$refs.preview,
             mirror: false,
             scanPeriod: 5
         });
 
-        scanner.addListener('scan', qrcode => {
+        this.scannerListener = qrcode =>
             this.sendRequest({
                 url: `services/assigner?ticketOrMail=${qrcode}`,
                 noQueue: true,
@@ -61,14 +61,20 @@ export default {
                     );
                 })
                 .catch(err => this.$store.commit('ERROR', err.response.data));
-        });
+
+        this.scanner.addListener('scan', this.scannerListener);
 
         Instascan.Camera.getCameras().then(cameras => {
             console.log(cameras);
             if (cameras.length > 0) {
-                scanner.start(cameras[cameras.length - 1]);
+                this.scanner.start(cameras[cameras.length - 1]);
             }
         });
+    },
+
+    beforeDestroy() {
+        this.scanner.stop();
+        this.scanner.removeListener('scan', this.scannerListener);
     }
 };
 </script>
