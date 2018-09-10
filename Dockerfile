@@ -2,7 +2,7 @@ FROM keymetrics/pm2:latest-alpine
 
 EXPOSE 3000
 
-CMD ["pm2-runtime", "process.yml"]
+CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]
 
 WORKDIR /usr/src/buckless-server
 
