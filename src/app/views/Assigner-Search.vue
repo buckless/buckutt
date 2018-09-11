@@ -6,11 +6,9 @@
             @input="search"
             class="b-assigner-search__input"
             placeholder="Nom ou numéro de billet (4 caractères mini)"
-            ref="search"
-            v-model="searchInput">
-
+            ref="search">
         <h4>
-            <template v-if="searchInput.length < 4">Tickets ({{ tickets.length }} entrées) :</template>
+            <template v-if="searchInput < 4">Tickets ({{ tickets.length }} entrées) :</template>
             <template v-else>Résultats :</template>
             <i class="b-icon" :disabled="updatingTickets" @click="updateTickets">refresh</i>
         </h4>
@@ -44,7 +42,6 @@
 </template>
 
 <script>
-import { debounce } from 'lodash/function';
 import { RecycleList } from 'vue-virtual-scroller';
 import formatOfflineResults from '@/utils/formatOfflineResults';
 
@@ -68,7 +65,9 @@ export default {
             this.$refs.search.blur();
         },
 
-        search: debounce(function() {
+        search(e) {
+            this.searchInput = e.target.value;
+
             if (this.searchInput.length < 4) {
                 return;
             }
@@ -90,8 +89,11 @@ export default {
 
                         return user;
                     });
+
+                    console.log(this.matches);
+                    console.log(this);
                 });
-        }, 500),
+        },
 
         selectUser(user) {
             this.$emit(
