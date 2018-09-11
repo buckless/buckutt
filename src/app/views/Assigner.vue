@@ -203,7 +203,7 @@ export default {
             this.closeModal();
         },
 
-        ...mapActions(['sendRequest', 'checkPendingCardUpdates'])
+        ...mapActions(['sendRequest'])
     },
 
     mounted() {}

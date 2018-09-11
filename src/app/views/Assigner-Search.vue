@@ -110,8 +110,10 @@ export default {
 
             window.database
                 .listTickets()
+                .then(tickets => formatOfflineResults(tickets))
                 .then(
-                    tickets => (this.tickets = tickets.sort((a, b) => a.name.localeCompare(b.name)))
+                    tickets =>
+                        (this.tickets = tickets.data.sort((a, b) => a.name.localeCompare(b.name)))
                 )
                 .then(() => this.unlock());
         },

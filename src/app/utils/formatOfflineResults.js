@@ -3,7 +3,7 @@ export default users => {
 
     return Promise.all(
         users.map(user =>
-            window.database.userMemberships(user.uid).then(memberships => {
+            window.database.userMemberships(user.id).then(memberships => {
                 const currentGroups = memberships
                     .filter(
                         membership =>
