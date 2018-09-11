@@ -4,8 +4,7 @@
             <h1>Déconnexion</h1>
             <p>
                 Êtes-vous sûr de vouloir déconnecter l'opérateur
-                <span class="b--capitalized">{{ seller.firstname }}</span>
-                <span class="b--capitalized">{{ seller.lastname }}</span>
+                <span class="b--capitalized">{{ seller.firstname }} {{ seller.lastname }}</span>
                 ?
             </p>
             <div class="b-disconnect-warning__modal__buttons">
