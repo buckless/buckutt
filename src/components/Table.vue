@@ -26,7 +26,7 @@
               :key="j"
               :class="header.class"
               class="cell">
-              <template v-if="data.warning && i === 0">
+              <template v-if="data.warning && j === 0">
                 <Icon name="delete" />
               </template>
               <span v-if="header.type === 'price'">
