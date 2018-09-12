@@ -21,12 +21,14 @@ module.exports = function createUser(
     meansOfLogin = [],
     groups = [],
     sendMail = true,
-    isWritten = false
+    isWritten = false,
+    clientTime
 ) {
     let newUser;
     let userName;
     let pin;
     let creditToAdd = 0;
+    const molsToSkip = [];
 
     pin = user.pin || padStart(Math.floor(Math.random() * 10000), 4, '0');
 
@@ -54,10 +56,13 @@ module.exports = function createUser(
             };
 
             if (anonymousData) {
+                molsToSkip.push('cardId');
                 newUser = new models.User({ id: anonymousData.id });
                 return newUser.save(userData, { patch: true });
             }
 
+            // Only set clientTime on user creation
+            userData.clientTime = clientTime;
             newUser = new models.User(userData);
             return newUser.save();
         })
@@ -71,8 +76,8 @@ module.exports = function createUser(
 
             userName = username_;
 
-            // Remove old mols (even cardId which will be recreated bellow)
-            return models.MeanOfLogin.where('type', 'in', ['mail', 'username', 'cardId'])
+            // Remove old mols instead cardId (to keep clientTime)
+            return models.MeanOfLogin.where('type', 'in', ['mail', 'username'])
                 .where({
                     user_id: newUser.id
                 })
@@ -80,15 +85,18 @@ module.exports = function createUser(
         })
         .then(() => {
             // Create requested mols
-            const molsPromises = meansOfLogin.map(mol =>
-                new models.MeanOfLogin({
-                    type: mol.type,
-                    data: mol.data,
-                    physical_id: mol.physical_id,
-                    blocked: mol.blocked,
-                    user_id: newUser.id
-                }).save()
-            );
+            const molsPromises = meansOfLogin
+                .filter(mol => molsToSkip.indexOf(mol.type) === -1)
+                .map(mol =>
+                    new models.MeanOfLogin({
+                        type: mol.type,
+                        data: mol.data,
+                        physical_id: mol.physical_id,
+                        blocked: mol.blocked,
+                        user_id: newUser.id,
+                        clientTime
+                    }).save()
+                );
 
             // Create standard mols
             if (user.mail) {
@@ -97,7 +105,8 @@ module.exports = function createUser(
                         type: 'mail',
                         data: newUser.get('mail'),
                         blocked: false,
-                        user_id: newUser.id
+                        user_id: newUser.id,
+                        clientTime
                     }).save()
                 );
             }
@@ -107,7 +116,8 @@ module.exports = function createUser(
                     type: 'username',
                     data: userName,
                     blocked: false,
-                    user_id: newUser.id
+                    user_id: newUser.id,
+                    clientTime
                 }).save()
             );
 
@@ -119,7 +129,8 @@ module.exports = function createUser(
                     trace: reload.trace || 'anon',
                     point_id: point.id,
                     buyer_id: newUser.id,
-                    seller_id: operator.id || newUser.id
+                    seller_id: operator.id || newUser.id,
+                    clientTime
                 }).save()
             );
 
@@ -132,7 +143,8 @@ module.exports = function createUser(
                         trace: 'assigner',
                         point_id: point.id,
                         buyer_id: newUser.id,
-                        seller_id: operator.id || newUser.id
+                        seller_id: operator.id || newUser.id,
+                        clientTime
                     }).save()
                 );
             }

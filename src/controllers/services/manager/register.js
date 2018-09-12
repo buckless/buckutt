@@ -28,7 +28,8 @@ router.post('/services/manager/register', (req, res, next) => {
                 registerData.meansOfLogin,
                 registerData.groupsToAdd,
                 true,
-                req.point.name !== 'Internet' // if Internet (manager), create PCU, else (assigner) directly write
+                req.point.name !== 'Internet', // if Internet (manager), create PCU, else (assigner) directly write
+                req.body.clientTime
             );
         })
         .then(user => {

@@ -13,7 +13,8 @@ module.exports = async function assignUser(
     reloads = [],
     meansOfLogin = [],
     groups = [],
-    isWritten
+    isWritten,
+    clientTime
 ) {
     const user = await models.User.where({ id: userId }).fetch({
         withRelated: ['meansOfLogin', 'memberships']
@@ -189,7 +190,8 @@ module.exports = async function assignUser(
                 data: mol.data,
                 blocked: mol.blocked,
                 physical_id: mol.physical_id,
-                user_id: mergedAccount.id
+                user_id: mergedAccount.id,
+                clientTime
             }).save()
         )
     );
@@ -202,7 +204,8 @@ module.exports = async function assignUser(
                 trace: reload.trace,
                 point_id: point.id,
                 buyer_id: mergedAccount.id,
-                seller_id: operator.id || mergedAccount.id
+                seller_id: operator.id || mergedAccount.id,
+                clientTime
             }).save()
         )
     );

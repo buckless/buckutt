@@ -52,7 +52,8 @@ router.post('/services/catering', (req, res, next) => {
                     [molToCheck],
                     [req.event.defaultGroup_id],
                     false,
-                    true
+                    true,
+                    req.body.clientTime
                 );
             }
 
