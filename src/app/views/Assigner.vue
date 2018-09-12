@@ -8,9 +8,14 @@
                 <h3>Recherche</h3>
             </div>
         </div>
-        <router-view @ok="ok" @assign="setAssignModal" />
+        <router-view @ok="ok" @assign="setAssignModal" @blankCard="setBlankCard" />
         <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModal.opened" disableSignCheck>
-            <div class="b-assigner-modal__modal__text__head">
+            <div class="b-assigner-modal__modal__text__head" v-if="assignModal.blank">
+                <strong>Compte anonyme</strong>
+
+                <h4 v-if="groups.length > 0">Groupes :</h4>
+            </div>
+            <div class="b-assigner-modal__modal__text__head" v-else>
                 <strong>{{ assignModal.name }}</strong><br />
                 Nom d'utilisateur : <strong>{{ assignModal.username }}</strong><br/>
                 Nouveau crédit : <strong><currency :value="assignModal.credit" /></strong>
@@ -128,23 +133,28 @@ export default {
                   })
                 : Promise.resolve();
 
-            const groupsToAdd = this.activeGroups
+            const groups = this.activeGroups
                 .filter(g => !this.precheckedGroups.some(group => g.id === group.id))
                 .map(g => g.id);
 
             assignPromise
                 .then(() => {
                     const requests = [];
+
+                    const data = this.assignModal.blank
+                        ? { anon: true, groups, cardId }
+                        : {
+                              userId: this.assignModal.id,
+                              ticketNumber: this.assignModal.ticketId,
+                              groups,
+                              cardId
+                          };
+
                     requests.push(
                         this.sendRequest({
                             method: 'post',
                             url: 'services/manager/assigner',
-                            data: {
-                                userId: this.assignModal.id,
-                                ticketNumber: this.assignModal.ticketId,
-                                groups: groupsToAdd,
-                                cardId
-                            }
+                            data
                         })
                     );
 
@@ -163,13 +173,25 @@ export default {
                     return Promise.all(requests);
                 })
                 .then(() => this.ok())
-                .catch(err => this.$store.commit('ERROR', err.response.data))
+                .catch(err => {
+                    console.log(err);
+                    this.$store.commit('ERROR', err.response.data);
+                })
                 .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
         closeModal() {
             this.activeGroups = [];
             this.assignModal = { opened: false };
+        },
+
+        setBlankCard() {
+            this.assignModal = {
+                opened: true,
+                credit: 0,
+                pendingCardUpdates: [],
+                blank: true
+            };
         },
 
         setAssignModal(credit, name, username, id, groups = [], ticketId) {

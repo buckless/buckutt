@@ -10,6 +10,8 @@
         <h4>
             <template v-if="searchInput < 4">Tickets ({{ tickets.length }} entrées) :</template>
             <template v-else>Résultats :</template>
+            <div class="b-space"></div>
+            <i class="b-icon" @click="$emit('blankCard')">add</i>
             <i class="b-icon" :disabled="updatingTickets" @click="updateTickets">refresh</i>
         </h4>
         <div class="b-assigner-search__results" v-if="matches.length > 0 && searchInput.length >= 4">
@@ -89,9 +91,6 @@ export default {
 
                         return user;
                     });
-
-                    console.log(this.matches);
-                    console.log(this);
                 });
         },
 
@@ -145,7 +144,6 @@ export default {
 
 .b-assigner-search h4 {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     text-transform: uppercase;
     margin: 14px 0;
@@ -155,6 +153,10 @@ export default {
 
 .b-icon {
     cursor: pointer;
+
+    &:not(:last-of-type) {
+        margin-right: 16px;
+    }
 
     &[disabled] {
         color: #ccc;
