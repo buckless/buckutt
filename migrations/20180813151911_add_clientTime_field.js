@@ -22,6 +22,12 @@ exports.up = function (knex) {
             t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
             t.dateTime('clientDeletion').nullable();
         })
+        .table('meansoflogin', (t) => {
+            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        })
+        .table('users', (t) => {
+            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        })
         .then(() => knex('accesses').update('clientTime', knex.raw('created_at')))
         .then(() => knex('withdrawals').update('clientTime', knex.raw('created_at')))
         .then(() => knex('purchases').update('clientTime', knex.raw('created_at')))
@@ -31,7 +37,9 @@ exports.up = function (knex) {
         .then(() => knex('reloads').update('clientTime', knex.raw('created_at')))
         .then(() => knex('reloads').update('clientDeletion', knex.raw('deleted_at')))
         .then(() => knex('transfers').update('clientTime', knex.raw('created_at')))
-        .then(() => knex('transfers').update('clientDeletion', knex.raw('deleted_at')));
+        .then(() => knex('transfers').update('clientDeletion', knex.raw('deleted_at')))
+        .then(() => knex('meansoflogin').update('clientTime', knex.raw('created_at')))
+        .then(() => knex('users').update('clientTime', knex.raw('created_at')));
 };
 
 exports.down = function (knex) {
@@ -41,17 +49,27 @@ exports.down = function (knex) {
         })
         .table('purchases', (t) => {
             t.dropColumn('clientTime');
+            t.dropColumn('clientDeletion');
         })
         .table('refunds', (t) => {
             t.dropColumn('clientTime');
+            t.dropColumn('clientDeletion');
         })
         .table('reloads', (t) => {
             t.dropColumn('clientTime');
+            t.dropColumn('clientDeletion');
         })
         .table('withdrawals', (t) => {
             t.dropColumn('clientTime');
         })
         .table('transfers', (t) => {
+            t.dropColumn('clientTime');
+            t.dropColumn('clientDeletion');
+        })
+        .table('meansoflogin', (t) => {
+            t.dropColumn('clientTime');
+        })
+        .table('users', (t) => {
             t.dropColumn('clientTime');
         });
 };
