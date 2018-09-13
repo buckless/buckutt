@@ -10,9 +10,8 @@ import Nfc from './components/Nfc.vue';
 import store from './store';
 import router from './router';
 
-import '../lib/fingerprint';
-
 function init() {
+    require('../lib/fingerprint');
     Vue.config.productionTip = false;
     Vue.component('nfc', Nfc);
 
