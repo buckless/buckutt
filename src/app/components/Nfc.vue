@@ -277,6 +277,7 @@ export default {
                 .then(() => {
                     debug('write completed');
                     this.success = true;
+                    this.rewrite = false;
                     this.$root.$emit('writeCompleted');
                     if (restartDataLoader) {
                         debug('data not loaded');
