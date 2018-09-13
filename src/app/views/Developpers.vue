@@ -11,32 +11,34 @@
                 Données de l'événement
             </syncData>
 
-            <syncData
-                icon="free_breakfast"
-                :lastUpdate="itemsSync.lastUpdate"
-                :running="itemsSync.locked"
-                frequency="10 minutes"
-                @update="updateStoredItems">
-                Liste des articles
-            </syncData>
+            <template v-if="seller.isAuth">
+                <syncData
+                    icon="free_breakfast"
+                    :lastUpdate="itemsSync.lastUpdate"
+                    :running="itemsSync.locked"
+                    frequency="10 minutes"
+                    @update="updateStoredItems">
+                    Liste des articles
+                </syncData>
 
-            <syncData
-                icon="group"
-                :lastUpdate="usersSync.lastUpdate"
-                :running="usersSync.locked"
-                frequency="5 minutes"
-                @update="updateUsersData">
-                Données des utilisateurs
-            </syncData>
+                <syncData
+                    icon="group"
+                    :lastUpdate="usersSync.lastUpdate"
+                    :running="usersSync.locked"
+                    frequency="5 minutes"
+                    @update="updateUsersData">
+                    Données des utilisateurs
+                </syncData>
 
-            <syncData
-                icon="alarm"
-                :lastUpdate="queueSync.lastUpdate"
-                :running="queueSync.locked"
-                frequency="1 minute"
-                @update="syncQueue">
-                Requêtes en attente
-            </syncData>
+                <syncData
+                    icon="alarm"
+                    :lastUpdate="queueSync.lastUpdate"
+                    :running="queueSync.locked"
+                    frequency="1 minute"
+                    @update="syncQueue">
+                    Requêtes en attente
+                </syncData>
+            </template>
         </div>
     </div>
 </template>
@@ -54,7 +56,8 @@ export default {
         usersSync: state => state.online.offline.usersData,
         eventSync: state => state.online.offline.eventEssentials,
         itemsSync: state => state.online.offline.items,
-        queueSync: state => state.online.offline.queue
+        queueSync: state => state.online.offline.queue,
+        seller: state => state.auth.seller
     }),
 
     methods: mapActions(['updateEssentials', 'updateStoredItems', 'updateUsersData', 'syncQueue'])

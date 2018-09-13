@@ -78,16 +78,13 @@ export default {
 
             console.log('login-validate', cardNumber, credit);
             if (this.seller.isAuth) {
-                if (Number.isInteger(credit)) {
-                    this.buyerLogin({
-                        cardNumber,
-                        credit
-                    });
-                } else {
-                    this.buyerLogin({
-                        cardNumber
-                    });
-                }
+                const buyerArgs = Number.isInteger(credit)
+                    ? { cardNumber, credit }
+                    : { cardNumber };
+
+                this.buyerLogin(buyerArgs).then(() => {
+                    this.$router.push('/');
+                });
             }
         },
 

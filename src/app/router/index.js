@@ -55,8 +55,7 @@ const routes = [
     },
     {
         path: '/developpers',
-        component: Developpers,
-        beforeEnter: (_, __, next) => next(!getters.loginState || '/')
+        component: Developpers
     },
     {
         path: '/controller',

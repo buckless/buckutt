@@ -1,5 +1,5 @@
 <template>
-    <div class="b-menu-wrapper" v-if="hasActions">
+    <div class="b-menu-wrapper">
         <div class="b-menu__drop" v-if="showMenu && !canClose && !onlyLogout" @click="showMenu = false"></div>
         <div class="b-menu" v-if="!canClose && !onlyLogout">
             <div class="b-menu__icon b-icon" @click="showMenu = !showMenu">menu</div>
@@ -85,17 +85,13 @@ export default {
     },
 
     computed: {
-        hasActions() {
-            return this.isSellerMode || this.isReloaderMode || this.displayLogout;
-        },
-
         canClose() {
-            return (
-                this.$route.path !== '/items' &&
-                this.$route.path !== '/reload' &&
-                !this.$route.path.startsWith('/assigner') &&
-                this.$route.path !== '/controller'
-            );
+            if (this.$route.path === '/login' && this.onlyLogout) {
+                return true;
+            }
+
+            const closingPath = ['/history', '/catering', '/treasury', '/developpers'];
+            return closingPath.indexOf(this.$route.path) > -1;
         },
 
         displayCatering() {
