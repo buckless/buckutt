@@ -319,6 +319,10 @@ export const sendBasket = (store, payload = {}) => {
 };
 
 export const basketClickValidation = store => {
+    if (store.getters.reloadAmount === 0 && store.getters.basketAmount === 0) {
+        return;
+    }
+
     if (!store.state.auth.device.config.doubleValidation) {
         store.commit('SET_WRITING', true);
         store.commit('SET_BASKET_STATUS', 'WAITING_FOR_BUYER');
