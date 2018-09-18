@@ -28,6 +28,12 @@ export default {
                     title: 'Intervale',
                     type: 'price',
                     content: this.focusedGiftReload.everyAmount
+                },
+                {
+                    icon: 'keyboard_arrow_right',
+                    title: 'Montant minimal',
+                    type: 'price',
+                    content: this.focusedGiftReload.minimalAmount
                 }
             ];
         }

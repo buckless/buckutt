@@ -4,6 +4,7 @@
         <form @submit.prevent="createGiftReload(newGiftReload)">
             <mdl-textfield floating-label="Montant offert (en centimes)" v-model="newGiftReload.amount" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
             <mdl-textfield floating-label="Tous les (en centimes)" v-model="newGiftReload.everyAmount" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
+            <mdl-textfield floating-label="Montant minimal (en centimes)" v-model="newGiftReload.minimalAmount" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
             <mdl-button colored raised>Créer</mdl-button>
         </form>
     </div>
@@ -17,7 +18,8 @@ export default {
         return {
             newGiftReload: {
                 everyAmount: '',
-                amount: ''
+                amount: '',
+                minimalAmount: 0
             }
         };
     },
@@ -29,7 +31,6 @@ export default {
             this.createObject({ route: 'giftreloads', value: giftReload })
                 .then(createdGiftReload => {
                     this.notify({ message: "L'offre a bien été créée" });
-                    console.log(createdGiftReload.id);
                     this.$router.push(`/giftreloads/${createdGiftReload.id}`);
                 })
                 .catch(err =>

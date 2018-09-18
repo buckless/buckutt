@@ -3,7 +3,7 @@
         <h5>Liste des offres de rechargement</h5>
 
         <b-table
-            :headers="[{ title: 'Montant offert', field: 'amount', type: 'price' }, { title: 'Tous les', field: 'everyAmount', type: 'price' }]"
+            :headers="[{ title: 'Montant offert', field: 'amount', type: 'price' }, { title: 'Tous les', field: 'everyAmount', type: 'price' }, { title: 'Montant minimal', field: 'minimalAmount', type: 'price' }]"
             :data="giftreloads"
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
