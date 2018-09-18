@@ -26,10 +26,12 @@ export const basketAmount = (_, getters) => {
         return 0;
     }
 
-    const items = (basket.items || []).map(item => item.price.amount).reduce((a, b) => a + b, 0);
+    const items = (basket.items || [])
+        .map(item => item.price.amount || 0)
+        .reduce((a, b) => a + b, 0);
 
     const promotions = (basket.promotions || [])
-        .map(promotion => promotion.price.amount)
+        .map(promotion => promotion.price.amount || 0)
         .reduce((a, b) => a + b, 0);
 
     return items + promotions;
@@ -54,24 +56,25 @@ export const sidebar = (state, getters) => {
     );
 
     const items = initialSidebar.items.map(item => {
-        let updatedItem = getters.wiketItems.items.find(i => i.id === item.id);
+        let updatedItem = getters.wiketItems.items.find(i => i.id === item.id) || { price: {} };
         if (!updatedItem && state.auth.device.event.nfc_id === item.id) {
             updatedItem = item;
         }
 
         return {
-            ...updatedItem,
-            price: updatedItem ? updatedItem.price : item.price
+            ...item,
+            price: updatedItem.price
         };
     });
 
     const promotions = initialSidebar.promotions.map(promotion => {
-        const updatedPromotion = getters.wiketItems.promotions.find(p => p.id === promotion.id);
+        const updatedPromotion = getters.wiketItems.promotions.find(p => p.id === promotion.id) || {
+            price: {}
+        };
 
         return {
-            ...updatedPromotion,
-            content: promotion.content,
-            price: updatedPromotion ? updatedPromotion.price : promotion.price
+            ...promotion,
+            price: updatedPromotion.price
         };
     });
 

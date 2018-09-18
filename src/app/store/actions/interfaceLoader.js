@@ -50,6 +50,7 @@ export const setWiketItems = ({ state, commit }) => {
                             (!object1.category || object1.category.id === object2.category.id)
                     )
             )
+            .filter(item => item.price.amount >= 0)
     );
 
     const promotions = res[1].map(promotion => ({

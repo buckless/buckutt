@@ -10,7 +10,7 @@ class OfflineData {
     init() {
         this.db.version(1).stores({
             tickets: 'id,barcode,userId,name,username,credit,physicalId',
-            accesses: 'id,userId,cardId,group,start,end',
+            accesses: 'id,userId,cardId,groupId,start,end',
             pendingCardUpdates: 'id,incrId,userId,cardId,amount',
             images: 'id,blob'
         });
