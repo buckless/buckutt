@@ -144,6 +144,7 @@ module.exports = {
                         });
 
                         const reloadGiftAmount = giftReloads
+                            .filter(gr => amount >= gr.minimalAmount)
                             .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
                             .reduce((a, b) => a + b, 0);
 

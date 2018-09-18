@@ -31,6 +31,26 @@ module.exports = async function assignParser(req) {
                 type: 'card',
                 trace: userData.ticketId
             });
+
+            const GiftReload = req.app.locals.models.GiftReload;
+            const giftReloads = await GiftReload.fetchAll()
+                .then(
+                    giftReloads_ =>
+                        giftReloads_ && giftReloads_.length ? giftReloads_.toJSON() : []
+                );
+
+            const reloadGiftAmount = giftReloads
+                .filter(gr => userData.credit >= gr.minimalAmount)
+                .map(gr => Math.floor(userData.credit / gr.everyAmount) * gr.amount)
+                .reduce((a, b) => a + b, 0);
+
+            if (reloadGiftAmount > 0) {
+                reloads.push({
+                    credit: reloadGiftAmount,
+                    type: 'gift',
+                    trace: userData.ticketId
+                });
+            }
         }
 
         // The ticket credit is already added by a reload
