@@ -93,6 +93,7 @@ export default {
 
         reloadGiftAmount() {
             return this.giftReloads
+                .filter(gr => this.reloadAmount >= gr.minimalAmount)
                 .map(gr => {
                     const timesEveryAmount = Math.floor(this.reloadAmount / gr.everyAmount);
 
