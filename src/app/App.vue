@@ -78,7 +78,7 @@ export default {
         this.updateUsersData();
 
         window.nfc = nfc;
-        window.fingerprint = fingerprint;
+        window.fingerprint = fingerprint();
         window.appId = Date.now();
         window.database = new OfflineData();
         window.database.init();

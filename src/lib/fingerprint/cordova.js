@@ -1,2 +1,2 @@
 /* global device */
-export default device.uuid;
+export default () => device.uuid;

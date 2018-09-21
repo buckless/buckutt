@@ -12,6 +12,7 @@ import router from './router';
 
 function init() {
     require('../lib/fingerprint');
+
     Vue.config.productionTip = false;
     Vue.component('nfc', Nfc);
 

@@ -11,4 +11,4 @@ if (localStorage.hasOwnProperty('b-fingerprint')) {
     window.setFingerprint(`dev-browser-${formattedTodayDate}`);
 }
 
-export default window.fingerprint;
+export default () => window.fingerprint;
