@@ -128,8 +128,6 @@ router.post('/services/login', async (req, res, next) => {
         req.details
     );
 
-    console.log('GENERATE', req);
-
     return res
         .status(200)
         .json({
