@@ -75,6 +75,10 @@
             "ticketIdPreload": ["184062", "184515"],
             "version": "1"
         },
+        "etupay": {
+            "url": "https://nc3.campus3.fr/api/guichet/",
+            "key": "ae0952a4-08ef-400d-8c2f-f2e5d242b014"
+        },
         "from": "noreply@buckless.com",
         "subject": "Buckless — Votre code PIN"
     },
