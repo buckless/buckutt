@@ -170,6 +170,8 @@ export default {
                         );
                     });
 
+                    requests.push(window.database.delete('tickets', this.assignModal.molId));
+
                     return Promise.all(requests);
                 })
                 .then(() => this.ok())
@@ -194,7 +196,7 @@ export default {
             };
         },
 
-        setAssignModal(credit, name, username, id, groups = [], ticketId) {
+        setAssignModal(credit, name, username, id, groups = [], ticketId, molId) {
             const precheckedGroups = groups
                 .filter(group => group.id !== this.defaultGroup.id)
                 .map(group => this.groups.find(g => g.id === group.id));
@@ -213,7 +215,8 @@ export default {
                     id,
                     ticketId,
                     pendingCardUpdates,
-                    version
+                    version,
+                    molId
                 };
                 this.activeGroups = precheckedGroups;
                 this.precheckedGroups = groups;

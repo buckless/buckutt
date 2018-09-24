@@ -57,7 +57,8 @@ export default {
                         user.username,
                         user.id,
                         user.currentGroups,
-                        qrcode
+                        user.ticketId || qrcode,
+                        user.molId
                     );
                 })
                 .catch(err => this.$store.commit('ERROR', err.response.data));

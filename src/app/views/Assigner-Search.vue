@@ -95,6 +95,9 @@ export default {
         },
 
         selectUser(user) {
+            const ticketId =
+                user.ticketId || (user.searchBy === 'ticketId' ? this.searchInput : null);
+
             this.$emit(
                 'assign',
                 user.credit,
@@ -102,7 +105,8 @@ export default {
                 user.username,
                 user.id,
                 user.currentGroups,
-                user.searchBy === 'ticketId' ? this.searchInput : null
+                ticketId,
+                user.molId
             );
         },
 

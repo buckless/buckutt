@@ -16,6 +16,9 @@ export default users => {
                     name: user.name,
                     username: user.username,
                     id: user.userId,
+                    molId: user.id,
+                    ticketId: user.barcode,
+                    physicalId: user.physicalId,
                     currentGroups
                 };
             })
