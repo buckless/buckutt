@@ -13,7 +13,7 @@ export const clearBasket = ({ commit }) => {
 
 export const removeUnavailableItemsFromBasket = store => {
     const removals = store.getters.sidebar.items
-        .filter(item => !item.price.amount)
+        .filter(item => item.price.amount < 0)
         .map(item => store.dispatch('removeItemFromBasket', item));
 
     return Promise.all(removals);
@@ -105,15 +105,15 @@ export const addNfcSupportToBasket = store => {
 
 export const checkSidebar = store => {
     if (
-        store.getters.sidebar.items.some(item => !item.price.amount) ||
-        store.getters.sidebar.promotions.some(promotion => !promotion.price.amount)
+        store.getters.sidebar.items.some(item => item.price.amount < 0) ||
+        store.getters.sidebar.promotions.some(promotion => promotion.price.amount < 0)
     ) {
         const items = store.getters.sidebar.items
-            .filter(item => !item.price.amount)
+            .filter(item => item.price.amount < 0)
             .map(item => item.name);
 
         const promotions = store.getters.sidebar.promotions
-            .filter(promotion => !promotion.price.amount)
+            .filter(promotion => promotion.price.amount < 0)
             .map(promotion => promotion.name);
 
         const unallowed = items
@@ -130,7 +130,7 @@ export const checkSidebar = store => {
 export const validateBasket = (store, { cardNumber, credit, options, version }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
-        (store.getters.reloadAmount === 0 && store.getters.basketAmount === 0)
+        (store.getters.reloadAmount === 0 && store.getters.sidebar.items.length === 0)
     ) {
         return;
     }
@@ -255,8 +255,6 @@ export const sendBasket = (store, payload = {}) => {
 
     const basketToSend = [];
 
-    console.log(basket.items);
-
     basket.items.forEach(article => {
         basketToSend.push({
             price_id: article.price.id,
@@ -357,7 +355,7 @@ export const sendBasket = (store, payload = {}) => {
 };
 
 export const basketClickValidation = store => {
-    if (store.getters.reloadAmount === 0 && store.getters.basketAmount === 0) {
+    if (store.getters.reloadAmount === 0 && store.getters.sidebar.items.length === 0) {
         return;
     }
 

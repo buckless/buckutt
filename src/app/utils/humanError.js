@@ -1,7 +1,7 @@
 import { credit } from '../store/getters/items';
 
 export default (state, getters, error) => {
-    if (!error) {
+    if (!error || !error.message) {
         return null;
     }
 

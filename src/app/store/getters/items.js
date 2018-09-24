@@ -56,8 +56,10 @@ export const sidebar = (state, getters) => {
     );
 
     const items = initialSidebar.items.map(item => {
-        let updatedItem = getters.wiketItems.items.find(i => i.id === item.id) || { price: {} };
-        if (!updatedItem && state.auth.device.event.nfc_id === item.id) {
+        let updatedItem = getters.wiketItems.items.find(i => i.id === item.id) || {
+            price: { amount: -1 }
+        };
+        if (updatedItem.price.amount === -1 && state.auth.device.event.nfc_id === item.id) {
             updatedItem = item;
         }
 
@@ -69,7 +71,7 @@ export const sidebar = (state, getters) => {
 
     const promotions = initialSidebar.promotions.map(promotion => {
         const updatedPromotion = getters.wiketItems.promotions.find(p => p.id === promotion.id) || {
-            price: {}
+            price: { amount: -1 }
         };
 
         return {

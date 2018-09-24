@@ -9,7 +9,7 @@
             <br/>
 
             Achats :
-            <strong><currency :value="user.bought || 0"></currency></strong> <template v-if="user.cardPaid > 0">(dont <currency :value="user.cardPaid"></currency> d'activation de carte)</template>
+            <strong><currency :value="user.bought || 0"></currency></strong> <template v-if="user.cardPaid > 0"> (dont <currency :value="user.cardPaid"></currency> d'activation de carte)</template>
 
             <br/>
 

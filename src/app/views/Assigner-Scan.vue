@@ -61,7 +61,7 @@ export default {
                         user.molId
                     );
                 })
-                .catch(err => this.$store.commit('ERROR', err.response.data));
+                .catch(err => this.$store.commit('ERROR', { message: err.response.data }));
 
         this.scanner.addListener('scan', this.scannerListener);
 
