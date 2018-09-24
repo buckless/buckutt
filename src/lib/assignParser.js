@@ -8,9 +8,9 @@ const APIError = require('../errors/APIError');
 module.exports = async function assignParser(req) {
     let targetUser;
     let checkMail;
-    const meansOfLogin = [];
+    let meansOfLogin = [];
     const reloads = [];
-    let groupsToAdd = [req.event.defaultGroup_id];
+    let groupsToAdd = [];
 
     // If the ticketNumber is provided, fetch informations about the account & create related mols
     if (req.body.ticketNumber && req.body.ticketNumber.length > 0) {
@@ -59,11 +59,31 @@ module.exports = async function assignParser(req) {
     }
 
     const userRights = rightsDetails(req.user, req.point.id);
-    const isFromAssigner = userRights.assign;
+    const isFromAssigner = req.device.fingerprint !== 'manager' && userRights.assign;
+    const assignCard =
+        (req.body.physicalId && req.body.physicalId.length > 0) ||
+        (req.body.cardId && req.body.cardId.length > 0);
     let cardAccount;
+    let supportDetails;
 
-    if (req.body.cardId) {
-        cardAccount = await getAccountFromCard(req.app.locals.models, req.body.cardId);
+    if (assignCard) {
+        supportDetails = await getSupportDetails(req.app.locals.models, {
+            logical_id: req.body.cardId,
+            physical_id: req.body.physicalId
+        });
+
+        if (supportDetails) {
+            meansOfLogin.push({
+                type: 'cardId',
+                physical_id: supportDetails.physical_id,
+                data: supportDetails.logical_id,
+                blocked: false
+            });
+
+            cardAccount = await getAccountFromCard(req.app.locals.models, supportDetails.logical_id);
+        } else {
+            return Promise.reject(new APIError(module, 404, 'Physical support not found'));
+        }
     }
 
     // If the request comes from manager
@@ -82,16 +102,19 @@ module.exports = async function assignParser(req) {
     }
     // Else: REGISTER FROM MANAGER (ticket) - OR REJECT
 
-    if (userRights.assign) {
+    if (isFromAssigner) {
         // If the user has assigner rights, do some extra checks
         if (req.body.userId) {
-            // Check if a userId isn't already provided, ASSIGNER FROM ASSIGNER
+            // If a userId is provided, assign to this account, ASSIGNER FROM ASSIGNER
             targetUser = {
                 id: req.body.userId
             };
         } else if (cardAccount) {
-            // If the card is already assigned, assign to the account, ASSIGNER FROM ASSIGNER
+            // If a cardId is provided, check if it's binded to an account, then assign this account, ASSIGNER FROM ASSIGNER
             targetUser = cardAccount;
+
+            // In this case, don't try to recreate the cardId mol
+            meansOfLogin = meansOfLogin.filter(mol => mol.type !== 'cardId');
         } else if (req.body.anon) {
             // Authorize assigner to create an anonymous account, REGISTER FROM ASSIGNER
             targetUser = { credit: req.body.credit || 0 };
@@ -108,27 +131,9 @@ module.exports = async function assignParser(req) {
         return Promise.reject(new APIError(module, 400, 'Invalid data'));
     }
 
-    // If a physical card number is provided, link it
-    const assignCard =
-        (req.body.physicalId && req.body.physicalId.length > 0) ||
-        (req.body.cardId && req.body.cardId.length > 0);
-
-    if (assignCard && !cardAccount) {
-        const supportDetails = await getSupportDetails(req.app.locals.models, {
-            logical_id: req.body.cardId,
-            physical_id: req.body.physicalId
-        });
-
-        if (supportDetails) {
-            meansOfLogin.push({
-                type: 'cardId',
-                physical_id: supportDetails.physical_id,
-                data: supportDetails.logical_id,
-                blocked: false
-            });
-        } else if (assignCard) {
-            return Promise.reject(new APIError(module, 404, 'Physical support not found'));
-        }
+    // If the account is newly created, add the default membership
+    if (!targetUser.id) {
+        groupsToAdd.push(req.event.defaultGroup_id);
     }
 
     // Check the mail if needed
@@ -154,6 +159,7 @@ module.exports = async function assignParser(req) {
         groupsToAdd,
         targetUser,
         reloads,
-        meansOfLogin
+        meansOfLogin,
+        isFromAssigner
     };
 };

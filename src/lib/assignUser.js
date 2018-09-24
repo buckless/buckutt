@@ -14,7 +14,8 @@ module.exports = async function assignUser(
     meansOfLogin = [],
     groups = [],
     isWritten,
-    clientTime
+    clientTime,
+    isFromAssigner
 ) {
     const user = await models.User.where({ id: userId }).fetch({
         withRelated: ['meansOfLogin', 'memberships']
@@ -62,8 +63,6 @@ module.exports = async function assignUser(
         operations.push(
             new models.User({ id: anonymousData.id }).save(updatedUser, { patch: true })
         );
-
-        console.log(userAccount.id, anonymousData.id);
 
         const changes = [
             {
@@ -219,6 +218,18 @@ module.exports = async function assignUser(
             }).save()
         )
     );
+
+    // Block the ticket if it's validated from assigner
+    if (isFromAssigner) {
+        await models.MeanOfLogin.where({ user_id: mergedAccount.id, type: 'ticketId' })
+            .save(
+                { blocked: true },
+                {
+                    patch: true,
+                    require: false
+                }
+            );
+    }
 
     // Needed to send new meansOfLogin to manager
     const mergedUser = await models.User.where({ id: mergedAccount.id }).fetch({

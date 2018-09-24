@@ -22,7 +22,8 @@ module.exports = function createUser(
     groups = [],
     sendMail = true,
     isWritten = false,
-    clientTime
+    clientTime,
+    isFromAssigner
 ) {
     let newUser;
     let userName;
@@ -87,16 +88,20 @@ module.exports = function createUser(
             // Create requested mols
             const molsPromises = meansOfLogin
                 .filter(mol => molsToSkip.indexOf(mol.type) === -1)
-                .map(mol =>
-                    new models.MeanOfLogin({
+                .map(mol => {
+                    if (isFromAssigner && mol.type === 'ticketId') {
+                        mol.blocked = true;
+                    }
+
+                    return new models.MeanOfLogin({
                         type: mol.type,
                         data: mol.data,
                         physical_id: mol.physical_id,
                         blocked: mol.blocked,
                         user_id: newUser.id,
                         clientTime
-                    }).save()
-                );
+                    }).save();
+                });
 
             // Create standard mols
             if (user.mail) {

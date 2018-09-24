@@ -12,8 +12,7 @@ module.exports = async (models, ticketNumber) => {
             required: true
         },
         {
-            embed: 'user.meansOfLogin',
-            filters: [['blocked', '=', false], ['type', '=', 'username']]
+            embed: 'user.meansOfLogin'
         },
         {
             embed: 'user.memberships'
@@ -37,9 +36,6 @@ module.exports = async (models, ticketNumber) => {
             where: { data: ticketId },
             orWhere: { physical_id: ticketId }
         })
-        .where({
-            blocked: false
-        })
         .fetch({
             withRelated: embedParser(embedMeanOfLogin)
         })
@@ -50,16 +46,23 @@ module.exports = async (models, ticketNumber) => {
 
     if (apiData.length > 0) {
         const mol = apiData[0];
+        const usernameMol = mol.user.meansOfLogin.find(uMol => uMol.type === 'username' && !uMol.blocked) || {};
+        const ticketMol = mol.user.meansOfLogin.find(tMol => tMol.type === 'ticketId') || { blocked: false };
 
-        return {
-            id: mol.user.id,
-            credit: mol.user.credit,
-            name: `${mol.user.firstname} ${mol.user.lastname}`,
-            currentGroups: mol.user.memberships.map(membership => ({
-                id: membership.group_id
-            })),
-            username: (mol.user.meansOfLogin[0] || {}).data
-        };
+        if (!mol.blocked && !ticketMol.blocked) {
+            return {
+                id: mol.user.id,
+                molId: ticketMol.id,
+                ticketId: ticketMol.data,
+                physicalId: ticketMol.physical_id,
+                credit: mol.user.credit,
+                name: `${mol.user.firstname} ${mol.user.lastname}`,
+                currentGroups: mol.user.memberships.map(membership => ({
+                    id: membership.group_id
+                })),
+                username: usernameMol.data
+            };
+        }
     } else if (userData) {
         return userData;
     }

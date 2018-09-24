@@ -1,14 +1,16 @@
 module.exports = function getSupportDetails(models, condition) {
-    const requestCondition = {};
-    if (condition.logical_id) {
-        requestCondition.logical_id = condition.logical_id;
+    let request = models.PhysicalSupport;
+    if (condition.logical_id && condition.physical_id) {
+        request = request
+            .where({ logical_id: condition.logical_id })
+            .orWhere({ physical_id: condition.physical_id })
+    } else if (condition.physical_id) {
+        request = request.where({ physical_id: condition.physical_id })
+    } else if (condition.logical_id) {
+        request = request.where({ logical_id: condition.logical_id })
     }
 
-    if (condition.physical_id) {
-        requestCondition.physical_id = condition.physical_id;
-    }
-
-    return models.PhysicalSupport.where(requestCondition)
+    return request
         .fetch()
         .then(physicalSupport => {
             if (physicalSupport) {

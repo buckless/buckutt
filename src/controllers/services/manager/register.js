@@ -29,7 +29,8 @@ router.post('/services/manager/register', (req, res, next) => {
                 registerData.groupsToAdd,
                 true,
                 req.point.name !== 'Internet', // if Internet (manager), create PCU, else (assigner) directly write
-                req.body.clientTime
+                req.body.clientTime,
+                registerData.isFromAssigner
             );
         })
         .then(user => {

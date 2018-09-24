@@ -25,7 +25,8 @@ router.post('/services/manager/assigner', (req, res, next) => {
                     assignData.meansOfLogin,
                     assignData.groupsToAdd,
                     req.point.name !== 'Internet', // if Internet (manager), create PCU, else (assigner) directly write
-                    req.body.clientTime
+                    req.body.clientTime,
+                    assignData.isFromAssigner
                 );
             }
 
@@ -40,7 +41,8 @@ router.post('/services/manager/assigner', (req, res, next) => {
                 assignData.groupsToAdd,
                 !!assignData.targetUser.mail, // Only send a mail if the address is given
                 req.point.name !== 'Internet', // if Internet (manager), create PCU, else (assigner) directly write
-                req.body.clientTime
+                req.body.clientTime,
+                assignData.isFromAssigner
             );
         })
         .then(user => {
