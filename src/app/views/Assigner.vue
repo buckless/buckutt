@@ -154,7 +154,8 @@ export default {
                         this.sendRequest({
                             method: 'post',
                             url: 'services/manager/assigner',
-                            data
+                            data,
+                            immediate: true
                         })
                     );
 
@@ -165,7 +166,8 @@ export default {
                                 url: 'services/pendingCardUpdate',
                                 data: {
                                     id: pcu.id
-                                }
+                                },
+                                immediate: true
                             })
                         );
                     });
