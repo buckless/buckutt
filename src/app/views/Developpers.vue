@@ -17,7 +17,7 @@
                     :lastUpdate="itemsSync.lastUpdate"
                     :running="itemsSync.locked"
                     frequency="10 minutes"
-                    @update="updateStoredItems">
+                    @update="updateItems">
                     Liste des articles
                 </syncData>
 
@@ -60,7 +60,19 @@ export default {
         seller: state => state.auth.seller
     }),
 
-    methods: mapActions(['updateEssentials', 'updateStoredItems', 'updateUsersData', 'syncQueue'])
+    methods: {
+        ...mapActions([
+            'updateEssentials',
+            'updateStoredItems',
+            'updateUsersData',
+            'syncQueue',
+            'loadDefaultItems'
+        ]),
+
+        updateItems() {
+            this.updateStoredItems().then(() => this.loadDefaultItems());
+        }
+    }
 };
 </script>
 
