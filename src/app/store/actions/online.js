@@ -34,6 +34,11 @@ export const setupSocket = ({ state, commit, dispatch }) => {
         if (state.online.status) {
             commit('SET_OFFLINE');
         }
+
+        // Retry to connect every 10s
+        setTimeout(() => {
+            dispatch('setupSocket');
+        }, 10000);
     });
 };
 
