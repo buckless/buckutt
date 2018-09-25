@@ -130,7 +130,7 @@ export const checkSidebar = store => {
 export const validateBasket = (store, { cardNumber, credit, options, version }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
-        (store.getters.reloadAmount === 0 && store.getters.sidebar.items.length === 0)
+        (store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0)
     ) {
         return;
     }
@@ -355,7 +355,7 @@ export const sendBasket = (store, payload = {}) => {
 };
 
 export const basketClickValidation = store => {
-    if (store.getters.reloadAmount === 0 && store.getters.sidebar.items.length === 0) {
+    if (store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0) {
         return;
     }
 
