@@ -170,7 +170,9 @@ export default {
                         );
                     });
 
-                    requests.push(window.database.delete('tickets', this.assignModal.molId));
+                    if (this.assignModal.molId) {
+                        requests.push(window.database.delete('tickets', this.assignModal.molId));
+                    }
 
                     return Promise.all(requests);
                 })
