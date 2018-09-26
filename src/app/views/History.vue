@@ -136,7 +136,7 @@ export default {
         },
 
         resume(entry) {
-            const items = entry.basketToSend.filter(e => e.cost).map(e => ({
+            const items = entry.basketToSend.filter(e => typeof e.cost === 'number').map(e => ({
                 name: e.name,
                 cost: e.cost
             }));

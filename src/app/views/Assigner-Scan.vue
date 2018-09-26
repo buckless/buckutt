@@ -25,8 +25,9 @@ export default {
             scanPeriod: 5
         });
 
-        this.scannerListener = qrcode =>
-            this.sendRequest({
+        this.scannerListener = qrcode => {
+            this.$store.commit('SET_DATA_LOADED', false);
+            return this.sendRequest({
                 url: `services/assigner?ticketOrMail=${qrcode}`,
                 noQueue: true,
                 offlineAnswer: window.database
@@ -62,6 +63,7 @@ export default {
                     );
                 })
                 .catch(err => this.$store.commit('ERROR', { message: err.response.data }));
+        };
 
         this.scanner.addListener('scan', this.scannerListener);
 

@@ -210,21 +210,24 @@ export default {
                 pendingPromise = this.getPendingCardUpdates(id);
             }
 
-            return pendingPromise.then(({ amount, version, pendingCardUpdates }) => {
-                this.assignModal = {
-                    opened: true,
-                    credit: credit + amount,
-                    name,
-                    username,
-                    id,
-                    ticketId,
-                    pendingCardUpdates,
-                    version,
-                    molId
-                };
-                this.activeGroups = precheckedGroups;
-                this.precheckedGroups = groups;
-            });
+            return pendingPromise
+                .then(({ amount, version, pendingCardUpdates }) => {
+                    this.assignModal = {
+                        opened: true,
+                        credit: credit + amount,
+                        name,
+                        username,
+                        id,
+                        ticketId,
+                        pendingCardUpdates,
+                        version,
+                        molId
+                    };
+                    this.activeGroups = precheckedGroups;
+                    this.precheckedGroups = groups;
+                })
+                .catch(() => Promise.resolve())
+                .then(() => this.$store.commit('SET_DATA_LOADED', true));
         },
 
         ok() {
