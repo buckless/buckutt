@@ -62,7 +62,10 @@ export default {
                         user.molId
                     );
                 })
-                .catch(err => this.$store.commit('ERROR', { message: err.response.data }));
+                .catch(err => {
+                    this.$store.commit('SET_DATA_LOADED', true);
+                    this.$store.commit('ERROR', { message: err.response.data });
+                });
         };
 
         this.scanner.addListener('scan', this.scannerListener);
