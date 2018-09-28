@@ -51,7 +51,7 @@ export const syncQueue = store => {
 
 export const sendRequest = (store, job) => {
     if (job.data) {
-        job.data.clientTime = new Date();
+        job.data.clientTime = job.clientTime || new Date();
     }
 
     if (!store.state.auth.device.event.config.useCardData) {
