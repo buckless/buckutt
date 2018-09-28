@@ -1,4 +1,5 @@
 import localForage from 'localforage';
+import uuid from 'uuid';
 import Queue from '@buckless/offline-queue';
 
 let queue;
@@ -79,7 +80,10 @@ export const sendRequest = (store, job) => {
         data: {
             method: job.method,
             url: job.url,
-            data: job.data
+            data: job.data,
+            params: {
+                headers: { 'Idempotency-Key': uuid() }
+            }
         },
 
         immediate: !forceOffline && job.immediate,
