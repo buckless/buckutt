@@ -174,15 +174,17 @@ export default {
 
             window.app.$root.$on('writeCompleted', () => {
                 setTimeout(() => {
-                    window.queue
-                        .method('post')
-                        .url('assigner')
-                        .data({
+                    window.queue.push({
+                        method: 'post',
+                        url: 'services/manager/assigner',
+                        data: {
                             cardId,
                             anon: true,
                             groups: this.activeGroups.map(g => g.id)
-                        })
-                        .push();
+                        },
+
+                        immediate: true
+                    });
 
                     this.writeModal = false;
                     this.$forceUpdate();

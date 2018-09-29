@@ -15,11 +15,18 @@ const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
 
 const byteNumber = optionsLength / 8;
 
-export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 12, rusha.createHash, [
+export default new SignedData(process.env.VUE_APP_SIGNINGKEY, 16, rusha.createHash, [
     {
         name: 'credit',
         default: '000000',
         size: 3,
+        encode: number => number.toString(16),
+        decode: data => parseInt(data, 16)
+    },
+    {
+        name: 'version',
+        default: '0000',
+        size: 2,
         encode: number => number.toString(16),
         decode: data => parseInt(data, 16)
     },

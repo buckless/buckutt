@@ -137,6 +137,8 @@ export default {
             });
 
             nfc.on('data', data => {
+                this.$emit('fulldata', data);
+
                 try {
                     const card = nfc.dataToCard(
                         data.toLowerCase ? data.toLowerCase() : data,
@@ -179,8 +181,6 @@ export default {
                 }
             });
 
-            nfc.on('fulldata', fulldata => this.$emit('fulldata', fulldata));
-
             nfc.on('error', err => {
                 console.error(err);
             });
@@ -199,9 +199,13 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            nfc.write(
-                nfc.cardToData(this.dataToWrite, this.inputValue + process.env.VUE_APP_SIGNINGKEY)
-            )
+            nfc
+                .write(
+                    nfc.cardToData(
+                        this.dataToWrite,
+                        this.inputValue + process.env.VUE_APP_SIGNINGKEY
+                    )
+                )
                 .then(() => {
                     this.success = true;
                     this.$root.$emit('writeCompleted');

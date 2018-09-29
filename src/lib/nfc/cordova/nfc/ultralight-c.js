@@ -57,16 +57,8 @@ export default class UltralightC extends EventEmitter {
 
                     const pages = chunk(data.split(''), 8);
 
-                    // if (pages[12][7] === '4') {
-                    //     alert('Card locked');
-                    // }
-
                     this.emit('locked', pages[12][7] === '4');
-                    this.emit('fulldata', data);
-                    this.emit(
-                        'data',
-                        data.slice(0, parseInt(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE, 10))
-                    );
+                    this.emit('data', data);
                 })
                 .catch(err => this.emit('error', err));
         });
@@ -130,7 +122,6 @@ export default class UltralightC extends EventEmitter {
     write(data) {
         const firstWritablePage = JSON.parse(process.env.VUE_APP_ULTRALIGHT_FIRSTPAGE);
         const cardLength = JSON.parse(process.env.VUE_APP_ULTRALIGHT_CARDLENGTH);
-        const creditSize = JSON.parse(process.env.VUE_APP_ULTRALIGHT_CREDITSIZE);
 
         const dataLength = cardLength - firstWritablePage * 4;
 
