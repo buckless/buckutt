@@ -12,8 +12,8 @@
             <div class="legend">
                 <ul>
                     <li><mark class="byte credit">ff</mark> Crédit</li>
-                    <li><mark class="byte options">ff</mark> Options </li>
-                    <li><mark class="byte catering">ff</mark> Catering </li>
+                    <li><mark class="byte version">ff</mark> Version</li>
+                    <li><mark class="byte options">ff</mark> Options + catering</li>
                     <li><mark class="byte signature">ff</mark> Signature</li>
                 </ul>
             </div>
@@ -25,12 +25,43 @@
 </template>
 
 <script>
-const byteClasses = [
-    [['byte', 'credit'], ['byte', 'credit'], ['byte', 'credit'], ['byte', 'options']],
-    [['byte', 'catering'], ['byte', 'catering'], ['byte', 'catering'], ['byte', 'catering']],
-    [['byte', 'catering'], ['byte', 'catering'], ['byte', 'signature'], ['byte', 'signature']],
-    [['byte', 'signature'], ['byte', 'signature'], ['byte', 'none'], ['byte', 'none']]
+const duration = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
+const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
+    (a, b) => a.id - b.id
+);
+
+const usefulDataLength = articles.reduce(
+    (a, b) => a + b.maxNumber.toString(2).length + duration,
+    3
+);
+const optionsByteNumber = Math.ceil(usefulDataLength / 8);
+
+const bytesOrder = [
+    {
+        type: 'credit',
+        length: 3
+    },
+    {
+        type: 'version',
+        length: 2
+    },
+    {
+        type: 'options',
+        length: optionsByteNumber
+    },
+    {
+        type: 'signature',
+        length: 4
+    }
 ];
+
+const byteClasses = [];
+
+bytesOrder.forEach(entry => {
+    for (let i = 0; i < entry.length; i++) {
+        byteClasses.push(['byte', entry.type]);
+    }
+});
 
 export default {
     props: {
@@ -48,11 +79,9 @@ export default {
 
     methods: {
         getClass(i, j) {
-            if (byteClasses[i] && byteClasses[i][j]) {
-                return byteClasses[i][j];
-            }
+            const index = i * 4 + j;
 
-            return ['byte', 'none'];
+            return byteClasses[index] || ['byte', 'none'];
         }
     }
 };
@@ -96,11 +125,11 @@ mark.credit {
     background-color: #2ecc71;
 }
 
-mark.options {
+mark.version {
     background-color: #d35400;
 }
 
-mark.catering {
+mark.options {
     background-color: #2980b9;
 }
 

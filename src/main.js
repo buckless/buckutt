@@ -31,7 +31,8 @@ const axios = axios_.create({
     baseURL: process.env.VUE_APP_API,
     headers: {
         Accept: '',
-        'Accept-Language': ''
+        'Accept-Language': '',
+        'X-fingerprint': 'admin'
     }
 });
 
@@ -41,12 +42,12 @@ const logOperator = force => {
     }
 
     const credentials = {
-        meanOfLogin: 'cardId',
-        data: process.env.VUE_APP_OPERATOR_CARD,
-        pin: process.env.VUE_APP_OPERATOR_PIN
+        meanOfLogin: 'mail',
+        data: process.env.VUE_APP_OPERATOR_MAIL,
+        password: process.env.VUE_APP_OPERATOR_PASSWORD
     };
 
-    return axios.post('login', credentials).then(res => {
+    return axios.post('services/login', credentials).then(res => {
         localStorage.setItem('masterapp-token', res.data.token);
     });
 };
@@ -58,7 +59,7 @@ const fetchGroups = () => {
         }
     };
 
-    return axios.get('groups', options).then(res => {
+    return axios.get('services/manager/groups', options).then(res => {
         localStorage.setItem('masterapp-groups', JSON.stringify(res.data));
     });
 };

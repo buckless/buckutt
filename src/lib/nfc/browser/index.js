@@ -13,10 +13,24 @@ export default class NFC extends EventEmitter {
             actualCard: ''
         };
 
-        window.mock.addCard = (name, cardId, credit) => {
+        window.mock.addCard = (name, cardId, credit = 0, version = 0, options_) => {
+            const options = Object.assign(
+                {
+                    assignedCard: true,
+                    locked: false,
+                    paidCard: false,
+                    catering: []
+                },
+                options_
+            );
+
             // do not store credit as buffer because it can't be restored as a buffer
             if (typeof credit !== 'number') {
                 throw new Error('credit should not be passed into nfc.cardToData');
+            }
+
+            if (typeof version !== 'number') {
+                throw new Error('version should not be passed into nfc.cardToData');
             }
 
             if (cardId.length === 0) {
@@ -37,16 +51,8 @@ export default class NFC extends EventEmitter {
                 cardId,
                 cardValue: {
                     credit,
-                    options: {
-                        assignedCard: 1,
-                        catering: [
-                            {
-                                id: 0,
-                                balance: 2,
-                                validity: [true, true, true, true]
-                            }
-                        ]
-                    }
+                    version,
+                    options
                 }
             };
 

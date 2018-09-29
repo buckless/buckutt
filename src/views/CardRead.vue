@@ -5,6 +5,7 @@
             <div><strong>Serial id</strong>: {{ cardData.cardId }}</div>
             <div><strong>Serial physique</strong>: {{ cardData.serial }}</div>
             <div><strong>Crédit:</strong> {{ cardData.credit | price(true) }}</div>
+            <div><strong>Version de la carte:</strong> {{ cardData.version }}</div>
             <div><strong>Carte assignée</strong>: <span v-if="cardData.options.assignedCard">oui</span><span v-else>non</span></div>
             <div><strong>Carte payée</strong>: <span v-if="cardData.options.paidCard">oui</span><span v-else>non</span></div>
             <div><strong>Carte bloquée</strong>: <span v-if="cardData.options.locked">oui</span><span v-else>non</span></div>
