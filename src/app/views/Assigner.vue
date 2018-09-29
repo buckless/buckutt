@@ -37,6 +37,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { formatMemberships } from '@/utils/formatOfflineResults';
 
 import Ok from '@/components/Ok';
 import Currency from '@/components/Currency';
@@ -200,7 +201,11 @@ export default {
             };
         },
 
-        setAssignModal(credit, name, username, id, groups = [], ticketId, molId) {
+        async setAssignModal(credit, name, username, id, groups = [], ticketId, molId) {
+            if (!groups) {
+                groups = await formatMemberships(id);
+            }
+
             const precheckedGroups = groups
                 .filter(group => group.id !== this.defaultGroup.id)
                 .map(group => this.groups.find(g => g.id === group.id));

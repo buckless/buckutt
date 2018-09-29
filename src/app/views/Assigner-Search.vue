@@ -104,7 +104,7 @@ export default {
                 user.name,
                 user.username,
                 user.id,
-                user.currentGroups,
+                null,
                 ticketId,
                 user.molId
             );
@@ -113,35 +113,17 @@ export default {
         updateTickets() {
             this.updatingTickets = true;
 
-            console.time('start');
-            console.time('list');
             window.database
                 .listTickets()
-                .then(a => {
-                    console.timeEnd('list');
-                    console.time('format');
-                    return a;
-                })
                 .then(tickets => formatOfflineResults(tickets))
-                .then(a => {
-                    console.timeEnd('format');
-                    console.time('sort');
-                    return a;
-                })
                 .catch(err => console.log(err))
                 .then(
                     tickets =>
                         (this.tickets = tickets.data.sort((a, b) => a.name.localeCompare(b.name)))
                 )
                 .then(() => {
-                    console.timeEnd('sort');
-                })
-                .then(() => {
                     window.tickets = this.tickets;
                     return this.unlock();
-                })
-                .then(() => {
-                    console.timeEnd('start');
                 });
         },
 
