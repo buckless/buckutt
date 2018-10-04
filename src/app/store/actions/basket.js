@@ -58,7 +58,7 @@ export const checkPendingCardUpdates = (store, { cardNumber, version }) =>
                 pendingPromise.then(() =>
                     store.dispatch('sendRequest', {
                         method: 'post',
-                        url: 'services/pendingCardUpdate',
+                        url: 'customer/pendingCardUpdate',
                         data: {
                             id: pcu.id
                         }
@@ -320,7 +320,7 @@ export const sendBasket = (store, payload = {}) => {
     return store
         .dispatch('sendRequest', {
             method: 'post',
-            url: 'services/basket',
+            url: 'payment/basket',
             data: transactionToSend,
             offlineAnswer: {
                 data: {

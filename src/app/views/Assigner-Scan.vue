@@ -28,7 +28,7 @@ export default {
         this.scannerListener = qrcode => {
             this.$store.commit('SET_DATA_LOADED', false);
             return this.sendRequest({
-                url: `services/assigner?ticketOrMail=${qrcode}`,
+                url: `auth/assigner?ticketOrMail=${qrcode}`,
                 noQueue: true,
                 offlineAnswer: window.database
                     .findByBarcode(qrcode)

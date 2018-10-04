@@ -45,7 +45,7 @@ export const updateUsersData = store => {
 
     return store
         .dispatch('sendRequest', {
-            url: `services/usersData${params}`,
+            url: `polling/usersData${params}`,
             noQueue: true
         })
         .then(res => {
@@ -113,7 +113,7 @@ export const updateStoredItems = store => {
 
     return store
         .dispatch('sendRequest', {
-            url: 'services/items',
+            url: 'polling/items',
             noQueue: true
         })
         .then(res =>
@@ -147,7 +147,7 @@ export const updateEssentials = (store, force) => {
 
     return store
         .dispatch('sendRequest', {
-            url: 'services/eventEssentials',
+            url: 'polling/eventEssentials',
             noQueue: true
         })
         .then(res => {

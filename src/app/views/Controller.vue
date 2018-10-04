@@ -53,7 +53,7 @@ export default {
 
         onCard(cardId) {
             this.sendRequest({
-                url: `services/controller?user=${cardId}`,
+                url: `customer/controller?user=${cardId}`,
                 noQueue: true,
                 forceOffline: this.useCardData,
                 offlineAnswer: window.database.cardAccesses(cardId)
@@ -88,7 +88,7 @@ export default {
 
                         this.sendRequest({
                             method: 'post',
-                            url: 'services/controller',
+                            url: 'customer/controller',
                             data: access
                         });
                     }

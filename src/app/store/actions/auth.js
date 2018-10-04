@@ -34,7 +34,7 @@ export const login = ({ commit, dispatch, state }, { meanOfLogin, password }) =>
 
     return dispatch('sendRequest', {
         method: 'post',
-        url: 'services/login',
+        url: 'auth/login',
         data: credentials,
         offlineAnswer: offlineLogin(state.online.offline.sellers, credentials),
         noQueue: true
@@ -154,7 +154,7 @@ export const buyerLogin = (store, { cardNumber, credit, removeUnavailable }) => 
 
     return store
         .dispatch('sendRequest', {
-            url: `/services/buyer${params}`,
+            url: `/customer/buyer${params}`,
             offlineAnswer,
             noQueue: true,
             // If use card data, always use local data

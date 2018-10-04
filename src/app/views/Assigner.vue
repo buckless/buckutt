@@ -154,7 +154,7 @@ export default {
                     requests.push(
                         this.sendRequest({
                             method: 'post',
-                            url: 'services/manager/assigner',
+                            url: 'manager/auth/assigner',
                             data,
                             immediate: true
                         })
@@ -164,7 +164,7 @@ export default {
                         requests.push(
                             this.sendRequest({
                                 method: 'post',
-                                url: 'services/pendingCardUpdate',
+                                url: 'customer/pendingCardUpdate',
                                 data: {
                                     id: pcu.id
                                 },

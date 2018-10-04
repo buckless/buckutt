@@ -96,7 +96,7 @@ export default {
                 .then(() =>
                     this.sendRequest({
                         method: 'post',
-                        url: 'services/catering',
+                        url: 'payment/catering',
                         data: cateringToSend
                     })
                 )

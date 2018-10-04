@@ -59,7 +59,7 @@ export const cancelEntry = (store, payload) => {
         const reqs = cancelPurchases.concat(cancelReloads).map(body =>
             store.dispatch('sendRequest', {
                 method: 'post',
-                url: 'services/cancelTransaction',
+                url: 'payment/cancelTransaction',
                 data: body
             })
         );
@@ -93,7 +93,7 @@ export const sendValidCancellations = store => {
                 bodys.map(body =>
                     store.dispatch('sendRequest', {
                         method: 'post',
-                        url: 'services/cancelTransaction',
+                        url: 'payment/cancelTransaction',
                         data: body
                     })
                 )
