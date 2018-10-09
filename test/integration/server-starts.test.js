@@ -1,13 +1,23 @@
-const assert       = require('assert');
-const axiosFactory = require('../utils/axios');
+const test = require('ava');
+const axios = require('../utils/axios');
+const app = require('../../app');
 
-const startServer = require('../utils/startServer');
+const sleep = function (duration) {
+    return function () {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve();
+            }, duration)
+        });
+    };
+}
 
-describe('Should start the test application', () => {
-    before(function () {
-        this.timeout(30 * 1000);
-        return startServer();
-    });
+test('start the test application', async t => {
+    await app();
 
-    it('should listen', () => axiosFactory().get('/'));
+    const res = await axios.get('/');
+
+    t.is(res.status, 200)
+
+    t.pass();
 });

@@ -1,10 +1,7 @@
 node_modules/
-coverage/
-.nyc_output
 log/
 config/profiles/*.json
 !config/rights.json
-ssl/certificates
-ready.lock
+!config/profiles/test.ci.json
 yarn-error.log
 

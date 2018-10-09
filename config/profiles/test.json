@@ -14,13 +14,13 @@
         "secret": "NgWlfDWCbX4mPuxau1FmG3TPLHm7iglEA3mp1f8nrlT7zKDn8ZZAwWQOqUArvQBFfMEbFSAMnUHzgQW1FkczTiZYjPZWqdseNtk2"
     },
     "redis": {
-        "host": "redis",
+        "host": "localhost",
         "port": 6379
     },
     "db": {
         "client": "pg",
         "connection": {
-            "host"    : "postgres",
+            "host"    : "localhost",
             "database": "buckless_test",
             "user"    : "buckless",
             "password": "buckless"
@@ -52,7 +52,7 @@
         "managerUrl": "http://b.inst.buckless.com"
     },
     "assigner": {
-        "ticketProvider": "test",
+        "ticketProviders": ["test"],
         "csv": {
             "url": {
                 "url": "",

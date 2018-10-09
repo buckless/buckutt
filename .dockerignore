@@ -1,5 +1,1 @@
-rethinkdb_data/
 node_modules/
-coverage/
-ssl/certificates/
-ready.lock

@@ -1,1 +1,1 @@
-module.exports = require('./config').db;
+module.exports = require('./app/config').db;

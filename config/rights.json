@@ -7,16 +7,16 @@
           "canAssign": false,
           "canControl": false,
           "read": [
-              "/services/items",
-              "/services/buyer",
-              "/services/usersData",
+              "/polling/items",
+              "/customer/buyer",
+              "/polling/usersData",
               "/live/alert"
           ],
           "write": [
-              "/services/basket",
-              "/services/catering",
-              "/services/pendingCardUpdate",
-              "/services/cancelTransaction"
+              "/payment/basket",
+              "/payment/catering",
+              "/customer/pendingCardUpdate",
+              "/payment/cancelTransaction"
           ]
       },
       "reloader": {
@@ -25,15 +25,15 @@
           "canAssign": false,
           "canControl": false,
           "read": [
-              "/services/items",
-              "/services/buyer",
-              "/services/usersData",
+              "/polling/items",
+              "/customer/buyer",
+              "/polling/usersData",
               "/live/alert"
           ],
           "write": [
-              "/services/basket",
-              "/services/pendingCardUpdate",
-              "/services/cancelTransaction"
+              "/payment/basket",
+              "/customer/pendingCardUpdate",
+              "/payment/cancelTransaction"
           ]
       },
       "assigner": {
@@ -42,17 +42,15 @@
           "canAssign": true,
           "canControl": false,
           "read": [
-              "/users",
-              "/services/items",
-              "/services/buyer",
-              "/services/assigner",
-              "/services/usersData",
+              "/polling/items",
+              "/customer/buyer",
+              "/auth/assigner",
+              "/polling/usersData",
               "/live/alert"
           ],
           "write": [
-              "/meansoflogin",
-              "/services/pendingCardUpdate",
-              "/services/basket"
+              "/customer/pendingCardUpdate",
+              "/payment/basket"
           ]
       },
       "controller": {
@@ -61,38 +59,38 @@
           "canAssign": false,
           "canControl": true,
           "read": [
-              "/services/items",
-              "/services/buyer",
-              "/services/controller",
-              "/services/usersData",
+              "/polling/items",
+              "/customer/buyer",
+              "/customer/controller",
+              "/polling/usersData",
               "/live/alert"
           ],
           "write": [
-              "/services/controller"
+              "/customer/controller"
           ]
       },
       "openUrls": [
           "/",
-          "/services/login",
-          "/services/manager/askpin",
-          "/services/manager/generatepin",
-          "/services/manager/register",
-          "/services/eventEssentials",
+          "/auth/login",
+          "/manager/auth/askpin",
+          "/manager/auth/generatepin",
+          "/manager/auth/register",
+          "/polling/eventEssentials",
           "/live/status",
           "/provider/callback"
       ],
       "loggedUrls": [
-          "/services/manager/changepin",
-          "/services/manager/history",
-          "/services/manager/searchuser",
-          "/services/manager/transfer",
-          "/services/manager/reload",
-          "/services/manager/giftReloads",
-          "/services/manager/switchuser",
-          "/services/manager/assigner",
-          "/services/manager/block",
-          "/services/manager/accountRefund",
-          "/services/manager/groups",
+          "/manager/auth/changepin",
+          "/manager/account/history",
+          "/manager/searchuser",
+          "/manager/payment/transfer",
+          "/manager/payment/reload",
+          "/manager/payment/giftReloads",
+          "/manager/auth/switchuser",
+          "/manager/auth/assigner",
+          "/manager/account/block",
+          "/manager/payment/accountRefund",
+          "/manager/account/groups",
           "/live/credit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
