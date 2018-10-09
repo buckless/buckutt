@@ -9,6 +9,7 @@ const modelsNames = {
     fundations: 'Fundation',
     groups: 'Group',
     giftreloads: 'GiftReload',
+    healthalerts: 'HealthAlert',
     memberships: 'Membership',
     meansoflogin: 'MeanOfLogin',
     meansofpayment: 'MeanOfPayment',

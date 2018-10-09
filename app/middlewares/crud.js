@@ -7,6 +7,7 @@ const APIError = require('@/utils/APIError');
 module.exports = (req, res, next) => {
     // embed
     const withRelated = req.query.embed ? embedParser(req.query.embed) : [];
+    const withDeleted = req.query.hasOwnProperty('deleted');
     const embedFilters = req.query.embed
         ? req.query.embed.filter(rel => rel.required).map(rel => rel.embed)
         : [];
@@ -25,7 +26,7 @@ module.exports = (req, res, next) => {
         }
     }
 
-    req.crud = { withRelated, embedFilters, filters };
+    req.crud = { withRelated, withDeleted, embedFilters, filters };
 
     next();
 };

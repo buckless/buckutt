@@ -1,7 +1,7 @@
 const queryFilterer = require('@/utils/queryFilterer');
 const { embedFilter } = require('@/utils/embedParser');
 
-module.exports = async (ctx, { id, filters, withRelated, embedFilters }) => {
+module.exports = async (ctx, { id, filters, withRelated, withDeleted, embedFilters }) => {
     let request = ctx.model;
 
     if (id) {
@@ -22,7 +22,7 @@ module.exports = async (ctx, { id, filters, withRelated, embedFilters }) => {
         request = queryFilterer(request, filters);
     }
 
-    const results = await request.fetchAll({ withRelated });
+    const results = await request.fetchAll({ withRelated, withDeleted });
 
     return embedFilter(embedFilters, results.toJSON());
 };

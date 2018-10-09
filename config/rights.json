@@ -93,6 +93,8 @@
           "/manager/account/block",
           "/manager/payment/accountRefund",
           "/manager/account/groups",
+          "/crud/healthalerts",
+          "/live/healthalert",
           "/live/credit"
       ],
       "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]

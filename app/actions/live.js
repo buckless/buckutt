@@ -33,6 +33,19 @@ const alert = () =>
         });
     });
 
+const healthalert = () =>
+    Observable.create(observer => {
+        stream.on('data', ({ action, model, data }) => {
+            if (action !== 'create' || model !== 'HealthAlert') {
+                return;
+            }
+
+            const alert = data.to[0];
+
+            observer.next(alert);
+        });
+    });
+
 const modelChanges = () =>
     Observable.create(observer => {
         stream.on('data', ({ action, model, data }) => {
@@ -56,6 +69,7 @@ const credit = userId =>
 module.exports = {
     setup,
     alert,
+    healthalert,
     modelChanges,
     credit
 };

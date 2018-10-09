@@ -9,7 +9,6 @@ const exposeResBody = require('@/middlewares/exposeResBody');
 
 // api middlewares
 router.use(exposeResBody, pointId, token, accessRequired, query, idempotency);
-// router.use(pointId, token, accessRequired, query);
 
 router.get('/', (_, res) => res.json({}).end());
 
