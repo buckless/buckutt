@@ -13,7 +13,7 @@
             class="bullet"/>
           <span class="name">{{ user.firstname }} {{ user.lastname }}</span>
           &nbsp;
-          <span class="credit">({{ user.credit | currency }})</span>
+          <span class="credit">({{ user.credit / 100 | currency }})</span>
         </div>
       </List>
     </Card>

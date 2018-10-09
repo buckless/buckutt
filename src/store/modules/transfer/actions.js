@@ -49,7 +49,11 @@ export const transfer = async (ctx, { user, amount }) => {
         reciever_id: user.id
     };
 
-    const result = await ctx.dispatch('request/post', { url: 'transfer', body }, { root: true });
+    const result = await ctx.dispatch(
+        'request/post',
+        { url: 'payment/transfer', body },
+        { root: true }
+    );
 
     if (!result) {
         await ctx.dispatch('working/set', false, { root: true });

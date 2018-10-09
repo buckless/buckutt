@@ -18,7 +18,11 @@ export const change = async (ctx, { currentPin, pin, confirmation }) => {
 
     const body = { currentPin, pin };
 
-    const result = await ctx.dispatch('request/put', { url: 'changepin', body }, { root: true });
+    const result = await ctx.dispatch(
+        'request/put',
+        { url: 'auth/changepin', body },
+        { root: true }
+    );
 
     if (!result || !result.changed) {
         await ctx.dispatch(
@@ -80,7 +84,11 @@ export const reset = async (ctx, { key, pin, confirmation }) => {
         pin
     };
 
-    const result = await ctx.dispatch('request/put', { url: 'generatepin', body }, { root: true });
+    const result = await ctx.dispatch(
+        'request/put',
+        { url: 'auth/generatepin', body },
+        { root: true }
+    );
 
     if (!result || !result.success) {
         await ctx.dispatch('working/set', false, { root: true });

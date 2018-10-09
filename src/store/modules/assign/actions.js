@@ -6,7 +6,7 @@ export const ticket = async (ctx, ticketNumber) => {
         ticketNumber
     };
 
-    const user = await ctx.dispatch('request/post', { url: 'assigner', body }, { root: true });
+    const user = await ctx.dispatch('request/post', { url: 'auth/assigner', body }, { root: true });
 
     if (!user) {
         await ctx.dispatch('working/set', false, { root: true });
@@ -38,7 +38,7 @@ export const card = async (ctx, physicalId) => {
         physicalId
     };
 
-    const user = await ctx.dispatch('request/post', { url: 'assigner', body }, { root: true });
+    const user = await ctx.dispatch('request/post', { url: 'auth/assigner', body }, { root: true });
 
     if (!user) {
         await ctx.dispatch('working/set', false, { root: true });
@@ -69,7 +69,7 @@ export const block = async (ctx, cardId) => {
 
     await ctx.dispatch('working/set', true, { root: true });
 
-    await ctx.dispatch('request/put', { url: 'block' }, { root: true });
+    await ctx.dispatch('request/put', { url: 'account/block' }, { root: true });
     await ctx.commit('user/BLOCK_CARD', cardId, { root: true });
 
     ctx.dispatch('notifications/send', { message: 'Le support a bien été bloqué' }, { root: true });

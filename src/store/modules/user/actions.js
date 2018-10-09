@@ -49,7 +49,11 @@ export const switchUser = async (ctx, username) => {
 
     const body = { meanOfLogin: 'username', data: username };
 
-    const res = await ctx.dispatch('request/post', { url: 'switchuser', body }, { root: true });
+    const res = await ctx.dispatch(
+        'request/post',
+        { url: 'auth/switchuser', body },
+        { root: true }
+    );
 
     if (res && res.user) {
         await ctx.dispatch('setToken', res.token);
@@ -95,7 +99,11 @@ export function load(ctx) {
 }
 
 export const loadGiftReloads = async ctx => {
-    const result = await ctx.dispatch('request/get', { url: 'giftReloads' }, { root: true });
+    const result = await ctx.dispatch(
+        'request/get',
+        { url: 'payment/giftReloads' },
+        { root: true }
+    );
 
     ctx.commit('SET_GIFT_RELOADS', result);
 };

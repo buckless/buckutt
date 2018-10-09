@@ -30,27 +30,27 @@ module.exports = {
         proxy: process.env.DEV_PROXY
             ? {
                   '/api/login': {
-                      target: 'http://0.0.0.0:3000/services/',
+                      target: 'http://0.0.0.0:3000/api/v1/auth/login',
                       changeOrigin: true,
-                      pathRewrite: { '/api': '' },
+                      pathRewrite: { '/api/login': '' },
                       headers: { 'X-Fingerprint': 'manager' }
                   },
                   '/api/callback': {
-                      target: 'http://0.0.0.0:3000/provider/callback',
+                      target: 'http://0.0.0.0:3000/api/v1/provider/callback',
                       changeOrigin: true,
                       pathRewrite: { '/api/callback': '' },
                       headers: { 'X-Fingerprint': 'manager' }
                   },
                   '/api': {
-                      target: 'http://0.0.0.0:3000/services/manager/',
+                      target: 'http://0.0.0.0:3000/api/v1/manager/',
                       changeOrigin: true,
                       pathRewrite: { '/api': '' },
                       headers: { 'X-Fingerprint': 'manager' }
                   },
                   '/live': {
-                      logLevel: 'debug',
-                      target: 'http://0.0.0.0:3000/',
+                      target: 'http://0.0.0.0:3000/api/v1/live',
                       changeOrigin: true,
+                      pathRewrite: { '/live': '' },
                       headers: { 'X-Fingerprint': 'manager' }
                   }
               }

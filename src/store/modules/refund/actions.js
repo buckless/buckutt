@@ -1,5 +1,9 @@
 export const canRefund = async ctx => {
-    const refundable = await ctx.dispatch('request/get', { url: 'accountRefund' }, { root: true });
+    const refundable = await ctx.dispatch(
+        'request/get',
+        { url: 'payment/accountRefund' },
+        { root: true }
+    );
 
     if (!refundable) {
         return;
@@ -15,7 +19,11 @@ export const canRefund = async ctx => {
 export const refund = async ctx => {
     await ctx.dispatch('working/set', true, { root: true });
 
-    const refundable = await ctx.dispatch('request/post', { url: 'accountRefund' }, { root: true });
+    const refundable = await ctx.dispatch(
+        'request/post',
+        { url: 'payment/accountRefund' },
+        { root: true }
+    );
 
     if (!refundable) {
         await ctx.dispatch(

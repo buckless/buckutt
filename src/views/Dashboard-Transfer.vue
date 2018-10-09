@@ -25,7 +25,8 @@
               v-if="result.id === selected.id"
               class="bullet"/>
             <span class="name">{{ result.firstname }} {{ result.lastname }}</span>
-            <small>({{ result.username }})</small>
+            &nbsp;
+            <span class="username">({{ result.username }})</span>
           </div>
         </List>
 
@@ -140,10 +141,11 @@ export default {
 }
 
 .name {
-    margin: 0 0.8rem 0 0.5rem;
+    margin: 0 0 0 0.5rem;
+    font-weight: 500;
 }
 
-small {
-    color: rgba(0, 0, 0, 0.8);
+.username {
+    color: $foreground;
 }
 </style>

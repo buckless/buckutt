@@ -40,7 +40,7 @@ export const ticket = state => {
 
 export const blockedCards = state => {
     if (!state.user || !state.user.meansOfLogin) {
-        return null;
+        return [];
     }
 
     return state.user.meansOfLogin
