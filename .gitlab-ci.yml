@@ -17,7 +17,7 @@ build:
     - apk update
     - apk add --no-cache git openssh openssl make gcc g++ python
   script:
-    - yarn
+    - yarn install --force
     - cp config/profiles/development.json.example config/profiles/development.json
     - cp config/profiles/production.json.example config/profiles/production.json
     - yarn build

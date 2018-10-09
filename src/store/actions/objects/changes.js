@@ -8,7 +8,7 @@ export function initSocket({ dispatch }, token) {
     changes = new EventSource(
         `${
             config.api
-        }/live/models?authorization=Bearer ${token}&fingerprint=admin&handshake-interval=10000&lastEventId=12345&retry=3000`
+        }/live/listenForModelChanges?authorization=Bearer ${token}&fingerprint=admin&handshake-interval=10000&lastEventId=12345&retry=3000`
     );
 
     changes.addEventListener('message', e => {

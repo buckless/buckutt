@@ -73,7 +73,7 @@ export function createObject({ dispatch, state }, object) {
         embed = `?embed=${routeToRelation(object.route)}`;
     }
 
-    return post(`${object.route.toLowerCase()}${embed}`, object.value).then(result => {
+    return post(`crud/${object.route.toLowerCase()}${embed}`, object.value).then(result => {
         if (state.objects[object.route]) {
             dispatch('checkAndAddObjects', {
                 route: object.route,
@@ -106,7 +106,7 @@ export function updateObject({ dispatch, state }, object) {
         embed = `?embed=${routeToRelation(object.route)}`;
     }
 
-    return put(`${object.route.toLowerCase()}/${object.value.id}${embed}`, object.value).then(
+    return put(`crud/${object.route.toLowerCase()}/${object.value.id}${embed}`, object.value).then(
         result => {
             dispatch('checkAndUpdateObjects', {
                 route: object.route,
@@ -130,7 +130,7 @@ export function updateObject({ dispatch, state }, object) {
 }
 
 export function removeObject({ dispatch, state }, object) {
-    return del(`${object.route.toLowerCase()}/${object.value.id}`).then(() => {
+    return del(`crud/${object.route.toLowerCase()}/${object.value.id}`).then(() => {
         dispatch('checkAndDeleteObjects', {
             route: object.route,
             objects: [object.value]

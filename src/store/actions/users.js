@@ -7,10 +7,10 @@ import { get, post } from '../../lib/fetch';
 export function createUserWithMol({ dispatch, getters }, user) {
     let createdUser;
 
-    return post('users', user)
+    return post('crud/users', user)
         .then(result => {
             if (result.mail) {
-                post('meansoflogin', {
+                post('crud/meansoflogin', {
                     type: 'mail',
                     data: result.mail,
                     user_id: result.id
@@ -55,7 +55,7 @@ export function searchUsers({ dispatch }, { name, min }) {
         limit = `&limit=${min || 10}`;
     }
 
-    return get(`services/manager/searchuser?name=${name}${limit}`).then(results => {
+    return get(`manager/searchuser?name=${name}${limit}`).then(results => {
         dispatch('clearObject', 'users');
 
         if (results.length > 0) {
@@ -67,7 +67,7 @@ export function searchUsers({ dispatch }, { name, min }) {
 }
 
 export function loadUserHistory({ state, dispatch }, user) {
-    return get(`services/manager/history?buyer=${user.id}`).then(results => {
+    return get(`manager/account/history?buyer=${user.id}`).then(results => {
         dispatch('clearObject', 'history');
         if (results.history.length > 0) {
             const depth = state.app.focusedElements.findIndex(element => user.id === element.id);
@@ -90,7 +90,7 @@ export function cancelTransaction({ state, dispatch }, payload) {
     const transaction = payload.transaction;
     const user = payload.user;
 
-    return post('services/cancelTransaction?addPendingCardUpdates=1', transaction).then(() => {
+    return post('payment/cancelTransaction?addPendingCardUpdates=1', transaction).then(() => {
         const currentTransaction = state.objects.history.find(h => h.id === transaction.id);
 
         const newUserCredit = user.credit - currentTransaction.amount;

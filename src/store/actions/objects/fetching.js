@@ -8,7 +8,7 @@ export function retrieveObject({ dispatch }, payload) {
         embed = `?embed=${routeToRelation(payload.route)}`;
     }
 
-    return get(`${payload.route}/${payload.id}${embed}`).then(result => {
+    return get(`crud/${payload.route}/${payload.id}${embed}`).then(result => {
         dispatch('checkAndUpdateObjects', {
             route: payload.route,
             objects: [result],
@@ -24,7 +24,7 @@ export function retrieveObject({ dispatch }, payload) {
 }
 
 export function fetchObjects({ dispatch }, data) {
-    return get(data.route.toLowerCase()).then(results => {
+    return get(`crud/${data.route.toLowerCase()}`).then(results => {
         dispatch('checkAndAddObjects', { route: data.route, objects: results });
     });
 }
@@ -35,7 +35,7 @@ export function fetchObjectsAndRelations({ dispatch }, data) {
         embed = `?embed=${routeToRelation(data.route)}`;
     }
 
-    return get(`${data.route.toLowerCase()}${embed}`).then(results => {
+    return get(`crud/${data.route.toLowerCase()}${embed}`).then(results => {
         dispatch('checkAndAddObjects', { route: data.route, objects: results });
     });
 }

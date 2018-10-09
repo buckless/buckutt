@@ -72,15 +72,15 @@ export function createSetWithArticles({ commit, dispatch }, payload) {
     const articles = payload.articles;
     const promotion = payload.promotion;
 
-    return post('sets', set).then(result => {
+    return post('crud/sets', set).then(result => {
         dispatch('checkAndAddObjects', { route: 'sets', objects: [result] });
 
-        post(`sets/${result.id}/promotions/${promotion.id}`).catch(err => {
+        post(`crud/sets/${result.id}/promotions/${promotion.id}`).catch(err => {
             commit('UPDATEAPIERROR', err);
         });
 
         articles.forEach(article => {
-            post(`sets/${result.id}/articles/${article.id}`);
+            post(`crud/sets/${result.id}/articles/${article.id}`);
         });
 
         return dispatch('updateDeepestFocusedElement', {

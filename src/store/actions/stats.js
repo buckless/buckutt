@@ -27,7 +27,7 @@ export function fetchCurvesData({ commit }, payload) {
 
     const qString = q.join('&');
 
-    return get(`services/stats/purchases?${qString}`).then(curvesData => {
+    return get(`stats/graphs/purchases?${qString}`).then(curvesData => {
         commit('UPDATECURVESDATA', curvesData);
     });
 }

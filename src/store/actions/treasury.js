@@ -10,7 +10,7 @@ import routeToRelation from '../../lib/routeToRelation';
 export function getPurchases({ commit, dispatch }, fields) {
     const qString = treasuryQueryString(fields);
 
-    return get(`services/treasury/purchases?${qString}`)
+    return get(`stats/purchases?${qString}`)
         .then(purchases => {
             commit('CLEAROBJECT', 'purchases');
             dispatch('checkAndAddObjects', {
@@ -59,7 +59,7 @@ export function getTreasury({ commit, dispatch }, fields) {
         orQt = `&q=${orQt}`;
     }
 
-    return get(`services/treasury/reloads?${qString}`)
+    return get(`stats/reloads?${qString}`)
         .then(reloads => {
             commit('CLEAROBJECT', 'reloads');
             const idReloads = reloads.map(reload => {
@@ -71,7 +71,7 @@ export function getTreasury({ commit, dispatch }, fields) {
 
             dispatch('checkAndAddObjects', { route: 'reloads', objects: idReloads });
 
-            return get(`services/treasury/refunds?${qString}`);
+            return get(`stats/refunds?${qString}`);
         })
         .then(refunds => {
             commit('CLEAROBJECT', 'refunds');
@@ -86,7 +86,7 @@ export function getTreasury({ commit, dispatch }, fields) {
 
             const relEmbed = routeToRelation('transfers');
 
-            return get(`transfers?embed=${relEmbed}${orQt}`);
+            return get(`crud/transfers?embed=${relEmbed}${orQt}`);
         })
         .then(transfers => {
             commit('CLEAROBJECT', 'transfers');
