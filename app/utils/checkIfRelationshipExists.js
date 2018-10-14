@@ -1,7 +1,7 @@
 const APIError = require('@/utils/APIError');
 
-module.exports = (model, submodel) => {
-    const forged = model();
+module.exports = (Model, submodel) => {
+    const forged = new Model();
 
     if (!forged[submodel]) {
         throw new APIError(module, 404, 'Document not found: submodel does not exist', {

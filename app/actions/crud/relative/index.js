@@ -1,5 +1,5 @@
 module.exports = {
-    create: require('./create'),
-    del: require('./del'),
-    read: require('./read')
+    createRelative: require('./create'),
+    deleteRelative: require('./del'),
+    readRelative: require('./read')
 };

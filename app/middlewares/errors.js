@@ -26,7 +26,7 @@ module.exports = (err, req, res, _) => {
 
     /* istanbul ignore next */
     if (!(err instanceof APIError)) {
-        logger('app').error(`${err.message}\n${JSON.stringify(req.details)}`);
+        logger('app').error(`${err.message}\n${err.stack}\n${JSON.stringify(req.details)}`);
 
         err = new APIError(module, 500, 'Unknown error');
     } else {
