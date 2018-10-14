@@ -37,7 +37,7 @@ const mutations = {
         state.basket.itemList.push(item);
     },
 
-    REMOVE_ITEM(state, { id }) {
+    REMOVE_ITEM(state, id) {
         const index = state.basket.itemList.findIndex(item => item.id === id);
 
         if (index > -1) {
