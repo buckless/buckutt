@@ -20,7 +20,7 @@ export const change = async (ctx, { currentPin, pin, confirmation }) => {
 
     const result = await ctx.dispatch(
         'request/put',
-        { url: 'auth/changepin', body },
+        { url: 'auth/changepin', body, notFoundHandled: true },
         { root: true }
     );
 
@@ -40,7 +40,10 @@ export const change = async (ctx, { currentPin, pin, confirmation }) => {
         { message: 'Le code PIN a bien été changé' },
         { root: true }
     );
+
     await ctx.dispatch('working/set', true, { root: true });
+
+    return true;
 };
 
 export const sendReset = async (ctx, mail) => {
@@ -48,7 +51,7 @@ export const sendReset = async (ctx, mail) => {
 
     const result = await ctx.dispatch(
         'request/get',
-        { url: `askpin?mail=${mail}` },
+        { url: `auth/askpin?mail=${mail}`, notFoundHandled: true },
         { root: true }
     );
 
@@ -66,6 +69,8 @@ export const sendReset = async (ctx, mail) => {
     await ctx.dispatch('notifications/send', { message: 'Lien envoyé' }, { root: true });
 
     await ctx.dispatch('working/set', false, { root: true });
+
+    return true;
 };
 
 export const reset = async (ctx, { key, pin, confirmation }) => {
@@ -75,6 +80,8 @@ export const reset = async (ctx, { key, pin, confirmation }) => {
             { message: 'Les deux codes PIN ne sont pas identiques' },
             { root: true }
         );
+
+        return false;
     }
 
     await ctx.dispatch('working/set', true, { root: true });
@@ -106,5 +113,8 @@ export const reset = async (ctx, { key, pin, confirmation }) => {
         { message: 'Le code PIN a bien été changé' },
         { root: true }
     );
+
     await ctx.dispatch('working/set', false, { root: true });
+
+    return true;
 };

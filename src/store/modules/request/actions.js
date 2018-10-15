@@ -16,6 +16,10 @@ export const post = async (ctx, opts) => {
         return await res.json();
     }
 
+    if (res.status === 404 && opts.notFoundHandled) {
+        return;
+    }
+
     if (res.status >= 400 && res.status < 500) {
         const body = await res.json();
 
@@ -37,6 +41,10 @@ export const get = async (ctx, opts) => {
 
     if (res.status === 200) {
         return await res.json();
+    }
+
+    if (res.status === 404 && opts.notFoundHandled) {
+        return;
     }
 
     if (res.status > 400 && res.status < 500) {
@@ -63,6 +71,10 @@ export const put = async (ctx, opts) => {
 
     if (res.status === 200) {
         return await res.json();
+    }
+
+    if (res.status === 404 && opts.notFoundHandled) {
+        return;
     }
 
     if (res.status > 400 && res.status < 500) {

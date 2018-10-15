@@ -8,6 +8,7 @@
         :disabled="disabled"
         :value="value"
         :maxlength="maxlength"
+        :pattern="pattern"
         :step="step"
         :min="min"
         class="input"
@@ -25,6 +26,7 @@
           :disabled="disabled"
           :value="value"
           :maxlength="maxlength"
+          :pattern="pattern"
           :step="step"
           :min="min"
           class="input"
@@ -43,6 +45,7 @@ export default {
     props: {
         placeholder: { type: String, default: null },
         value: { type: String, default: null },
+        pattern: { type: String, default: null },
         maxlength: { type: String, default: null },
         min: { type: String, default: null },
         type: { type: String, default: 'text' },

@@ -3,50 +3,54 @@
     <h1 v-if="!key">Code PIN oublié</h1>
     <h1 v-else>Réinitialisation du code PIN</h1>
 
-    <form 
-      v-if="!key" 
+    <form
+      v-if="!key"
       @submit.prevent="sendReset(mail)">
       <p>
         Saisissez votre e-mail ci-dessous. Vous receverez par e-mail un lien vous permettant de changer votre mot de passe.
       </p>
-      <TextInput 
-        v-model="mail" 
-        :disabled="working" 
-        placeholder="nom@mail.com" 
+      <TextInput
+        v-model="mail"
+        :disabled="working"
+        placeholder="nom@mail.com"
         label="E-mail" />
       <div class="actions">
         <Button to="/login">
           Retour
         </Button>
-        <Button 
-          :disabled="working" 
+        <Button
+          :disabled="working"
           raised>
           Envoyer
         </Button>
       </div>
     </form>
-    <form 
-      v-else 
+    <form
+      v-else
       @submit.prevent="reset(key, pin, confirmation)">
       <p>
         Le nouveau code PIN doit exclusivement être composé de 4 chiffres.
       </p>
-      <TextInput 
-        v-model="pin" 
-        :disabled="working" 
-        type="password" 
+      <TextInput
+        v-model="pin"
+        :disabled="working"
+        pattern="\d{4}"
+        maxlength="4"
+        type="password"
         label="Code PIN" />
-      <TextInput 
-        v-model="confirmation" 
-        :disabled="working" 
-        type="password" 
+      <TextInput
+        v-model="confirmation"
+        :disabled="working"
+        pattern="\d{4}"
+        maxlength="4"
+        type="password"
         label="Confirmation" />
       <div class="actions">
         <Button to="/login">
           Retour
         </Button>
-        <Button 
-          :disabled="working" 
+        <Button
+          :disabled="working"
           raised>
           Envoyer
         </Button>
@@ -87,15 +91,19 @@ export default {
 
     methods: {
         async sendReset(mail) {
-            await this.processSendReset(mail);
+            const sent = await this.processSendReset(mail);
 
-            this.$router.push('/login');
+            if (sent) {
+                this.$router.push('/login');
+            }
         },
 
         async reset(key, pin, confirmation) {
-            await this.processReset({ key, pin, confirmation });
+            const reset = await this.processReset({ key, pin, confirmation });
 
-            this.$router.push('/login');
+            if (reset) {
+                this.$router.push('/login');
+            }
         },
 
         ...mapActions({
