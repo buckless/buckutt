@@ -8,7 +8,9 @@ const {
     statsWithdrawals,
     statsReloads,
     statsRefunds,
-    graphPurchases
+    graphGlobal,
+    graphPurchases,
+    graphPointsDivision
 } = require('@/actions/stats');
 
 const router = require('express').Router();
@@ -96,7 +98,7 @@ router.get(
 router.get(
     '/purchases/csv',
     asyncHandler(async (req, res) => {
-        const csv = await csv(ctx(req), {
+        const csv = await statsPurchases(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
             point: req.query.point,
@@ -113,7 +115,7 @@ router.get(
 router.get(
     '/withdrawals/csv',
     asyncHandler(async (req, res) => {
-        const csv = await csv(ctx(req), {
+        const csv = await statsWithdrawals(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
             point: req.query.point,
@@ -129,7 +131,7 @@ router.get(
 router.get(
     '/reloads/csv',
     asyncHandler(async (req, res) => {
-        const csv = await csv(ctx(req), {
+        const csv = await statsReloads(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
             point: req.query.point,
@@ -145,7 +147,7 @@ router.get(
 router.get(
     '/refunds/csv',
     asyncHandler(async (req, res) => {
-        const csv = await csv(ctx(req), {
+        const csv = await statsRefunds(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
             csv: true
@@ -158,30 +160,42 @@ router.get(
 );
 
 router.get(
+    '/graphs/global',
+    asyncHandler(async (req, res) => {
+        const globalData = await graphGlobal(ctx(req));
+
+        log.info(logStr('globalGraph', req.query));
+
+        res.json(globalData);
+    })
+);
+
+router.get(
     '/graphs/purchases',
     asyncHandler(async (req, res) => {
         if (!req.query.filters) {
             throw new APIError(module, 400, 'Filters are missing');
         }
 
-        let dateIn, dateOut;
-
-        if (req.query.dateIn && req.query.dateOut) {
-            dateIn = new Date(req.query.dateIn);
-            dateOut = new Date(req.query.dateOut);
-
-            if (Number.isNaN(dateIn.getTime()) || Number.isNaN(dateOut.getTime())) {
-                throw new APIError(module, 400, 'Invalid dates');
-            }
-        } else {
-            if (Number.isNaN(dateIn.getTime()) || Number.isNaN(dateOut.getTime())) {
-                throw new APIError(module, 400, 'Dates are missing');
-            }
-        }
-
+        const dateIn = req.query.dateIn;
+        const dateOut = req.query.dateOut;
         const filters = JSON.parse(req.query.filters);
+        const additive = !!req.query.additive;
 
-        const graph = await graphPurchases(ctx(req), { dateIn, dateOut, filters });
+        const graph = await graphPurchases(ctx(req), { dateIn, dateOut, additive, filters });
+
+        log.info(logStr('purchasesGraph', req.query));
+
+        res.json(graph);
+    })
+);
+
+router.get(
+    '/graphs/pointsDivision',
+    asyncHandler(async (req, res) => {
+        const graph = await graphPointsDivision(ctx(req), { dateIn: req.query.dateIn, dateOut: req.query.dateOut });
+
+        log.info(logStr('pointsDivisionGraph', req.query));
 
         res.json(graph);
     })

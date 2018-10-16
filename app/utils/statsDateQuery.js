@@ -2,13 +2,15 @@ const APIError = require('@/utils/APIError');
 
 module.exports = (query, dateIn, dateOut) => {
     if (dateIn && dateOut) {
-        const dateIn = new Date(dateIn);
-        const dateOut = new Date(dateOut);
+        const start = new Date(dateIn);
+        const end = new Date(dateOut);
 
-        if (!Number.isNaN(dateIn.getTime()) && !Number.isNaN(dateOut.getTime())) {
-            query = query.where('clientTime', '>=', dateIn).where('clientTime', '<=', dateOut);
+        if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+            query = query.where('clientTime', '>=', start).where('clientTime', '<=', end);
         } else {
             throw new APIError(module, 400, 'Invalid dates');
         }
     }
+
+    return query;
 };

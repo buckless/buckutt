@@ -19,7 +19,7 @@ module.exports = async (ctx, { dateIn, dateOut, csv }) => {
                 .sum('amount as amount')
                 .groupBy('type')
         )
-        .fetchAll({ withRelated: csv ? relatedCsv : [] });
+        .fetchAll();
 
     return amounts.toJSON();
 };

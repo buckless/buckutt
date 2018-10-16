@@ -1,4 +1,3 @@
-const { groupBy } = require('lodash');
 const statsToCSV = require('@/helpers/statsToCSV');
 const dateQuery = require('@/utils/statsDateQuery');
 
@@ -11,22 +10,21 @@ module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
         query = query.where({ point_id: point });
     }
 
-    const results = await query.fetchAll({ withRelated: csv ? relatedCsv : [] });
-    const withdrawals = results.toJSON();
-
     if (csv) {
-        return statsToCSV.generate(withdrawals, statsToCSV.withdrawalFields);
+        const withdrawals = await query.fetchAll({ withRelated: relatedCsv });
+
+        return statsToCSV.generate(withdrawals.toJSON(), statsToCSV.withdrawalFields);
     }
 
-    const groupedWithdrawals = groupBy(withdrawals, 'cateringId');
+    const withdrawals = await query
+        .query(q =>
+            q
+                .select('cateringId as id', 'name')
+                .count('* as count')
+                .groupBy('cateringId', 'name')
+                .orderBy('name')
+        )
+        .fetchAll();
 
-    const mappedWithdrawals = Object.values(groupedWithdrawals)
-        .map(w => ({
-            id: w[0].cateringId,
-            name: w[0].name,
-            count: w.length
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name));
-
-    return mappedWithdrawals;
+    return withdrawals.toJSON();
 };

@@ -24,9 +24,7 @@ module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
                 .sum('credit as credit')
                 .groupBy('type')
         )
-        .fetchAll({ withRelated: csv ? relatedCsv : [] });
+        .fetchAll();
 
-    credits = credits.toJSON();
-
-    return credits;
+    return credits.toJSON();
 };
