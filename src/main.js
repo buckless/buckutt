@@ -12,7 +12,6 @@ import 'moment/locale/fr';
 import '@buckless/datetime-picker/dist/datetime-picker.min.css';
 import 'material-design-lite/material.min.js';
 import 'material-design-lite/material.min.css';
-import 'c3/c3.min.css';
 import './assets/font.css';
 
 import store from './store/index';

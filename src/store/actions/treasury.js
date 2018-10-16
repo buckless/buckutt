@@ -18,7 +18,7 @@ export function getPurchases({ commit, dispatch }, fields) {
                 objects: purchases
             });
 
-            return get(`services/treasury/withdrawals?${qString}`);
+            return get(`stats/withdrawals?${qString}`);
         })
         .then(withdrawals => {
             commit('CLEAROBJECT', 'withdrawals');

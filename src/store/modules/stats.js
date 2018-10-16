@@ -1,6 +1,9 @@
 const state = {
     curves: [],
-    curvesData: {}
+    curvesData: {},
+    globalData: {},
+    purchasesDivision: [],
+    reloadsDivision: []
 };
 
 // mutations
@@ -13,6 +16,15 @@ const mutations = {
     },
     DELETECURVE(state_, curveIndex) {
         state_.curves.splice(curveIndex, 1);
+    },
+    UPDATEGLOBALDATA(state_, globalData) {
+        state_.globalData = globalData;
+    },
+    UPDATEPURCHASESDIVISION(state_, purchasesDivision) {
+        state_.purchasesDivision = purchasesDivision;
+    },
+    UPDATERELOADSDIVISION(state_, reloadsDivision) {
+        state_.reloadsDivision = reloadsDivision;
     }
 };
 

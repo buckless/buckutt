@@ -4,12 +4,38 @@ import { get } from '../../lib/fetch';
  * Stats actions
  */
 
+export function fetchGlobalData({ commit }) {
+    return get('stats/graphs/global').then(globalData => {
+        commit('UPDATEGLOBALDATA', globalData);
+    });
+}
+
+export function fetchPointsDivision({ commit }, { dateIn, dateOut }) {
+    const q = [];
+
+    if (dateIn && dateOut) {
+        q.push(`dateIn=${dateIn.toISOString()}`);
+        q.push(`dateOut=${dateOut.toISOString()}`);
+    }
+
+    const qString = q.join('&');
+
+    return get(`stats/graphs/pointsDivision?${qString}`).then(pointsDivision => {
+        commit('UPDATEPURCHASESDIVISION', pointsDivision.purchases);
+        commit('UPDATERELOADSDIVISION', pointsDivision.reloads);
+    });
+}
+
 export function fetchCurvesData({ commit }, payload) {
     const q = [];
 
     if (payload.dateIn && payload.dateOut) {
         q.push(`dateIn=${payload.dateIn.toISOString()}`);
         q.push(`dateOut=${payload.dateOut.toISOString()}`);
+    }
+
+    if (payload.additive) {
+        q.push('additive=1');
     }
 
     const filters = payload.curves.map(curve => {

@@ -109,7 +109,7 @@ export default {
 
             const qString = treasuryQueryString(inputFields);
 
-            download(`services/treasury/csv/${this.data}?${qString}`)
+            download(`stats/${this.data}/csv?${qString}`)
                 .then(result => {
                     const currentTime = Math.floor(Date.now() / 1000);
                     this.notify({
