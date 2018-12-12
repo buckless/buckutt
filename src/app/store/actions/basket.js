@@ -200,8 +200,7 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
     return initialPromise
         .then(() =>
             store.dispatch('sendBasket', {
-                cardNumber,
-                assignedCard: options.assignedCard
+                cardNumber
             })
         )
         .then(() => {
@@ -308,7 +307,6 @@ export const sendBasket = (store, payload = {}) => {
 
     const localId = `transaction-id-${window.appId}-${Date.now()}`;
     const transactionToSend = {
-        assignedCard: payload.assignedCard,
         buyer: cardNumber,
         molType: config.buyerMeanOfLogin,
         date: now,
@@ -369,7 +367,8 @@ export const basketClickValidation = store => {
         cardNumber: store.state.auth.buyer.meanOfLogin,
         credit: store.state.auth.buyer.credit,
         options: {
-            assignedCard: true
+            // To fix: store if the card is paid while buyer login
+            paidCard: true
         }
     });
 };
