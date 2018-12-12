@@ -9,11 +9,6 @@ module.exports = async (ctx, { molToCheck, name, cateringId, clientTime }) => {
     let buyer;
 
     if (!mol || !mol.user || !mol.user.id) {
-        // don't create a new account if the card was already assigned
-        if (!ctx.event.useCardData) {
-            throw new APIError(module, 400, 'Invalid buyer');
-        }
-
         buyer = await createUser(
             ctx.models,
             ctx.event,
