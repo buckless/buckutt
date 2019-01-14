@@ -37,6 +37,16 @@ const main = async () => {
     app.locals.sub.subscribe('userCreditUpdate');
     app.locals.sub.subscribe('data');
     app.locals.sub.subscribe('alert');
+    app.locals.sub.subscribe('database-reconnect');
+
+    // reconnect to db if a service asks for it
+    app.locals.sub.on('message', channel => {
+        if (channel === 'database-reconnect') {
+            // add a setTimeout so that the emitter thread (who is already restarting connection)
+            // does not reconnect again
+            setTimeout(() => bookshelf.ready(), 100);
+        }
+    });
 
     // setup event emitters and redis
     live.setup(app);
