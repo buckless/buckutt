@@ -1,6 +1,9 @@
+const crypto = require('crypto');
 const moment = require('moment');
 const { bookshelf } = require('@/db');
 const APIError = require('@/utils/APIError');
+
+const keyGenerationPaths = ['/auth/checkDevice', '/auth/registerDevice'];
 
 /**
  * Retrieve the point id from the device fingerprint
@@ -11,11 +14,11 @@ module.exports = async (req, res, next) => {
         method: req.method
     };
 
-    if (!req.headers['x-fingerprint'] && !req.query.fingerprint) {
+    req.fingerprint = req.headers['x-fingerprint'] || req.query.fingerprint;
+
+    if (!req.fingerprint) {
         return next(new APIError(module, 401, 'Missing device fingerprint'));
     }
-
-    req.fingerprint = req.headers['x-fingerprint'] || req.query.fingerprint;
 
     let event;
     let device;
@@ -35,19 +38,38 @@ module.exports = async (req, res, next) => {
         return next(err);
     }
 
+    req.device = device;
+
+    if (keyGenerationPaths.indexOf(req.path) > -1) {
+        return next();
+    }
+
     /* istanbul ignore if */
     if (!device) {
-        return next(
-            new APIError(module, 404, 'Device not found', {
-                fingerprint: req.fingerprint
-            })
-        );
+        return next(new APIError(module, 404, 'Device not found'));
+    }
+
+    if (!device.authorized) {
+        return next(new APIError(module, 401, 'Unauthorized device'));
+    }
+
+    req.signature = req.headers['x-signature'] || req.query.signature;
+
+    if (!req.signature) {
+        return next(new APIError(module, 401, 'Device signature is missing'));
+    }
+
+    const payloadToCompare = `${req.fingerprint}-${req.method}-${req.path}`;
+    const hmac = crypto.createHmac('sha256', device.privateKey).update(payloadToCompare);
+    const signatureToCompare = hmac.digest('hex');
+
+    if (req.signature !== signatureToCompare) {
+        return next(new APIError(module, 401, 'Wrong device signature'));
     }
 
     let minPeriod = Infinity;
     let handled = false;
 
-    req.device = device;
     req.event = event;
     req.wiket = {};
     req.details.device = req.device.name;

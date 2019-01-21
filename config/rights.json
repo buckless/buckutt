@@ -72,6 +72,8 @@
       "openUrls": [
           "/",
           "/auth/login",
+          "/auth/checkDevice",
+          "/auth/registerDevice",
           "/manager/auth/askpin",
           "/manager/auth/generatepin",
           "/manager/auth/register",

@@ -4,9 +4,35 @@ const sanitizeUser = require('@/utils/sanitizeUser');
 const ctx = require('@/utils/ctx');
 const APIError = require('@/utils/APIError');
 
-const { fetchTicket, validateLoginBody, login } = require('@/actions/auth');
+const {
+    checkDevice,
+    registerDevice,
+    fetchTicket,
+    validateLoginBody,
+    login
+} = require('@/actions/auth');
 
 const router = require('express').Router();
+
+router.get(
+    '/checkDevice',
+    asyncHandler(async (req, res) => {
+        log.info(`Check device registration state`, req.details);
+
+        const { name, authorized, newPrivateKey } = await checkDevice(ctx(req), req.device);
+        res.json({ name, authorized, newPrivateKey });
+    })
+);
+
+router.post(
+    '/registerDevice',
+    asyncHandler(async (req, res) => {
+        log.info(`Register a new device`, req.details);
+
+        const { name, authorized } = await registerDevice(ctx(req), req.fingerprint);
+        res.json({ name, authorized });
+    })
+);
 
 router.get(
     '/assigner',

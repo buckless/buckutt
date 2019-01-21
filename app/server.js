@@ -11,7 +11,13 @@ const app = express();
 
 app.use(
     cors({
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Fingerprint', 'Idempotency-Key'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'X-Fingerprint',
+            'X-Signature',
+            'Idempotency-Key'
+        ],
         credentials: true,
         exposedHeaders: ['device', 'point', 'pointName', 'event', 'eventName', 'wiket'],
         origin: true

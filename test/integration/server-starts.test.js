@@ -15,7 +15,7 @@ const sleep = function (duration) {
 test('start the test application', async t => {
     await app();
 
-    const res = await axios.get('/');
+    const res = await axios.get('/auth/checkDevice');
 
     t.is(res.status, 200)
 
