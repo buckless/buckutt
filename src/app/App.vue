@@ -10,6 +10,7 @@
         <alcohol-warning v-if="isSellerMode" />
         <disconnect-warning />
         <error />
+        <associate />
         <alert v-if="alert" />
         <ticket v-if="lastUser.display && isCashMode" :user="lastUser" />
     </div>
@@ -17,7 +18,7 @@
 
 <script>
 import 'normalize.css';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import OfflineData from '@/../lib/offlineData';
 import fingerprint from '@/../lib/fingerprint';
@@ -30,6 +31,7 @@ import Alert from './components/Alert';
 import AlcoholWarning from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
 import Ticket from './components/Ticket';
+import Associate from './components/Associate';
 
 export default {
     name: 'App',
@@ -41,7 +43,8 @@ export default {
         Alert,
         AlcoholWarning,
         DisconnectWarning,
-        Ticket
+        Ticket,
+        Associate
     },
 
     computed: {
@@ -60,23 +63,7 @@ export default {
         }
     },
 
-    methods: {
-        ...mapActions([
-            'setupSocket',
-            'updateEssentials',
-            'updateStoredItems',
-            'updateUsersData',
-            'initQueue'
-        ])
-    },
-
     mounted() {
-        this.setupSocket();
-        this.initQueue();
-        this.updateEssentials();
-        this.updateStoredItems();
-        this.updateUsersData();
-
         window.nfc = nfc;
         window.fingerprint = fingerprint();
         window.appId = Date.now();

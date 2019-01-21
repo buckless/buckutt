@@ -59,7 +59,7 @@ const store = new Vuex.Store({
 
 store.subscribe(mutation => {
     if (mutation.type === 'RESTORE_MUTATION') {
-        store.dispatch('setupSocket');
+        store.dispatch('setupClient');
     }
 });
 

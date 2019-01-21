@@ -42,7 +42,7 @@ export const initQueue = store => {
 };
 
 export const syncQueue = store => {
-    if (store.state.online.offline.queue.locked) {
+    if (store.state.online.offline.queue.locked || !queue) {
         return;
     }
 
@@ -62,7 +62,7 @@ export const sendRequest = (store, job) => {
         !store.state.online.status || navigator.connection.downlink < 0.2 || job.forceOffline;
 
     if (job.noQueue) {
-        if (forceOffline) {
+        if (forceOffline && !job.forceOnline) {
             return (
                 job.offlineAnswer ||
                 Promise.reject({

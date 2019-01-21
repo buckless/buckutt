@@ -8,3 +8,4 @@ export * from './online';
 export * from './updateEssentials';
 export * from './history';
 export * from './queue';
+export * from './checkDevice';

@@ -2,6 +2,7 @@ const initialState = {
     alert: null,
     device: {
         id: null,
+        name: null,
         point: {
             id: null,
             name: null
@@ -23,7 +24,8 @@ const initialState = {
             alcohol: null,
             doubleValidation: null,
             showPicture: null
-        }
+        },
+        privateKey: null
     },
     buyer: {
         isAuth: false,
@@ -53,6 +55,14 @@ const initialState = {
 };
 
 const mutations = {
+    SET_PRIVATEKEY(state, payload) {
+        state.device.privateKey = payload;
+    },
+
+    SET_DEVICE_NAME(state, payload) {
+        state.device.name = payload;
+    },
+
     SET_DEVICE(state, payload) {
         state.device.id = payload.id;
         state.device.point = payload.point;
