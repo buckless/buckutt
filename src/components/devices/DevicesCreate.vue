@@ -1,6 +1,7 @@
 <template>
     <div>
         <h5>Créer un équipement</h5>
+        <strong>Attention:</strong> Ceci est une fonctionnalité avancée, utilisez-la uniquement si vous en connaissez l'utilité.<br />
         <form @submit.prevent="createDevice(newDevice)">
             <mdl-textfield floating-label="Nom" v-model="newDevice.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield><br />
             <mdl-button colored raised>Créer</mdl-button>

@@ -1,6 +1,11 @@
 <template>
     <div>
         <h5>Configurer l'équipement</h5>
+        <strong>Attention:</strong> Chaque modification sur cette page ne sera effective qu'en présence d'Internet.<br />
+        <b-detailedswitch label="Équipement associé" icon="cast" :value="focusedDevice.authorized" @input="updateAndSaveFocusedElement({ field: 'authorized', value: $event })">
+            Autoriser l'équipement à vendre dans votre événement.
+        </b-detailedswitch>
+
         <b-detailedswitch label="Badgeage avant achat" icon="done_all" :value="focusedDevice.doubleValidation" @input="updateAndSaveFocusedElement({ field: 'doubleValidation', value: $event })">
             Oblige l'acheteur à badger une première fois, afin de permettre au vendeur de connaître les articles et tarifs disponibles pour celui-ci, ainsi que de connaître son solde ou vérifier son identité, avant de prendre sa commande. Si cette option n'est pas activée, les tarifs du groupe par défaut défini dans le point de vente sera utilisé.
         </b-detailedswitch>
@@ -24,13 +29,31 @@ export default {
         ...mapActions(['updateObject', 'updateDeepestFocusedElement', 'notify', 'notifyError']),
 
         updateAndSaveFocusedElement(payload) {
-            this.updateDeepestFocusedElement(payload).then(() =>
-                this.updateDevice(this.focusedDevice)
-            );
+            const sendPrivateKey = payload.field === 'authorized' && payload.value;
+
+            this.updateDeepestFocusedElement(payload)
+                .then(
+                    () =>
+                        payload.field === 'authorized'
+                            ? this.updateDeepestFocusedElement({
+                                  field: 'sendPrivateKey',
+                                  value: sendPrivateKey
+                              })
+                            : Promise.resolve()
+                )
+                .then(() => this.updateDevice(this.focusedDevice));
         },
 
         updateDevice(device) {
-            const fields = ['id', 'doubleValidation', 'alcohol', 'showPicture'];
+            console.log(device);
+            const fields = [
+                'id',
+                'authorized',
+                'sendPrivateKey',
+                'doubleValidation',
+                'alcohol',
+                'showPicture'
+            ];
 
             this.updateObject({ route: 'devices', value: pick(device, fields) })
                 .then(() => this.notify({ message: 'La modification a bien été prise en compte' }))

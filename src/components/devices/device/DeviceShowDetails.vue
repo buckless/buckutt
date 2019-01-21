@@ -31,6 +31,11 @@ export default {
             if (!this.focusedDevice.isUser) {
                 elements.push(
                     {
+                        icon: 'cast',
+                        title: 'Équipement associé',
+                        content: this.focusedDevice.authorized ? 'Oui' : 'Non'
+                    },
+                    {
                         icon: 'done_all',
                         title: 'Badgeage avant achat',
                         content: this.focusedDevice.doubleValidation ? 'Activé' : 'Désactivé'
