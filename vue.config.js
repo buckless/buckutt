@@ -1,4 +1,5 @@
 const path = require('path');
+const crypto = require('crypto');
 
 const theme = {
     theme: process.env.VUE_APP_COLORS_THEME || '#1abc9c',
@@ -11,6 +12,13 @@ const theme = {
 const sassTheme = Object.keys(theme)
     .map(name => `$${name}: ${theme[name]};`)
     .join('\n');
+
+const generateSignature = (method, url) => {
+    const signPath = url.replace('/api/v1', '');
+    const signaturePayload = `manager-${method}-/${signPath}`;
+    const hmac = crypto.createHmac('sha256', 'manager').update(signaturePayload);
+    return hmac.digest('hex');
+};
 
 module.exports = {
     css: {
@@ -33,25 +41,49 @@ module.exports = {
                       target: 'http://0.0.0.0:3000/api/v1/auth/login',
                       changeOrigin: true,
                       pathRewrite: { '/api/login': '' },
-                      headers: { 'X-Fingerprint': 'manager' }
+                      headers: { 'X-Fingerprint': 'manager' },
+                      onProxyReq: proxyReq => {
+                          proxyReq.setHeader(
+                              'x-Signature',
+                              generateSignature(proxyReq.method, proxyReq.path)
+                          );
+                      }
                   },
                   '/api/callback': {
                       target: 'http://0.0.0.0:3000/api/v1/provider/callback',
                       changeOrigin: true,
                       pathRewrite: { '/api/callback': '' },
-                      headers: { 'X-Fingerprint': 'manager' }
+                      headers: { 'X-Fingerprint': 'manager' },
+                      onProxyReq: proxyReq => {
+                          proxyReq.setHeader(
+                              'x-Signature',
+                              generateSignature(proxyReq.method, proxyReq.path)
+                          );
+                      }
                   },
                   '/api': {
                       target: 'http://0.0.0.0:3000/api/v1/manager/',
                       changeOrigin: true,
                       pathRewrite: { '/api': '' },
-                      headers: { 'X-Fingerprint': 'manager' }
+                      headers: { 'X-Fingerprint': 'manager' },
+                      onProxyReq: proxyReq => {
+                          proxyReq.setHeader(
+                              'x-Signature',
+                              generateSignature(proxyReq.method, proxyReq.path)
+                          );
+                      }
                   },
                   '/live': {
                       target: 'http://0.0.0.0:3000/api/v1/live',
                       changeOrigin: true,
                       pathRewrite: { '/live': '' },
-                      headers: { 'X-Fingerprint': 'manager' }
+                      headers: { 'X-Fingerprint': 'manager' },
+                      onProxyReq: proxyReq => {
+                          proxyReq.setHeader(
+                              'x-Signature',
+                              generateSignature(proxyReq.method, proxyReq.path)
+                          );
+                      }
                   }
               }
             : undefined
