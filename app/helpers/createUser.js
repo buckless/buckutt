@@ -54,13 +54,13 @@ module.exports = async (
     if (anonymousData) {
         molsToSkip.push('cardId');
         newUser = new ctx.models.User({ id: anonymousData.id });
-        return newUser.save(userData, { patch: true });
+        await newUser.save(userData, { patch: true });
+    } else {
+        // Only set clientTime on user creation
+        userData.clientTime = clientTime;
+        newUser = new ctx.models.User(userData);
+        await newUser.save();
     }
-
-    // Only set clientTime on user creation
-    userData.clientTime = clientTime;
-    newUser = new ctx.models.User(userData);
-    await newUser.save();
 
     const userName =
         mergeUser.username || (await username(newUser.get('firstname'), newUser.get('lastname')));
