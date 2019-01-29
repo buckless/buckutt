@@ -1,7 +1,5 @@
-// const config = require("../../../../../config");
-
 export function read(transmit, log, callback) {
-    const readBuf = Buffer.from([0xff, 0xb0, 0x00, 0x00, config.ultralight.cardLength]);
+    const readBuf = Buffer.from([0xff, 0xb0, 0x00, 0x00, window.config.ultralight.cardLength]);
 
     log(`out: ${readBuf.toString('hex')}`);
     return transmit(readBuf).then(data => {
@@ -13,7 +11,8 @@ export function read(transmit, log, callback) {
 }
 
 export function write(data, transmit, log) {
-    const dataLength = config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
+    const dataLength =
+        window.config.ultralight.cardLength - window.config.ultralight.firstWritablePage * 4;
 
     const buf = Buffer.from(data);
     const newBuf = Buffer.alloc(dataLength, 0);
@@ -53,7 +52,7 @@ export function write(data, transmit, log) {
                     0xff,
                     0xd6,
                     0x00,
-                    i + config.ultralight.firstWritablePage,
+                    i + window.config.ultralight.firstWritablePage,
                     0x04,
                     ...page
                 ]);

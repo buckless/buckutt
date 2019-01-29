@@ -4,7 +4,7 @@ Dexie = Dexie.default ? Dexie.default : Dexie;
 
 class OfflineData {
     constructor() {
-        this.db = new Dexie('buckless.db');
+        this.db = new Dexie(`buckless.db`);
     }
 
     init() {
@@ -16,6 +16,15 @@ class OfflineData {
         });
 
         return Promise.resolve();
+    }
+
+    wipe() {
+        return Promise.all([
+            this.db.tickets.clear(),
+            this.db.accesses.clear(),
+            this.db.pendingCardUpdates.clear(),
+            this.db.images.clear()
+        ]);
     }
 
     setImage(id, blob) {

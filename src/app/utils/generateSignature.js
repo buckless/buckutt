@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 
 export default (privateKey, fingerprint, method, url) => {
-    console.log(privateKey);
     if (!privateKey) {
         return;
     }

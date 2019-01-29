@@ -15,6 +15,7 @@ import ui from './modules/ui';
 import basket from './modules/basket';
 import online from './modules/online';
 import history from './modules/history';
+import device from './modules/device';
 
 Vue.use(Vuex);
 
@@ -29,6 +30,10 @@ const vuexPersist = new VuexPersistence({
         // do not restore online.status
         online: {
             offline: state.online.offline
+        },
+        device: {
+            ...state.device,
+            storeLoaded: false
         }
     })
 });
@@ -51,7 +56,8 @@ const store = new Vuex.Store({
         ui,
         basket,
         online,
-        history
+        history,
+        device
     },
     strict: debug,
     plugins: debug ? [createLogger(), vuexPersist.plugin] : [vuexPersist.plugin]
@@ -59,7 +65,9 @@ const store = new Vuex.Store({
 
 store.subscribe(mutation => {
     if (mutation.type === 'RESTORE_MUTATION') {
+        window.config = store.state.device.config;
         store.dispatch('setupClient');
+        store.commit('SET_STORE_LOADED', true);
     }
 });
 

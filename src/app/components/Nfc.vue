@@ -40,10 +40,11 @@
 /* global Keyboard */
 import { mapState } from 'vuex';
 import { EventEmitter } from 'events';
-import nfc from '@/../lib/nfc';
+import NFC from '@/../lib/nfc';
 const debug = require('debug')('nfc:vue');
 
 const noSign = true;
+let nfc;
 
 export default {
     props: {
@@ -68,7 +69,8 @@ export default {
             },
             timer: 15,
             currentTimer: null,
-            cardLocked: false
+            cardLocked: false,
+            nfc: null
         };
     },
 
@@ -124,9 +126,6 @@ export default {
 
         setListeners() {
             debug('set listeners');
-            if (!nfc) {
-                throw new Error('nfc not available');
-            }
 
             if (this.useCardData) {
                 debug('use card data');
@@ -284,7 +283,8 @@ export default {
                         this.$store.commit('SET_DATA_LOADED', false);
                     }
                 })
-                .catch(() => {
+                .catch(err => {
+                    debug(err);
                     this.rewrite = true;
                     this.resetTimer();
                     this.$store.commit('SET_DATA_LOADED', true);
@@ -342,6 +342,10 @@ export default {
 
     mounted() {
         debug('mounting component...');
+        if (!nfc) {
+            nfc = new NFC();
+        }
+
         this.resetComponent();
         this.setListeners();
     },

@@ -2,15 +2,12 @@ const EventEmitter = require('events');
 const { chunk } = require('lodash/array');
 const debug = require('debug')('nfc:cordova:nfc:ultralight');
 
-let config = require('../../../../../config');
-
 export class UltralightC extends EventEmitter {
     constructor() {
         super();
 
         this.shouldLock = false;
         this.shouldUnlock = false;
-        this.pin = parseInt(config.ultralight.pin, 16);
 
         document.addEventListener('mifareTagDiscovered', tag => {
             debug('tag discovered', tag);
@@ -70,7 +67,7 @@ export class UltralightC extends EventEmitter {
     }
 
     read() {
-        const { firstWritablePage, cardLength } = config.ultralight;
+        const { firstWritablePage, cardLength } = window.config.ultralight;
 
         const repeat = Math.ceil(cardLength / 4);
 
@@ -104,7 +101,9 @@ export class UltralightC extends EventEmitter {
     }
 
     write(data) {
-        const dataLength = config.ultralight.cardLength - config.ultralight.firstWritablePage * 4;
+        const pin = parseInt(window.config.ultralight.pin, 16);
+        const dataLength =
+            window.config.ultralight.cardLength - window.config.ultralight.firstWritablePage * 4;
 
         const buf = Buffer.from(data);
         const newBuf = Buffer.alloc(dataLength, 0);
@@ -133,8 +132,8 @@ export class UltralightC extends EventEmitter {
         } while (i <= buf.length);
 
         let sequence = Promise.resolve();
-        if (this.shouldUnlock && this.pin) {
-            sequence = this.unlock(this.pin);
+        if (this.shouldUnlock && pin) {
+            sequence = this.unlock(pin);
         }
 
         // Write in sequence
@@ -145,7 +144,7 @@ export class UltralightC extends EventEmitter {
                 .then(() => {
                     return new Promise((resolve, reject) => {
                         window.mifare.write(
-                            i + config.ultralight.firstWritablePage,
+                            i + window.config.ultralight.firstWritablePage,
                             Array.from(page).map(int => int.toString(16)),
                             res => resolve(res),
                             err => {
@@ -160,8 +159,8 @@ export class UltralightC extends EventEmitter {
                 });
         }
 
-        if (this.shouldLock && this.pin) {
-            sequence = sequence.then(() => this.lock(this.pin));
+        if (this.shouldLock && pin) {
+            sequence = sequence.then(() => this.lock(pin));
         }
 
         return sequence.then(() => newBuf).catch(err => {

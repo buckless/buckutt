@@ -2,7 +2,7 @@
     <div id="app">
         <topbar />
         <main class="b-main">
-            <router-view />
+            <router-view v-if="displayApp" />
         </main>
         <transition name="b--fade">
             <loading v-if="loaded === false" />
@@ -10,6 +10,7 @@
         <alcohol-warning v-if="isSellerMode" />
         <disconnect-warning />
         <error />
+        <config />
         <associate />
         <alert v-if="alert" />
         <ticket v-if="lastUser.display && isCashMode" :user="lastUser" />
@@ -20,9 +21,8 @@
 import 'normalize.css';
 import { mapGetters, mapState } from 'vuex';
 
-import OfflineData from '@/../lib/offlineData';
 import fingerprint from '@/../lib/fingerprint';
-import nfc from '@/../lib/nfc';
+import OfflineData from '@/../lib/offlineData';
 
 import Topbar from './components/Topbar';
 import Loading from './components/Loading';
@@ -32,6 +32,7 @@ import AlcoholWarning from './components/AlcoholWarning';
 import DisconnectWarning from './components/DisconnectWarning';
 import Ticket from './components/Ticket';
 import Associate from './components/Associate';
+import Config from './components/Config';
 
 export default {
     name: 'App',
@@ -44,7 +45,8 @@ export default {
         AlcoholWarning,
         DisconnectWarning,
         Ticket,
-        Associate
+        Associate,
+        Config
     },
 
     computed: {
@@ -53,18 +55,25 @@ export default {
             loaded: state => state.ui.dataLoaded,
             lastUser: state => state.ui.lastUser,
             reloadState: state => state.reload.reloadState,
-            alert: state => state.auth.alert
+            alert: state => state.auth.alert,
+            api: state => state.device.api,
+            changeApi: state => state.device.changeApi,
+            config: state => state.device.config,
+            storeLoaded: state => state.device.storeLoaded
         }),
 
         ...mapGetters(['isSellerMode', 'isReloaderMode', 'isCashMode']),
 
         reloadOnly() {
             return !this.isSellerMode && this.isReloaderMode;
+        },
+
+        displayApp() {
+            return this.storeLoaded && this.config && this.api && !this.changeApi;
         }
     },
 
     mounted() {
-        window.nfc = nfc;
         window.fingerprint = fingerprint();
         window.appId = Date.now();
         window.database = new OfflineData();

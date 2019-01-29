@@ -45,7 +45,7 @@ export default {
 
         remove() {
             this.content.forEach(content => {
-                this.removeItemFromBasket(content.id);
+                this.removeItemFromBasket({ id: content.id });
             });
         },
 

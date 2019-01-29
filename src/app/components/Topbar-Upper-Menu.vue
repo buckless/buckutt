@@ -52,6 +52,14 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
+                    v-if="!displayLogout"
+                    class="b-menu__actions__action"
+                    @click="close(resetApi)">
+                    <i class="b-icon">developer_board</i>
+                    Changer de serveur
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
                     v-if="displayLogout"
                     class="b-menu__actions__action"
                     @click="close(logoutSeller)">
@@ -95,7 +103,11 @@ export default {
         },
 
         displayCatering() {
-            const articles = Object.values(config.catering.articles);
+            if (!window.config) {
+                return false;
+            }
+
+            const articles = Object.values(window.config.catering.articles);
 
             return articles.length > 0;
         },
@@ -127,6 +139,10 @@ export default {
             this.$router.push('items');
         },
 
+        resetApi() {
+            this.startChangeApi(true);
+        },
+
         toggleHistory() {
             this.$router.push('history');
         },
@@ -147,7 +163,7 @@ export default {
             this.$router.push('/items/reload');
         },
 
-        ...mapActions(['clearBasket', 'logout'])
+        ...mapActions(['clearBasket', 'logout', 'startChangeApi'])
     }
 };
 </script>

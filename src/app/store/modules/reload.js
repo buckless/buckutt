@@ -37,6 +37,12 @@ const mutations = {
     LOGOUT_BUYER(state) {
         state.meanOfPayment = 'card';
         state.reloads = [];
+    },
+
+    RESET_RELOAD_STATE(state) {
+        for (let [key, value] of Object.entries(initialState)) {
+            state[key] = value;
+        }
     }
 };
 

@@ -28,7 +28,7 @@ export const processInsertDelete = (store, payload) => {
 };
 
 export const updateUsersData = store => {
-    if (lockUsers) {
+    if (lockUsers || !store.state.device.api) {
         return Promise.resolve();
     }
 
@@ -103,7 +103,7 @@ let lockItems = false;
 let loopItems;
 
 export const updateStoredItems = store => {
-    if (lockItems) {
+    if (lockItems || !store.state.device.api) {
         return Promise.resolve();
     }
 
@@ -137,7 +137,7 @@ let lockEvent = false;
 let loopEvent;
 
 export const updateEssentials = (store, force) => {
-    if (lockEvent) {
+    if (lockEvent || !store.state.device.api) {
         return Promise.resolve();
     }
 

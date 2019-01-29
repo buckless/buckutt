@@ -15,6 +15,12 @@ const mutations = {
 
     SET_UNALLOWED_ITEMS_NAMES(state, payload) {
         state.unallowedItemsNames = payload;
+    },
+
+    RESET_BASKET_STATE(state) {
+        for (let [key, value] of Object.entries(initialState)) {
+            state[key] = value;
+        }
     }
 };
 

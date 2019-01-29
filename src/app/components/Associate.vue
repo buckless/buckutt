@@ -1,8 +1,8 @@
 <template>
-    <div class="b-associate" v-if="!privateKey">
-        <div class="b-associate__drop"></div>
+    <div class="b-associate" v-if="!privateKey && !changeApi && api">
+        <div class="b-associate__drop" @click="startChangeApi(true)"></div>
         <div class="b-associate__modal">
-            <h3 class="b-associate__modal__title">Associer l'équipement</h3>
+            <h3 class="b-associate__modal__title">Associer l'équipement (2/2)</h3>
             <div class="b-associate__modal__text">
                 <span v-if="!error">
                     L'équipement n'est actuellement pas associé à votre serveur Cashless.<br />
@@ -34,7 +34,9 @@ export default {
 
     computed: mapState({
         privateKey: state => state.auth.device.privateKey,
-        name: state => state.auth.device.name
+        name: state => state.auth.device.name,
+        api: state => state.device.api,
+        changeApi: state => state.device.changeApi
     }),
 
     methods: {
@@ -49,7 +51,7 @@ export default {
             }
         },
 
-        ...mapActions(['checkDevice'])
+        ...mapActions(['checkDevice', 'startChangeApi'])
     }
 };
 </script>

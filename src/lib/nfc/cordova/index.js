@@ -35,14 +35,16 @@ class NFC extends EventEmitter {
     }
 
     dataToCard(data, signingKey) {
-        return signedData.key(signingKey).decode(data);
+        return signedData()
+            .key(signingKey)
+            .decode(data);
     }
 
     cardToData(data, signingKey) {
-        return signedData.key(signingKey).encode(data);
+        return signedData()
+            .key(signingKey)
+            .encode(data);
     }
 }
 
-const inst = new NFC();
-
-export default inst;
+export default NFC;

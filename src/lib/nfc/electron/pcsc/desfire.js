@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-// const config = require("../../../../../config");
 
 function decrypt(key, data, iv = Buffer.alloc(8).fill(0)) {
     const decipher = crypto.createDecipheriv('DES-EDE-CBC', key, iv);
@@ -20,10 +19,10 @@ function wrap(code, data) {
 }
 
 export function read(transmit, log, callback) {
-    const appId = JSON.parse(config.desfire.appId);
-    const fileId = JSON.parse(config.desfire.fileId);
-    const keyId = JSON.parse(config.desfire.keyId);
-    const dkey = JSON.parse(config.desfire.key);
+    const appId = JSON.parse(window.config.desfire.appId);
+    const fileId = JSON.parse(window.config.desfire.fileId);
+    const keyId = JSON.parse(window.config.desfire.keyId);
+    const dkey = JSON.parse(window.config.desfire.key);
 
     log(`out: ${wrap(0x5a, appId).toString('hex')}`);
     return transmit(wrap(0x5a, appId), 40)

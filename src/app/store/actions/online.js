@@ -22,7 +22,7 @@ export const setupSocket = ({ state, commit, dispatch }) =>
 
         status = new EventSource(
             `${
-                config.api
+                state.device.api
             }/live/status?fingerprint=${fingerprint}&signature=${signature}&handshake-interval=20000&lastEventId=12345&retry=3000`
         );
 
@@ -73,7 +73,7 @@ export const listenAlerts = ({ state, dispatch }) => {
         );
 
         alert = new EventSource(
-            `${config.api}/live/alert?authorization=Bearer ${token}&fingerprint=${
+            `${state.device.api}/live/alert?authorization=Bearer ${token}&fingerprint=${
                 window.fingerprint
             }&signature=${signature}&handshake-interval=20000&lastEventId=12345&retry=3000`
         );
@@ -98,7 +98,7 @@ export const logOperator = store => {
     }
 
     const credentials = {
-        meanOfLogin: config.loginMeanOfLogin,
+        meanOfLogin: window.config.loginMeanOfLogin,
         data: store.state.auth.seller.meanOfLogin,
         pin: store.state.auth.seller.pin
     };
@@ -111,7 +111,7 @@ export const logOperator = store => {
     );
 
     // Use axios to avoid a logOperator loop
-    return axios
+    return axios(store.state.device.api)
         .post('services/login', credentials, {
             headers: {
                 'X-fingerprint': window.fingerprint,
@@ -144,7 +144,7 @@ export const currentTokenAxios = (store, job) => {
 
     // We try to log-in the current seller before any request
     return store.dispatch('logOperator').then(() =>
-        axios({
+        axios(store.state.device.api)({
             method,
             url: job.url,
             data: job.data,

@@ -1,12 +1,19 @@
 import localForage from 'localforage';
 import uuid from 'uuid';
+import crypto from 'crypto';
 import Queue from '@buckless/offline-queue';
 
 let queue;
+let currentApiQueue;
 
 export const initQueue = store => {
-    if (queue) {
+    if (!store.state.device.api || (queue && store.state.device.api === currentApiQueue)) {
         return;
+    }
+
+    currentApiQueue = store.state.device.api;
+    if (queue) {
+        queue.destroy();
     }
 
     queue = new Queue({
@@ -15,7 +22,12 @@ export const initQueue = store => {
         },
 
         interval: 60000,
-        storage: localForage
+        storage: localForage.createInstance({
+            storeName: crypto
+                .createHash('md5')
+                .update(currentApiQueue)
+                .digest('hex')
+        })
     });
 
     queue.on('processed', (job, result) => {
@@ -31,11 +43,12 @@ export const initQueue = store => {
         store.commit('LOCK_QUEUE', true);
     });
 
-    queue.on('synchronized', () => {
+    queue.on('synchronized', remainingQueue => {
         store.dispatch('sendValidCancellations').then(() => {
             setTimeout(() => {
                 store.commit('LOCK_QUEUE', false);
                 store.commit('SET_LAST_QUEUE', new Date());
+                store.commit('SET_QUEUE_FILLED', remainingQueue.length > 0);
             }, 200);
         });
     });
@@ -76,6 +89,7 @@ export const sendRequest = (store, job) => {
         });
     }
 
+    store.commit('SET_QUEUE_FILLED', true);
     return queue.push({
         data: {
             method: job.method,

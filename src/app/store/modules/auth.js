@@ -140,6 +140,7 @@ const mutations = {
 
     LOGOUT_SELLER(state) {
         state.seller.isAuth = false;
+        state.seller.pin = '';
     },
 
     FIRST_LOGOUT_SELLER(state) {
@@ -161,6 +162,12 @@ const mutations = {
 
     CLOSE_ALERT(state) {
         state.alert = null;
+    },
+
+    RESET_AUTH_STATE(state) {
+        for (let [key, value] of Object.entries(initialState)) {
+            state[key] = value;
+        }
     }
 };
 

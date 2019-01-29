@@ -1,7 +1,5 @@
-// const config = require("../../../../../config");
-
 export function read(transmit, log, callback) {
-    return transmit(Buffer.from(JSON.parse(config.classic.fileId)), 40).then(data => {
+    return transmit(Buffer.from(JSON.parse(window.config.classic.fileId)), 40).then(data => {
         const code = data.toString().replace(/\D+/g, '');
 
         if (code.length > 0) {

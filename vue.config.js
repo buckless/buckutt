@@ -59,12 +59,6 @@ module.exports = {
         );
 
         config.plugins.push(
-            new webpack.DefinePlugin({
-                config: require('./config')
-            })
-        );
-
-        config.plugins.push(
             new PostCompile(() => {
                 if (target === 'cordova') {
                     shell.rm('-r', path.join(__dirname, 'cordova', 'www'));

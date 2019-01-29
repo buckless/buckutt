@@ -68,9 +68,6 @@ export const login = ({ commit, dispatch, state }, { meanOfLogin, password }) =>
                 .then(() => dispatch('updateStoredItems'))
                 .then(() => dispatch('loadDefaultItems'));
         })
-        .then(() => {
-            console.log('setup socket');
-        })
         .then(() => dispatch('setupSocket', state.auth.seller.token))
         .then(() => commit('SET_DATA_LOADED', true))
         .catch(err => {
@@ -91,7 +88,6 @@ export const login = ({ commit, dispatch, state }, { meanOfLogin, password }) =>
 export const logoutBuyer = store => {
     if (store.state.auth.buyer.isAuth) {
         store.commit('LOGOUT_BUYER');
-        store.commit('UPDATE_TOKEN', '');
 
         return store.dispatch('clearBasket').then(() => store.dispatch('loadDefaultItems'));
     }
@@ -101,6 +97,7 @@ export const logoutBuyer = store => {
 
 export const pursueLogout = ({ commit, dispatch }) => {
     commit('LOGOUT_SELLER');
+    commit('UPDATE_TOKEN', '');
     commit('ID_SELLER', '');
     // Remove disconnect warning
     commit('REMOVE_LOGOUT_WARNING');

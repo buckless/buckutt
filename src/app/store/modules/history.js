@@ -69,6 +69,18 @@ const mutations = {
         }
 
         state.catering[id] += 1;
+    },
+
+    RESET_HISTORY_STATE(state) {
+        for (let [key, value] of Object.entries(initialState)) {
+            state[key] = value;
+        }
+    },
+
+    SET_HISTORY_STATE(state, payload) {
+        for (let [key, value] of Object.entries(payload)) {
+            state[key] = value;
+        }
     }
 };
 

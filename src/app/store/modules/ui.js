@@ -55,6 +55,12 @@ const mutations = {
 
     ERROR(state, err) {
         state.error = err;
+    },
+
+    RESET_UI_STATE(state) {
+        for (let [key, value] of Object.entries(initialState)) {
+            state[key] = value;
+        }
     }
 };
 

@@ -21,7 +21,8 @@ const initialState = {
         },
         queue: {
             locked: false,
-            lastUpdate: null
+            lastUpdate: null,
+            filled: false
         }
     }
 };
@@ -77,6 +78,16 @@ const mutations = {
 
     SET_LAST_QUEUE(state, payload) {
         state.offline.queue.lastUpdate = payload;
+    },
+
+    SET_QUEUE_FILLED(state, payload) {
+        state.offline.queue.filled = payload;
+    },
+
+    RESET_ONLINE_STATE(state) {
+        for (let [key, value] of Object.entries(initialState)) {
+            state[key] = value;
+        }
     }
 };
 

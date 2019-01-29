@@ -37,8 +37,8 @@ const mutations = {
         state.basket.itemList.push(item);
     },
 
-    REMOVE_ITEM(state, id) {
-        const index = state.basket.itemList.findIndex(item => item.id === id);
+    REMOVE_ITEM(state, removedItem) {
+        const index = state.basket.itemList.findIndex(item => item.id === removedItem.id);
 
         if (index > -1) {
             state.basket.itemList.splice(index, 1);
@@ -63,6 +63,12 @@ const mutations = {
         state.basket = {
             itemList: []
         };
+    },
+
+    RESET_ITEMS_STATE(state) {
+        for (let [key, value] of Object.entries(initialState)) {
+            state[key] = value;
+        }
     }
 };
 
