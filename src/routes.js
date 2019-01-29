@@ -2,7 +2,6 @@ import accesses from './components/accesses/routes';
 import account from './components/account/routes';
 import alerts from './components/alerts/routes';
 import articles from './components/articles/routes';
-import categories from './components/categories/routes';
 import dashboard from './components/dashboard/routes';
 import devices from './components/devices/routes';
 import events from './components/events/routes';
@@ -24,7 +23,6 @@ export default [].concat(
     account,
     alerts,
     articles,
-    categories,
     dashboard,
     devices,
     events,

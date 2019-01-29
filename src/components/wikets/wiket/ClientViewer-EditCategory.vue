@@ -1,9 +1,8 @@
 <template>
-    <div>
-        <h5>Modifier la catégorie {{ focusedCategory.name }}:</h5>
+    <div class="b-editcategory">
+        <h5>Modifier la catégorie {{ focusedCategory.name }}</h5>
         <form @submit.prevent="updateCategory(focusedCategory)">
             <mdl-textfield floating-label="Nom" :value="focusedCategory.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
-            <br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>
     </div>
@@ -33,7 +32,7 @@ export default {
 
     computed: {
         ...mapState({
-            focusedCategory: state => state.app.focusedElements[0]
+            focusedCategory: state => state.app.focusedElements[1]
         })
     }
 };

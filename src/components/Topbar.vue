@@ -10,10 +10,6 @@
                     <i class="material-icons">alarm</i><br />
                     Périodes
                 </router-link>
-                <router-link to="/categories" class="mdl-navigation__link">
-                    <i class="material-icons">format_list_numbered</i><br />
-                    Catégories
-                </router-link>
                 <router-link to="/fundations" class="mdl-navigation__link" v-if="event.useFundations">
                     <i class="material-icons">local_atm</i><br />
                     Fondations

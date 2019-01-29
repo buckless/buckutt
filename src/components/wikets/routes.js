@@ -10,6 +10,7 @@ import PointPreferences from './point/PointPreferences.vue';
 import ClientViewer from './wiket/ClientViewer';
 import ClientAddArticle from './wiket/ClientViewer-AddArticle';
 import ClientPanel from './wiket/ClientViewer-Panel';
+import ClientEditCategory from './wiket/ClientViewer-EditCategory';
 import WiketAddCategory from './wiket/WiketAddCategory';
 
 import WiketShow from './wiket/WiketShow.vue';
@@ -47,6 +48,10 @@ export default [
                 path: 'category/:category',
                 component: ClientViewer,
                 children: [
+                    {
+                        path: 'edit',
+                        component: ClientEditCategory
+                    },
                     {
                         path: 'article/add',
                         component: ClientAddArticle

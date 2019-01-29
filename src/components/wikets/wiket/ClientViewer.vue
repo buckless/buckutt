@@ -20,8 +20,14 @@
                 </b-clientitem>
             </div>
             <div class="b-clientviewer__sidebar">
+                <div @click="editCategory()">
+                    <span>Renommer la catégorie</span>
+                </div>
                 <b-confirm @confirm="unlinkCategory()">
                     Enlever la catégorie du guichet
+                </b-confirm>
+                <b-confirm @confirm="removeCategory()">
+                    Supprimer la catégorie
                 </b-confirm>
                 <div class="b-clientviewer__promotions" v-if="tabPromotions.length > 0">
                     <div>
@@ -53,7 +59,23 @@ export default {
     },
 
     methods: {
-        ...mapActions(['removeRelation', 'notify', 'notifyError']),
+        ...mapActions(['removeRelation', 'removeObject', 'notify', 'notifyError']),
+
+        removeCategory() {
+            this.removeObject({ route: 'categories', value: this.focusedCategory })
+                .then(() => {
+                    this.notify({
+                        message: 'La catégorie a bien été supprimée'
+                    });
+                    this.$router.push(this.addPath);
+                })
+                .catch(err =>
+                    this.notifyError({
+                        message: "La catégorie n'a pas pu être supprimée",
+                        full: err
+                    })
+                );
+        },
 
         unlinkCategory() {
             this.removeRelation({
@@ -78,6 +100,10 @@ export default {
                         full: err
                     })
                 );
+        },
+
+        editCategory() {
+            this.$router.push(`${this.categoryPath}/edit`);
         }
     },
 
@@ -200,7 +226,6 @@ export default {
             display: flex;
             flex-wrap: wrap;
             overflow-y: auto;
-            padding: 10px;
             flex: 1;
         }
 
@@ -211,11 +236,14 @@ export default {
             overflow-y: auto;
             width: 20%;
             margin: -10px -20px -20px 0px;
-            padding: 20px 0px 0px 0px;
 
-            & > div:first-child {
+            & > div:first-child,
+            & > div:nth-child(2),
+            & > div:nth-child(3) {
                 width: 100%;
                 text-align: center;
+                border-bottom: 1px solid #e0e0e0;
+                padding: 10px 0px 10px 0px;
 
                 & > span {
                     font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
@@ -236,7 +264,6 @@ export default {
             }
 
             & > .b-clientviewer__promotions {
-                border-top: 1px solid #e0e0e0;
                 margin: 10px 0px 0px -20px;
                 padding: 10px 0px 10px 40px;
 
