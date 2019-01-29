@@ -109,5 +109,32 @@
             "key": "",
             "version": "1"
         }
+    },
+    "client": {
+        "images": "\"http://images:3400\"",
+        "loginMeanOfLogin": "\"cardId\"",
+        "buyerMeanOfLogin": "\"cardId\"",
+        "signingKey": "\"buckless\"",
+        "sentry": "\"https://28b38832484d4f22994e50c24d5d6a6a@sentry.io/1207636\"",
+        "desfire"         : {
+            "key"   : "\"0\"",
+            "keyId" : "[4]",
+            "fileId": "[2, 0, 0, 0, 14, 0, 0]",
+            "appId" : "[64, 132, 245]"
+        },
+        "classic": {
+            "fileId": "[255, 243, 0, 5]"
+        },
+        "ultralight": {
+            "cardLength": 68,
+            "firstWritablePage": 4,
+            "pin": "0x11223344"
+        },
+        "catering": {
+           "dayOne": "\"2018-06-02T00:00:00.000Z\"",
+           "duration": "1",
+           "articles": [
+           ]
+        }
     }
 }

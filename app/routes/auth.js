@@ -19,8 +19,8 @@ router.get(
     asyncHandler(async (req, res) => {
         log.info(`Check device registration state`, req.details);
 
-        const { name, authorized, newPrivateKey } = await checkDevice(ctx(req), req.device);
-        res.json({ name, authorized, newPrivateKey });
+        const { name, authorized, newPrivateKey, config } = await checkDevice(ctx(req), req.device);
+        res.json({ name, authorized, newPrivateKey, config });
     })
 );
 

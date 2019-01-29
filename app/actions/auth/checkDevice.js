@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const APIError = require('@/utils/APIError');
+const config = require('@/config').client;
 
 const generateKey = () =>
     new Promise((resolve, reject) => {
@@ -53,7 +54,8 @@ const checkDevice = async ({ models }, device) => {
         return {
             name: device.name,
             authorized: device.authorized,
-            newPrivateKey
+            newPrivateKey,
+            config
         };
     }
 
