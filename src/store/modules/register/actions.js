@@ -39,7 +39,7 @@ export const register = async (ctx, { firstname, lastname, mail, ticketNumber, c
     const result = await ctx.dispatch(
         'request/post',
         {
-            url: 'register',
+            url: 'auth/register',
             body: {
                 firstname,
                 lastname,
