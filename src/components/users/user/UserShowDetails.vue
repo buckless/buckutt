@@ -79,6 +79,12 @@ export default {
                     type: 'price',
                     title: 'Solde',
                     content: this.focusedUser.credit
+                },
+                {
+                    icon: 'attach_money',
+                    type: 'price',
+                    title: 'Écritures en attente',
+                    content: this.sumPcu
                 }
             ];
 
@@ -131,6 +137,13 @@ export default {
             const period = this.event.defaultPeriod;
 
             return isUserInGroup(this.focusedUser, group, period);
+        },
+
+        sumPcu() {
+            return (this.focusedUser.pendingCardUpdates || []).reduce(
+                (a, pcu) => a + pcu.amount,
+                0
+            );
         }
     },
 

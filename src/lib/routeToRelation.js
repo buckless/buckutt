@@ -145,6 +145,7 @@ export default route => {
         transfers: ['sender', 'reciever'],
         users: [
             'meansOfLogin',
+            'pendingCardUpdates',
             'rights',
             {
                 embed: 'rights.period',
