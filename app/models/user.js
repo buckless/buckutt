@@ -6,6 +6,10 @@ module.exports = bookshelf => {
         uuid: true,
         softDelete: true,
 
+        pendingCardUpdates() {
+            return this.hasMany('PendingCardUpdate');
+        },
+
         meansOfLogin() {
             return this.hasMany('MeanOfLogin');
         },
