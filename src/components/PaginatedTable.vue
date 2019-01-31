@@ -29,7 +29,10 @@
                                             <mdl-checkbox :value="lodget(data, header.field)" disabled></mdl-checkbox>
                                         </span>
                                     </template>
-                                    <router-link v-else-if="header.object" append :to="data.id">
+                                    <router-link v-else-if="header.object && !header.replaceAppendBy" append :to="data.id">
+                                        {{ lodget(data, header.field) }}
+                                    </router-link>
+                                    <router-link v-else-if="header.object && header.replaceAppendBy" :to="`${header.replaceAppendBy}${data.id}`">
                                         {{ lodget(data, header.field) }}
                                     </router-link>
                                     <span v-else>{{ lodget(data, header.field) }}</span>

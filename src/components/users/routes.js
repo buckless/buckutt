@@ -1,6 +1,7 @@
 import Users from './Users.vue';
 import UsersCreate from './UsersCreate.vue';
 import UsersList from './UsersList.vue';
+import UsersMol from './UsersMol.vue';
 import UsersStaff from './UsersStaff.vue';
 
 import UserShow from './user/UserShow.vue';
@@ -18,6 +19,7 @@ export default [
         component: Users,
         children: [
             { path: '', component: UsersList },
+            { path: 'mol', component: UsersMol },
             { path: 'create', component: UsersCreate },
             { path: 'staff', component: UsersStaff }
         ]

@@ -1,4 +1,6 @@
 import { get, post } from '../../lib/fetch';
+import queryString from '../../lib/queryString';
+import routeToRelation from '../../lib/routeToRelation';
 
 /**
  * Users actions
@@ -110,5 +112,30 @@ export function cancelTransaction({ state, dispatch }, payload) {
             route: 'history',
             objects: [canceledTransaction]
         });
+    });
+}
+
+export function searchMols({ dispatch }, { mol }) {
+    const qt = [
+        {
+            field: 'physical_id',
+            eq: mol
+        }
+    ];
+
+    const orQt = `&q=${queryString(qt)}`;
+    const relEmbed = routeToRelation('meansOfLogin');
+
+    return get(`crud/meansoflogin?embed=${relEmbed}${orQt}`).then(results => {
+        dispatch('clearObject', 'users');
+
+        if (results.length > 0) {
+            dispatch('checkAndAddObjects', {
+                route: 'users',
+                objects: results.map(mol => mol.user)
+            });
+        }
+
+        return [];
     });
 }

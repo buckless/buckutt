@@ -52,6 +52,7 @@ export default route => {
             }
         ],
         events: ['defaultFundation', 'defaultGroup', 'defaultPeriod'],
+        meansOfLogin: ['user'],
         memberships: [
             {
                 embed: 'period',
