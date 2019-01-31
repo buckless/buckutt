@@ -16,6 +16,7 @@ import basket from './modules/basket';
 import online from './modules/online';
 import history from './modules/history';
 import device from './modules/device';
+import healthAlerts from './modules/healthAlerts';
 
 Vue.use(Vuex);
 
@@ -57,7 +58,8 @@ const store = new Vuex.Store({
         basket,
         online,
         history,
-        device
+        device,
+        healthAlerts
     },
     strict: debug,
     plugins: debug ? [createLogger(), vuexPersist.plugin] : [vuexPersist.plugin]
@@ -81,7 +83,9 @@ if (module.hot) {
             './modules/items',
             './modules/online',
             './modules/reload',
-            './modules/ui'
+            './modules/ui',
+            './modules/device',
+            './modules/healthAlerts'
         ],
         () => {
             const newAuth = require('./modules/auth').default;
@@ -91,6 +95,8 @@ if (module.hot) {
             const newOnline = require('./modules/online').default;
             const newReload = require('./modules/reload').default;
             const newUi = require('./modules/ui').default;
+            const newDevice = require('./modules/device').default;
+            const newHealthAlerts = require('./modules/healthAlerts').default;
 
             store.hotUpdate({
                 modules: {
@@ -100,7 +106,9 @@ if (module.hot) {
                     items: newItems,
                     online: newOnline,
                     reload: newReload,
-                    ui: newUi
+                    ui: newUi,
+                    device: newDevice,
+                    healthAlerts: newHealthAlerts
                 }
             });
         }

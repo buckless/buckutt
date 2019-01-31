@@ -4,6 +4,7 @@ import { merge } from 'lodash/object';
 
 let status;
 let alert;
+let healthAlert;
 
 export const setupSocket = ({ state, commit, dispatch }) =>
     new Promise(resolve => {
@@ -38,7 +39,8 @@ export const setupSocket = ({ state, commit, dispatch }) =>
                     dispatch('updateEssentials');
                     dispatch('syncQueue');
                 })
-                .then(() => dispatch('listenAlerts'));
+                .then(() => dispatch('listenAlerts'))
+                .then(() => dispatch('listenHealthAlerts'));
         });
 
         status.addEventListener('error', err => {
@@ -87,6 +89,40 @@ export const listenAlerts = ({ state, dispatch }) => {
                 }
             } catch (err) {
                 console.error('invalid alert detected', e.data, err);
+            }
+        });
+    }
+};
+
+export const listenHealthAlerts = ({ state, dispatch }) => {
+    const token = state.auth.seller.token;
+
+    if (healthAlert && typeof healthAlert.close === 'function') {
+        healthAlert.close();
+    }
+
+    if (token && token.length > 0) {
+        const signature = generateSignature(
+            state.auth.device.privateKey,
+            window.fingerprint,
+            'GET',
+            'live/healthalert'
+        );
+
+        healthAlert = new EventSource(
+            `${config.api}/live/healthalert?authorization=Bearer ${token}&fingerprint=${
+                window.fingerprint
+            }&signature=${signature}&handshake-interval=20000&lastEventId=12345&retry=3000`
+        );
+
+        healthAlert.addEventListener('message', e => {
+            try {
+                const data = JSON.parse(e.data);
+                if (data && data.minimumViewTime) {
+                    dispatch('healthAlert', data);
+                }
+            } catch (err) {
+                console.error('invalid healthAlert detected', e.data, err);
             }
         });
     }

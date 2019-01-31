@@ -1,20 +1,22 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import store from '../store';
+import store from '@/store';
 import { reloadOnly, reloadNotOnly, routeChooser } from './chooser';
+import HealthDetector from './health';
 
-import Items from '../views/Items';
-import Reload from '../views/Reload';
-import Login from '../views/Login';
-import Assigner from '../views/Assigner';
-import AssignerSearch from '../views/Assigner-Search';
-import AssignerScan from '../views/Assigner-Scan';
-import Controller from '../views/Controller';
-import History from '../views/History';
-import Treasury from '../views/Treasury';
-import Catering from '../views/Catering';
-import Developpers from '../views/Developpers';
+import Items from '@/views/Items';
+import Reload from '@/views/Reload';
+import Login from '@/views/Login';
+import Assigner from '@/views/Assigner';
+import AssignerSearch from '@/views/Assigner-Search';
+import AssignerScan from '@/views/Assigner-Scan';
+import Controller from '@/views/Controller';
+import History from '@/views/History';
+import Treasury from '@/views/Treasury';
+import Catering from '@/views/Catering';
+import Developpers from '@/views/Developpers';
+import Health from '@/views/Health';
 
 Vue.use(VueRouter);
 
@@ -63,6 +65,11 @@ const routes = [
         beforeEnter: (_, __, next) => next(getters.isControllerMode || '/')
     },
     {
+        path: '/health',
+        component: Health,
+        beforeEnter: (_, __, next) => next(getters.isCashMode || '/')
+    },
+    {
         path: '/assigner',
         component: Assigner,
         beforeEnter: (_, __, next) => next(getters.isAssignerMode || '/'),
@@ -87,6 +94,8 @@ const routes = [
 const router = new VueRouter({
     routes
 });
+
+new HealthDetector(router);
 
 // if page is reloaded, go back to / to know what page to restore
 store.subscribe(mutation => {

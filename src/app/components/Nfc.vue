@@ -137,6 +137,7 @@ export default {
 
                 nfc.on('locked', locked => {
                     debug('on locked');
+                    console.log('mifareTagDiscovered', performance.now());
                     this.cardLocked = locked;
 
                     if (nfc.shouldUnlock) {

@@ -46,6 +46,13 @@
                 <div class="b-menu__actions__separator"></div>
                 <div
                     class="b-menu__actions__action"
+                    @click="close(toggleHealth)">
+                    <i class="b-icon">favorite</i>
+                    Alerte santé
+                </div>
+                <div class="b-menu__actions__separator"></div>
+                <div
+                    class="b-menu__actions__action"
                     @click="close(toogleDeveloppers)">
                     <i class="b-icon">settings</i>
                     Développeurs
@@ -98,7 +105,7 @@ export default {
                 return true;
             }
 
-            const closingPath = ['/history', '/catering', '/treasury', '/developpers'];
+            const closingPath = ['/history', '/catering', '/treasury', '/developpers', '/health'];
             return closingPath.indexOf(this.$route.path) > -1;
         },
 
@@ -157,6 +164,10 @@ export default {
 
         toogleDeveloppers() {
             this.$router.push('/developpers');
+        },
+
+        toggleHealth() {
+            this.$router.push('health');
         },
 
         openReloadModal() {

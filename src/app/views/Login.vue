@@ -71,7 +71,6 @@ export default {
         },
 
         validate(cardNumber, credit) {
-            console.log('validate');
             if (!this.seller.isAuth && this.seller.meanOfLogin.length === 0) {
                 this.sellerId(cardNumber);
             }
