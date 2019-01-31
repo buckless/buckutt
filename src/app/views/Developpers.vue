@@ -1,7 +1,9 @@
 <template>
     <div class="b-developpers">
+        <h3>Terminal</h3>
+        <span class="b-developpers__value">{{ name }}</span>
         <h3>Synchronisation serveur</h3>
-        <div>
+        <div class="b-developpers-sync">
             <syncData
                 icon="event"
                 :lastUpdate="eventSync.lastUpdate"
@@ -57,7 +59,8 @@ export default {
         eventSync: state => state.online.offline.eventEssentials,
         itemsSync: state => state.online.offline.items,
         queueSync: state => state.online.offline.queue,
-        seller: state => state.auth.seller
+        seller: state => state.auth.seller,
+        name: state => state.auth.device.name
     }),
 
     methods: {
@@ -83,6 +86,12 @@ export default {
     background-color: #f3f3f3;
     width: 100vw;
     text-align: center;
+
+    & > .b-developpers__value {
+        font-size: 24px;
+        font-family: monospace;
+        letter-spacing: 3px;
+    }
 
     & > div {
         max-width: 760px;
