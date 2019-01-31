@@ -117,7 +117,7 @@ module.exports = async (
             trace: reload.trace || 'anon',
             point_id: ctx.point.id,
             buyer_id: newUser.id,
-            seller_id: ctx.useroperator.id || newUser.id,
+            seller_id: (ctx.user || newUser).id,
             clientTime
         }).save()
     );
@@ -131,7 +131,7 @@ module.exports = async (
                 trace: 'assigner',
                 point_id: ctx.point.id,
                 buyer_id: newUser.id,
-                seller_id: ctx.useroperator.id || newUser.id,
+                seller_id: (ctx.user || newUser).id,
                 clientTime
             }).save()
         );

@@ -38,10 +38,7 @@ const register = async (
     }
 
     const user = await createUser(
-        ctx.app.locals.models,
-        ctx.event,
-        ctx.user,
-        ctx.point,
+        ctx,
         registerData.targetUser,
         registerData.reloads,
         registerData.meansOfLogin,

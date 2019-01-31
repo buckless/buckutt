@@ -32,29 +32,41 @@ const ticketProvider = {
         });
 
         queue.process(async (job, done) => {
-            let progress = 0;
+            const lock = await getAsync(`${prefix}-tickets-lock`);
 
-            let allTickets = [];
+            if (lock) {
+                return done();
+            }
 
-            const tasks = providers.map(provider =>
-                provider().then(tickets => {
-                    // when each provider has resolved, progress should be around 80%
-                    progress += 80 / providers.length;
-                    job.progress(progress);
+            await setAsync(`${prefix}-tickets-lock`, true);
 
-                    allTickets = allTickets.concat(tickets);
-                })
-            );
+            try {
+                let progress = 0;
+                let allTickets = [];
 
-            await Promise.all(tasks);
+                const tasks = providers.map(provider =>
+                    provider().then(tickets => {
+                        // when each provider has resolved, progress should be around 80%
+                        progress += 80 / providers.length;
+                        job.progress(progress);
 
-            await setAsync(`${prefix}-tickets`, JSON.stringify(tasks));
-            await setAsync(`${prefix}-lastUpdate`, Date.now().toString());
-            log.info(`saved ${tasks.length} tickets into redis`);
+                        allTickets = allTickets.concat(tickets);
+                    })
+                );
 
-            job.progress(100);
+                await Promise.all(tasks);
 
-            done();
+                await setAsync(`${prefix}-tickets`, JSON.stringify(allTickets));
+                await setAsync(`${prefix}-lastUpdate`, Date.now().toString());
+                log.info(`saved ${allTickets.length} tickets into redis`);
+
+                job.progress(100);
+            } catch (err) {
+                log.error(`Failed to fetch tickets: ${err.message}`);
+            } finally {
+                await setAsync(`${prefix}-tickets-lock`, false);
+                done();
+            }
         });
 
         // fetch right now and start a cron task
@@ -78,7 +90,10 @@ const ticketProvider = {
         let tickets = await getAsync(`${prefix}-tickets`);
         tickets = JSON.parse(tickets);
 
-        return tickets.find(ticket => ticket.mail === input || ticket.ticketId === input);
+        return tickets.find(
+            ticket =>
+                ticket.mail === input || ticket.ticketId === input || ticket.physicalId === input
+        );
     }
 };
 

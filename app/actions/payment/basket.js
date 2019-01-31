@@ -19,10 +19,7 @@ module.exports = async (ctx, { molToCheck, basket, clientTime }) => {
 
     if (!mol || !mol.user || !mol.user.id) {
         buyer = await createUser(
-            ctx.models,
-            ctx.event,
-            ctx.user,
-            ctx.point,
+            ctx,
             {},
             [],
             [molToCheck],

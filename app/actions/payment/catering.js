@@ -1,5 +1,4 @@
 const createUser = require('@/helpers/createUser');
-const APIError = require('@/utils/APIError');
 
 module.exports = async (ctx, { molToCheck, name, cateringId, clientTime }) => {
     const mol = await ctx.models.MeanOfLogin.where(molToCheck)
@@ -10,10 +9,7 @@ module.exports = async (ctx, { molToCheck, name, cateringId, clientTime }) => {
 
     if (!mol || !mol.user || !mol.user.id) {
         buyer = await createUser(
-            ctx.models,
-            ctx.event,
-            ctx.user,
-            ctx.point,
+            ctx,
             {},
             [],
             [molToCheck],

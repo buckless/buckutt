@@ -14,7 +14,7 @@ module.exports = async (ctx, userId, reloads = [], meansOfLogin = [], groups = [
         throw new APIError(module, 404, 'User not found', { id: userId });
     }
 
-    await checkTicket(ctx.models, meansOfLogin);
+    await checkTicket(ctx, meansOfLogin);
 
     const userAccount = user.toJSON();
     const anonymousData = await checkAnonymousAccount(ctx.models, meansOfLogin);
@@ -159,7 +159,7 @@ module.exports = async (ctx, userId, reloads = [], meansOfLogin = [], groups = [
                 trace: reload.trace,
                 point_id: ctx.point.id,
                 buyer_id: mergedAccount.id,
-                seller_id: ctx.user.id | mergedAccount.id,
+                seller_id: (ctx.user || mergedAccount).id,
                 clientTime
             }).save()
         )
