@@ -740,20 +740,6 @@
   dependencies:
     eventemitter3 "^3.1.0"
 
-"@buckless/signed-data@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@buckless/signed-data/-/signed-data-2.2.0.tgz#88f8a71afc139eb3671bcadee12af2eacda7d9ca"
-  integrity sha1-iPinGvwTnrNnG8re4Sry6s2n2co=
-  dependencies:
-    hmac "^1.0.1"
-
-"@buckless/signed-number@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@buckless/signed-number/-/signed-number-2.1.0.tgz#d8746dc2ba4178fadb989e330272b66ba5d9322c"
-  integrity sha1-2HRtwrpBePrbmJ4zAnK2a6XZMiw=
-  dependencies:
-    hmac "^1.0.1"
-
 "@cypress/listr-verbose-renderer@0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@cypress/listr-verbose-renderer/-/listr-verbose-renderer-0.4.1.tgz#a77492f4b11dcc7c446a34b3e28721afd33c642a"
@@ -4954,11 +4940,6 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hmac@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/hmac/-/hmac-1.0.1.tgz#16bda6b8ad5ae70848a1b9ec7c6f3577dfb19b24"
-  integrity sha1-Fr2muK1a5whIobnsfG81d9+xmyQ=
-
 hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
@@ -8961,11 +8942,6 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=
   dependencies:
     aproba "^1.1.1"
-
-rusha@^0.8.13:
-  version "0.8.13"
-  resolved "https://registry.yarnpkg.com/rusha/-/rusha-0.8.13.tgz#9a084e7b860b17bff3015b92c67a6a336191513a"
-  integrity sha1-mghOe4YLF7/zAVuSxnpqM2GRUTo=
 
 rx-lite-aggregates@^4.0.8:
   version "4.0.8"

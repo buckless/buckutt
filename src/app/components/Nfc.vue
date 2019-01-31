@@ -43,14 +43,12 @@ import { EventEmitter } from 'events';
 import NFC from '@/../lib/nfc';
 const debug = require('debug')('nfc:vue');
 
-const noSign = true;
 let nfc;
 
 export default {
     props: {
         mode: String,
         successText: String,
-        disableSignCheck: Boolean,
         disableLockCheck: Boolean,
         disablePinCheck: Boolean
     },
@@ -159,10 +157,7 @@ export default {
                     }
 
                     try {
-                        const card = nfc.dataToCard(
-                            data.toLowerCase ? data.toLowerCase() : data,
-                            this.inputValue + config.signingKey
-                        );
+                        const card = nfc.dataToCard(data.toLowerCase ? data.toLowerCase() : data);
 
                         debug('card ', card);
 
@@ -190,22 +185,6 @@ export default {
                             this.$store.commit('ERROR', {
                                 message: 'Locked card'
                             });
-                        } else if (
-                            this.signCheckDisabled &&
-                            err.message === '[signed-data] signature does not match'
-                        ) {
-                            debug('signature does not match');
-                            if (!this.cardLocked) {
-                                debug('card not locked');
-                                return this.onCard(0, { catering: [] });
-                            }
-
-                            debug('card locked');
-                            return this.onCard(
-                                err.value.credit,
-                                err.value.options,
-                                err.value.version
-                            );
                         } else if (this.disablePinCheck) {
                             debug('pin check disabled');
                             return this.onCard(0, { catering: [] });
@@ -273,7 +252,7 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            nfc.write(nfc.cardToData(this.dataToWrite, this.inputValue + config.signingKey))
+            nfc.write(nfc.cardToData(this.dataToWrite))
                 .then(() => {
                     debug('write completed');
                     this.success = true;
@@ -330,15 +309,7 @@ export default {
 
         successTextUpdated() {
             return this.successText || 'Transaction effectuée';
-        },
-
-        signCheckDisabled() {
-            return noSign || this.disableSignCheck || this.rewrite;
         }
-    },
-
-    checkDisabled() {
-        return this.disableSignCheck || this.rewrite;
     },
 
     mounted() {

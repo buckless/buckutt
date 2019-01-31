@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import signedData from '../signedData';
+import dataCoder from '../coder';
 const debug = require('debug')('nfc:browser');
 
 class NFC extends EventEmitter {
@@ -78,10 +78,7 @@ class NFC extends EventEmitter {
 
             // do not store cardValue as buffer because it can't be restored as a buffer
             // we create the buffer directly on read
-            cards[name].cardValue = this.cardToData(
-                cards[name].cardValue,
-                cards[name].cardId + window.config.signingKey
-            );
+            cards[name].cardValue = this.cardToData(cards[name].cardValue, cards[name].cardId);
 
             this.emit('uid', cards[name].cardId);
             this.emit('atr', '0');
@@ -114,7 +111,7 @@ class NFC extends EventEmitter {
         // do not store cardValue as buffer because it can't be restored as a buffer
         cards[window.mock.actualCard].cardValue = this.dataToCard(
             data,
-            cards[window.mock.actualCard].cardId + window.config.signingKey
+            cards[window.mock.actualCard].cardId
         );
 
         const debugData = `${cards[window.mock.actualCard].cardId}(${
@@ -128,16 +125,12 @@ class NFC extends EventEmitter {
         return Promise.resolve();
     }
 
-    dataToCard(data, signingKey) {
-        return signedData()
-            .key(signingKey)
-            .decode(data);
+    dataToCard(data) {
+        return dataCoder().decode(data);
     }
 
-    cardToData(data, signingKey) {
-        return signedData()
-            .key(signingKey)
-            .encode(data);
+    cardToData(data) {
+        return dataCoder().encode(data);
     }
 }
 

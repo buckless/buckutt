@@ -1,16 +1,18 @@
-const { SignedData } = require('@buckless/signed-data');
-const rusha = require('rusha');
+import DataCoder from './dataCoder';
 
-let signedData;
+let dataCoder;
+let lastConfig;
 
 export default () => {
     if (!window.config) {
         return;
     }
 
-    if (signedData) {
-        return signedData;
+    if (dataCoder && JSON.stringify(window.config) === lastConfig) {
+        return dataCoder;
     }
+
+    lastConfig = JSON.stringify(window.config);
 
     const duration = parseInt(window.config.catering.duration, 10);
     const articles = Object.values(window.config.catering.articles).sort((a, b) => a.id - b.id);
@@ -24,7 +26,7 @@ export default () => {
 
     const byteNumber = optionsLength / 8;
 
-    signedData = new SignedData(window.config.signingKey, 16, rusha.createHash, [
+    dataCoder = new DataCoder([
         {
             name: 'credit',
             default: '000000',
@@ -127,5 +129,5 @@ export default () => {
         }
     ]);
 
-    return signedData;
+    return dataCoder;
 };

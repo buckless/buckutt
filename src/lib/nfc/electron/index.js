@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import PCSCReader from './pcsc';
 
-const signedData = require('../signedData');
+const dataCoder = require('../coder');
 
 class NFC extends EventEmitter {
     constructor() {
@@ -22,16 +22,12 @@ class NFC extends EventEmitter {
         return this.pcsc.write(data);
     }
 
-    dataToCard(data, signingKey) {
-        return signedData()
-            .key(signingKey)
-            .decode(data);
+    dataToCard(data) {
+        return dataCoder().decode(data);
     }
 
-    cardToData(data, signingKey) {
-        return signedData()
-            .key(signingKey)
-            .encode(data);
+    cardToData(data) {
+        return dataCoder().encode(data);
     }
 }
 

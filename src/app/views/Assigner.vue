@@ -9,7 +9,7 @@
             </div>
         </div>
         <router-view @ok="ok" @assign="setAssignModal" @blankCard="setBlankCard" />
-        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModal.opened" disableSignCheck>
+        <nfc mode="write" @read="assignCard" @cancel="closeModal" v-if="assignModal.opened">
             <div class="b-assigner-modal__modal__text__head" v-if="assignModal.blank">
                 <strong>Compte anonyme</strong>
 
