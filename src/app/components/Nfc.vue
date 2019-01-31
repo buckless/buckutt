@@ -40,10 +40,8 @@
 /* global Keyboard */
 import { mapState } from 'vuex';
 import { EventEmitter } from 'events';
-import NFC from '@/../lib/nfc';
+import nfc from '@/../lib/nfc';
 const debug = require('debug')('nfc:vue');
-
-let nfc;
 
 export default {
     props: {
@@ -276,10 +274,6 @@ export default {
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
 
-            if (!nfc) {
-                return;
-            }
-
             debug('remove all listeners');
             nfc.removeAllListeners('data');
             nfc.removeAllListeners('locked');
@@ -314,9 +308,6 @@ export default {
 
     mounted() {
         debug('mounting component...');
-        if (!nfc) {
-            nfc = new NFC();
-        }
 
         this.resetComponent();
         this.setListeners();
