@@ -45,6 +45,7 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
+                    v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(toggleHealth)">
                     <i class="b-icon">favorite</i>
