@@ -29,5 +29,5 @@ module.exports = async (ctx, { type, buyer }) => {
         throw new APIError(module, 404, 'Buyer not found');
     }
 
-    return omit(buyer, ['pin', 'password']);
+    return omit(mol.user, ['pin', 'password']);
 };

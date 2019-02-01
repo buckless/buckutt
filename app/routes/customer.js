@@ -4,7 +4,7 @@ const rightsDetails = require('@/utils/rightsDetails');
 const ctx = require('@/utils/ctx');
 const APIError = require('@/utils/APIError');
 
-const { listAccesses, logAccess, commitPendingCardUpdate } = require('@/actions/customer');
+const { buyer, listAccesses, logAccess, commitPendingCardUpdate } = require('@/actions/customer');
 
 const router = require('express').Router();
 
@@ -57,12 +57,12 @@ router.get(
             throw new APIError(module, 401, 'Missing buyer or molType');
         }
 
-        const buyer = await buyer(ctx(req), {
+        const foundBuyer = await buyer(ctx(req), {
             type: req.query.molType,
             buyer: req.query.buyer
         });
 
-        res.json({ buyer });
+        res.json({ buyer: foundBuyer });
     })
 );
 
