@@ -3,6 +3,7 @@ const connectSdk = require('connect-sdk-nodejs');
 const config = require('@/config');
 const log = require('@/log')(module);
 const ctx = require('@/utils/ctx');
+const creditUser = require('@/helpers/creditUser');
 const APIError = require('@/utils/APIError');
 
 connectSdk.hostedcheckouts.create = promisify(connectSdk.hostedcheckouts.create);
@@ -88,7 +89,7 @@ module.exports = {
     },
 
     async callback(req, res) {
-        const { Transaction, Reload, PendingCardUpdate, GiftReload } = req.app.locals.models;
+        const { Transaction, Reload, GiftReload } = req.app.locals.models;
 
         const isNotification = req.query.isNotification;
         const hostedCheckoutId = req.query.hostedCheckoutId;
@@ -157,26 +158,12 @@ module.exports = {
 
             const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
 
-            const pendingCardUpdate = new PendingCardUpdate({
-                user_id: transaction.get('user_id'),
-                amount
-            });
+            const updateUser = creditUser(ctx(req), transaction.get('user_id'), amount);
 
-            await Promise.all([
-                newReload.save(),
-                transaction.save(),
-                pendingCardUpdate.save(),
-                transaction.related('user').save(),
-                reloadGiftSave
-            ]);
-
-            req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id: transaction.get('user_id'),
-                pending: amount
-            });
+            await Promise.all([newReload.save(), transaction.save(), updateUser, reloadGiftSave]);
+        } else {
+            await transaction.save();
         }
-
-        await transaction.save();
 
         return isNotification
             ? res.json({})

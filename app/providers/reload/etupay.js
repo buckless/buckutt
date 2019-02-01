@@ -1,6 +1,7 @@
 const express = require('express');
 const config = require('@/config');
 const ctx = require('@/utils/ctx');
+const creditUser = require('@/helpers/creditUser');
 
 const providerConfig = config.provider.etupay;
 
@@ -44,7 +45,7 @@ module.exports = {
         router.use(etupay.router);
 
         router.post('/', async (req, res) => {
-            const { Transaction, Reload, GiftReload, PendingCardUpdate } = req.app.locals.models;
+            const { Transaction, Reload, GiftReload } = req.app.locals.models;
 
             const giftReloads = await GiftReload.fetchAll().then(
                 grs => (grs && grs.length ? grs.toJSON() : [])
@@ -86,26 +87,17 @@ module.exports = {
 
                 const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
 
-                const pendingCardUpdate = new PendingCardUpdate({
-                    user_id: transaction.get('user_id'),
-                    amount
-                });
+                const updateUser = creditUser(ctx(req), transaction.get('user_id'), amount);
 
                 await Promise.all([
                     newReload.save(),
                     transaction.save(),
-                    pendingCardUpdate.save(),
-                    transaction.related('user').save(),
+                    updateUser,
                     reloadGiftSave
                 ]);
-
-                req.app.locals.modelChanges.emit('userCreditUpdate', {
-                    id: transaction.get('user_id'),
-                    pending: amount
-                });
+            } else {
+                await transaction.save();
             }
-
-            await transaction.save();
 
             res.json({});
         });

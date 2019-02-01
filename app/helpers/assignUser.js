@@ -4,7 +4,7 @@ const generateToken = require('@/utils/generateToken');
 const APIError = require('@/utils/APIError');
 
 module.exports = async (ctx, userId, reloads = [], meansOfLogin = [], groups = [], clientTime) => {
-    const mergedCreditIsAlreadyOnCard = ctx.point.name !== 'Internet';
+    const mergedCreditIsAlreadyOnCard = ctx.point.name !== 'Internet' || !ctx.event.useCardData;
 
     const user = await ctx.models.User.where({ id: userId }).fetch({
         withRelated: ['meansOfLogin', 'memberships']

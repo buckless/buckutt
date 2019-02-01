@@ -2,13 +2,23 @@ const { embedParser, embedFilter } = require('@/utils/embedParser');
 const { bookshelf } = require('@/db');
 
 module.exports = async (ctx, { now, lastUpdate }) => {
-    let blockedCards = [];
+    const useCardData = ctx.event.useCardData;
     const accesses = { insert: [], delete: [] };
     const tickets = { insert: [], delete: [] };
     const pendingCardUpdates = { insert: [], delete: [] };
 
+    // If we don't use card data, everything is working online, don't send offline needed data
+    if (!useCardData) {
+        return {
+            blockedCards: [],
+            accesses,
+            tickets,
+            pendingCardUpdates
+        };
+    }
+
     // step 1: get currently blocked cards uids
-    blockedCards = await ctx.models.MeanOfLogin.where({ type: 'cardId', blocked: true })
+    const blockedCards = await ctx.models.MeanOfLogin.where({ type: 'cardId', blocked: true })
         .fetchAll()
         .then(blockedCards_ => blockedCards_.toJSON().map(blockedCard => blockedCard.data));
 
@@ -138,7 +148,11 @@ module.exports = async (ctx, { now, lastUpdate }) => {
         knex.select('pendingCardUpdates.*', 'meansoflogin.data', qb => {
             qb.count('*');
             qb.from('pendingCardUpdates as P');
-            qb.where('created_at', '<=', bookshelf.knex.raw('??', ['pendingCardUpdates.created_at']));
+            qb.where(
+                'created_at',
+                '<=',
+                bookshelf.knex.raw('??', ['pendingCardUpdates.created_at'])
+            );
             qb.andWhere('user_id', '=', bookshelf.knex.raw('??', ['pendingCardUpdates.user_id']));
             qb.as('incrId');
         });

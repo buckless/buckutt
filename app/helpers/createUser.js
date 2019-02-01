@@ -17,9 +17,10 @@ module.exports = async (
     meansOfLogin = [],
     groups = [],
     sendMail = true,
-    mergedCreditIsAlreadyOnCard = false,
+    mergedCreditIsAlreadyOnCard_ = false,
     clientTime
 ) => {
+    const mergedCreditIsAlreadyOnCard = mergedCreditIsAlreadyOnCard_ || !ctx.event.useCardData;
     let newUser;
     let pin;
     let creditToAdd = 0;

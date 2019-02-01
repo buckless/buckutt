@@ -2,6 +2,7 @@ const Payline = require('flav-payline');
 const moment = require('moment');
 const config = require('@/config');
 const APIError = require('@/utils/APIError');
+const creditUser = require('@/helpers/creditUser');
 const ctx = require('@/utils/ctx');
 
 const providerConfig = config.provider.payline;
@@ -75,7 +76,7 @@ module.exports = {
 
     async callback(req, res) {
         const payline = new Payline(providerConfig.id, providerConfig.password, providerConfig.url);
-        const { Transaction, GiftReload, Reload, PendingCardUpdate } = req.app.locals.models;
+        const { Transaction, GiftReload, Reload } = req.app.locals.models;
 
         const isNotification =
             req.query.notificationType && req.query.notificationType === 'webtrs';
@@ -129,26 +130,17 @@ module.exports = {
 
             const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
 
-            const pendingCardUpdate = new PendingCardUpdate({
-                user_id: transaction.get('user_id'),
-                amount
-            });
+            const updateUser = creditUser(ctx(req), transaction.get('user_id'), amount);
 
-            await Promise.all([
-                newReload.save(),
-                transaction.save(),
-                pendingCardUpdate.save(),
-                transaction.related('user').save(),
-                reloadGiftSave
-            ]);
+            await Promise.all([newReload.save(), transaction.save(), updateUser, reloadGiftSave]);
 
             req.app.locals.modelChanges.emit('userCreditUpdate', {
                 id: transaction.get('user_id'),
                 pending: amount
             });
+        } else {
+            await transaction.save();
         }
-
-        await transaction.save();
 
         return isNotification
             ? res.json({})
