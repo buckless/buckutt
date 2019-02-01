@@ -151,7 +151,7 @@ export const buyerLogin = (store, { cardNumber, credit, removeUnavailable }) => 
 
     return store
         .dispatch('sendRequest', {
-            url: `/customer/buyer${params}`,
+            url: `customer/buyer${params}`,
             offlineAnswer,
             noQueue: true,
             // If use card data, always use local data
