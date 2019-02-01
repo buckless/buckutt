@@ -41,7 +41,10 @@ export default {
     methods: {
         validate(e) {
             e.currentTarget.blur();
-            this.basketClickValidation();
+            this.basketClickValidation().then(() => {
+                // If useCardData, it will redirect automatically the user on items
+                this.$router.push('/login');
+            });
         },
 
         ...mapActions(['basketClickValidation', 'clearBasket'])
