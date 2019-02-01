@@ -34,7 +34,10 @@ export function updateFocusedElement({ state, dispatch }, payload) {
             o => o.id === payload.value.id
         );
 
-        lodget(focusedElement, payload.delRelation).splice(index, 1);
+        // Can have been deleted by relation deletion/object deletion before.
+        if (index > -1) {
+            lodget(focusedElement, payload.delRelation).splice(index, 1);
+        }
     } else {
         lodset(focusedElement, payload.field, payload.value);
     }
@@ -49,8 +52,8 @@ export function updateFocusedElement({ state, dispatch }, payload) {
 export function saveFocusedElement({ state, commit, dispatch }, payload) {
     commit('UPDATEFOCUSEDELEMENT', payload);
 
-    // Save changes inside the store only if it's an answer from the API, can be redundant
-    // Used to update promotions, as long as a promotion isn't part of a wiket
+    // Used for performance issues. Save changes inside the objects store only if it's an answer from the API, otherwise, only update the focused element
+    // Used to update displayed promotions in wikets management, because a promotion isn't part of a wiket and can't be auto-detected as "to be updated"
     if (payload.saveInStore) {
         const params = Object.keys(state.route.params);
         dispatch('checkAndUpdateObjects', {
