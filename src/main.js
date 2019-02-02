@@ -17,7 +17,7 @@ function createWindow() {
     if (isDev) {
         uri = url.format({
             pathname: path.join(
-                process.env.URI || 'localhost:8080',
+                process.env.URI || 'localhost:8081',
                 __dirname,
                 'dist',
                 'electron',

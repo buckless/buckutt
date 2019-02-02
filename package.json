@@ -66,6 +66,7 @@
     "cross-env": "^5.2.0",
     "electron-rebuild": "^1.8.2",
     "lint-staged": "^7.2.0",
+    "node-abi": "^2.6.0",
     "portfinder": "^1.0.17",
     "post-compile-webpack-plugin": "^0.1.2",
     "postcss-calc": "^6.0.1",
@@ -138,6 +139,6 @@
     ]
   },
   "optionalDependencies": {
-    "electron": "^2.0.9"
+    "electron": "^4.0.3"
   }
 }

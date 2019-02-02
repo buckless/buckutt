@@ -11,9 +11,9 @@ const env = process.env.NODE_ENV;
 let publicPath = '';
 if (target === 'cordova' && platform === 'android') {
     publicPath = '/android_asset/www/';
-} else if (target === 'electron') {
+} else if (target === 'electron' && env === 'production') {
     publicPath = path.resolve(__dirname, 'dist', 'electron') + '/';
-} else if (target === 'browser') {
+} else {
     publicPath = '/';
 }
 
@@ -22,7 +22,7 @@ let electronLaunched = false;
 module.exports = {
     lintOnSave: false,
     outputDir: `./dist/${target}`,
-    baseUrl: publicPath,
+    publicPath,
     devServer: {
         port: 8081,
         disableHostCheck: true
@@ -31,7 +31,13 @@ module.exports = {
         if (target === 'browser' || target === 'cordova') {
             config.target = 'web';
         } else if (target === 'electron') {
-            config.plugins.push(new webpack.ExternalsPlugin('commonjs', ['@pokusew/pcsclite']));
+            config.plugins.push(
+                new webpack.ExternalsPlugin('commonjs', [
+                    'child_process',
+                    'fs',
+                    '@pokusew/pcsclite'
+                ])
+            );
             config.node = { __dirname: false };
         } else {
             console.log(chalk.yellow('Unknown target: ' + target));
