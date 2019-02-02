@@ -3,11 +3,16 @@
         <div class="b-config__drop" @click="close"></div>
         <div class="b-config__modal">
             <h3 class="b-config__modal__title">Associer l'équipement (1/2)</h3>
-            <span v-if="error" class="b-config__modal__warning">Impossible de joindre ce serveur.</span>
-            <span v-else-if="queueFilled || cancellationsFilled" class="b-config__modal__warning">Attention, les données non communiquées au serveur seront perdues.</span>
+            <span v-if="error" class="b-config__modal__warning"
+                >Impossible de joindre ce serveur.</span
+            >
+            <span v-else-if="queueFilled || cancellationsFilled" class="b-config__modal__warning"
+                >Attention, les données non communiquées au serveur seront perdues.</span
+            >
             <form @submit.prevent="validate">
                 <div class="b-config__modal__text">
-                    Veuillez rentrer l'identifiant de votre espace cashless afin d'y connecter l'équipement:<br />
+                    Veuillez rentrer l'identifiant de votre espace cashless afin d'y connecter
+                    l'équipement:<br />
                     <input type="text" class="b-config__modal__input" v-model="apiValue" />
                 </div>
                 <button class="b-config__modal__validate">Valider</button>
@@ -46,11 +51,6 @@ export default {
             const fullApi = isFullAdress
                 ? this.apiValue
                 : process.env.VUE_APP_ROOTURL.replace('{slug}', this.apiValue);
-
-            if (this.api === `${fullApi}/api/v1`) {
-                this.close();
-                return;
-            }
 
             this.checkApi(`${fullApi}/api/v1`)
                 .then(() => {

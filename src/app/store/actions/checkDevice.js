@@ -86,12 +86,20 @@ export const checkDevice = ({ state, commit, dispatch }) =>
                 noQueue: true
             })
         )
-        .catch(() => ({
-            data: {
-                name: state.auth.device.name,
-                authorized: false
+        .catch(err => {
+            let authorized = false;
+            // In case of network error, if we are full online, assume that the device is authorized
+            if (err.message === 'Network Error') {
+                authorized = true;
             }
-        }))
+
+            return {
+                data: {
+                    name: state.auth.device.name,
+                    authorized
+                }
+            };
+        })
         .then(device => {
             commit('SET_DEVICE_NAME', device.data.name);
 
