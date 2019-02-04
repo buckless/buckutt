@@ -105,12 +105,14 @@ export function clearFocusedElements({ commit }) {
 }
 
 export function syncFocusedElement({ dispatch, commit }, payload) {
-    return dispatch('retrieveObject', payload).then(result =>
+    return dispatch('retrieveObject', payload).then(result => {
         commit('UPDATEFOCUSEDELEMENT', {
             depth: payload.depth,
             value: result
-        })
-    );
+        });
+
+        return result;
+    });
 }
 
 export function loadFocusedElement({ state, dispatch, commit }, payload) {

@@ -8,9 +8,10 @@ export function refundUser({ state, dispatch }, refundData) {
     return dispatch('syncFocusedElement', {
         depth: 0,
         route: 'users',
-        value: { id: refundedUser.id }
+        id: refundedUser.id
     })
         .then(user => {
+            console.log(user);
             refundedUser = user;
 
             if (refundData.refund.amount > refundedUser.credit) {
