@@ -1,11 +1,8 @@
 <template>
-  <div class="history">
-    <Table
-      :headers="headers"
-      :data="history"
-      :paging="10"/>
-    <Button to="/dashboard/invoice">Imprimer un reçu</Button>
-  </div>
+    <div class="history">
+        <Table :headers="headers" :data="history" :paging="10" />
+        <Button to="/dashboard/invoice">Imprimer un reçu</Button>
+    </div>
 </template>
 
 <script>
@@ -36,11 +33,11 @@ export default {
             ]
         };
 
-        if (process.env.VUE_APP_HISTORY_SHOW_TYPE === 1) {
+        if (process.env.VUE_APP_HISTORY_SHOW_TYPE === '1') {
             data.headers.splice(1, 0, { title: 'Type', field: 'type' });
         }
 
-        if (process.env.VUE_APP_HISTORY_SHOW_OPERATOR === 1) {
+        if (process.env.VUE_APP_HISTORY_SHOW_OPERATOR === '1') {
             data.headers.splice(-1, 0, {
                 title: 'Opérateur',
                 field: 'operator',

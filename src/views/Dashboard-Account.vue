@@ -1,31 +1,31 @@
 <template>
-  <div>
-    <Card v-if="linkedUsers.length > 0">
-      <h3>Comptes liés</h3>
-      <List>
-        <div
-          v-for="(user, i) in linkedUsers"
-          :key="i"
-          class="item"
-          @click="switchUser(user.username, user.id)">
-          <span
-            v-if="user.id === currentUser.id"
-            class="bullet"/>
-          <span class="name">{{ user.firstname }} {{ user.lastname }}</span>
-          &nbsp;
-          <span class="credit">({{ user.credit / 100 | currency }})</span>
-        </div>
-      </List>
-    </Card>
-    <Card v-if="showQrCode">
-      <h3>Mon QR Code</h3>
-      <p>Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer votre support cashless.</p>
-      <img
-        :src="qrcode"
-        alt="qr code" >
-    </Card>
-    <Button @click="logout">Déconnexion</Button>
-  </div>
+    <div>
+        <Card v-if="linkedUsers.length > 0">
+            <h3>Comptes liés</h3>
+            <List>
+                <div
+                    v-for="(user, i) in linkedUsers"
+                    :key="i"
+                    class="item"
+                    @click="switchUser(user.username, user.id)"
+                >
+                    <span v-if="user.id === currentUser.id" class="bullet" />
+                    <span class="name">{{ user.firstname }} {{ user.lastname }}</span>
+                    &nbsp;
+                    <span class="credit">({{ (user.credit / 100) | currency }})</span>
+                </div>
+            </List>
+        </Card>
+        <Card v-if="showQrCode">
+            <h3>Mon QR Code</h3>
+            <p>
+                Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer
+                votre support cashless.
+            </p>
+            <img :src="qrcode" alt="qr code" />
+        </Card>
+        <Button @click="logout">Déconnexion</Button>
+    </div>
 </template>
 
 <script>
@@ -45,7 +45,7 @@ export default {
 
     data: function() {
         return {
-            showQrCode: process.env.VUE_APP_ACCOUNT_SHOW_QRCODE && this.qrcode
+            showQrCode: process.env.VUE_APP_ACCOUNT_SHOW_QRCODE === '1' && this.qrcode
         };
     },
 

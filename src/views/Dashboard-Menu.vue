@@ -1,42 +1,42 @@
 <template>
-  <div class="menu">
-    <Card 
-      to="/dashboard/transfer" 
-      class="transfer">
-      <h3>Virement</h3>
-      <p>Effectuez un transfert vers un autre compte</p>
-    </Card>
-    <Card 
-      v-if="showCard && hasCard && !cardBlocked" 
-      to="/dashboard/block">
-      <h3>Bloquer mon support cashless</h3>
-      <p>Votre espace cashless est associé avec la carte numéro <strong>{{ card }}</strong></p>
-    </Card>
-    <Card 
-      v-if="showCard && (!hasCard || cardBlocked)" 
-      to="/dashboard/support">
-      <h3>Lier mon support cashless</h3>
-      <p>Synchronisez votre support avec votre compte</p>
-    </Card>
-    <Card v-if="showTicket && ticket">
-      <h3>Mon billet</h3>
-      <p>Votre espace cashless est associé avec le billet numéro <strong>{{ ticket }}</strong></p>
-    </Card>
-    <Card 
-      v-if="showTicket && !ticket" 
-      to="/dashboard/ticket">
-      <h3>Mon billet</h3>
-      <p>Liez votre billet d'évènement à ce compte cashless</p>
-    </Card>
-    <Card to="/dashboard/refund">
-      <h3>Remboursement de solde</h3>
-      <p>Faites vous rembourser le solde restant sur votre support (vous devez avoir lié votre support)</p>
-    </Card>
-    <Card to="/dashboard/pin">
-      <h3>Changement de code PIN</h3>
-      <p>Changez votre code de connexion à votre espace cashless</p>
-    </Card>
-  </div>
+    <div class="menu">
+        <Card to="/dashboard/transfer" class="transfer">
+            <h3>Virement</h3>
+            <p>Effectuez un transfert vers un autre compte</p>
+        </Card>
+        <Card v-if="showCard && hasCard && !cardBlocked" to="/dashboard/block">
+            <h3>Bloquer mon support cashless</h3>
+            <p>
+                Votre espace cashless est associé avec la carte numéro <strong>{{ card }}</strong>
+            </p>
+        </Card>
+        <Card v-if="showCard && (!hasCard || cardBlocked)" to="/dashboard/support">
+            <h3>Lier mon support cashless</h3>
+            <p>Synchronisez votre support avec votre compte</p>
+        </Card>
+        <Card v-if="showTicket && ticket">
+            <h3>Mon billet</h3>
+            <p>
+                Votre espace cashless est associé avec le billet numéro
+                <strong>{{ ticket }}</strong>
+            </p>
+        </Card>
+        <Card v-if="showTicket && !ticket" to="/dashboard/ticket">
+            <h3>Mon billet</h3>
+            <p>Liez votre billet d'évènement à ce compte cashless</p>
+        </Card>
+        <Card to="/dashboard/refund">
+            <h3>Remboursement de solde</h3>
+            <p>
+                Faites vous rembourser le solde restant sur votre support (vous devez avoir lié
+                votre support)
+            </p>
+        </Card>
+        <Card to="/dashboard/pin">
+            <h3>Changement de code PIN</h3>
+            <p>Changez votre code de connexion à votre espace cashless</p>
+        </Card>
+    </div>
 </template>
 
 <script>
@@ -53,8 +53,8 @@ export default {
     },
 
     data: () => ({
-        showTicket: process.env.VUE_APP_MENU_SHOW_TICKET,
-        showCard: process.env.VUE_APP_MENU_SHOW_CARD
+        showTicket: process.env.VUE_APP_MENU_SHOW_TICKET === '1',
+        showCard: process.env.VUE_APP_MENU_SHOW_CARD === '1'
     }),
 
     computed: {
