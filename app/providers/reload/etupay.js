@@ -9,7 +9,7 @@ const onlinePayment = async (ctx, data) => {
     const etupay = require('node-etupay')(providerConfig);
     const Basket = etupay.Basket;
 
-    const transaction = new ctx.Transaction({
+    const transaction = new ctx.models.Transaction({
         state: 'pending',
         amount: data.amount,
         user_id: data.buyer.id
@@ -47,8 +47,8 @@ module.exports = {
         router.post('/', async (req, res) => {
             const { Transaction, Reload, GiftReload } = req.app.locals.models;
 
-            const giftReloads = await GiftReload.fetchAll().then(
-                grs => (grs && grs.length ? grs.toJSON() : [])
+            const giftReloads = await GiftReload.fetchAll().then(grs =>
+                grs && grs.length ? grs.toJSON() : []
             );
 
             const transaction = await Transaction.where({ id: req.etupay.serviceData }).fetch({

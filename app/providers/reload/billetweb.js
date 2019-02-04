@@ -7,7 +7,7 @@ const APIError = require('@/utils/APIError');
 const providerConfig = config.provider.billetweb;
 
 const onlinePayment = async (app, data) => {
-    const transaction = new ctx.Transaction({
+    const transaction = new ctx.models.Transaction({
         state: 'pending',
         amount: data.amount,
         user_id: data.buyer.id
@@ -59,8 +59,8 @@ module.exports = {
 
         formData = formData[0];
 
-        const giftReloads = await GiftReload.fetchAll().then(
-            grs => (grs && grs.length ? grs.toJSON() : [])
+        const giftReloads = await GiftReload.fetchAll().then(grs =>
+            grs && grs.length ? grs.toJSON() : []
         );
 
         const transaction = await Transaction.where({ id: formData['10037'] }).fetch({

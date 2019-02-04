@@ -16,7 +16,7 @@ const dateFormat = 'DD/MM/YYYY HH:mm';
 const onlinePayment = (ctx, data) => {
     const payline = new Payline(providerConfig.id, providerConfig.password);
 
-    const transaction = new ctx.Transaction({
+    const transaction = new ctx.models.Transaction({
         state: 'pending',
         amount: data.amount,
         user_id: data.buyer.id
@@ -86,8 +86,8 @@ module.exports = {
             throw new APIError(module, 400, 'No token provided');
         }
 
-        const giftReloads = await GiftReload.fetchAll().then(
-            grs => (grs && grs.length ? grs.toJSON() : [])
+        const giftReloads = await GiftReload.fetchAll().then(grs =>
+            grs && grs.length ? grs.toJSON() : []
         );
 
         const paymentDetails = await payline.runAction('getWebPaymentDetailsRequest', {
