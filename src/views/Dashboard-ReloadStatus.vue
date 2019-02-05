@@ -1,25 +1,24 @@
 <template>
-  <div class="reloadStatus">
-    <Card>
-      <h2 class="title">Rechargement</h2>
-      <p v-if="status === 'success'">
-        Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici quelques instants.
-      </p>
-      <p v-else-if="status === 'waiting'">
-        Votre rechargement est en cours...
-      </p>
-      <p v-else>
-        Le paiement <strong>n'a pas été pris en compte</strong>. Contactez votre banque si vous ne pensez pas que cela correspond à un fonctionnement normal.
-      </p>
-      <div
-        v-if="status !== 'waiting'"
-        class="actions">
-        <Button
-          raised
-          to="/">Retour à l'accueil</Button>
-      </div>
-    </Card>
-  </div>
+    <div class="reloadStatus">
+        <Card>
+            <h2 class="title">Rechargement</h2>
+            <p v-if="status === 'success'">
+                Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici
+                quelques instants.
+            </p>
+            <p v-else-if="status === 'waiting' || status === 'return'">
+                Votre rechargement est en cours de traitement, s'il est accepté par votre banque, il
+                sera effectif dans quelques instants.
+            </p>
+            <p v-else>
+                Le paiement <strong>n'a pas été pris en compte</strong>. Contactez votre banque si
+                vous ne pensez pas que cela correspond à un fonctionnement normal.
+            </p>
+            <div v-if="status !== 'waiting'" class="actions">
+                <Button raised to="/">Retour à l'accueil</Button>
+            </div>
+        </Card>
+    </div>
 </template>
 
 <script>
