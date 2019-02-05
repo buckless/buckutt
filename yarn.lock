@@ -418,6 +418,13 @@
   dependencies:
     any-observable "^0.3.0"
 
+"@ung/node-etupay@ungdev/node-etupay":
+  version "2.0.0"
+  resolved "https://codeload.github.com/ungdev/node-etupay/tar.gz/004a23a8b6dace8522778cd1f354b2e683ae6c59"
+  dependencies:
+    atob "^2.0.3"
+    btoa "^1.1.2"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -2498,7 +2505,7 @@ express-async-handler@^1.1.4:
   resolved "https://registry.yarnpkg.com/express-async-handler/-/express-async-handler-1.1.4.tgz#225a84908df63b35ae9df94b6f0f1af061266426"
   integrity sha512-HdmbVF4V4w1q/iz++RV7bUxIeepTukWewiJGkoCKQMtvPF11MLTa7It9PRc/reysXXZSEyD4Pthchju+IUbMiQ==
 
-express@^4.13.4, express@^4.14.1:
+express@^4.13.4:
   version "4.16.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.2.tgz#e35c6dfe2d64b7dca0a5cd4f21781be3299e076c"
   integrity sha1-41xt/i1kt9ygpc1PIXgb4ymeB2w=
@@ -4883,14 +4890,6 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
   integrity sha512-2NpiFHqC87y/zFke0fC0spBXL3bBsoh/p5H1EFhshxjCR5+0g2d6BiXbUFz9v1sAcxsk2htp2eQnNIci2dIYcA==
-
-node-etupay@ungdev/node-etupay:
-  version "1.0.0"
-  resolved "https://codeload.github.com/ungdev/node-etupay/tar.gz/1949c8150dfe09ae26d68af8316cfaee4fdd614f"
-  dependencies:
-    atob "^2.0.3"
-    btoa "^1.1.2"
-    express "^4.14.1"
 
 node-pre-gyp@^0.10.0:
   version "0.10.3"
