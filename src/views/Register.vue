@@ -1,13 +1,19 @@
 <template>
-  <div class="register">
-    <h1>Inscription</h1>
-    <router-view/>
-  </div>
+    <div class="register">
+        <h1>Inscription</h1>
+        <router-view />
+    </div>
 </template>
 
 <script>
 export default {
-    name: 'Register'
+    name: 'Register',
+
+    mounted() {
+        if (process.env.VUE_APP_ALLOW_REGISTRATION !== '1') {
+            this.$router.push('/');
+        }
+    }
 };
 </script>
 

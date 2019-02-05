@@ -1,41 +1,33 @@
 <template>
-  <div class="login">
-    <h1>Interface cashless</h1>
-    <p>
-      Saisissez votre e-mail ainsi que votre code PIN pour accéder à l'interface cashless.
-    </p>
-    <form @submit.prevent="login">
-      <TextInput 
-        v-model="mail" 
-        :disabled="working" 
-        label="Mail" />
-      <div class="pin">
-        <TextInput 
-          v-model="pin" 
-          :disabled="working" 
-          type="password" 
-          label="Code PIN" 
-          maxlength="4" />
-        <router-link 
-          class="forgot" 
-          to="forgot">
-          Oublié ?
-        </router-link>
-      </div>
-      <Button 
-        :disabled="working" 
-        raised>
-        Connexion
-      </Button>
-    </form>
-    <div 
-      class="register" 
-      @click="register">
-      Pas encore de compte cashless ?
-      <br>
-      <router-link to="register">Inscription</router-link>
+    <div class="login">
+        <h1>Interface cashless</h1>
+        <p>
+            Saisissez votre e-mail ainsi que votre code PIN pour accéder à l'interface cashless.
+        </p>
+        <form @submit.prevent="login">
+            <TextInput v-model="mail" :disabled="working" label="Mail" />
+            <div class="pin">
+                <TextInput
+                    v-model="pin"
+                    :disabled="working"
+                    type="password"
+                    label="Code PIN"
+                    maxlength="4"
+                />
+                <router-link class="forgot" to="forgot">
+                    Oublié ?
+                </router-link>
+            </div>
+            <Button :disabled="working" raised>
+                Connexion
+            </Button>
+        </form>
+        <div class="register" @click="register" v-if="showRegistration">
+            Pas encore de compte cashless ?
+            <br />
+            <router-link to="register">Inscription</router-link>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -55,6 +47,7 @@ export default {
     },
 
     data: () => ({
+        showRegistration: process.env.VUE_APP_ALLOW_REGISTRATION === '1',
         mail: '',
         pin: ''
     }),

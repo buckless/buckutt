@@ -1,7 +1,7 @@
 <template>
     <div class="history">
         <Table :headers="headers" :data="history" :paging="10" />
-        <Button to="/dashboard/invoice">Imprimer un reçu</Button>
+        <Button to="/dashboard/invoice" v-if="showInvoice">Imprimer un reçu</Button>
     </div>
 </template>
 
@@ -44,6 +44,8 @@ export default {
                 class: 'capitalized'
             });
         }
+
+        data.showInvoice = process.env.VUE_APP_HISTORY_SHOW_INVOICE === '1';
 
         return data;
     },
