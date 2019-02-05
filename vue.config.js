@@ -33,6 +33,7 @@ module.exports = {
         } else if (target === 'electron') {
             config.plugins.push(
                 new webpack.ExternalsPlugin('commonjs', [
+                    'node-machine-id',
                     'child_process',
                     'fs',
                     '@pokusew/pcsclite'
