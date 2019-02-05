@@ -86,8 +86,8 @@ module.exports = {
             throw new APIError(module, 400, 'No token provided');
         }
 
-        const giftReloads = await GiftReload.fetchAll().then(grs =>
-            grs && grs.length ? grs.toJSON() : []
+        const giftReloads = await GiftReload.fetchAll().then(
+            grs => (grs && grs.length ? grs.toJSON() : [])
         );
 
         const paymentDetails = await payline.runAction('getWebPaymentDetailsRequest', {
@@ -109,7 +109,7 @@ module.exports = {
                 credit: amount,
                 type: 'card',
                 trace: transaction.get('id'),
-                point_id: req.point_id,
+                point_id: req.point.id,
                 buyer_id: transaction.get('user_id'),
                 seller_id: transaction.get('user_id')
             });
@@ -123,7 +123,7 @@ module.exports = {
                 credit: reloadGiftAmount,
                 type: 'gift',
                 trace: `card-${amount}`,
-                point_id: req.point_id,
+                point_id: req.point.id,
                 buyer_id: transaction.get('user_id'),
                 seller_id: transaction.get('user_id')
             });
@@ -133,11 +133,6 @@ module.exports = {
             const updateUser = creditUser(ctx(req), transaction.get('user_id'), amount);
 
             await Promise.all([newReload.save(), transaction.save(), updateUser, reloadGiftSave]);
-
-            req.app.locals.modelChanges.emit('userCreditUpdate', {
-                id: transaction.get('user_id'),
-                pending: amount
-            });
         } else {
             await transaction.save();
         }

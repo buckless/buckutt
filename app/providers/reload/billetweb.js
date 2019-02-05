@@ -59,8 +59,8 @@ module.exports = {
 
         formData = formData[0];
 
-        const giftReloads = await GiftReload.fetchAll().then(grs =>
-            grs && grs.length ? grs.toJSON() : []
+        const giftReloads = await GiftReload.fetchAll().then(
+            grs => (grs && grs.length ? grs.toJSON() : [])
         );
 
         const transaction = await Transaction.where({ id: formData['10037'] }).fetch({
@@ -101,7 +101,7 @@ module.exports = {
                 credit: amount,
                 type: 'card',
                 trace: transaction.get('id'),
-                point_id: req.point_id,
+                point_id: req.point.id,
                 buyer_id: transaction.get('user_id'),
                 seller_id: transaction.get('user_id')
             });
@@ -115,7 +115,7 @@ module.exports = {
                 credit: reloadGiftAmount,
                 type: 'gift',
                 trace: `card-${amount}`,
-                point_id: req.point_id,
+                point_id: req.point.id,
                 buyer_id: transaction.get('user_id'),
                 seller_id: transaction.get('user_id')
             });
