@@ -2,6 +2,7 @@
 
 import { EventEmitter } from 'events';
 import pcsclite from '@pokusew/pcsclite';
+import util from 'util';
 import * as classic from './classic';
 import * as desfire from './desfire';
 import * as ultralightC from './ultralight-c';
@@ -62,11 +63,11 @@ export default class PCSCLite extends EventEmitter {
     }
 
     connect(...args) {
-        return Promise.promisify(this.reader.connect.bind(this.reader))(...args);
+        return util.promisify(this.reader.connect.bind(this.reader))(...args);
     }
 
     transmit(buf, size = 255) {
-        return Promise.promisify(this.reader.transmit.bind(this.reader))(buf, size, this.protocol);
+        return util.promisify(this.reader.transmit.bind(this.reader))(buf, size, this.protocol);
     }
 
     disconnect() {
