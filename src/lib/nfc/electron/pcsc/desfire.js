@@ -19,10 +19,10 @@ function wrap(code, data) {
 }
 
 export function read(transmit, log, callback) {
-    const appId = JSON.parse(window.config.desfire.appId);
-    const fileId = JSON.parse(window.config.desfire.fileId);
-    const keyId = JSON.parse(window.config.desfire.keyId);
-    const dkey = JSON.parse(window.config.desfire.key);
+    const appId = window.config.desfire.appId;
+    const fileId = window.config.desfire.fileId;
+    const keyId = window.config.desfire.keyId;
+    const dkey = window.config.desfire.key;
 
     log(`out: ${wrap(0x5a, appId).toString('hex')}`);
     return transmit(wrap(0x5a, appId), 40)
