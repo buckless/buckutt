@@ -1,17 +1,25 @@
 <template>
     <div class="b-writer">
         <template v-if="mode === 'write'">
-            <div
-                class="b-writer__drop"
-                :success="success"
-                :error="rewrite"
-                @click="cancel"></div>
+            <div class="b-writer__drop" :success="success" :error="rewrite" @click="cancel"></div>
             <div class="b-writer__modal">
                 <div class="b-writer__modal__text" v-if="!success">
-                    <span v-if="rewrite && cardToRewrite === inputValue" class="b-writer__modal__text__error">L'écriture de la carte a échoué</span>
-                    <span v-else-if="rewrite && cardToRewrite !== inputValue" class="b-writer__modal__text__error">La carte scannée est différente de l'originale</span>
-                    <span v-else class="b-writer__modal__text__card">Approchez la carte cashless</span>
-                    <span v-if="rewrite" class="b-writer__modal__text__card">Fermeture possible dans {{ timer }} secondes<br /><br /></span>
+                    <span
+                        v-if="rewrite && cardToRewrite === inputValue"
+                        class="b-writer__modal__text__error"
+                        >L'écriture de la carte a échoué</span
+                    >
+                    <span
+                        v-else-if="rewrite && cardToRewrite !== inputValue"
+                        class="b-writer__modal__text__error"
+                        >La carte scannée est différente de l'originale</span
+                    >
+                    <span v-else class="b-writer__modal__text__card"
+                        >Approchez la carte cashless</span
+                    >
+                    <span v-if="rewrite" class="b-writer__modal__text__card"
+                        >Fermeture possible dans {{ timer }} secondes<br /><br
+                    /></span>
                     Gardez le contact jusqu'à la validation du paiement
                     <br /><br />
                     <slot></slot>
@@ -31,7 +39,8 @@
                 @focus="hideVirtualKeyboard"
                 @blur="focus"
                 autofocus
-                @keyup.enter="onCard" />
+                @keyup.enter="onCard"
+            />
         </template>
     </div>
 </template>
@@ -65,8 +74,7 @@ export default {
             },
             timer: 15,
             currentTimer: null,
-            cardLocked: false,
-            nfc: null
+            cardLocked: false
         };
     },
 
@@ -308,6 +316,9 @@ export default {
 
     mounted() {
         debug('mounting component...');
+        if (this.mode === 'read') {
+            this.focus();
+        }
 
         this.resetComponent();
         this.setListeners();

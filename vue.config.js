@@ -36,10 +36,11 @@ module.exports = {
                     'node-machine-id',
                     'child_process',
                     'fs',
+                    'crypto',
                     '@pokusew/pcsclite'
                 ])
             );
-            config.node = { __dirname: false };
+            config.node = { __dirname: false, Buffer: false };
         } else {
             console.log(chalk.yellow('Unknown target: ' + target));
         }
