@@ -22,6 +22,6 @@ router.use('/stats', require('./stats'));
 router.use('/manager', require('./manager'));
 router.use('/database', require('./database'));
 
-router.use('/provider/callback', require('@/providers/reload').callback());
+router.use('/provider/callback', require('@/providers/reload').callback);
 
 module.exports = router;

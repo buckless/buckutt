@@ -31,7 +31,9 @@ const fakeCallback = async (ctx, id, data) => {
     const { Transaction, GiftReload, Reload } = ctx.models;
 
     const useCardData = ctx.event.useCardData;
-    const giftReloads = await GiftReload.fetchAll().then(grs => (grs && grs.length ? grs.toJSON() : []));
+    const giftReloads = await GiftReload.fetchAll().then(
+        grs => (grs && grs.length ? grs.toJSON() : [])
+    );
 
     const transaction = await Transaction.where({ id }).fetch();
 
@@ -84,5 +86,5 @@ module.exports = {
         next();
     },
 
-    async callback() {}
+    callback() {}
 };
