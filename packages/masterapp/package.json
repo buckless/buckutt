@@ -1,0 +1,70 @@
+{
+  "name": "buckless-masterapp",
+  "version": "1.0.0",
+  "description": "buckless-masterapp",
+  "author": "Buckless <contact@buckless.com> https://buckless.com",
+  "contributors": [
+    "Gabriel Juchault <gabriel@buckless.com>",
+    "Axel Mousset <axel@buckless.com>",
+    "Lucas Soulier <lucas@buckless.com>"
+  ],
+  "repository": "https://lab.buckless.com/core/manager.git",
+  "homepage": "https://buckless.com",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "cross-env TARGET=browser NODE_ENV=development vue-cli-service serve --open",
+    "dev:android": "cross-env TARGET=cordova NODE_ENV=development vue-cli-service build",
+    "build": "cross-env TARGET=browser vue-cli-service build",
+    "build:android": "cross-env TARGET=cordova vue-cli-service build",
+    "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\""
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "prettier --single-quote --print-width 100 --tab-width 4 --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "@buckless/offline-queue": "^1.0.3",
+    "@buckless/signed-data": "^2.2.0",
+    "axios": "^0.18.0",
+    "lodash.chunk": "^4.2.0",
+    "moment": "^2.22.2",
+    "normalize.css": "^8.0.0",
+    "rusha": "^0.8.13",
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1",
+    "vue-slider-component": "^2.7.2",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-rc.3",
+    "@vue/cli-service": "^3.0.0-rc.3",
+    "cordova": "^8.0.0",
+    "cross-env": "^5.2.0",
+    "csv-loader": "^2.1.1",
+    "lint-staged": "^7.2.0",
+    "post-compile-webpack-plugin": "^0.1.2",
+    "shelljs": "^0.8.2",
+    "vue-template-compiler": "^2.5.13"
+  },
+  "babel": {
+    "presets": [
+      "@vue/app"
+    ]
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
