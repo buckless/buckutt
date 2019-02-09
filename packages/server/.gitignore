@@ -1,0 +1,7 @@
+node_modules/
+log/
+config/profiles/*.json
+!config/rights.json
+!config/profiles/test.ci.json
+yarn-error.log
+

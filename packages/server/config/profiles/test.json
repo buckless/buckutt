@@ -1,0 +1,94 @@
+{
+    "merchantName": "Buckless",
+    "log": {
+        "console": "debug",
+        "file": "none",
+        "morganStyle": "dev"
+    },
+    "http": {
+        "host": "127.0.0.1",
+        "port": 3006
+    },
+    "app": {
+        "name": "buckless_test",
+        "secret": "NgWlfDWCbX4mPuxau1FmG3TPLHm7iglEA3mp1f8nrlT7zKDn8ZZAwWQOqUArvQBFfMEbFSAMnUHzgQW1FkczTiZYjPZWqdseNtk2"
+    },
+    "redis": {
+        "host": "localhost",
+        "port": 6379
+    },
+    "db": {
+        "client": "pg",
+        "connection": {
+            "host"    : "localhost",
+            "database": "buckless_test",
+            "user"    : "buckless",
+            "password": "buckless"
+        },
+        "pool": {
+            "min": 2,
+            "max": 10
+        },
+        "migrations": {
+            "tableName": "knex_migrations"
+        },
+        "seeds": {
+            "directory": "seeds"
+        }
+    },
+    "mailer": {
+        "smtp": {
+            "streamTransport": true,
+            "newLine": "unix"
+        }
+    },
+    "urls": {
+        "managerUrl": "https://b.inst.buckless.com"
+    },
+    "askpin": {
+        "from": "noreply@buckless.com",
+        "subject": "Buckless forgotten PIN",
+        "template": "Hi !<br> You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !",
+        "managerUrl": "http://b.inst.buckless.com"
+    },
+    "assigner": {
+        "ticketProviders": ["test"],
+        "csv": {
+            "url": {
+                "url": "",
+                "method": "get",
+                "headers": {}
+            },
+            "file": null
+        },
+        "billetweb": {
+            "event": "",
+            "user": "",
+            "key": "",
+            "version": "1"
+        },
+        "from": "noreply@buckless.com",
+        "subject": "Buckless — Votre code PIN",
+        "template": "Hi !\nHere is your code PIN to access your own <a href=\"{{=it.link}}\">account</a> : {{=it.pin}}"
+    },
+    "provider": {
+        "name": "test",
+        "etupay": {
+            "id": 3,
+            "url": "https://etupay.utt.fr/initiate",
+            "key": "foobar"
+        },
+        "epayments": {
+            "apiKeyId": "3c05301f77ceba9e",
+            "secretApiKey": "",
+            "merchantId": "1812",
+            "variant": "default",
+            "urlPrefix": "https://buckless"
+        },
+        "payline": {
+            "id": "foo",
+            "password": "bar",
+            "contractNumber": "1"
+        }
+    }
+}

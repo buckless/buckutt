@@ -1,0 +1,37 @@
+image: lab.buckless.com:4567/core/docker-node-alpine
+
+variables:
+  POSTGRES_DB: buckless_test
+  POSTGRES_USER: buckless
+  POSTGRES_PASSWORD: "buckless"
+
+services:
+  - docker:dind
+  - postgres:latest
+  - redis:latest
+
+stages:
+  - build
+  - push
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  before_script:
+    - apk update
+    - apk add --no-cache git openssh openssl make gcc g++ python
+  script:
+    - yarn
+    - yarn test
+
+push:
+  stage: push
+  only:
+    - master
+  script:
+    - yarn build:docker
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN https://lab.buckless.com:4567
+    - docker push lab.buckless.com:4567/core/server

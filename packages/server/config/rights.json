@@ -1,0 +1,102 @@
+{
+   "rights": {
+      "all": ["admin"],
+      "seller": {
+          "canSell": true,
+          "canReload": false,
+          "canAssign": false,
+          "canControl": false,
+          "read": [
+              "/polling/items",
+              "/customer/buyer",
+              "/polling/usersData",
+              "/live/alert"
+          ],
+          "write": [
+              "/payment/basket",
+              "/payment/catering",
+              "/customer/pendingCardUpdate",
+              "/payment/cancelTransaction"
+          ]
+      },
+      "reloader": {
+          "canSell": false,
+          "canReload": true,
+          "canAssign": false,
+          "canControl": false,
+          "read": [
+              "/polling/items",
+              "/customer/buyer",
+              "/polling/usersData",
+              "/live/alert"
+          ],
+          "write": [
+              "/payment/basket",
+              "/customer/pendingCardUpdate",
+              "/payment/cancelTransaction"
+          ]
+      },
+      "assigner": {
+          "canSell": false,
+          "canReload": false,
+          "canAssign": true,
+          "canControl": false,
+          "read": [
+              "/polling/items",
+              "/customer/buyer",
+              "/auth/assigner",
+              "/polling/usersData",
+              "/live/alert"
+          ],
+          "write": [
+              "/customer/pendingCardUpdate",
+              "/payment/basket"
+          ]
+      },
+      "controller": {
+          "canSell": false,
+          "canReload": false,
+          "canAssign": false,
+          "canControl": true,
+          "read": [
+              "/polling/items",
+              "/customer/buyer",
+              "/customer/controller",
+              "/polling/usersData",
+              "/live/alert"
+          ],
+          "write": [
+              "/customer/controller"
+          ]
+      },
+      "openUrls": [
+          "/",
+          "/auth/login",
+          "/auth/checkDevice",
+          "/auth/registerDevice",
+          "/manager/auth/askpin",
+          "/manager/auth/generatepin",
+          "/manager/auth/register",
+          "/polling/eventEssentials",
+          "/live/status",
+          "/provider/callback"
+      ],
+      "loggedUrls": [
+          "/manager/auth/changepin",
+          "/manager/account/history",
+          "/manager/searchuser",
+          "/manager/payment/transfer",
+          "/manager/payment/reload",
+          "/manager/payment/giftReloads",
+          "/manager/auth/switchuser",
+          "/manager/auth/assigner",
+          "/manager/account/block",
+          "/manager/payment/accountRefund",
+          "/manager/account/groups",
+          "/crud/healthalerts",
+          "/live/healthalert",
+          "/live/credit"
+      ],
+      "pinLoggingAllowed": ["seller", "reloader", "assigner", "controller"]
+   }
+}
