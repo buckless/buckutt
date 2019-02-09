@@ -1,0 +1,45 @@
+image: node:latest
+
+variables:
+  POSTGRES_DB: buckless_test
+  POSTGRES_USER: buckless
+  POSTGRES_PASSWORD: "buckless"
+
+services:
+  - postgres:latest
+  - redis:latest
+
+cache:
+  paths:
+    - .yarn-cache
+    - node_modules
+
+before_script:
+  - apt-get update && apt-get install git openssh-client openssl make gcc g++ python libpcsclite-dev -y
+  - yarn config set cache-folder "$(pwd)/.yarn-cache"
+  - yarn install --no-progress --pure-lockfile --ignore-platform
+
+admin:
+  script:
+    # - yarn admin test
+    - yarn admin build
+
+client:
+  script:
+    # - yarn client test
+    - yarn client build:browser
+
+manager:
+  script:
+    # - yarn manager test
+    - yarn manager build
+
+server:
+  script:
+    - yarn server test
+    # - yarn server build
+
+# stack:
+#   script:
+#     - yarn stack test
+#     - yarn stack build

@@ -35,16 +35,16 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
 $mdc-typography-font-family: 'Open Sans', sans-serif;
 
 @import '@/theme.scss';
 @import '@material/button/mixins';
+@import '@material/feature-targeting/functions';
 
 .button {
-    @include mdc-button-base_;
-    @include mdc-button-corner-radius(2px);
+    @include mdc-button-base_($query: mdc-feature-all());
+    @include mdc-button-shape-radius(2px);
     @include mdc-button-container-fill-color(transparent);
     @include mdc-button-ink-color($foreground);
     @include mdc-states($theme);

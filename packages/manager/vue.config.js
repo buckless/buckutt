@@ -24,10 +24,24 @@ module.exports = {
     css: {
         loaderOptions: {
             sass: {
-                includePaths: [path.resolve(__dirname, 'node_modules')],
+                includePaths: [
+                    path.resolve(__dirname, 'node_modules'),
+                    path.resolve(__dirname, '../../node_modules'),
+                ],
                 data: sassTheme
             }
         }
+    },
+
+    chainWebpack: config => {
+        config.module
+            .rule('js')
+            .use('babel-loader')
+            .loader('babel-loader')
+            .tap((options = {}) => {
+                options.rootMode = 'upward'
+                return options
+            })
     },
 
     devServer: {
@@ -97,5 +111,3 @@ module.exports = {
         msTileColor: '#1ABC9C'
     }
 };
-
-console.log(path.resolve(__dirname, 'node_modules'));
