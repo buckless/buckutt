@@ -1,0 +1,14 @@
+:root {
+    --sidebarBackground: #34495e;
+    --sidebarColor: #fff;
+    --titleBackgroundColor: #223648;
+    --sidebarWidth: 200px;
+
+    --sidebarTitlePadding: 1rem 0;
+    --sidebarTitleSize: 2.5rem;
+    --sidebarTitleWeight: 300;
+
+    --sidebarLinkHeight: 40px;
+
+    --cardSize: 90%;
+}

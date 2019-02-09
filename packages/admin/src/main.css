@@ -1,0 +1,164 @@
+@import './variables.css';
+@import './mixins.css';
+@import './spinner.css';
+@import './styles/c3.css';
+@import './styles/select.css';
+@import './styles/modal.css';
+
+* {
+    box-sizing: border-box;
+}
+
+html, body, main {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    height: 100%;
+    margin: 0;
+    width: 100%;
+    background-color: #F3F3F3;
+}
+
+#app {
+    height: 100%;
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'liga';
+}
+
+.mdl-card {
+    overflow: visible !important;
+}
+
+.anytime-picker { display: none; position: absolute; top: 0; left: 0; }
+.anytime-picker--is-visible { display: block; }
+.anytime-picker__dates { width: 200px; }
+.anytime-picker__dates > * { box-sizing: border-box; width: 14.28%; display: inline-block; }
+
+.b-page {
+    & > div {
+        min-height: calc(100% - 40px);
+        margin-top: 110px;
+        margin-bottom: 20px;
+        margin-right: calc((100% - var(--cardSize)) / 2);
+        margin-left: calc((100% - var(--cardSize)) / 2);
+        padding: 20px;
+        width: var(--cardSize);
+
+        & > h3 {
+            margin: 0;
+        }
+
+        & > select {
+            display: inline-block;
+            max-width: 150px;
+        }
+
+        & button {
+            max-width: 300px;
+        }
+    }
+}
+
+.b--spaces {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.b-table-search {
+    display: flex;
+    align-items: center;
+
+    & > i {
+        color: #34495E;
+    }
+
+    & > div {
+        margin-left: 10px;
+        margin-right: 5px;
+    }
+}
+
+.b-responsive-table {
+    overflow-x: auto;
+    padding-bottom: 150px;
+    margin-bottom: -150px;
+
+    & > table {
+        width: 100%;
+    }
+}
+
+.b-responsive-table--nofullwidth {
+    overflow-x: auto;
+
+    & > table {
+        max-width: 100%;
+    }
+}
+
+.b-actions-cell {
+    min-width: 10px;
+}
+
+.b--capitalized {
+    text-transform: capitalize;
+}
+
+.b--uncapitalize {
+    text-transform: initial;
+}
+
+.b--clear {
+    clear: both;
+}
+
+.b--center {
+    text-align: center !important;
+}
+
+.b--fullwidth {
+    width: 100%;
+}
+
+.b--inline {
+    display: inline-block;
+}
+
+
+.b--unclickable {
+    pointer-events: none;
+}
+
+.b--limitsize {
+    width: 300px;
+}
+
+.b--error {
+    color: #e74c3c !important;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .4s ease;
+}
+
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-leave-active {
+    display: none;
+}

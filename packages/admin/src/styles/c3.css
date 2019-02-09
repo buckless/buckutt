@@ -1,0 +1,21 @@
+.c3-grid line.c3-xgrid,
+.c3-grid line.c3-ygrid {
+    stroke: #e7e7e7;
+    stroke-dasharray: 0;
+}
+
+.c3-chart-lines path.c3-line {
+    stroke-width: 2px;
+}
+
+.c3-axis .tick line {
+    stroke: #e7e7e7;
+}
+
+.c3-axis .tick text {
+    fill: #888;
+}
+
+.c3-axis path.domain {
+    stroke: #999;
+}
