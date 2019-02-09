@@ -27,6 +27,21 @@ module.exports = {
         port: 8081,
         disableHostCheck: true
     },
+    css: {
+        loaderOptions: {
+            postcss: require('../../postcss.config')
+        }
+    },
+    chainWebpack: config => {
+        config.module
+            .rule('js')
+            .use('babel-loader')
+            .loader('babel-loader')
+            .tap((options = {}) => {
+                options.rootMode = 'upward'
+                return options
+            })
+    },
     configureWebpack: config => {
         if (target === 'browser' || target === 'cordova') {
             config.target = 'web';

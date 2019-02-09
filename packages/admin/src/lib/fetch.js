@@ -42,7 +42,7 @@ export function get(url, opts_) {
 
     opts.headers['X-Signature'] = generateSignature('GET', url);
 
-    return fetch(`${config.api}/${url}`, opts).then(res => {
+    return fetch(`${process.env.VUE_APP_API}/${url}`, opts).then(res => {
         if (!res.ok) {
             return Promise.reject(new Error(res.statusText));
         }
@@ -72,7 +72,7 @@ export function post(url, data, opts_) {
 
     opts.headers['X-Signature'] = generateSignature('POST', url);
 
-    return fetch(`${config.api}/${url}`, opts).then(res => {
+    return fetch(`${process.env.VUE_APP_API}/${url}`, opts).then(res => {
         if (!res.ok) {
             return Promise.reject(new Error(res.statusText));
         }
@@ -102,7 +102,7 @@ export function put(url, data, opts_) {
 
     opts.headers['X-Signature'] = generateSignature('PUT', url);
 
-    return fetch(`${config.api}/${url}`, opts).then(res => {
+    return fetch(`${process.env.VUE_APP_API}/${url}`, opts).then(res => {
         if (!res.ok) {
             return Promise.reject(new Error(res.statusText));
         }
@@ -130,7 +130,7 @@ export function del(url, opts_) {
 
     opts.headers['X-Signature'] = generateSignature('DELETE', url);
 
-    return fetch(`${config.api}/${url}`, opts).then(res => {
+    return fetch(`${process.env.VUE_APP_API}/${url}`, opts).then(res => {
         if (!res.ok) {
             return Promise.reject(new Error(res.statusText));
         }
@@ -158,7 +158,7 @@ export function download(url, opts_) {
 
     opts.headers['X-Signature'] = generateSignature('GET', url);
 
-    return fetch(`${config.api}/${url}`, opts).then(res => {
+    return fetch(`${process.env.VUE_APP_API}/${url}`, opts).then(res => {
         if (!res.ok) {
             return Promise.reject(new Error('Download failed'));
         }

@@ -11,7 +11,7 @@ export function initSocket({ dispatch }, token) {
 
     changes = new EventSource(
         `${
-            config.api
+            process.env.VUE_APP_API
         }/live/listenForModelChanges?authorization=Bearer ${token}&fingerprint=admin&signature=${signature}&handshake-interval=10000&lastEventId=12345&retry=3000`
     );
 

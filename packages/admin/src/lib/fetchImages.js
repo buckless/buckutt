@@ -18,7 +18,7 @@ export const getImage = memoize(id => {
         method: 'GET'
     });
 
-    return fetch(`${config.images}/image/${id}?width=100&height=100`, opts).then(res => {
+    return fetch(`${process.env.VUE_APP_IMAGES}/image/${id}?width=100&height=100`, opts).then(res => {
         if (res.status !== 200) {
             return Promise.reject(res);
         }
@@ -40,7 +40,7 @@ export const postImage = (id, image) => {
         body: JSON.stringify({ image })
     });
 
-    return fetch(`${config.images}/image/${id}`, opts).then(res => {
+    return fetch(`${process.env.VUE_APP_IMAGES}/image/${id}`, opts).then(res => {
         if (res.status !== 200) {
             return Promise.reject(res);
         }

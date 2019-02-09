@@ -1,0 +1,31 @@
+{
+  "name": "buckless",
+  "version": "1.0.0",
+  "description": "buckless",
+  "author": "Buckless <contact@buckless.com> https://buckless.com",
+  "contributors": [
+    "Gabriel Juchault <gabriel@buckless.com>",
+    "Axel Mousset <axel@buckless.com>",
+    "Lucas Soulier <lucas@buckless.com>"
+  ],
+  "repository": "https://lab.buckless.com/buckless/buckless.git",
+  "homepage": "https://buckless.com",
+  "private": true,
+  "workspaces": [
+    "packages/admin",
+    "packages/client",
+    "packages/image-server",
+    "packages/manager",
+    "packages/masterapp",
+    "packages/server"
+  ],
+  "scripts": {
+    "admin": "cd packages/admin && yarn run",
+    "client": "cd packages/client && yarn run",
+    "image-server": "cd packages/image-server && yarn run",
+    "manager": "cd packages/manager && yarn run",
+    "master-app": "cd packages/master-app && yarn run",
+    "server": "cd packages/server && yarn run",
+    "lint": "eslint --ext .js,.vue --fix ."
+  }
+}

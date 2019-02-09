@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser-with-msgpack');
-const msgpackResponse = require('msgpack-response');
 const compression = require('compression');
 const cors = require('cors');
 const api = require('@/routes');
@@ -27,7 +26,7 @@ app.use(
 app.use(bodyParser.msgpack({ limit: '5mb' }));
 app.use(bodyParser.json({ limit: '5mb' }));
 
-app.use(msgpackResponse({ auto_detect: true }));
+app.use(require('@/middlewares/msgpack'));
 
 app.use(
     compression({

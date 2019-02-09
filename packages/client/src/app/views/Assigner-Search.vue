@@ -6,15 +6,23 @@
             @input="search"
             class="b-assigner-search__input"
             placeholder="Nom ou numéro de billet (4 caractères mini)"
-            ref="search">
+            ref="search"
+        />
         <h4>
-            <template v-if="searchInput < 4">Tickets ({{ tickets.length }} entrées) :</template>
-            <template v-else>Résultats :</template>
+            <template v-if="searchInput < 4"
+                >Tickets ({{ tickets.length }} entrées) :</template
+            >
+            <template v-else
+                >Résultats :</template
+            >
             <div class="b-space"></div>
             <i class="b-icon" @click="$emit('blankCard')">add</i>
             <i class="b-icon" :disabled="updatingTickets" @click="updateTickets">refresh</i>
         </h4>
-        <div class="b-assigner-search__results" v-if="matches.length > 0 && searchInput.length >= 4">
+        <div
+            class="b-assigner-search__results"
+            v-if="matches.length > 0 && searchInput.length >= 4"
+        >
             <div
                 class="b-assigner-search__results__result"
                 v-for="match in matches"
@@ -29,8 +37,14 @@
         </div>
         <p v-else-if="searchInput.length >= 4">Aucun résultat.</p>
         <div class="b-assigner-search__results" v-else>
-            <recycle-list class="scroller" :items="tickets" :buffer="60" :item-height="38" key-field="id">
-                <template slot-scope="{ item, index, active }">
+            <recycle-scroller
+                class="scroller"
+                :items="tickets"
+                :buffer="60"
+                :item-height="38"
+                key-field="id"
+            >
+                <template slot-scope="{ item }">
                     <div class="b-assigner-search__results__result" @click="selectUser(item)">
                         {{ item.name }}
                         <div v-if="item.mail">
@@ -38,18 +52,18 @@
                         </div>
                     </div>
                 </template>
-            </recycle-list>
+            </recycle-scroller>
         </div>
     </div>
 </template>
 
 <script>
-import { RecycleList } from 'vue-virtual-scroller';
+import { RecycleScroller } from 'vue-virtual-scroller';
 import formatOfflineResults from '@/utils/formatOfflineResults';
 
 export default {
     components: {
-        RecycleList
+        RecycleScroller
     },
 
     data() {

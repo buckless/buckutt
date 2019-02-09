@@ -110,7 +110,7 @@ export default {
         ...mapGetters(['logged', 'event']),
 
         barName() {
-            return config.name;
+            return process.env.VUE_APP_NAME;
         }
     }
 };

@@ -12,7 +12,7 @@
     }
 
     & > .b-item__image {
-        background-image: url('../../../assets/placeholder.jpg');
+        background-image: url('../assets/placeholder.jpg');
         content: ' ';
         position: absolute;
         top: 0;
