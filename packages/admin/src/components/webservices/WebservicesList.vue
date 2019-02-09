@@ -18,7 +18,8 @@
             route="webservices"
             :paging="10"
             @edit="editWebservice"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

@@ -1,9 +1,6 @@
 <template>
     <div class="b-panel">
-        <b-priceseditor
-            :point="focusedPoint"
-            :item="focusedItem"
-            :isArticle="isArticle">
+        <b-priceseditor :point="focusedPoint" :item="focusedItem" :isArticle="isArticle">
         </b-priceseditor>
     </div>
 </template>

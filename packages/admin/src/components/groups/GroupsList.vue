@@ -12,13 +12,25 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNot', value: event.defaultGroup_id } },
-                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.defaultGroup_id } }
+                {
+                    action: 'edit',
+                    text: 'Modifier',
+                    raised: true,
+                    colored: true,
+                    condition: { field: 'id', statement: 'isNot', value: event.defaultGroup_id }
+                },
+                {
+                    action: 'remove',
+                    text: 'Supprimer',
+                    type: 'confirm',
+                    condition: { field: 'id', statement: 'isNot', value: event.defaultGroup_id }
+                }
             ]"
             route="groups"
             :paging="10"
             @edit="editGroup"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

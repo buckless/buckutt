@@ -7,22 +7,22 @@
 
         <div class="options">
             <label v-if="developermode">
-                <input type="checkbox" v-model="assignedCard">
+                <input type="checkbox" v-model="assignedCard" />
                 Carte assignée
             </label>
 
             <label>
-                <input type="checkbox" v-model="paidCard">
+                <input type="checkbox" v-model="paidCard" />
                 Carte payée
             </label>
 
             <label v-if="developermode">
-                <input type="checkbox" v-model="lockedCard">
+                <input type="checkbox" v-model="lockedCard" />
                 Carte bloquée
             </label>
 
             <label>
-                <input type="checkbox" v-model="addCatering">
+                <input type="checkbox" v-model="addCatering" />
                 Ajouter le catering, sans écraser les données existantes
             </label>
         </div>
@@ -33,17 +33,16 @@
                 class="toggle"
                 :active="isActive(article) > -1"
                 :key="i"
-                @click.native="open(article)">
+                @click.native="open(article)"
+            >
                 <strong>{{ article.name }}</strong>
                 <i @click.stop="close(article)" v-if="isActive(article) > -1">Annuler</i>
-                <br/>
-                <br/>
-                <br/>
+                <br />
+                <br />
+                <br />
                 Solde sur carte :
-                <UnitInput
-                    v-model="balances[i]"
-                    :maxNumber="article.maxNumber"></UnitInput>
-                <br/>
+                <UnitInput v-model="balances[i]" :maxNumber="article.maxNumber"></UnitInput>
+                <br />
                 Dépensable les jours :
                 <Days v-model="validities[i]"></Days>
             </Mode>
@@ -52,8 +51,15 @@
         <template v-if="groups.length > 0">
             <h4>Groupes</h4>
             <div class="groups">
-                <div class="groups__group" v-for="group in groups">
-                    <input type="checkbox" name="group" class="out-of-screen" :id="group.id" v-model="activeGroups" :value="group">
+                <div class="groups__group" v-for="group in groups" :key="group.id">
+                    <input
+                        type="checkbox"
+                        name="group"
+                        class="out-of-screen"
+                        :id="group.id"
+                        v-model="activeGroups"
+                        :value="group"
+                    />
                     <label :for="group.id">
                         {{ group.name }}
                     </label>
@@ -70,7 +76,8 @@
             key="validate"
             disableSignCheck
             disableLockCheck
-            shouldPinUnlock />
+            shouldPinUnlock
+        />
     </div>
 </template>
 
@@ -96,8 +103,8 @@ export default {
             writeModal: false,
             days,
             articles,
-            balances: articles.map(article => 0),
-            validities: articles.map(article => Array(days).fill(false)),
+            balances: articles.map(() => 0),
+            validities: articles.map(() => Array(days).fill(false)),
             selectedArticles: [],
             assignedCard: false,
             paidCard: false,

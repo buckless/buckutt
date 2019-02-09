@@ -3,9 +3,7 @@
         <div class="b-lower-bar__reload" v-if="reloadAmount > 0">
             <div class="b-lower-bar__reload__chip">
                 Rechargement:&nbsp;<currency :value="reloadAmount"></currency>
-                <span
-                    class="b-lower-bar__reload__chip__remove"
-                    @click="removeReloads">
+                <span class="b-lower-bar__reload__chip__remove" @click="removeReloads">
                     <i class="b-icon">delete</i>
                 </span>
             </div>

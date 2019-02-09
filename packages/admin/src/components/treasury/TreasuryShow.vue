@@ -3,10 +3,22 @@
         <h5>Recherche</h5>
         <form @submit.prevent="filter()">
             <div>
-                <b-inputselect label="Point" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect>
+                <b-inputselect
+                    label="Point"
+                    id="point-select"
+                    :options="pointOptionsAll"
+                    v-model="fields.point"
+                ></b-inputselect>
             </div>
             <div>
-                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-if="event.usePeriods" @input="fillDates"></b-inputselect>
+                <b-inputselect
+                    label="Période"
+                    id="period-select"
+                    :options="currentPeriodOptions"
+                    :fullOptions="periodOptions"
+                    v-if="event.usePeriods"
+                    @input="fillDates"
+                ></b-inputselect>
                 <b-datetime-picker
                     v-model="fields.dateIn"
                     locale="fr"
@@ -17,7 +29,8 @@
                     pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                     error="Le début n'est pas une date"
                     label="Début"
-                    class="b--limitsize b--inline"></b-datetime-picker>
+                    class="b--limitsize b--inline"
+                ></b-datetime-picker>
                 <b-datetime-picker
                     v-model="fields.dateOut"
                     locale="fr"
@@ -28,40 +41,50 @@
                     pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                     error="La fin n'est pas une date"
                     label="Fin"
-                    class="b--limitsize b--inline"></b-datetime-picker>
+                    class="b--limitsize b--inline"
+                ></b-datetime-picker>
             </div>
             <mdl-button colored raised>Rechercher</mdl-button>
         </form>
 
-        <h4>Rechargements <span class="small">(total: {{ totalReload | price(true) }})</span></h4>
+        <h4>
+            Rechargements <span class="small">(total: {{ totalReload | price(true) }})</span>
+        </h4>
         <b-table
             :headers="[
                 { title: 'Moyen de paiement', field: 'type' },
                 { title: 'Total', field: 'credit', type: 'price' }
             ]"
             :data="displayedReloads"
-            :paging="25">
+            :paging="25"
+        >
         </b-table>
 
-        <h4>Remboursements <span class="small">(total: {{ totalRefund | price(true) }})</span></h4>
+        <h4>
+            Remboursements <span class="small">(total: {{ totalRefund | price(true) }})</span>
+        </h4>
         <b-table
             :headers="[
                 { title: 'Moyen de paiement', field: 'type' },
                 { title: 'Total', field: 'amount', type: 'price' }
             ]"
             :data="displayedRefunds"
-            :paging="25">
+            :paging="25"
+        >
         </b-table>
 
-        <h4>Transferts <span class="small">(total: {{ totalTransfer | price(true) }})</span></h4>
+        <h4>
+            Transferts <span class="small">(total: {{ totalTransfer | price(true) }})</span>
+        </h4>
         <b-table
             :headers="[
                 { title: 'De', field: 'sender.fullname', class: 'b--capitalized' },
                 { title: 'À', field: 'reciever.fullname', class: 'b--capitalized' },
-                { title: 'Montant', field: 'amount', type: 'price' },
+                { title: 'Montant', field: 'amount', type: 'price' }
             ]"
             :paging="25"
-            :data="displayedTransfers">
+            :data="displayedTransfers"
+        >
         </b-table>
     </div>
 </template>

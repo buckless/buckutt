@@ -1,13 +1,23 @@
 <template>
     <div class="b-list" v-if="elements.length > 0">
         <ul class="mdl-list" v-for="(list, index) in lists" :key="index">
-            <li class="mdl-list__item"
-                :class="{ 'mdl-list__item--two-line': (element.title !== undefined && element.content !== undefined) }"
-                v-for="(element, index) in list" :key="index">
+            <li
+                class="mdl-list__item"
+                :class="{
+                    'mdl-list__item--two-line':
+                        element.title !== undefined && element.content !== undefined
+                }"
+                v-for="(element, index) in list"
+                :key="index"
+            >
                 <span class="mdl-list__item-primary-content">
                     <i class="material-icons mdl-list__item-avatar">{{ element.icon }}</i>
-                    <span class="mdl-list__item-sub-title" v-if="element.title">{{ element.title }}</span>
-                    <span v-if="element.type === 'price' && element.content !== undefined">{{ element.content | price(true) }}</span>
+                    <span class="mdl-list__item-sub-title" v-if="element.title">{{
+                        element.title
+                    }}</span>
+                    <span v-if="element.type === 'price' && element.content !== undefined">{{
+                        element.content | price(true)
+                    }}</span>
                     <span v-else-if="element.content !== undefined">{{ element.content }}</span>
                 </span>
                 <span class="mdl-list__item-secondary-content" v-if="element.right">

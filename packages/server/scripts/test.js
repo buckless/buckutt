@@ -1,7 +1,7 @@
-const path         = require('path');
-const fs           = require('fs');
+const path = require('path');
+const fs = require('fs');
 const childProcess = require('child_process');
-const Mocha        = require('mocha');
+const Mocha = require('mocha');
 
 process.env.NODE_ENV = 'test';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -11,7 +11,8 @@ if (process.argv.indexOf('--coverage') > -1) {
     const istanbul = './node_modules/.bin/istanbul';
 
     // TODO: use glob pattern (https://github.com/gotwarlost/istanbul/issues/800)
-    const excludes = fs.readdirSync(__dirname)
+    const excludes = fs
+        .readdirSync(__dirname)
         .map(file => `-x scripts/${file}`)
         .join(' ')
         .split(' ');
@@ -32,7 +33,7 @@ if (process.argv.indexOf('--coverage') > -1) {
         .sort();
 
     const mocha = new Mocha({
-        bail   : true,
+        bail: true,
         timeout: 5000
     });
 

@@ -2,11 +2,7 @@
     <div class="b-staff">
         <h5>Staff</h5>
         <div class="b-staff__list">
-            <b-staff
-                v-for="user in staff"
-                :key="user.id"
-                :user="user">
-            </b-staff>
+            <b-staff v-for="user in staff" :key="user.id" :user="user"> </b-staff>
         </div>
     </div>
 </template>

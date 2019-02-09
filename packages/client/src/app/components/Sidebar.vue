@@ -1,21 +1,21 @@
 <template>
     <div class="b-sidebar">
         <div class="b-sidebar__items">
-            <sidebar-reload
-                v-if="reloadAmount > 0"
-                :amount="reloadAmount"></sidebar-reload>
+            <sidebar-reload v-if="reloadAmount > 0" :amount="reloadAmount"></sidebar-reload>
             <sidebar-promotion
                 v-for="promotion in sidebar.promotions"
                 :key="promotion.id"
                 :id="promotion.id"
                 :name="promotion.name"
-                :content="promotion.content"></sidebar-promotion>
+                :content="promotion.content"
+            ></sidebar-promotion>
             <sidebar-item
                 v-for="item in sidebarItems"
                 :key="item.id"
                 :id="item.id"
                 :name="item.name"
-                :count="item.count"></sidebar-item>
+                :count="item.count"
+            ></sidebar-item>
         </div>
         <sidebar-validate></sidebar-validate>
     </div>

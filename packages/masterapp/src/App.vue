@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <Header />
-        <router-view/>
+        <router-view />
     </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
 };
 </script>
 
-<style src="@/../node_modules/normalize.css"/>
+<style src="@/../node_modules/normalize.css" />
 
 <style>
 * {

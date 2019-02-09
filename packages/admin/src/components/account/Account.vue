@@ -4,8 +4,21 @@
             <b-navbar title="Mon compte" :inCard="true"></b-navbar>
             <h5>Modifier le mot de passe administrateur</h5>
             <form @submit.prevent="changePassword(loggedUser, newPassword, confirmation)">
-                <mdl-textfield type="password" floating-label="Nouveau mot de passe" v-model="newPassword" required="required" error="Le mot de passe doit contenir au moins un caractère"></mdl-textfield>
-                <mdl-textfield type="password" floating-label="Confirmation" v-model="confirmation" required="required" error="Le mot de passe doit contenir au moins un caractère"></mdl-textfield><br />
+                <mdl-textfield
+                    type="password"
+                    floating-label="Nouveau mot de passe"
+                    v-model="newPassword"
+                    required="required"
+                    error="Le mot de passe doit contenir au moins un caractère"
+                ></mdl-textfield>
+                <mdl-textfield
+                    type="password"
+                    floating-label="Confirmation"
+                    v-model="confirmation"
+                    required="required"
+                    error="Le mot de passe doit contenir au moins un caractère"
+                ></mdl-textfield
+                ><br />
                 <mdl-button colored raised>Valider</mdl-button>
             </form>
         </div>

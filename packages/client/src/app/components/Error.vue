@@ -1,16 +1,12 @@
 <template>
     <div class="b-error" v-if="error">
-        <div
-            class="b-error__drop"
-            @click="clearError"></div>
+        <div class="b-error__drop" @click="clearError"></div>
         <div class="b-error__modal">
             <h3 class="b-error__modal__title">Erreur</h3>
             <div class="b-error__modal__error">
                 {{ error }}
             </div>
-            <button
-                class="b-error__modal__close"
-                @click="clearError">Fermer</button>
+            <button class="b-error__modal__close" @click="clearError">Fermer</button>
         </div>
     </div>
 </template>

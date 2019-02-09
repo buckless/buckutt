@@ -2,8 +2,20 @@
     <div>
         <h5>Modifier l'équipement {{ focusedDevice.name }}</h5>
         <form @submit.prevent="updateDevice(focusedDevice)">
-            <mdl-textfield floating-label="Nom" :value="focusedDevice.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
-            <mdl-textfield floating-label="Clé unique" :value="focusedDevice.fingerprint" @input="updateDeepestFocusedElement({ field: 'fingerprint', value: $event })" required="required" error="Le fingerprint doit contenir au moins un caractère"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Nom"
+                :value="focusedDevice.name"
+                @input="updateDeepestFocusedElement({ field: 'name', value: $event })"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield>
+            <mdl-textfield
+                floating-label="Clé unique"
+                :value="focusedDevice.fingerprint"
+                @input="updateDeepestFocusedElement({ field: 'fingerprint', value: $event })"
+                required="required"
+                error="Le fingerprint doit contenir au moins un caractère"
+            ></mdl-textfield>
 
             <mdl-button colored raised>Modifier</mdl-button>
         </form>

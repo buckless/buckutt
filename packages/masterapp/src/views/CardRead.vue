@@ -6,16 +6,31 @@
             <div><strong>Serial physique</strong>: {{ cardData.serial }}</div>
             <div><strong>Crédit:</strong> {{ cardData.credit | price(true) }}</div>
             <div><strong>Version de la carte:</strong> {{ cardData.version }}</div>
-            <div><strong>Carte assignée</strong>: <span v-if="cardData.options.assignedCard">oui</span><span v-else>non</span></div>
-            <div><strong>Carte payée</strong>: <span v-if="cardData.options.paidCard">oui</span><span v-else>non</span></div>
-            <div><strong>Carte bloquée</strong>: <span v-if="cardData.options.locked">oui</span><span v-else>non</span></div>
-            <div><strong>Catering:</strong>
+            <div>
+                <strong>Carte assignée</strong>:
+                <span v-if="cardData.options.assignedCard">oui</span><span v-else>non</span>
+            </div>
+            <div>
+                <strong>Carte payée</strong>: <span v-if="cardData.options.paidCard">oui</span
+                ><span v-else>non</span>
+            </div>
+            <div>
+                <strong>Carte bloquée</strong>: <span v-if="cardData.options.locked">oui</span
+                ><span v-else>non</span>
+            </div>
+            <div>
+                <strong>Catering:</strong>
                 <div v-for="(item, i) in cardData.options.catering" :key="i">
                     {{ getCateringName(item.id) }} : {{ item.balance }}
 
-                    (<span v-for="(active, day) in getCateringAvail(item.validity)" :key="day" class="day" :active="active">
-                        {{ day }}
-                    </span>)
+                    (<span
+                        v-for="(active, day) in getCateringAvail(item.validity)"
+                        :key="day"
+                        class="day"
+                        :active="active"
+                    >
+                        {{ day }} </span
+                    >)
                 </div>
             </div>
         </div>
@@ -27,7 +42,8 @@
             @error="error"
             disableLockCheck
             disableSignCheck
-            key="reader" />
+            key="reader"
+        />
     </div>
 </template>
 

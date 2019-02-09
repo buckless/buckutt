@@ -3,8 +3,12 @@
         <div class="mdl-card mdl-shadow--2dp">
             <b-navbar
                 title="Formules"
-                :tabs="[{ route: '/promotions', name: 'Liste', exact: true }, { route: '/promotions/create', name: 'Création' }]"
-                :inCard="true">
+                :tabs="[
+                    { route: '/promotions', name: 'Liste', exact: true },
+                    { route: '/promotions/create', name: 'Création' }
+                ]"
+                :inCard="true"
+            >
             </b-navbar>
             <router-view></router-view>
         </div>

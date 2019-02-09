@@ -1,10 +1,7 @@
 <template>
-  <div
-    :to="to"
-    class="card"
-    @click="navigate">
-    <slot/>
-  </div>
+    <div :to="to" class="card" @click="navigate">
+        <slot />
+    </div>
 </template>
 
 <script>

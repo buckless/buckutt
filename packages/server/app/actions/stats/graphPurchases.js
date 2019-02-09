@@ -35,7 +35,6 @@ module.exports = async (ctx, { dateIn, dateOut, additive, filters }) => {
     const startBoundary = moment(dateIn).ceil(divider, 'minutes');
     const endBoundary = moment(dateOut).ceil(divider, 'minutes');
     const xAxis = buildXAxis(startBoundary, endBoundary, divider);
-    const filterQueries = [];
 
     const results = filters.map(filter => {
         const purchasesFilters = {};
@@ -57,33 +56,35 @@ module.exports = async (ctx, { dateIn, dateOut, additive, filters }) => {
             pricesFilters['prices.promotion_id'] = bookshelf.knex.raw('?', filter.promotion);
         }
 
-        return ctx.models.Purchase
-            .query(knex => {
-                knex.count('prices.id');
-                knex.select(bookshelf.knex.raw('coalesce(sum(??), 0) as amount', ['prices.amount']));
-                knex.from(
-                    bookshelf.knex.raw(
-                        `generate_series(timestamp '${startBoundary.toISOString()}', timestamp '${endBoundary.toISOString()}', '${divider} minutes') date`
-                    )
-                );
-                knex.leftJoin('purchases', qb => {
-                    if (additive) {
-                        qb.on('purchases.clientTime', '<=', bookshelf.knex.raw('date'));
-                    } else {
-                        qb.onBetween('purchases.clientTime', [bookshelf.knex.raw(`(date - interval '${divider} minutes')`), bookshelf.knex.raw('date')]);
-                        qb.onBetween('purchases.clientTime', [dateIn, dateOut]);
-                    }
+        return ctx.models.Purchase.query(knex => {
+            knex.count('prices.id');
+            knex.select(bookshelf.knex.raw('coalesce(sum(??), 0) as amount', ['prices.amount']));
+            knex.from(
+                bookshelf.knex.raw(
+                    `generate_series(timestamp '${startBoundary.toISOString()}', timestamp '${endBoundary.toISOString()}', '${divider} minutes') date`
+                )
+            );
+            knex.leftJoin('purchases', qb => {
+                if (additive) {
+                    qb.on('purchases.clientTime', '<=', bookshelf.knex.raw('date'));
+                } else {
+                    qb.onBetween('purchases.clientTime', [
+                        bookshelf.knex.raw(`(date - interval '${divider} minutes')`),
+                        bookshelf.knex.raw('date')
+                    ]);
+                    qb.onBetween('purchases.clientTime', [dateIn, dateOut]);
+                }
 
-                    qb.on(purchasesFilters);
-                    qb.onNull('purchases.deleted_at');
-                });
-                knex.leftJoin('prices', qb => {
-                    qb.on('prices.id', 'purchases.price_id');
-                    qb.on(pricesFilters);
-                });
-                knex.groupBy('date');
-                knex.orderBy('date');
-            })
+                qb.on(purchasesFilters);
+                qb.onNull('purchases.deleted_at');
+            });
+            knex.leftJoin('prices', qb => {
+                qb.on('prices.id', 'purchases.price_id');
+                qb.on(pricesFilters);
+            });
+            knex.groupBy('date');
+            knex.orderBy('date');
+        })
             .fetchAll({ withDeleted: true })
             .then(purchases => purchases.toJSON());
     });

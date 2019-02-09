@@ -2,7 +2,12 @@
     <div>
         <h5>Créer une fondation</h5>
         <form @submit.prevent="createFundation(newFundation)">
-            <mdl-textfield floating-label="Nom" v-model="newFundation.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Nom"
+                v-model="newFundation.name"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield>
             <br />
             <mdl-button colored raised>Créer</mdl-button>
         </form>

@@ -3,56 +3,56 @@
         <div>
             <h3>Achats</h3>
             <table class="b-treasury__table" v-if="treasury.purchases.length > 0">
-              <thead>
-                <tr>
-                  <th class="b-treasury__table__cell--non-numeric">Article</th>
-                  <th>Quantité</th>
-                  <th>Total TTC</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="purchase in treasury.purchases" :key="purchase.id">
-                  <td class="b-treasury__table__cell--non-numeric">{{ purchase.name }}</td>
-                  <td>{{ purchase.count }}</td>
-                  <td><currency :value="purchase.amount" /></td>
-                </tr>
-              </tbody>
+                <thead>
+                    <tr>
+                        <th class="b-treasury__table__cell--non-numeric">Article</th>
+                        <th>Quantité</th>
+                        <th>Total TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="purchase in treasury.purchases" :key="purchase.id">
+                        <td class="b-treasury__table__cell--non-numeric">{{ purchase.name }}</td>
+                        <td>{{ purchase.count }}</td>
+                        <td><currency :value="purchase.amount" /></td>
+                    </tr>
+                </tbody>
             </table>
             <p v-else>Aucun achat à afficher.</p>
 
             <h3>Rechargements</h3>
             <table class="b-treasury__table" v-if="treasury.reloads.length > 0">
-              <thead>
-                <tr>
-                  <th class="b-treasury__table__cell--non-numeric">Moyen de paiement</th>
-                  <th>Quantité</th>
-                  <th>Total TTC</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="reload in treasury.reloads" :key="reload.id">
-                  <td class="b-treasury__table__cell--non-numeric">{{ reload.name }}</td>
-                  <td>{{ reload.count }}</td>
-                  <td><currency :value="reload.amount" /></td>
-                </tr>
-              </tbody>
+                <thead>
+                    <tr>
+                        <th class="b-treasury__table__cell--non-numeric">Moyen de paiement</th>
+                        <th>Quantité</th>
+                        <th>Total TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="reload in treasury.reloads" :key="reload.id">
+                        <td class="b-treasury__table__cell--non-numeric">{{ reload.name }}</td>
+                        <td>{{ reload.count }}</td>
+                        <td><currency :value="reload.amount" /></td>
+                    </tr>
+                </tbody>
             </table>
             <p v-else>Aucun rechargement à afficher.</p>
 
             <h3>Catering</h3>
             <table class="b-treasury__table" v-if="displayedCatering.length > 0">
-              <thead>
-                <tr>
-                  <th class="b-treasury__table__cell--non-numeric">Article</th>
-                  <th>Quantité</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="cat in displayedCatering" :key="cat.id">
-                  <td class="b-treasury__table__cell--non-numeric">{{ cat.name }}</td>
-                  <td>{{ cat.count }}</td>
-                </tr>
-              </tbody>
+                <thead>
+                    <tr>
+                        <th class="b-treasury__table__cell--non-numeric">Article</th>
+                        <th>Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="cat in displayedCatering" :key="cat.id">
+                        <td class="b-treasury__table__cell--non-numeric">{{ cat.name }}</td>
+                        <td>{{ cat.count }}</td>
+                    </tr>
+                </tbody>
             </table>
             <p v-else>Aucun ticket à afficher.</p>
 

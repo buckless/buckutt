@@ -1,70 +1,46 @@
 <template>
     <div class="b-numerical-input">
         <div class="b-numerical-input__row">
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(1, $event)">
+            <button class="b-numerical-input__row__button" @click="input(1, $event)">
                 1
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(2, $event)">
+            <button class="b-numerical-input__row__button" @click="input(2, $event)">
                 2
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(3, $event)">
+            <button class="b-numerical-input__row__button" @click="input(3, $event)">
                 3
             </button>
         </div>
         <div class="b-numerical-input__row">
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(4, $event)">
+            <button class="b-numerical-input__row__button" @click="input(4, $event)">
                 4
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(5, $event)">
+            <button class="b-numerical-input__row__button" @click="input(5, $event)">
                 5
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(6, $event)">
+            <button class="b-numerical-input__row__button" @click="input(6, $event)">
                 6
             </button>
         </div>
         <div class="b-numerical-input__row">
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(7, $event)">
+            <button class="b-numerical-input__row__button" @click="input(7, $event)">
                 7
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(8, $event)">
+            <button class="b-numerical-input__row__button" @click="input(8, $event)">
                 8
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(9, $event)">
+            <button class="b-numerical-input__row__button" @click="input(9, $event)">
                 9
             </button>
         </div>
         <div class="b-numerical-input__row">
-            <button
-                class="b-numerical-input__row__button"
-                @click="clear($event)">
+            <button class="b-numerical-input__row__button" @click="clear($event)">
                 <i class="b-icon">clear</i>
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="input(0, $event)">
+            <button class="b-numerical-input__row__button" @click="input(0, $event)">
                 0
             </button>
-            <button
-                class="b-numerical-input__row__button"
-                @click="validate($event)">
+            <button class="b-numerical-input__row__button" @click="validate($event)">
                 <i class="b-icon">done</i>
             </button>
         </div>

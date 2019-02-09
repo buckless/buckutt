@@ -6,7 +6,8 @@
         @keydown.enter.prevent.stop="select(suggestions[activeIndex].original)"
         @keydown.tab.prevent.stop="select(suggestions[activeIndex].original)"
         @keydown="$refs.realInput.focus()"
-        ref="textfield">
+        ref="textfield"
+    >
         <input
             type="text"
             class="mdl-textfield__input b-inputselect__field"
@@ -16,27 +17,25 @@
             @blur="displayInput = false"
             ref="input"
             autocomplete="off"
-            readonly="readonly" />
+            readonly="readonly"
+        />
         <label :for="id">
             <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
         </label>
         <label class="mdl-textfield__label" :for="id">{{ label }}</label>
         <transition name="slide-top">
-            <ul
-                :for="id"
-                class="b-completelist mdl-shadow--2dp"
-                ref="menu"
-                v-if="displayInput">
+            <ul :for="id" class="b-completelist mdl-shadow--2dp" ref="menu" v-if="displayInput">
                 <li class="b-completelist__search">
                     <i class="material-icons">search</i>
                     <input
-                    type="text"
-                    class="mdl-textfield__input"
-                    v-model="filter"
-                    @focus="displayInput = true"
-                    @blur="displayInput = false"
-                    autocomplete="off"
-                    ref="realInput" />
+                        type="text"
+                        class="mdl-textfield__input"
+                        v-model="filter"
+                        @focus="displayInput = true"
+                        @blur="displayInput = false"
+                        autocomplete="off"
+                        ref="realInput"
+                    />
                 </li>
                 <li
                     v-for="(suggestion, index) in suggestions"
@@ -44,9 +43,9 @@
                     @mousedown="select(suggestion.original)"
                     @mouseover="activeIndex = index"
                     class="b-completelist__item"
-                    :class="{ 'b-completelist__item-active': (index === activeIndex) }"
-                    v-html="suggestion.string">
-                </li>
+                    :class="{ 'b-completelist__item-active': index === activeIndex }"
+                    v-html="suggestion.string"
+                ></li>
             </ul>
         </transition>
     </div>
@@ -124,8 +123,8 @@ export default {
         },
 
         convertOptions(options) {
-            return options.map(
-                option => (!option.name && !option.value ? { name: option, value: option } : option)
+            return options.map(option =>
+                !option.name && !option.value ? { name: option, value: option } : option
             );
         },
 

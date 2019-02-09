@@ -43,8 +43,8 @@ module.exports = async (
                 trace: userData.ticketId
             });
 
-            const giftReloads = await ctx.models.GiftReload.fetchAll().then(
-                gr => (gr && gr.length ? gr.toJSON() : [])
+            const giftReloads = await ctx.models.GiftReload.fetchAll().then(gr =>
+                gr && gr.length ? gr.toJSON() : []
             );
 
             const reloadGiftAmount = giftReloads

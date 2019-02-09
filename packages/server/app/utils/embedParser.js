@@ -1,12 +1,14 @@
 const hasDot = str => str.indexOf('.') > 0;
 
 const removeLevel = embed =>
-    embed.filter(rel => hasDot(rel)).map(rel =>
-        rel
-            .split('.')
-            .slice(1)
-            .join('.')
-    );
+    embed
+        .filter(rel => hasDot(rel))
+        .map(rel =>
+            rel
+                .split('.')
+                .slice(1)
+                .join('.')
+        );
 
 const embedParser = embed =>
     embed.map(relation => {

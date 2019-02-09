@@ -2,20 +2,37 @@
     <div>
         <h5>Équipements</h5>
         <form @submit.prevent="createWiket(wiket)">
-            <b-inputselect label="Équipement" id="device-select" :options="deviceOptions" v-model="wiket.device"></b-inputselect>
-            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="wiket.period" v-if="event.usePeriods"></b-inputselect>
-            <b-inputselect label="Groupe par défaut" id="group-select" :options="groupOptions" v-model="wiket.defaultGroup" v-if="event.useGroups"></b-inputselect>
+            <b-inputselect
+                label="Équipement"
+                id="device-select"
+                :options="deviceOptions"
+                v-model="wiket.device"
+            ></b-inputselect>
+            <b-inputselect
+                label="Période"
+                id="period-select"
+                :options="currentPeriodOptions"
+                :fullOptions="periodOptions"
+                v-model="wiket.period"
+                v-if="event.usePeriods"
+            ></b-inputselect>
+            <b-inputselect
+                label="Groupe par défaut"
+                id="group-select"
+                :options="groupOptions"
+                v-model="wiket.defaultGroup"
+                v-if="event.useGroups"
+            ></b-inputselect>
             <mdl-button colored raised :disabled="disabledAdd">Ajouter</mdl-button>
         </form>
         <b-table
             :headers="displayedColumns"
             :data="displayedWikets"
-            :actions="[
-                { action: 'remove', text: 'Supprimer', type: 'confirm' }
-            ]"
+            :actions="[{ action: 'remove', text: 'Supprimer', type: 'confirm' }]"
             route="wikets"
             :paging="5"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

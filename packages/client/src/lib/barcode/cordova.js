@@ -1,3 +1,5 @@
+/* global cordova */
+
 export default () => {
     return new Promise((resolve, reject) => {
         cordova.plugins.barcodeScanner.scan(

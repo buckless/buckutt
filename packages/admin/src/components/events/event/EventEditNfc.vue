@@ -1,11 +1,7 @@
 <template>
     <div>
         <h5>Modifier les prix du support NFC</h5>
-        <b-priceseditor
-            :point="internetPoint"
-            :item="focusedArticle"
-            isArticle>
-        </b-priceseditor>
+        <b-priceseditor :point="internetPoint" :item="focusedArticle" isArticle> </b-priceseditor>
     </div>
 </template>
 

@@ -2,7 +2,8 @@
     <router-link
         :to="toLink"
         class="b-promotion"
-        :class="{ 'b-promotion--selected': selected, 'b-promotion--gray': gray }">
+        :class="{ 'b-promotion--selected': selected, 'b-promotion--gray': gray }"
+    >
         <i class="material-icons">stars</i>
         {{ promotion.name }}
     </router-link>

@@ -2,7 +2,14 @@
     <div>
         <h5>Modifier le groupe {{ focusedGroup.name }}:</h5>
         <form @submit.prevent="updateGroup(focusedGroup)">
-            <mdl-textfield floating-label="Nom" :value="focusedGroup.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield><br />
+            <mdl-textfield
+                floating-label="Nom"
+                :value="focusedGroup.name"
+                @input="updateDeepestFocusedElement({ field: 'name', value: $event })"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield
+            ><br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>
     </div>

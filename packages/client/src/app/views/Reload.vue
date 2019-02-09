@@ -1,18 +1,10 @@
 <template>
-    <div
-        class="b-reload"
-        :class="{ 'b-reload--reloadOnly': reloadOnly }">
-        <div
-            class="b-reload__drop"
-            v-if="!reloadOnly"
-            @click="closeReload"></div>
+    <div class="b-reload" :class="{ 'b-reload--reloadOnly': reloadOnly }">
+        <div class="b-reload__drop" v-if="!reloadOnly" @click="closeReload"></div>
         <div class="b-reload__modal" :class="{ 'b-reload__modal--fromtop': reloadSum > 0 }">
             <div class="b-reload__modal__topbar">
                 <h3 class="b-reload__modal__topbar__title">Rechargement</h3>
-                <h3
-                    class="b-reload__modal__topbar__cancel"
-                    v-if="!reloadOnly"
-                    @click="closeReload">
+                <h3 class="b-reload__modal__topbar__cancel" v-if="!reloadOnly" @click="closeReload">
                     Annuler
                 </h3>
             </div>
@@ -31,25 +23,36 @@
                         v-if="meanOfPayment === 'returned'"
                         v-model="reloadAmount"
                         @validate="confirmReloadModal"
-                        ref="input"></unit-input>
+                        ref="input"
+                    ></unit-input>
                     <numerical-input
                         v-else
                         @changed="updateCurrency"
                         @validate="confirmReloadModal"
-                        ref="input"></numerical-input>
+                        ref="input"
+                    ></numerical-input>
                 </div>
             </div>
-            <div
-                class="b-reload__modal__confirm"
-                v-show="reloadState === 'confirm'">
+            <div class="b-reload__modal__confirm" v-show="reloadState === 'confirm'">
                 <div class="b-reload__modal__buttons">
                     <button @click="reload"><span>Paiement</span> accepté</button>
                     <button @click="cancelReloadModal"><span>Paiement</span> refusé</button>
                 </div>
             </div>
         </div>
-        <nfc mode="read" @read="logBuyer" v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting" key="read" />
-        <nfc mode="write" @read="validate" @cancel="cancelReload" v-if="reloadOnly && isWriting" key="write"/>
+        <nfc
+            mode="read"
+            @read="logBuyer"
+            v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting"
+            key="read"
+        />
+        <nfc
+            mode="write"
+            @read="validate"
+            @cancel="cancelReload"
+            v-if="reloadOnly && isWriting"
+            key="write"
+        />
     </div>
 </template>
 

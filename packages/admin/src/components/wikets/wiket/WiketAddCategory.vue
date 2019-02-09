@@ -4,12 +4,22 @@
         <div class="b-addarticle__form">
             <form @submit.prevent="createCategory(newCategory)" class="b-addarticle__option">
                 <h6>Créer une nouvelle catégorie:</h6>
-                <mdl-textfield floating-label="Nom" v-model="newCategory.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
+                <mdl-textfield
+                    floating-label="Nom"
+                    v-model="newCategory.name"
+                    required="required"
+                    error="Le nom doit contenir au moins un caractère"
+                ></mdl-textfield>
                 <mdl-button raised colored>Créer</mdl-button>
             </form>
             <form @submit.prevent="addCategory(category)" class="b-addarticle__option">
                 <h6>Ajouter une catégorie existante:</h6>
-                <b-inputselect label="Catégorie à ajouter" id="category-select" :options="remainingCategoryOptions" v-model="category"></b-inputselect>
+                <b-inputselect
+                    label="Catégorie à ajouter"
+                    id="category-select"
+                    :options="remainingCategoryOptions"
+                    v-model="category"
+                ></b-inputselect>
                 <mdl-button raised colored>Ajouter</mdl-button>
             </form>
         </div>

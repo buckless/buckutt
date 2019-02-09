@@ -10,7 +10,11 @@
                     <i class="material-icons">alarm</i><br />
                     Périodes
                 </router-link>
-                <router-link to="/fundations" class="mdl-navigation__link" v-if="event.useFundations">
+                <router-link
+                    to="/fundations"
+                    class="mdl-navigation__link"
+                    v-if="event.useFundations"
+                >
                     <i class="material-icons">local_atm</i><br />
                     Fondations
                 </router-link>

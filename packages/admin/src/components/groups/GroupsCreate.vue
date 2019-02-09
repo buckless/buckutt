@@ -1,8 +1,14 @@
 <template>
     <div>
-        <h5>Créer un groupe </h5>
+        <h5>Créer un groupe</h5>
         <form @submit.prevent="createGroup(newGroup)">
-            <mdl-textfield floating-label="Nom" v-model="newGroup.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield><br />
+            <mdl-textfield
+                floating-label="Nom"
+                v-model="newGroup.name"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield
+            ><br />
             <mdl-button colored raised>Créer</mdl-button>
         </form>
     </div>

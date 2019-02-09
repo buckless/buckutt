@@ -1,7 +1,6 @@
 <template>
     <div class="b-sidebar-item">
-        <div class="b-sidebar-item__minus"
-             @click.stop="removeItemFromBasket({ id })"></div>
+        <div class="b-sidebar-item__minus" @click.stop="removeItemFromBasket({ id })"></div>
         <div class="b-sidebar-item__name">
             {{ name }}
         </div>

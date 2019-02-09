@@ -5,7 +5,8 @@
             :key="mean.id"
             class="b-reload-methods__method"
             :class="buttonClasses(mean)"
-            @click="changeMeanOfPayment(mean.slug)">
+            @click="changeMeanOfPayment(mean.slug)"
+        >
             {{ mean.name }}
         </div>
     </div>

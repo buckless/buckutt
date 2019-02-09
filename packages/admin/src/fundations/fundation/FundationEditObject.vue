@@ -2,7 +2,14 @@
     <div>
         <h5>Modifier la fondation</h5>
         <form @submit.prevent="updateFundation(focusedFundation)">
-            <mdl-textfield floating-label="Nom" :value="focusedFundation.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield><br />
+            <mdl-textfield
+                floating-label="Nom"
+                :value="focusedFundation.name"
+                @input="updateDeepestFocusedElement({ field: 'name', value: $event })"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield
+            ><br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>
     </div>

@@ -7,12 +7,23 @@
         </div>
         <div class="mdl-tabs mdl-js-tabs is-upgraded" v-if="tabs">
             <div class="mdl-tabs__tab-bar">
-                <router-link to="" @click.native="$root.goBack()" class="mdl-tabs__tab" v-if="goBack">
+                <router-link
+                    to=""
+                    @click.native="$root.goBack()"
+                    class="mdl-tabs__tab"
+                    v-if="goBack"
+                >
                     <i class="material-icons mdl-color-text--pink">keyboard_backspace</i>
                 </router-link>
-                <router-link :to="generateAbsoluteLink(tab.route)" :exact="tab.exact" :key="tab.route"
-                    class="mdl-tabs__tab" active-class="is-active" :class="{ 'b--unclickable': tab.clickable === false }"
-                    v-for="tab in tabs">
+                <router-link
+                    :to="generateAbsoluteLink(tab.route)"
+                    :exact="tab.exact"
+                    :key="tab.route"
+                    class="mdl-tabs__tab"
+                    active-class="is-active"
+                    :class="{ 'b--unclickable': tab.clickable === false }"
+                    v-for="tab in tabs"
+                >
                     <span v-if="tab.name">{{ tab.name }}</span>
                     <i class="material-icons mdl-color-text--pink" v-else>{{ tab.icon }}</i>
                 </router-link>

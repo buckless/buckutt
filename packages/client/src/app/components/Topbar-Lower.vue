@@ -6,12 +6,11 @@
                 v-if="!loginState && isSelling"
                 :name="tab.name"
                 :id="tab.id"
-                :key="tab.id"></tab>
+                :key="tab.id"
+            ></tab>
         </div>
         <div class="b-lower-bar__device">
-            <div
-                v-if="seller.isAuth"
-                class="b-lower-bar__device__seller">
+            <div v-if="seller.isAuth" class="b-lower-bar__device__seller">
                 <strong>Opérateur: </strong>
                 <span class="b--capitalized">{{ seller.firstname }} </span>
                 <span class="b--capitalized">{{ seller.lastname }}</span>

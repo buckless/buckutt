@@ -1,8 +1,5 @@
 <template>
-    <router-link
-        :to="toLink"
-        class="b-item"
-        :class="{ 'b-item--selected': selected }">
+    <router-link :to="toLink" class="b-item" :class="{ 'b-item--selected': selected }">
         <div class="b-item__image">
             <img :src="image" draggable="false" height="100%" width="100%" />
         </div>

@@ -1,62 +1,58 @@
 <template>
-  <div class="forgot">
-    <h1 v-if="!key">Code PIN oublié</h1>
-    <h1 v-else>Réinitialisation du code PIN</h1>
+    <div class="forgot">
+        <h1 v-if="!key">Code PIN oublié</h1>
+        <h1 v-else>Réinitialisation du code PIN</h1>
 
-    <form
-      v-if="!key"
-      @submit.prevent="sendReset(mail)">
-      <p>
-        Saisissez votre e-mail ci-dessous. Vous receverez par e-mail un lien vous permettant de changer votre mot de passe.
-      </p>
-      <TextInput
-        v-model="mail"
-        :disabled="working"
-        placeholder="nom@mail.com"
-        label="E-mail" />
-      <div class="actions">
-        <Button to="/login">
-          Retour
-        </Button>
-        <Button
-          :disabled="working"
-          raised>
-          Envoyer
-        </Button>
-      </div>
-    </form>
-    <form
-      v-else
-      @submit.prevent="reset(key, pin, confirmation)">
-      <p>
-        Le nouveau code PIN doit exclusivement être composé de 4 chiffres.
-      </p>
-      <TextInput
-        v-model="pin"
-        :disabled="working"
-        pattern="\d{4}"
-        maxlength="4"
-        type="password"
-        label="Code PIN" />
-      <TextInput
-        v-model="confirmation"
-        :disabled="working"
-        pattern="\d{4}"
-        maxlength="4"
-        type="password"
-        label="Confirmation" />
-      <div class="actions">
-        <Button to="/login">
-          Retour
-        </Button>
-        <Button
-          :disabled="working"
-          raised>
-          Envoyer
-        </Button>
-      </div>
-    </form>
-  </div>
+        <form v-if="!key" @submit.prevent="sendReset(mail)">
+            <p>
+                Saisissez votre e-mail ci-dessous. Vous receverez par e-mail un lien vous permettant
+                de changer votre mot de passe.
+            </p>
+            <TextInput
+                v-model="mail"
+                :disabled="working"
+                placeholder="nom@mail.com"
+                label="E-mail"
+            />
+            <div class="actions">
+                <Button to="/login">
+                    Retour
+                </Button>
+                <Button :disabled="working" raised>
+                    Envoyer
+                </Button>
+            </div>
+        </form>
+        <form v-else @submit.prevent="reset(key, pin, confirmation)">
+            <p>
+                Le nouveau code PIN doit exclusivement être composé de 4 chiffres.
+            </p>
+            <TextInput
+                v-model="pin"
+                :disabled="working"
+                pattern="\d{4}"
+                maxlength="4"
+                type="password"
+                label="Code PIN"
+            />
+            <TextInput
+                v-model="confirmation"
+                :disabled="working"
+                pattern="\d{4}"
+                maxlength="4"
+                type="password"
+                label="Confirmation"
+            />
+            <div class="actions">
+                <Button to="/login">
+                    Retour
+                </Button>
+                <Button :disabled="working" raised>
+                    Envoyer
+                </Button>
+            </div>
+        </form>
+    </div>
 </template>
 
 <script>

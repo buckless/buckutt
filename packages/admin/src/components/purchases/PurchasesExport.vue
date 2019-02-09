@@ -3,11 +3,29 @@
         <h5>Recherche</h5>
         <form @submit.prevent="exportPurchases()">
             <div>
-                <b-inputselect label="Point" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect>
-                <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptionsAll" v-model="fields.fundation" v-if="event.useFundations"></b-inputselect>
+                <b-inputselect
+                    label="Point"
+                    id="point-select"
+                    :options="pointOptionsAll"
+                    v-model="fields.point"
+                ></b-inputselect>
+                <b-inputselect
+                    label="Fondation"
+                    id="fundation-select"
+                    :options="fundationOptionsAll"
+                    v-model="fields.fundation"
+                    v-if="event.useFundations"
+                ></b-inputselect>
             </div>
             <div>
-                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-if="event.usePeriods" @input="fillDates"></b-inputselect>
+                <b-inputselect
+                    label="Période"
+                    id="period-select"
+                    :options="currentPeriodOptions"
+                    :fullOptions="periodOptions"
+                    v-if="event.usePeriods"
+                    @input="fillDates"
+                ></b-inputselect>
                 <b-datetime-picker
                     v-model="fields.dateIn"
                     locale="fr"
@@ -18,7 +36,8 @@
                     pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                     error="Le début n'est pas une date"
                     label="Début"
-                    class="b--limitsize b--inline"></b-datetime-picker>
+                    class="b--limitsize b--inline"
+                ></b-datetime-picker>
                 <b-datetime-picker
                     v-model="fields.dateOut"
                     locale="fr"
@@ -29,12 +48,18 @@
                     pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                     error="La fin n'est pas une date"
                     label="Fin"
-                    class="b--limitsize b--inline"></b-datetime-picker>
+                    class="b--limitsize b--inline"
+                ></b-datetime-picker>
             </div>
             <h6>Options</h6>
             <div class="b-treasuryExport__options">
                 <div>
-                    <b-inputselect label="Données à exporter" id="data-select" :options="dataChoices" v-model="data"></b-inputselect>
+                    <b-inputselect
+                        label="Données à exporter"
+                        id="data-select"
+                        :options="dataChoices"
+                        v-model="data"
+                    ></b-inputselect>
                 </div>
                 <div>
                     <strong>Format:</strong><br />

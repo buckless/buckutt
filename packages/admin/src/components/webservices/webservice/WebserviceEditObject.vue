@@ -2,7 +2,14 @@
     <div>
         <h5>Modifier le webhook</h5>
         <form @submit.prevent="updateWebservice(focusedWebservice)">
-            <mdl-textfield floating-label="Adresse" :value="focusedWebservice.url" @input="updateDeepestFocusedElement({ field: 'url', value: $event })" required="required" error="L'adresse' doit contenir au moins un caractère"></mdl-textfield><br />
+            <mdl-textfield
+                floating-label="Adresse"
+                :value="focusedWebservice.url"
+                @input="updateDeepestFocusedElement({ field: 'url', value: $event })"
+                required="required"
+                error="L'adresse' doit contenir au moins un caractère"
+            ></mdl-textfield
+            ><br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>
     </div>

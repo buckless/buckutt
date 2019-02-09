@@ -1,41 +1,43 @@
 <template>
-  <div class="input-wrapper">
-    <template v-if="!label">
-      <input
-        ref="input"
-        :type="type"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :value="value"
-        :maxlength="maxlength"
-        :pattern="pattern"
-        :step="step"
-        :min="min"
-        class="input"
-        @input="input"
-        @keydown="keydown"
-        @keyup="keyup">
-    </template>
-    <template v-else>
-      <label>
-        <span class="label-text">{{ label }}</span>
-        <input
-          ref="input"
-          :type="type"
-          :placeholder="placeholder"
-          :disabled="disabled"
-          :value="value"
-          :maxlength="maxlength"
-          :pattern="pattern"
-          :step="step"
-          :min="min"
-          class="input"
-          @input="input"
-          @keydown="keydown"
-          @keyup="keyup">
-      </label>
-    </template>
-  </div>
+    <div class="input-wrapper">
+        <template v-if="!label">
+            <input
+                ref="input"
+                :type="type"
+                :placeholder="placeholder"
+                :disabled="disabled"
+                :value="value"
+                :maxlength="maxlength"
+                :pattern="pattern"
+                :step="step"
+                :min="min"
+                class="input"
+                @input="input"
+                @keydown="keydown"
+                @keyup="keyup"
+            />
+        </template>
+        <template v-else>
+            <label>
+                <span class="label-text">{{ label }}</span>
+                <input
+                    ref="input"
+                    :type="type"
+                    :placeholder="placeholder"
+                    :disabled="disabled"
+                    :value="value"
+                    :maxlength="maxlength"
+                    :pattern="pattern"
+                    :step="step"
+                    :min="min"
+                    class="input"
+                    @input="input"
+                    @keydown="keydown"
+                    @keyup="keyup"
+                />
+            </label>
+        </template>
+    </div>
 </template>
 
 <script>

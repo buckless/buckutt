@@ -43,8 +43,8 @@ const generateRouter = () => {
         asyncHandler(async (req, res) => {
             const { Transaction, Reload, GiftReload } = req.app.locals.models;
 
-            const giftReloads = await GiftReload.fetchAll().then(
-                grs => (grs && grs.length ? grs.toJSON() : [])
+            const giftReloads = await GiftReload.fetchAll().then(grs =>
+                grs && grs.length ? grs.toJSON() : []
             );
 
             const transaction = await Transaction.where({ id: req.etupay.serviceData }).fetch({

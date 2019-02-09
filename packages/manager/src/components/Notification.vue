@@ -1,14 +1,11 @@
 <template>
-  <div class="notifications">
-    <div
-      v-for="message in messages"
-      :key="message.id"
-      class="notification-wrapper">
-      <div class="notification">
-        {{ message.message }}
-      </div>
+    <div class="notifications">
+        <div v-for="message in messages" :key="message.id" class="notification-wrapper">
+            <div class="notification">
+                {{ message.message }}
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -32,7 +29,6 @@ export default {
     }
 };
 </script>
-
 
 <style lang="scss" scoped>
 @import '@/theme.scss';

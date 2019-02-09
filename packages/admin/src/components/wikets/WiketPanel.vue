@@ -6,7 +6,12 @@
         </div>
         <div class="b-wiketpanel__addwiket">
             <form @submit.prevent="createPoint(newPoint)">
-                <mdl-textfield floating-label="Nom" v-model="newPoint.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
+                <mdl-textfield
+                    floating-label="Nom"
+                    v-model="newPoint.name"
+                    required="required"
+                    error="Le nom doit contenir au moins un caractère"
+                ></mdl-textfield>
                 <mdl-button colored raised>Créer</mdl-button>
             </form>
         </div>

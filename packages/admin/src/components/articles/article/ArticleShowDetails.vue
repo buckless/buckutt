@@ -3,7 +3,12 @@
         <h5>Détails de l'article</h5>
         <div class="b-article-top">
             <div class="b-article-preview">
-                <img :src="image" :alt="focusedArticle.name" v-show="image" class="b-article-preview__image" />
+                <img
+                    :src="image"
+                    :alt="focusedArticle.name"
+                    v-show="image"
+                    class="b-article-preview__image"
+                />
                 <div class="b-article-preview__image" v-show="!image"></div>
             </div>
             <b-list :elements="elements" :columns="2" class="b-article-top__fill"></b-list>

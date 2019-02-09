@@ -6,8 +6,8 @@ const uuid = require('uuid/v4');
  * You first need to create a formatting function to pad numbers to two digits…
  **/
 function twoDigits(d) {
-    if (0 <= d && d < 10) return "0" + d.toString();
-    if (-10 < d && d < 0) return "-0" + (-1 * d).toString();
+    if (0 <= d && d < 10) return '0' + d.toString();
+    if (-10 < d && d < 0) return '-0' + (-1 * d).toString();
     return d.toString();
 }
 
@@ -17,8 +17,20 @@ function twoDigits(d) {
  * to apply this to more than one Date object, having it as a prototype
  * makes sense.
  **/
-Date.prototype.toMysqlFormat = function () {
-    return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getUTCHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
+Date.prototype.toMysqlFormat = function() {
+    return (
+        this.getUTCFullYear() +
+        '-' +
+        twoDigits(1 + this.getUTCMonth()) +
+        '-' +
+        twoDigits(this.getUTCDate()) +
+        ' ' +
+        twoDigits(this.getUTCHours()) +
+        ':' +
+        twoDigits(this.getUTCMinutes()) +
+        ':' +
+        twoDigits(this.getUTCSeconds())
+    );
 };
 
 const table = fs.readFileSync(path.join(__dirname, 'physicalSupports.csv'), 'utf8');

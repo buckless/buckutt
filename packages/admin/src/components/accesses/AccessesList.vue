@@ -7,11 +7,17 @@
         </div>
 
         <b-table
-            :headers="[{ title: 'Heure d\'acces', field: 'clientTime', type: 'date' }, { title: 'Utilisateur', field: 'user' }, { title: 'Opérateur', field: 'operator' }, { title: 'Lieu', field: 'point' }]"
+            :headers="[
+                { title: 'Heure d\'acces', field: 'clientTime', type: 'date' },
+                { title: 'Utilisateur', field: 'user' },
+                { title: 'Opérateur', field: 'operator' },
+                { title: 'Lieu', field: 'point' }
+            ]"
             :data="displayedAccesses"
             :filter="{ val: this.user, field: 'user' }"
             :sort="{ field: 'created_at', order: 'DESC' }"
-            :paging="10">
+            :paging="10"
+        >
         </b-table>
     </div>
 </template>

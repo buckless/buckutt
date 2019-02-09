@@ -1,34 +1,31 @@
 <template>
-  <div>
-    <nav ref="nav">
-      <router-link
-        v-for="(tab, i) in tabs"
-        :to="tab.route"
-        :class="tab.classes"
-        :key="i"
-        tag="li"
-        @click.native="updateLine">
-        {{ tab.name }}
-      </router-link>
-      <div
-        v-show="actualRoute > -1"
-        :style="lineStyle"
-        class="line"/>
-      <div class="space"/>
-      <router-link
-        :active="$route.path === '/dashboard/account'"
-        to="/dashboard/account"
-        tag="li"
-        class="account">
-        <Icon
-          :size="1.7"
-          name="account_circle"/>
-      </router-link>
-    </nav>
-    <section>
-      <slot/>
-    </section>
-  </div>
+    <div>
+        <nav ref="nav">
+            <router-link
+                v-for="(tab, i) in tabs"
+                :to="tab.route"
+                :class="tab.classes"
+                :key="i"
+                tag="li"
+                @click.native="updateLine"
+            >
+                {{ tab.name }}
+            </router-link>
+            <div v-show="actualRoute > -1" :style="lineStyle" class="line" />
+            <div class="space" />
+            <router-link
+                :active="$route.path === '/dashboard/account'"
+                to="/dashboard/account"
+                tag="li"
+                class="account"
+            >
+                <Icon :size="1.7" name="account_circle" />
+            </router-link>
+        </nav>
+        <section>
+            <slot />
+        </section>
+    </div>
 </template>
 
 <script>
@@ -115,7 +112,6 @@ export default {
     }
 };
 </script>
-
 
 <style lang="scss" scoped>
 @import '@/theme.scss';

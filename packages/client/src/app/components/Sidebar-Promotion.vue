@@ -1,8 +1,7 @@
 <template>
     <div class="b-sidebar-promotion" @click="toggleDetails">
         <div class="b-sidebar-promotion__row">
-            <div class="b-sidebar-promotion__minus"
-                 @click.stop="remove()"></div>
+            <div class="b-sidebar-promotion__minus" @click.stop="remove()"></div>
             <div class="b-sidebar-promotion__row__name">
                 {{ name }}
             </div>
@@ -11,13 +10,12 @@
                 <i class="b-icon" v-if="toggled">remove</i>
             </div>
         </div>
-        <div
-            class="b-sidebar-promotion__row__details"
-            v-if="toggled">
+        <div class="b-sidebar-promotion__row__details" v-if="toggled">
             <div
                 v-for="item of content"
                 :key="item.id"
-                class="b-sidebar-promotion__row__details__item">
+                class="b-sidebar-promotion__row__details__item"
+            >
                 {{ item.name }}
             </div>
         </div>

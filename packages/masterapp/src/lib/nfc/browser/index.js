@@ -1,5 +1,6 @@
+/* global nfc */
+
 import { EventEmitter } from 'events';
-import rusha from 'rusha';
 import signedData from '../signedData';
 
 export default class NFC extends EventEmitter {
@@ -74,7 +75,7 @@ export default class NFC extends EventEmitter {
                 throw new Error('card not found');
             }
 
-            mock.actualCard = name;
+            window.mock.actualCard = name;
 
             // do not store cardValue as buffer because it can't be restored as a buffer
             // we create the buffer directly on read
@@ -107,20 +108,20 @@ export default class NFC extends EventEmitter {
     write(data) {
         const cards = JSON.parse(localStorage.getItem('mocked-cards'));
 
-        if (!cards[mock.actualCard]) {
+        if (!cards[window.mock.actualCard]) {
             return Promise.reject(new Error('card not found'));
         }
 
         console.trace('nfc-browser-index-write', data);
 
         // do not store cardValue as buffer because it can't be restored as a buffer
-        cards[mock.actualCard].cardValue = nfc.dataToCard(
+        cards[window.mock.actualCard].cardValue = nfc.dataToCard(
             data,
-            cards[mock.actualCard].cardId + process.env.VUE_APP_SIGNINGKEY
+            cards[window.mock.actualCard].cardId + process.env.VUE_APP_SIGNINGKEY
         );
 
-        const debugData = `${cards[mock.actualCard].cardId}(${
-            cards[mock.actualCard].cardValue.credit
+        const debugData = `${cards[window.mock.actualCard].cardId}(${
+            cards[window.mock.actualCard].cardValue.credit
         })`;
         console.warn(`Writing card to local storage : ${debugData}`);
 

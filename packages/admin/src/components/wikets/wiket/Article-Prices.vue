@@ -9,7 +9,9 @@
         </div>
         <div class="b-pricesEditor__prices">
             <h4>Tarifs</h4>
-            <span v-if="displayedPrices.length === 0">Aucun prix n'est encore défini pour cet article.</span>
+            <span v-if="displayedPrices.length === 0"
+                >Aucun prix n'est encore défini pour cet article.</span
+            >
             <div v-for="(price, index) in displayedPrices" :key="index">
                 <span>
                     <i class="material-icons">attach_money</i> {{ price.amount | price(true) }} TTC
@@ -27,15 +29,44 @@
                     <mdl-button icon="delete"></mdl-button>
                 </b-confirm>
                 <template v-if="generateWarning(price)">
-                    <mdl-tooltip :target="price.id" class="b--uncapitalize" v-html="generateWarning(price)"></mdl-tooltip>
+                    <mdl-tooltip
+                        :target="price.id"
+                        class="b--uncapitalize"
+                        v-html="generateWarning(price)"
+                    ></mdl-tooltip>
                     <i :id="price.id" class="material-icons">warning</i>
                 </template>
             </div>
             <form @submit.prevent="createPrice(newPrice)">
-                <mdl-textfield floating-label="Montant TTC (centimes)" v-model="newPrice.amount" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield>
-                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="newPrice.period" v-if="event.usePeriods"></b-inputselect>
-                <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptions" v-model="newPrice.fundation" v-if="event.useFundations"></b-inputselect>
-                <b-inputselect label="Groupe" id="group-select" :options="groupOptions" v-model="newPrice.group" v-if="event.useGroups"></b-inputselect>
+                <mdl-textfield
+                    floating-label="Montant TTC (centimes)"
+                    v-model="newPrice.amount"
+                    required="required"
+                    pattern="[0-9]+"
+                    error="Le montant doit être un entier"
+                ></mdl-textfield>
+                <b-inputselect
+                    label="Période"
+                    id="period-select"
+                    :options="currentPeriodOptions"
+                    :fullOptions="periodOptions"
+                    v-model="newPrice.period"
+                    v-if="event.usePeriods"
+                ></b-inputselect>
+                <b-inputselect
+                    label="Fondation"
+                    id="fundation-select"
+                    :options="fundationOptions"
+                    v-model="newPrice.fundation"
+                    v-if="event.useFundations"
+                ></b-inputselect>
+                <b-inputselect
+                    label="Groupe"
+                    id="group-select"
+                    :options="groupOptions"
+                    v-model="newPrice.group"
+                    v-if="event.useGroups"
+                ></b-inputselect>
                 <mdl-button :disabled="disabledAdd" icon="add" colored></mdl-button>
             </form>
         </div>

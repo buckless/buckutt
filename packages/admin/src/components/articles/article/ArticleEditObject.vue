@@ -3,14 +3,28 @@
         <div>
             <h5>Modifier l'article {{ focusedArticle.name }}</h5>
             <form @submit.prevent="updateArticle(focusedArticle)">
-                <mdl-textfield floating-label="Nom" :value="focusedArticle.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })"  required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
-                <mdl-textfield floating-label="Alcool" :value="focusedArticle.alcohol" @input="updateDeepestFocusedElement({ field: 'alcohol', value: $event })"></mdl-textfield>
+                <mdl-textfield
+                    floating-label="Nom"
+                    :value="focusedArticle.name"
+                    @input="updateDeepestFocusedElement({ field: 'name', value: $event })"
+                    required="required"
+                    error="Le nom doit contenir au moins un caractère"
+                ></mdl-textfield>
+                <mdl-textfield
+                    floating-label="Alcool"
+                    :value="focusedArticle.alcohol"
+                    @input="updateDeepestFocusedElement({ field: 'alcohol', value: $event })"
+                ></mdl-textfield>
                 <mdl-button colored raised>Modifier</mdl-button>
             </form>
         </div>
         <div>
             <h5>Image</h5>
-            <b-uploader :id="focusedArticle.id" :name="focusedArticle.name" @change="imageUpdated"></b-uploader>
+            <b-uploader
+                :id="focusedArticle.id"
+                :name="focusedArticle.name"
+                @change="imageUpdated"
+            ></b-uploader>
         </div>
     </div>
 </template>

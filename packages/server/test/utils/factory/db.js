@@ -1,6 +1,6 @@
 const db = require('@/db');
 
-module.exports = async (ctx) => {
+module.exports = async ctx => {
     await db.ready();
 
     const databaseSeeded = await db.models.Group.where({ name: 'Défaut' })
@@ -17,4 +17,4 @@ module.exports = async (ctx) => {
     ctx.defaultPeriod = (await db.models.Period.where({ name: 'Défaut' }).fetch()).toJSON();
 
     return db;
-}
+};

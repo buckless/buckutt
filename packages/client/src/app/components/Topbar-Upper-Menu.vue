@@ -1,13 +1,18 @@
 <template>
     <div class="b-menu-wrapper">
-        <div class="b-menu__drop" v-if="showMenu && !canClose && !onlyLogout" @click="showMenu = false"></div>
+        <div
+            class="b-menu__drop"
+            v-if="showMenu && !canClose && !onlyLogout"
+            @click="showMenu = false"
+        ></div>
         <div class="b-menu" v-if="!canClose && !onlyLogout">
             <div class="b-menu__icon b-icon" @click="showMenu = !showMenu">menu</div>
             <div class="b-menu__actions" v-if="showMenu">
                 <div
                     v-if="isSellerMode"
                     class="b-menu__actions__action"
-                    @click="close(clearBasket)">
+                    @click="close(clearBasket)"
+                >
                     <i class="b-icon">delete_forever</i>
                     Vider le panier
                 </div>
@@ -15,7 +20,8 @@
                 <div
                     v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
-                    @click="close(toggleHistory)">
+                    @click="close(toggleHistory)"
+                >
                     <i class="b-icon">history</i>
                     Historique
                 </div>
@@ -23,7 +29,8 @@
                 <div
                     v-if="isSellerMode && useCardData && displayCatering"
                     class="b-menu__actions__action"
-                    @click="close(toggleCatering)">
+                    @click="close(toggleCatering)"
+                >
                     <i class="b-icon">shopping_basket</i>
                     Catering
                 </div>
@@ -31,7 +38,8 @@
                 <div
                     v-if="isReloaderMode && isSellerMode"
                     class="b-menu__actions__action"
-                    @click="close(openReloadModal)">
+                    @click="close(openReloadModal)"
+                >
                     <i class="b-icon">attach_money</i>
                     Rechargement
                 </div>
@@ -39,7 +47,8 @@
                 <div
                     v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
-                    @click="close(toggleTreasury)">
+                    @click="close(toggleTreasury)"
+                >
                     <i class="b-icon">account_balance</i>
                     Trésorerie
                 </div>
@@ -47,22 +56,18 @@
                 <div
                     v-if="isReloaderMode || isSellerMode"
                     class="b-menu__actions__action"
-                    @click="close(toggleHealth)">
+                    @click="close(toggleHealth)"
+                >
                     <i class="b-icon">favorite</i>
                     Alerte santé
                 </div>
                 <div class="b-menu__actions__separator"></div>
-                <div
-                    class="b-menu__actions__action"
-                    @click="close(toogleDeveloppers)">
+                <div class="b-menu__actions__action" @click="close(toogleDeveloppers)">
                     <i class="b-icon">settings</i>
                     Développeurs
                 </div>
                 <div class="b-menu__actions__separator"></div>
-                <div
-                    v-if="!displayLogout"
-                    class="b-menu__actions__action"
-                    @click="close(resetApi)">
+                <div v-if="!displayLogout" class="b-menu__actions__action" @click="close(resetApi)">
                     <i class="b-icon">developer_board</i>
                     Changer de serveur
                 </div>
@@ -70,7 +75,8 @@
                 <div
                     v-if="displayLogout"
                     class="b-menu__actions__action"
-                    @click="close(logoutSeller)">
+                    @click="close(logoutSeller)"
+                >
                     <i class="b-icon">eject</i>
                     Déconnexion
                 </div>

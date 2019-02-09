@@ -10,25 +10,42 @@
             :headers="[
                 { title: 'Période', field: 'name', object: true },
                 { title: 'Début', field: 'start', type: 'date' },
-                { title: 'Fin', field: 'end', type: 'date'}
+                { title: 'Fin', field: 'end', type: 'date' }
             ]"
             :data="displayedPeriods"
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'end', order: 'DESC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', raised: true, colored: true, condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id } },
-                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id } }
+                {
+                    action: 'edit',
+                    text: 'Modifier',
+                    raised: true,
+                    colored: true,
+                    condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id }
+                },
+                {
+                    action: 'remove',
+                    text: 'Supprimer',
+                    type: 'confirm',
+                    condition: { field: 'id', statement: 'isNot', value: event.defaultPeriod_id }
+                }
             ]"
             route="periods"
             :paging="10"
             @edit="editPeriod"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
         <br />
         <mdl-button accent @click.native="displayOutdated = !displayOutdated">
-            <template v-if="!displayOutdated">Afficher</template>
-            <template v-else>Masquer</template>
-            les anciennes périodes</mdl-button>
+            <template v-if="!displayOutdated"
+                >Afficher</template
+            >
+            <template v-else
+                >Masquer</template
+            >
+            les anciennes périodes</mdl-button
+        >
     </div>
 </template>
 

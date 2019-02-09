@@ -11,8 +11,10 @@
                         <tr v-for="(step, index) in displayedPromotion" :key="index">
                             <td class="mdl-data-table__cell--non-numeric b-table__little">
                                 1 article parmi :
-                                <span class="mdl-chip b-chip--margin b-table-inter"
-                                    v-if="displayedPromotion.length > (index + 1)">
+                                <span
+                                    class="mdl-chip b-chip--margin b-table-inter"
+                                    v-if="displayedPromotion.length > index + 1"
+                                >
                                     <span class="mdl-chip__text">
                                         +
                                     </span>

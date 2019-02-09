@@ -1,42 +1,39 @@
 <template>
-  <div class="block">
-    <Card>
-      <h3>Bloquer mon support</h3>
+    <div class="block">
+        <Card>
+            <h3>Bloquer mon support</h3>
 
-      <form
-        v-if="hasCard && !cardBlocked"
-        @submit.prevent="block(card)">
-        Votre espace cashless est associé avec le support <strong>{{ card }}</strong>.<br ><br >
-        Souhaitez-vous bloquer le support ? Cette action est irreversible.
-        <br>
-        <br>
-        <div class="actions">
-          <Button
-            :disabled="working"
-            raised>Oui, bloquer mon support</button>
-        </div>
-      </form>
-      <template v-else>
-        <p>
-          Ce compte est associé avec les supports bloqués suivants:
-          <span
-            v-for="(blockedCard, index) in blockedCards"
-            :key="index">
-            <strong>{{ blockedCard }}</strong>
-            <template v-if="index < blockedCards.length - 1">, </template>
-            <template v-else>.</template>
-          </span>
-          <br >
-          <br >
-        </p>
-        <div class="actions">
-          <Button
-            raised
-            to="/dashboard/menu">Retour</Button>
-        </div>
-      </template>
-    </Card>
-  </div>
+            <form v-if="hasCard && !cardBlocked" @submit.prevent="block(card)">
+                Votre espace cashless est associé avec le support <strong>{{ card }}</strong
+                >.<br /><br />
+                Souhaitez-vous bloquer le support ? Cette action est irreversible.
+                <br />
+                <br />
+                <div class="actions">
+                    <Button :disabled="working" raised>Oui, bloquer mon support</Button>
+                </div>
+            </form>
+            <template v-else>
+                <p>
+                    Ce compte est associé avec les supports bloqués suivants:
+                    <span v-for="(blockedCard, index) in blockedCards" :key="index">
+                        <strong>{{ blockedCard }}</strong>
+                        <template v-if="index < blockedCards.length - 1"
+                            >,
+                        </template>
+                        <template v-else
+                            >.</template
+                        >
+                    </span>
+                    <br />
+                    <br />
+                </p>
+                <div class="actions">
+                    <Button raised to="/dashboard/menu">Retour</Button>
+                </div>
+            </template>
+        </Card>
+    </div>
 </template>
 
 <script>

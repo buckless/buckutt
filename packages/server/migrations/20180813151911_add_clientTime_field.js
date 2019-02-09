@@ -1,32 +1,48 @@
-exports.up = function (knex) {
+exports.up = function(knex) {
     return knex.schema
-        .table('accesses', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('accesses', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
         })
-        .table('withdrawals', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('withdrawals', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
         })
-        .table('purchases', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('purchases', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
             t.dateTime('clientDeletion').nullable();
         })
-        .table('refunds', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('refunds', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
             t.dateTime('clientDeletion').nullable();
         })
-        .table('reloads', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('reloads', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
             t.dateTime('clientDeletion').nullable();
         })
-        .table('transfers', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('transfers', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
             t.dateTime('clientDeletion').nullable();
         })
-        .table('meansoflogin', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('meansoflogin', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
         })
-        .table('users', (t) => {
-            t.dateTime('clientTime').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        .table('users', t => {
+            t.dateTime('clientTime')
+                .notNullable()
+                .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
         })
         .then(() => knex('accesses').update('clientTime', knex.raw('created_at')))
         .then(() => knex('withdrawals').update('clientTime', knex.raw('created_at')))
@@ -42,34 +58,34 @@ exports.up = function (knex) {
         .then(() => knex('users').update('clientTime', knex.raw('created_at')));
 };
 
-exports.down = function (knex) {
+exports.down = function(knex) {
     return knex.schema
-        .table('accesses', (t) => {
+        .table('accesses', t => {
             t.dropColumn('clientTime');
         })
-        .table('purchases', (t) => {
-            t.dropColumn('clientTime');
-            t.dropColumn('clientDeletion');
-        })
-        .table('refunds', (t) => {
+        .table('purchases', t => {
             t.dropColumn('clientTime');
             t.dropColumn('clientDeletion');
         })
-        .table('reloads', (t) => {
+        .table('refunds', t => {
             t.dropColumn('clientTime');
             t.dropColumn('clientDeletion');
         })
-        .table('withdrawals', (t) => {
-            t.dropColumn('clientTime');
-        })
-        .table('transfers', (t) => {
+        .table('reloads', t => {
             t.dropColumn('clientTime');
             t.dropColumn('clientDeletion');
         })
-        .table('meansoflogin', (t) => {
+        .table('withdrawals', t => {
             t.dropColumn('clientTime');
         })
-        .table('users', (t) => {
+        .table('transfers', t => {
+            t.dropColumn('clientTime');
+            t.dropColumn('clientDeletion');
+        })
+        .table('meansoflogin', t => {
+            t.dropColumn('clientTime');
+        })
+        .table('users', t => {
             t.dropColumn('clientTime');
         });
 };

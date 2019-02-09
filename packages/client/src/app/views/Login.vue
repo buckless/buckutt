@@ -1,7 +1,10 @@
 <template>
     <div class="b-login">
         <div v-if="!seller.isAuth">
-            <div v-if="seller.meanOfLogin.length > 0" class="b-login__card b-login__card--sellerPassword">
+            <div
+                v-if="seller.meanOfLogin.length > 0"
+                class="b-login__card b-login__card--sellerPassword"
+            >
                 <div class="b-login__card__title">
                     Connexion opérateur
                 </div>
@@ -9,7 +12,8 @@
                 <div class="b-login__card__input">
                     <numerical-input
                         @changed="maskPassword"
-                        @validate="sellerPasswordValidate"></numerical-input>
+                        @validate="sellerPasswordValidate"
+                    ></numerical-input>
                 </div>
             </div>
             <div v-if="seller.meanOfLogin.length === 0">

@@ -4,7 +4,10 @@
             <h1>{{ barName }}</h1>
             <ul>
                 <li>
-                    <router-link to="/stats" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/stats"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">insert_chart</i>
                         Tableau de bord
                     </router-link>
@@ -17,19 +20,28 @@
                     <span>Financier</span>
                 </li>
                 <li>
-                    <router-link to="/purchases" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/purchases"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">shopping_cart</i>
                         Ventes
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/treasury" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/treasury"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">attach_money</i>
                         Rechargements
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/giftreloads" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/giftreloads"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">card_giftcard</i>
                         Offres
                     </router-link>
@@ -42,19 +54,28 @@
                     <span>Terminaux</span>
                 </li>
                 <li>
-                    <router-link to="/wikets" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/wikets"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">location_on</i>
                         Guichets
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/accesses" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/accesses"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">verified_user</i>
                         Accès
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/alerts" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/alerts"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">add_alert</i>
                         Alertes
                     </router-link>
@@ -67,13 +88,20 @@
                     <span>Utilisateurs</span>
                 </li>
                 <li>
-                    <router-link to="/users" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/users"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">person</i>
                         Comptes
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/groups" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect" v-if="event.useGroups">
+                    <router-link
+                        to="/groups"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                        v-if="event.useGroups"
+                    >
                         <i class="material-icons">group</i>
                         Groupes
                     </router-link>
@@ -86,13 +114,19 @@
                     <span>Avancé</span>
                 </li>
                 <li>
-                    <router-link :to="`/events/${event.id}`" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        :to="`/events/${event.id}`"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">event</i>
                         Options
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/webservices" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                    <router-link
+                        to="/webservices"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
                         <i class="material-icons">call_made</i>
                         Webhooks
                     </router-link>

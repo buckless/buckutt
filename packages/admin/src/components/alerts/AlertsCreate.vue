@@ -2,12 +2,24 @@
     <div>
         <h5>Envoyer une alerte</h5>
         <p>
-            <strong>Note:</strong> L'alerte ne sera envoyée qu'aux équipements de vente connectés au réseau.
+            <strong>Note:</strong> L'alerte ne sera envoyée qu'aux équipements de vente connectés au
+            réseau.
         </p>
         <form @submit.prevent="createAlert(newAlert)">
-            <mdl-textfield floating-label="Contenu" v-model="newAlert.content" required="required" error="Le contenu doit contenir au moins un caractère"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Contenu"
+                v-model="newAlert.content"
+                required="required"
+                error="Le contenu doit contenir au moins un caractère"
+            ></mdl-textfield>
             <br />
-            <mdl-textfield floating-label="Durée minimale d'affichage (secondes)" v-model="newAlert.minimumViewTime" required="required" pattern="[0-9]+" error="La durée doit être exprimée en secondes"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Durée minimale d'affichage (secondes)"
+                v-model="newAlert.minimumViewTime"
+                required="required"
+                pattern="[0-9]+"
+                error="La durée doit être exprimée en secondes"
+            ></mdl-textfield>
             <br />
             <mdl-button colored raised>Créer</mdl-button>
         </form>

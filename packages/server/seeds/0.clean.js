@@ -1,17 +1,19 @@
 const { event_id } = require('./utils/_data');
 
-exports.seed = function (knex) {
-    return knex('wikets').del()
+exports.seed = function(knex) {
+    return knex('wikets')
+        .del()
         .then(() => knex('meansoflogin').del())
         .then(() => knex('rights').del())
-        .then(() => knex('events')
-            .where('id', event_id)
-            .update({
-                nfc_id: null,
-                defaultGroup_id: null,
-                defaultFundation_id: null,
-                defaultPeriod_id: null
-            })
+        .then(() =>
+            knex('events')
+                .where('id', event_id)
+                .update({
+                    nfc_id: null,
+                    defaultGroup_id: null,
+                    defaultFundation_id: null,
+                    defaultPeriod_id: null
+                })
         )
         .then(() => knex('articles').del())
         .then(() => knex('fundations').del())

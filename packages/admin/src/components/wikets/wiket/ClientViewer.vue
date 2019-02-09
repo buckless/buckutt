@@ -8,15 +8,13 @@
                 <router-link
                     :to="addArticleLink"
                     class="b-item"
-                    :class="{ 'b-item--selected': addSelected }">
+                    :class="{ 'b-item--selected': addSelected }"
+                >
                     <div class="b-item__add">
                         <i class="material-icons">add_circle_outline</i>
                     </div>
                 </router-link>
-                <b-clientitem
-                    v-for="article in tabArticles"
-                    :article="article"
-                    :key="article.id">
+                <b-clientitem v-for="article in tabArticles" :article="article" :key="article.id">
                 </b-clientitem>
             </div>
             <div class="b-clientviewer__sidebar">
@@ -33,12 +31,16 @@
                     <div>
                         <strong>Formules</strong>
                         <i class="material-icons" id="promotitle">info</i>
-                        <mdl-tooltip target="promotitle">Seules les formules dont les items sont en vente dans le guichet apparaissent.</mdl-tooltip>
+                        <mdl-tooltip target="promotitle"
+                            >Seules les formules dont les items sont en vente dans le guichet
+                            apparaissent.</mdl-tooltip
+                        >
                     </div>
                     <b-clientpromotion
                         v-for="promotion in tabPromotions"
                         :promotion="promotion"
-                        :key="promotion.id">
+                        :key="promotion.id"
+                    >
                     </b-clientpromotion>
                 </div>
             </div>

@@ -4,7 +4,7 @@
         <p>Scannez une carte</p>
 
         <label for="unlockpin">Code PIN :</label>
-        <input type="text" v-model="pin" id="unlockpin">
+        <input type="text" v-model="pin" id="unlockpin" />
 
         <nfc
             mode="read"
@@ -12,7 +12,8 @@
             successText="Carte débloquée"
             key="unlock"
             disableLockCheck
-            disableSignCheck />
+            disableSignCheck
+        />
     </div>
 </template>
 
@@ -40,11 +41,11 @@ export default {
                     window.mifare.write(
                         0x10,
                         ['00', '00', '00', 'FF'],
-                        res => alert('Carte débloquée'),
+                        () => alert('Carte débloquée'),
                         err => alert('Erreur :' + err)
                     );
                 },
-                err => alert('PIN est faux')
+                () => alert('PIN est faux')
             );
         }
     }

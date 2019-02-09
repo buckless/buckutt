@@ -139,16 +139,18 @@ module.exports = async (ctx, userId, reloads = [], meansOfLogin = [], groups = [
 
     // create requested mols
     await Promise.all(
-        meansOfLogin.filter(mol => molsToSkip.indexOf(mol.type) === -1).map(mol =>
-            new ctx.models.MeanOfLogin({
-                type: mol.type,
-                data: mol.data,
-                blocked: mol.blocked,
-                physical_id: mol.physical_id,
-                user_id: mergedAccount.id,
-                clientTime
-            }).save()
-        )
+        meansOfLogin
+            .filter(mol => molsToSkip.indexOf(mol.type) === -1)
+            .map(mol =>
+                new ctx.models.MeanOfLogin({
+                    type: mol.type,
+                    data: mol.data,
+                    blocked: mol.blocked,
+                    physical_id: mol.physical_id,
+                    user_id: mergedAccount.id,
+                    clientTime
+                }).save()
+            )
     );
 
     await Promise.all(
@@ -166,13 +168,15 @@ module.exports = async (ctx, userId, reloads = [], meansOfLogin = [], groups = [
     );
 
     await Promise.all(
-        groups.filter(group => groupsToSkip.indexOf(group) === -1).map(group =>
-            new ctx.models.Membership({
-                user_id: mergedAccount.id,
-                group_id: group,
-                period_id: ctx.event.defaultPeriod_id
-            }).save()
-        )
+        groups
+            .filter(group => groupsToSkip.indexOf(group) === -1)
+            .map(group =>
+                new ctx.models.Membership({
+                    user_id: mergedAccount.id,
+                    group_id: group,
+                    period_id: ctx.event.defaultPeriod_id
+                }).save()
+            )
     );
 
     // needed to send new meansOfLogin to manager

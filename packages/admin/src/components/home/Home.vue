@@ -7,8 +7,14 @@
                 </div>
                 <form @submit.prevent="log(mail, password)">
                     <div class="mdl-card__supporting-text">
-                        <mdl-textfield floating-label="Mail" v-model="mail" required></mdl-textfield><br />
-                        <mdl-textfield type="password" floating-label="Mot de passe" v-model="password" required></mdl-textfield>
+                        <mdl-textfield floating-label="Mail" v-model="mail" required></mdl-textfield
+                        ><br />
+                        <mdl-textfield
+                            type="password"
+                            floating-label="Mot de passe"
+                            v-model="password"
+                            required
+                        ></mdl-textfield>
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
                         <mdl-button colored>Connexion</mdl-button>

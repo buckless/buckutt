@@ -4,7 +4,9 @@
         <form @submit.prevent="updateEvent(focusedEvent)">
             <b-datetime-picker
                 :value="new Date(defaultPeriod.start)"
-                @input="updateDeepestFocusedElement({ field: 'defaultPeriod.start', value: $event })"
+                @input="
+                    updateDeepestFocusedElement({ field: 'defaultPeriod.start', value: $event })
+                "
                 locale="fr"
                 header-format="DD MMM"
                 cancel="Annuler"
@@ -13,7 +15,8 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="Le début n'est pas une date"
                 label="Début"
-                class="b--limitsize b--inline"></b-datetime-picker>
+                class="b--limitsize b--inline"
+            ></b-datetime-picker>
             <b-datetime-picker
                 :value="new Date(defaultPeriod.end)"
                 @input="updateDeepestFocusedElement({ field: 'defaultPeriod.end', value: $event })"
@@ -25,13 +28,38 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="La fin n'est pas une date"
                 label="Fin"
-                class="b--limitsize b--inline"></b-datetime-picker>
+                class="b--limitsize b--inline"
+            ></b-datetime-picker>
             <br />
 
             <h6>Options de l'événement</h6>
-            <mdl-textfield floating-label="Rechargement minimal (en centimes)" :value="focusedEvent.minReload" @input="updateDeepestFocusedElement({ field: 'minReload', value: $event })" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
-            <mdl-textfield floating-label="Solde maximal (en centimes)" :value="focusedEvent.maxPerAccount" @input="updateDeepestFocusedElement({ field: 'maxPerAccount', value: $event })" required="required" pattern="[0-9]+" error="Le montant doit être un entier"></mdl-textfield><br />
-            <mdl-textfield floating-label="Unités alcool maximales/participant" :value="focusedEvent.maxAlcohol" @input="updateDeepestFocusedElement({ field: 'maxAlcohol', value: $event })" required="required" pattern="[0-9]+" error="Les unités doivent être un entier"></mdl-textfield><br />
+            <mdl-textfield
+                floating-label="Rechargement minimal (en centimes)"
+                :value="focusedEvent.minReload"
+                @input="updateDeepestFocusedElement({ field: 'minReload', value: $event })"
+                required="required"
+                pattern="[0-9]+"
+                error="Le montant doit être un entier"
+            ></mdl-textfield
+            ><br />
+            <mdl-textfield
+                floating-label="Solde maximal (en centimes)"
+                :value="focusedEvent.maxPerAccount"
+                @input="updateDeepestFocusedElement({ field: 'maxPerAccount', value: $event })"
+                required="required"
+                pattern="[0-9]+"
+                error="Le montant doit être un entier"
+            ></mdl-textfield
+            ><br />
+            <mdl-textfield
+                floating-label="Unités alcool maximales/participant"
+                :value="focusedEvent.maxAlcohol"
+                @input="updateDeepestFocusedElement({ field: 'maxAlcohol', value: $event })"
+                required="required"
+                pattern="[0-9]+"
+                error="Les unités doivent être un entier"
+            ></mdl-textfield
+            ><br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>
     </div>

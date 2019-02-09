@@ -3,13 +3,12 @@
         class="tile-card-staff mdl-card"
         :class="{ 'mdl-shadow--2dp': !active, 'mdl-shadow--8dp': active }"
         @mouseover="active = true"
-        @mouseleave="active = false">
+        @mouseleave="active = false"
+    >
         <div>
             <div class="mdl-card__title mdl-card--expand">
                 <i class="material-icons">assignment_ind</i>
-                <h6 class="b--capitalized">
-                    {{ user.firstname }} {{ user.lastname }}
-                </h6>
+                <h6 class="b--capitalized">{{ user.firstname }} {{ user.lastname }}</h6>
             </div>
             <div class="mdl-card__supporting-text">
                 Droits:

@@ -17,7 +17,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .b-health {
     flex: 1;

@@ -59,8 +59,8 @@ module.exports = {
 
         formData = formData[0];
 
-        const giftReloads = await GiftReload.fetchAll().then(
-            grs => (grs && grs.length ? grs.toJSON() : [])
+        const giftReloads = await GiftReload.fetchAll().then(grs =>
+            grs && grs.length ? grs.toJSON() : []
         );
 
         const transaction = await Transaction.where({ id: formData['10037'] }).fetch({

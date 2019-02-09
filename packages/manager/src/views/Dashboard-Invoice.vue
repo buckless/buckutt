@@ -1,50 +1,31 @@
 <template>
-  <div class="invoice">
-    <Card>
-      <h3>Création d'un reçu</h3>
+    <div class="invoice">
+        <Card>
+            <h3>Création d'un reçu</h3>
 
-      <form
-        v-if="!url"
-        @submit.prevent="invoice">
-        <TextInput
-          v-model="name"
-          label="Société"
-          autofocus />
-        <TextInput
-          v-model="tva"
-          label="N° de TVA intracommunautaire" />
-        <TextInput
-          v-model="address"
-          label="Adresse" />
-        <TextInput
-          v-model="postal"
-          label="Code postal" />
-        <TextInput
-          v-model="city"
-          label="Ville" />
-        <TextInput
-          v-model="country"
-          label="Pays" />
+            <form v-if="!url" @submit.prevent="invoice">
+                <TextInput v-model="name" label="Société" autofocus />
+                <TextInput v-model="tva" label="N° de TVA intracommunautaire" />
+                <TextInput v-model="address" label="Adresse" />
+                <TextInput v-model="postal" label="Code postal" />
+                <TextInput v-model="city" label="Ville" />
+                <TextInput v-model="country" label="Pays" />
 
-        <div class="actions">
-          <Button to="/dashboard/history">Retour</Button>
-          <Button raised>Valider</Button>
-        </div>
-      </form>
-      <template v-else>
-        <iframe
-          :src="url"
-          frameborder="0"/>
+                <div class="actions">
+                    <Button to="/dashboard/history">Retour</Button>
+                    <Button raised>Valider</Button>
+                </div>
+            </form>
+            <template v-else>
+                <iframe :src="url" frameborder="0" />
 
-        <div class="actions">
-          <Button to="/dashboard/history">Retour</Button>
-          <Button
-            raised
-            @click="download">Télécharger</Button>
-        </div>
-      </template>
-    </Card>
-  </div>
+                <div class="actions">
+                    <Button to="/dashboard/history">Retour</Button>
+                    <Button raised @click="download">Télécharger</Button>
+                </div>
+            </template>
+        </Card>
+    </div>
 </template>
 
 <script>
@@ -148,13 +129,15 @@ export default {
                 { header: 'Total HT', dataKey: 'total' }
             ];
 
-            const body = this.history.filter(entry => entry.rawType === 'reload').map(entry => ({
-                name: `Rechargement ${formatDate(entry.date)}`,
-                tva: '0%',
-                pu: formatCurrency(entry.amount / 100).replace('€', 'e'),
-                qte: '1',
-                total: formatCurrency(entry.amount / 100).replace('€', 'e')
-            }));
+            const body = this.history
+                .filter(entry => entry.rawType === 'reload')
+                .map(entry => ({
+                    name: `Rechargement ${formatDate(entry.date)}`,
+                    tva: '0%',
+                    pu: formatCurrency(entry.amount / 100).replace('€', 'e'),
+                    qte: '1',
+                    total: formatCurrency(entry.amount / 100).replace('€', 'e')
+                }));
 
             let total = this.history
                 .filter(entry => entry.rawType === 'reload')

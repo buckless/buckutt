@@ -2,7 +2,12 @@
     <div>
         <h5>Ajouter un article</h5>
         <form @submit.prevent="createArticle(newArticle)">
-            <mdl-textfield floating-label="Nom" v-model="newArticle.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Nom"
+                v-model="newArticle.name"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield>
             <mdl-button colored raised>Créer</mdl-button>
         </form>
     </div>

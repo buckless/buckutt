@@ -1,16 +1,13 @@
-const path           = require('path');
-const assert         = require('assert');
-const axios          = require('axios');
-const rimraf         = require('rimraf');
-const config         = require('../config');
-const app            = require('../src/app');
-const imagesPath     = require('../src/lib/imagesPath');
+const path = require('path');
+const assert = require('assert');
+const axios = require('axios');
+const rimraf = require('rimraf');
+const config = require('../config');
+const app = require('../src/app');
+const imagesPath = require('../src/lib/imagesPath');
 const { fileExists } = require('../src/lib/utils');
 
-const {
-    guid,
-    image
-} = require('./testData');
+const { guid, image } = require('./testData');
 
 const url = `http://localhost:${config.http.port}/image/${guid}`;
 const invalidUrl = `http://localhost:${config.http.port}/image/foo`;
@@ -18,31 +15,27 @@ const invalidUrl = `http://localhost:${config.http.port}/image/foo`;
 describe('Image setter', () => {
     before(() => app.start());
 
-    it('should post an image', () => axios
-        .post(url, { image })
-        .then((res) => {
+    it('should post an image', () =>
+        axios.post(url, { image }).then(res => {
             assert.equal(200, res.status);
 
             return fileExists(path.join(imagesPath, `${guid}.png`));
         }));
 
-    it('should refuse with invalid guid', () => axios
-        .post(invalidUrl, { image })
-        .catch(({ response }) => {
+    it('should refuse with invalid guid', () =>
+        axios.post(invalidUrl, { image }).catch(({ response }) => {
             assert.equal(400, response.status);
             assert.equal('INVALID_GUID', response.data.error);
         }));
 
-    it('should refuse without image', () => axios
-        .post(url)
-        .catch(({ response }) => {
+    it('should refuse without image', () =>
+        axios.post(url).catch(({ response }) => {
             assert.equal(400, response.status);
             assert.equal('MISSING_IMAGE', response.data.error);
         }));
 
-    it('should refuse without wrong buffer', () => axios
-        .post(url, { image: 'foobar' })
-        .catch(({ response }) => {
+    it('should refuse without wrong buffer', () =>
+        axios.post(url, { image: 'foobar' }).catch(({ response }) => {
             assert.equal(400, response.status);
             assert.equal('INVALID_IMAGE', response.data.error);
         }));

@@ -16,13 +16,7 @@ module.exports = async (ctx, { dateIn, dateOut, point, fundation, csv }) => {
 
     if (csv) {
         const results = await query.fetchAll({
-            withRelated: [
-                price,
-                'price.period',
-                'price.article',
-                'price.promotion',
-                ...relatedCsv
-            ],
+            withRelated: [price, 'price.period', 'price.article', 'price.promotion', ...relatedCsv],
             withDeleted: true
         });
 
@@ -36,9 +30,14 @@ module.exports = async (ctx, { dateIn, dateOut, point, fundation, csv }) => {
 
     const results = await query
         .query(knex => {
-            knex.select('prices.id as id', 'articles.name as article_name', 'promotions.name as promotion_name', 'prices.amount as amount');
+            knex.select(
+                'prices.id as id',
+                'articles.name as article_name',
+                'promotions.name as promotion_name',
+                'prices.amount as amount'
+            );
             knex.count('prices.id as count');
-            knex.sum('prices.amount as total')
+            knex.sum('prices.amount as total');
             knex.leftJoin('prices', 'prices.id', 'purchases.price_id');
             knex.leftJoin('articles', 'articles.id', 'prices.article_id');
             knex.leftJoin('promotions', 'promotions.id', 'prices.promotion_id');
@@ -47,7 +46,8 @@ module.exports = async (ctx, { dateIn, dateOut, point, fundation, csv }) => {
         })
         .fetchAll();
 
-    return results.toJSON()
+    return results
+        .toJSON()
         .map(p => ({
             price: p.amount,
             id: p.id,

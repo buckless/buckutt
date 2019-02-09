@@ -2,7 +2,7 @@
     <div>
         <h5>Détails de l'événement</h5>
         <b-list :elements="elements" :columns="2"></b-list>
-        <br/>
+        <br />
         <h5>Zone danger</h5>
         <mdl-button colored raised @click.native="erase">Remise à zéro</mdl-button>
     </div>

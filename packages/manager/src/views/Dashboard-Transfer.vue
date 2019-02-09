@@ -1,59 +1,62 @@
 <template>
-  <div class="transfer">
-    <Card>
-      <h3>Virement</h3>
-      <p>Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle verte indique le compte receveur.</p>
-      <form @submit.prevent="transfer(selected, amount)">
-        <TextInput
-          v-model="user"
-          :disabled="working"
-          type="text"
-          label="Destinataire"
-          placeholder="Entrez 4 caractères minimum"
-          autofocus
-          @input="findUser"/>
+    <div class="transfer">
+        <Card>
+            <h3>Virement</h3>
+            <p>
+                Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle verte
+                indique le compte receveur.
+            </p>
+            <form @submit.prevent="transfer(selected, amount)">
+                <TextInput
+                    v-model="user"
+                    :disabled="working"
+                    type="text"
+                    label="Destinataire"
+                    placeholder="Entrez 4 caractères minimum"
+                    autofocus
+                    @input="findUser"
+                />
 
-        <List
-          v-if="results.length > 0"
-          class="results">
-          <div
-            v-for="(result, i) in results"
-            :key="i"
-            class="item"
-            @click="selectResult(result)">
-            <span
-              v-if="result.id === selected.id"
-              class="bullet"/>
-            <span class="name">{{ result.firstname }} {{ result.lastname }}</span>
-            &nbsp;
-            <span class="username">({{ result.username }})</span>
-          </div>
-        </List>
+                <List v-if="results.length > 0" class="results">
+                    <div
+                        v-for="(result, i) in results"
+                        :key="i"
+                        class="item"
+                        @click="selectResult(result)"
+                    >
+                        <span v-if="result.id === selected.id" class="bullet" />
+                        <span class="name">{{ result.firstname }} {{ result.lastname }}</span>
+                        &nbsp;
+                        <span class="username">({{ result.username }})</span>
+                    </div>
+                </List>
 
-        <p v-if="results.length === 0 && user.length > 4">
-          Aucun résultat.
-        </p>
+                <p v-if="results.length === 0 && user.length > 4">
+                    Aucun résultat.
+                </p>
 
-        <TextInput
-          v-model="amount"
-          :disabled="working"
-          type="number"
-          step="0.01"
-          min="0.01"
-          label="Montant (€)"/>
+                <TextInput
+                    v-model="amount"
+                    :disabled="working"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    label="Montant (€)"
+                />
 
-        <p v-if="selected.id">
-          En cliquant sur « Envoyer », je confirme envoyer {{ amount | currency }} à {{ selected.firstname }} {{ selected.lastname }}
-        </p>
+                <p v-if="selected.id">
+                    En cliquant sur « Envoyer », je confirme envoyer {{ amount | currency }} à
+                    {{ selected.firstname }} {{ selected.lastname }}
+                </p>
 
-        <div class="actions">
-          <Button
-            :disabled="working || !selected.id || amount === '0'"
-            raised>Envoyer</Button>
-        </div>
-      </form>
-    </Card>
-  </div>
+                <div class="actions">
+                    <Button :disabled="working || !selected.id || amount === '0'" raised
+                        >Envoyer</Button
+                    >
+                </div>
+            </form>
+        </Card>
+    </div>
 </template>
 
 <script>

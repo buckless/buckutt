@@ -2,9 +2,27 @@
     <div>
         <h5>Créer un utilisateur</h5>
         <form @submit.prevent="createUser(newUser)">
-            <mdl-textfield floating-label="Nom" v-model="newUser.lastname" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
-            <mdl-textfield floating-label="Prénom" v-model="newUser.firstname" required="required" error="Le prénom doit contenir au moins un caractère"></mdl-textfield><br />
-            <mdl-textfield floating-label="Mail" v-model="newUser.mail" required="required" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" error="L'adresse mail n'a pas le bon format"></mdl-textfield><br />
+            <mdl-textfield
+                floating-label="Nom"
+                v-model="newUser.lastname"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield>
+            <mdl-textfield
+                floating-label="Prénom"
+                v-model="newUser.firstname"
+                required="required"
+                error="Le prénom doit contenir au moins un caractère"
+            ></mdl-textfield
+            ><br />
+            <mdl-textfield
+                floating-label="Mail"
+                v-model="newUser.mail"
+                required="required"
+                pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                error="L'adresse mail n'a pas le bon format"
+            ></mdl-textfield
+            ><br />
             <mdl-button colored raised>Créer</mdl-button>
         </form>
     </div>

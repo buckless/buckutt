@@ -3,10 +3,16 @@
         <div class="mdl-card mdl-shadow--2dp">
             <b-navbar
                 title="Options de l'événement"
-                :tabs="[{ route: '', name: 'Détails', exact: true }, { route: 'edit', name: 'Édition' }, { route: 'config', name: 'Configuration' }, { route: nfcLink, name: 'Support NFC' }]"
+                :tabs="[
+                    { route: '', name: 'Détails', exact: true },
+                    { route: 'edit', name: 'Édition' },
+                    { route: 'config', name: 'Configuration' },
+                    { route: nfcLink, name: 'Support NFC' }
+                ]"
                 :inCard="true"
                 :goBack="false"
-                :level="2">
+                :level="2"
+            >
             </b-navbar>
             <router-view></router-view>
         </div>

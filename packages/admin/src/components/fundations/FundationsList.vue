@@ -12,13 +12,23 @@
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
-                { action: 'edit', text: 'Modifier', condition: { field: 'id', statement: 'isNot', value: event.defaultFundation_id } },
-                { action: 'remove', text: 'Supprimer', type: 'confirm', condition: { field: 'id', statement: 'isNot', value: event.defaultFundation_id }  }
+                {
+                    action: 'edit',
+                    text: 'Modifier',
+                    condition: { field: 'id', statement: 'isNot', value: event.defaultFundation_id }
+                },
+                {
+                    action: 'remove',
+                    text: 'Supprimer',
+                    type: 'confirm',
+                    condition: { field: 'id', statement: 'isNot', value: event.defaultFundation_id }
+                }
             ]"
             route="fundations"
             :paging="10"
             @edit="editFundation"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

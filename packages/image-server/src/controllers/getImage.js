@@ -1,13 +1,10 @@
-const path            = require('path');
-const express         = require('express');
-const sharp           = require('sharp');
+const path = require('path');
+const express = require('express');
+const sharp = require('sharp');
 const { isInt, isIn } = require('validator');
-const log             = require('../lib/log')(module);
-const imagesPath      = require('../lib/imagesPath');
-const {
-    isGuid,
-    fileExists
-} = require('../lib/utils');
+const log = require('../lib/log')(module);
+const imagesPath = require('../lib/imagesPath');
+const { isGuid, fileExists } = require('../lib/utils');
 
 const router = new express.Router();
 
@@ -30,9 +27,7 @@ router.get('/image/:guid', (req, res) => {
                 const w = parseInt(req.query.width, 10);
                 const h = parseInt(req.query.height, 10);
 
-                image = image
-                    .resize(w, h)
-                    .embed();
+                image = image.resize(w, h).embed();
             }
 
             if (req.query.format) {
@@ -52,19 +47,16 @@ router.get('/image/:guid', (req, res) => {
 
             log.debug(`querying ${req.params.guid}`, req.query);
 
-            return image
-                .toBuffer()
-                .then((buf) => {
-                    const format = req.query.format || 'png';
-                    const dataImage = `data:image/${format};base64,${buf.toString('base64')}`;
+            return image.toBuffer().then(buf => {
+                const format = req.query.format || 'png';
+                const dataImage = `data:image/${format};base64,${buf.toString('base64')}`;
 
-                    res
-                        .status(200)
-                        .send({ image: dataImage })
-                        .end();
-                });
+                res.status(200)
+                    .send({ image: dataImage })
+                    .end();
+            });
         })
-        .catch((err) => {
+        .catch(err => {
             log.error(`couldn't find image ${req.params.guid}`, err);
 
             return res

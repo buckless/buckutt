@@ -3,8 +3,12 @@
         <div class="mdl-card mdl-shadow--2dp">
             <b-navbar
                 title="Périodes"
-                :tabs="[{ route: '/periods', name: 'Liste', exact: true }, { route: '/periods/create', name: 'Création' }]"
-                :inCard="true">
+                :tabs="[
+                    { route: '/periods', name: 'Liste', exact: true },
+                    { route: '/periods/create', name: 'Création' }
+                ]"
+                :inCard="true"
+            >
             </b-navbar>
             <router-view></router-view>
         </div>

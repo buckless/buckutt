@@ -1,5 +1,5 @@
 const nconf = require('nconf');
-const path  = require('path');
+const path = require('path');
 
 /**
  * Environment (eg: test, prod) is loaded in order of priority from:
@@ -13,8 +13,8 @@ nconf
 // Load environment config file
 /* istanbul ignore next */
 const envName = nconf.get('NODE_ENV') || 'production';
-const config  = require(path.join(__dirname, 'profiles', envName));
-config.env    = envName;
+const config = require(path.join(__dirname, 'profiles', envName));
+config.env = envName;
 
 /* istanbul ignore if */
 if (config.log.console === 'debug') {

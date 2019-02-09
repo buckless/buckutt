@@ -18,7 +18,8 @@
             route="promotions"
             :paging="10"
             @edit="editPromotion"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

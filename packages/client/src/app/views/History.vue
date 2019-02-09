@@ -9,7 +9,7 @@
             <div class="b-history__text" v-if="entries.length === 0">
                 <div>
                     Aucun entrée pour cette carte. Vous pouvez essayer sur une autre carte.
-                    <br/>
+                    <br />
                     <a href="#" @click.prevent="closeHistory">Retour au mode vente</a>
                 </div>
             </div>
@@ -26,7 +26,10 @@
                             -<currency :value="entry.cost" />
                         </span>
                         <span style="flex: 1"></span>
-                        <button class="b-history__list__entry__button" @click.prevent="selectedEntry = entry">
+                        <button
+                            class="b-history__list__entry__button"
+                            @click.prevent="selectedEntry = entry"
+                        >
                             <i class="b-icon">delete</i>
                         </button>
                     </div>
@@ -34,12 +37,20 @@
                         <template v-for="item in entry.items">
                             <p :key="item.id">{{ item.name }}<br /></p>
                         </template>
-                        <template v-if="entry.items.length === 0 && entry.reload > 0">Rechargement</template>
+                        <template v-if="entry.items.length === 0 && entry.reload > 0"
+                            >Rechargement</template
+                        >
                     </div>
                 </div>
             </div>
         </div>
-        <nfc mode="write" successText="Transaction annulée !" @read="onCard" @cancel="selectedEntry = null" v-if="selectedEntry" />
+        <nfc
+            mode="write"
+            successText="Transaction annulée !"
+            @read="onCard"
+            @cancel="selectedEntry = null"
+            v-if="selectedEntry"
+        />
     </div>
 </template>
 
@@ -136,10 +147,12 @@ export default {
         },
 
         resume(entry) {
-            const items = entry.basketToSend.filter(e => typeof e.cost === 'number').map(e => ({
-                name: e.name,
-                cost: e.cost
-            }));
+            const items = entry.basketToSend
+                .filter(e => typeof e.cost === 'number')
+                .map(e => ({
+                    name: e.name,
+                    cost: e.cost
+                }));
 
             const cost = items.map(e => e.cost).reduce((a, b) => a + b, 0);
             const reload = entry.basketToSend

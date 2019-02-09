@@ -3,11 +3,29 @@
         <h5>Recherche</h5>
         <form @submit.prevent="filter()">
             <div>
-                <b-inputselect label="Point" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect>
-                <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptionsAll" v-model="fields.fundation" v-if="event.useFundations"></b-inputselect>
+                <b-inputselect
+                    label="Point"
+                    id="point-select"
+                    :options="pointOptionsAll"
+                    v-model="fields.point"
+                ></b-inputselect>
+                <b-inputselect
+                    label="Fondation"
+                    id="fundation-select"
+                    :options="fundationOptionsAll"
+                    v-model="fields.fundation"
+                    v-if="event.useFundations"
+                ></b-inputselect>
             </div>
             <div>
-                <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-if="event.usePeriods" @input="fillDates"></b-inputselect>
+                <b-inputselect
+                    label="Période"
+                    id="period-select"
+                    :options="currentPeriodOptions"
+                    :fullOptions="periodOptions"
+                    v-if="event.usePeriods"
+                    @input="fillDates"
+                ></b-inputselect>
                 <b-datetime-picker
                     v-model="fields.dateIn"
                     locale="fr"
@@ -18,7 +36,8 @@
                     pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                     error="Le début n'est pas une date"
                     label="Début"
-                    class="b--limitsize b--inline"></b-datetime-picker>
+                    class="b--limitsize b--inline"
+                ></b-datetime-picker>
                 <b-datetime-picker
                     v-model="fields.dateOut"
                     locale="fr"
@@ -29,33 +48,35 @@
                     pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                     error="La fin n'est pas une date"
                     label="Fin"
-                    class="b--limitsize b--inline"></b-datetime-picker>
+                    class="b--limitsize b--inline"
+                ></b-datetime-picker>
             </div>
             <mdl-button colored raised>Rechercher</mdl-button>
         </form>
 
-        <h4>Ventes <span class="small">(total: {{ totalSell | price(true) }})</span></h4>
+        <h4>
+            Ventes <span class="small">(total: {{ totalSell | price(true) }})</span>
+        </h4>
 
         <b-table
             :headers="[
                 { title: 'Quantité', field: 'count' },
-                { title: 'Article', field: 'name'},
+                { title: 'Article', field: 'name' },
                 { title: 'Prix unitaire TTC', field: 'price', type: 'price' },
                 { title: 'Total TTC', field: 'totalTI', type: 'price' }
             ]"
             :paging="25"
-            :data="purchases">
+            :data="purchases"
+        >
         </b-table>
 
         <h4>Catering</h4>
 
         <b-table
-            :headers="[
-                { title: 'Quantité', field: 'count' },
-                { title: 'Article', field: 'name'}
-            ]"
+            :headers="[{ title: 'Quantité', field: 'count' }, { title: 'Article', field: 'name' }]"
             :paging="10"
-            :data="withdrawals">
+            :data="withdrawals"
+        >
         </b-table>
     </div>
 </template>

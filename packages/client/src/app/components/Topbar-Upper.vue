@@ -5,7 +5,8 @@
             <div class="b-upper-bar__buyer-logout">
                 <span class="b-icon" @click="logout">eject</span>
             </div>
-            <span class="b--capitalized">{{ buyerName.firstname }}</span>&nbsp;
+            <span class="b--capitalized">{{ buyerName.firstname }}</span
+            >&nbsp;
             <span class="b--capitalized">{{ buyerName.lastname }}</span>
         </div>
         <div class="b-space"></div>
@@ -13,12 +14,13 @@
             <live-time></live-time>
         </div>
         <div class="b-upper-bar__menu">
-          <b-menu
-              :isSellerMode="isSellerMode"
-              :isReloaderMode="isReloaderMode"
-              :displayLogout="displayLogout"
-              :onlyLogout="onlyLogout"
-              :useCardData="useCardData"/>
+            <b-menu
+                :isSellerMode="isSellerMode"
+                :isReloaderMode="isReloaderMode"
+                :displayLogout="displayLogout"
+                :onlyLogout="onlyLogout"
+                :useCardData="useCardData"
+            />
         </div>
     </div>
 </template>

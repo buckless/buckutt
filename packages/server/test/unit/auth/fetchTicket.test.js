@@ -1,10 +1,13 @@
 const test = require('ava');
 const { factory, user, clear } = require('../../utils/factory');
 
-test.before(t => factory(t,
-    // with memberships and group
-    user('john', { ticket: true })
-));
+test.before(t =>
+    factory(
+        t,
+        // with memberships and group
+        user('john', { ticket: true })
+    )
+);
 
 test('actions:auth:fetchTicket', async t => {
     // case 1 : ticket is in ticket provider

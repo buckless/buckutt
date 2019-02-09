@@ -2,14 +2,18 @@
     <div class="b-dashboard-purchases">
         <div class="b-purchases-chart mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title">
-              <h2 class="mdl-card__title-text">Suivi des achats</h2>
+                <h2 class="mdl-card__title-text">Suivi des achats</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <b-purchaseschart :chartData="chartData" :unit="unit"></b-purchaseschart>
             </div>
             <div class="mdl-card__menu">
                 <mdl-switch v-model="additive" @input="updateData">Graphe croissant</mdl-switch>
-                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" @click="displayCurves = true" v-if="!displayCurves">
+                <button
+                    class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
+                    @click="displayCurves = true"
+                    v-if="!displayCurves"
+                >
                     <i class="material-icons">settings</i>
                 </button>
             </div>
@@ -17,7 +21,7 @@
 
         <div class="b-purchases-curves mdl-card mdl-shadow--2dp" v-if="displayCurves">
             <div class="mdl-card__title">
-              <h2 class="mdl-card__title-text">Légende</h2>
+                <h2 class="mdl-card__title-text">Légende</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <div v-for="(curve, index) in curves" :key="index">
@@ -28,7 +32,9 @@
                     <span v-if="curve.article || (!curve.article && !curve.promotion)">
                         <i class="material-icons">free_breakfast</i>
                         <template v-if="curve.article">{{ curve.article.name }}</template>
-                        <template v-else>Tous</template>
+                        <template v-else
+                            >Tous</template
+                        >
                     </span>
                     <span v-if="curve.promotion">
                         <i class="material-icons">stars</i>
@@ -37,12 +43,16 @@
                     <span>
                         <i class="material-icons">view_comfy</i>
                         <template v-if="curve.point">{{ curve.point.name }}</template>
-                        <template v-else>Tous</template>
+                        <template v-else
+                            >Tous</template
+                        >
                     </span>
                     <span>
                         <i class="material-icons">local_atm</i>
                         <template v-if="curve.fundation">{{ curve.fundation.name }}</template>
-                        <template v-else>Toutes</template>
+                        <template v-else
+                            >Toutes</template
+                        >
                     </span>
                     <b-confirm @confirm="deleteCurve(index)">
                         <mdl-button icon="delete"></mdl-button>
@@ -51,14 +61,34 @@
             </div>
             <div class="mdl-card__actions mdl-card--border">
                 <form @submit.prevent="createCurve()">
-                    <b-inputselect label="Produit" id="product-select" :options="productOptionsAll" v-model="fields.product"></b-inputselect>
-                    <b-inputselect label="Guichet" id="point-select" :options="pointOptionsAll" v-model="fields.point"></b-inputselect><br />
-                    <b-inputselect label="Fondation" id="fundation-select" :options="fundationOptionsAll" v-model="fields.fundation" v-if="event.useFundations"></b-inputselect>
+                    <b-inputselect
+                        label="Produit"
+                        id="product-select"
+                        :options="productOptionsAll"
+                        v-model="fields.product"
+                    ></b-inputselect>
+                    <b-inputselect
+                        label="Guichet"
+                        id="point-select"
+                        :options="pointOptionsAll"
+                        v-model="fields.point"
+                    ></b-inputselect
+                    ><br />
+                    <b-inputselect
+                        label="Fondation"
+                        id="fundation-select"
+                        :options="fundationOptionsAll"
+                        v-model="fields.fundation"
+                        v-if="event.useFundations"
+                    ></b-inputselect>
                     <mdl-button icon="add" colored></mdl-button>
                 </form>
             </div>
             <div class="mdl-card__menu">
-                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" @click="displayCurves = false">
+                <button
+                    class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
+                    @click="displayCurves = false"
+                >
                     <i class="material-icons">close</i>
                 </button>
             </div>

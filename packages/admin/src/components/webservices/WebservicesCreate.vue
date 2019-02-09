@@ -2,10 +2,16 @@
     <div>
         <h5>Créer un webhook</h5>
         <p>
-            <strong>Note:</strong> Un webbook est une adresse sur laquelle sera envoyée l'ensemble des achats effectués sur votre instance du système.
+            <strong>Note:</strong> Un webbook est une adresse sur laquelle sera envoyée l'ensemble
+            des achats effectués sur votre instance du système.
         </p>
         <form @submit.prevent="createWebservice(newWebservice)">
-            <mdl-textfield floating-label="Adresse" v-model="newWebservice.url" required="required" error="L'adresse doit contenir au moins un caractère"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Adresse"
+                v-model="newWebservice.url"
+                required="required"
+                error="L'adresse doit contenir au moins un caractère"
+            ></mdl-textfield>
             <br />
             <mdl-button colored raised>Créer</mdl-button>
         </form>

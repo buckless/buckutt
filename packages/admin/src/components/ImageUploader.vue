@@ -1,9 +1,16 @@
 <template>
-    <div class="b-imageUploader" @dragover.prevent="displaySave = true" @dragleave="displaySave = false" @drop="onDrop">
+    <div
+        class="b-imageUploader"
+        @dragover.prevent="displaySave = true"
+        @dragleave="displaySave = false"
+        @drop="onDrop"
+    >
         <img :src="image" :alt="name" v-show="image" class="b-imageUploader__image" />
         <div class="b-imageUploader__image" v-show="!image"></div>
         <div class="b-imageUploader__note">
-            <template v-if="!displaySave">Glissez une image ou appuyez sur le bouton Parcourir</template>
+            <template v-if="!displaySave"
+                >Glissez une image ou appuyez sur le bouton Parcourir</template
+            >
             <template v-else>
                 <i class="material-icons">save</i>
                 <span>Lâchez pour sauvegarder</span>
@@ -11,10 +18,9 @@
         </div>
         <div class="b-imageUploader_over"></div>
         <mdl-tooltip target="add-button">Parcourir</mdl-tooltip>
-        <mdl-button id="add-button" fab colored
-            class="b-imageUploader__add mdl-js-ripple-effect">
-          <i class="material-icons">attach_file</i>
-          <input type="file" @change="onImageChange" accept="image/*" />
+        <mdl-button id="add-button" fab colored class="b-imageUploader__add mdl-js-ripple-effect">
+            <i class="material-icons">attach_file</i>
+            <input type="file" @change="onImageChange" accept="image/*" />
         </mdl-button>
     </div>
 </template>

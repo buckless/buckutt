@@ -1,19 +1,26 @@
 <template>
     <div class="b-controller">
-        <chooser v-if="chooser" @groups="setGroups" @cancel="chooser = false" :defaultGroups="currentGroups"/>
+        <chooser
+            v-if="chooser"
+            @groups="setGroups"
+            @cancel="chooser = false"
+            :defaultGroups="currentGroups"
+        />
         <button @click="chooser = true">Changer de groupe(s)</button>
         <p>
             <strong>Groupe(s) actuel(s)</strong> :
-            <br/>
-            <span class="b-controller-group" v-for="group in currentGroups" :key="group.id">{{ group.name }}</span>
+            <br />
+            <span class="b-controller-group" v-for="group in currentGroups" :key="group.id">{{
+                group.name
+            }}</span>
             <span v-if="currentGroups.length === 0">Aucun groupe sélectionné</span>
-            <br/>
-            <br/>
-            <br/>
+            <br />
+            <br />
+            <br />
             Scannez une carte pour vérifier son accès
             <nfc mode="read" @read="onCard" />
         </p>
-        <ok v-if="showOkModal" :status="okModalStatus" @click.native="showOkModal = false"/>
+        <ok v-if="showOkModal" :status="okModalStatus" @click.native="showOkModal = false" />
     </div>
 </template>
 

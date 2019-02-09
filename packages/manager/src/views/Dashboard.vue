@@ -1,9 +1,9 @@
 <template>
-  <div class="dashboard">
-    <Tabs :tabs="tabs">
-      <router-view />
-    </Tabs>
-  </div>
+    <div class="dashboard">
+        <Tabs :tabs="tabs">
+            <router-view />
+        </Tabs>
+    </div>
 </template>
 
 <script>

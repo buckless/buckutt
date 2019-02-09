@@ -5,7 +5,9 @@
                 <div v-for="(page, i) in pages" class="page" :key="i">
                     <div class="page-indicator">{{ i + 1 }}:</div>
                     <div class="bytes">
-                        <mark v-for="(byte, j) in page" :class="getClass(i, j)" :key="j">{{ byte.join('') }}</mark>
+                        <mark v-for="(byte, j) in page" :class="getClass(i, j)" :key="j">{{
+                            byte.join('')
+                        }}</mark>
                     </div>
                 </div>
             </div>
@@ -67,7 +69,7 @@ export default {
     props: {
         pages: {
             type: Array,
-            default: []
+            default: () => []
         }
     },
 

@@ -49,8 +49,6 @@
         this.checkValidity();
     };
 
-    MaterialTextfield.prototype['enable'] = MaterialTextfield.prototype.enable;
-
     /**
      * Initialize element.
      */

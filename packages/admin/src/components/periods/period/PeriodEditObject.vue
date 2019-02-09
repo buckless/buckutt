@@ -2,7 +2,13 @@
     <div>
         <h5>Modifier la période</h5>
         <form @submit.prevent="updatePeriod(focusedPeriod)">
-            <mdl-textfield floating-label="Nom" :value="focusedPeriod.name" @input="updateDeepestFocusedElement({ field: 'name', value: $event })" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Nom"
+                :value="focusedPeriod.name"
+                @input="updateDeepestFocusedElement({ field: 'name', value: $event })"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield>
             <br />
             <b-datetime-picker
                 :value="new Date(focusedPeriod.start)"
@@ -15,7 +21,8 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="Le début n'est pas une date"
                 label="Début"
-                class="b--limitsize b--inline"></b-datetime-picker>
+                class="b--limitsize b--inline"
+            ></b-datetime-picker>
             <b-datetime-picker
                 :value="new Date(focusedPeriod.end)"
                 @input="updateDeepestFocusedElement({ field: 'end', value: $event })"
@@ -27,7 +34,8 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="La fin n'est pas une date"
                 label="Fin"
-                class="b--limitsize b--inline"></b-datetime-picker>
+                class="b--limitsize b--inline"
+            ></b-datetime-picker>
             <br />
             <mdl-button colored raised>Modifier</mdl-button>
         </form>

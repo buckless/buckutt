@@ -1,12 +1,7 @@
 <template>
     <div class="b-wikets b-page">
         <div class="mdl-card mdl-shadow--2dp">
-            <b-navbar
-                :title="title"
-                :tabs="displayedTabs"
-                :inCard="true"
-                :goBack="true"
-                :level="2">
+            <b-navbar :title="title" :tabs="displayedTabs" :inCard="true" :goBack="true" :level="2">
             </b-navbar>
             <router-view></router-view>
         </div>

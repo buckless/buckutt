@@ -6,17 +6,17 @@
             <div class="b-associate__modal__text">
                 <span v-if="!error">
                     L'équipement n'est actuellement pas associé à votre serveur Cashless.<br />
-                    Pour associer celui-ci, veuillez vous rendre dans votre espace d'administration et autoriser la connexion à l'équipement suivant:
+                    Pour associer celui-ci, veuillez vous rendre dans votre espace d'administration
+                    et autoriser la connexion à l'équipement suivant:
                 </span>
                 <span v-else>
-                    L'association a échoué, veuillez vous assurer de bien avoir autorisé la connexion à l'équipement suivant:
+                    L'association a échoué, veuillez vous assurer de bien avoir autorisé la
+                    connexion à l'équipement suivant:
                 </span>
                 <br />
                 <span class="b-associate__modal__device">{{ name }}</span>
             </div>
-            <button
-                class="b-associate__modal__validate"
-                @click="validate">Valider</button>
+            <button class="b-associate__modal__validate" @click="validate">Valider</button>
         </div>
     </div>
 </template>

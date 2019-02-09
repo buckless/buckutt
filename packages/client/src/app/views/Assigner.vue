@@ -16,22 +16,35 @@
                 <h4 v-if="groups.length > 0">Groupes :</h4>
             </div>
             <div class="b-assigner-modal__modal__text__head" v-else>
-                <strong>{{ assignModal.name }}</strong><br />
-                Nom d'utilisateur : <strong>{{ assignModal.username }}</strong><br/>
-                Nouveau crédit : <strong><currency :value="assignModal.credit" /></strong>
+                <strong>{{ assignModal.name }}</strong
+                ><br />
+                Nom d'utilisateur : <strong>{{ assignModal.username }}</strong
+                ><br />
+                Nouveau crédit : <strong><currency :value="assignModal.credit"/></strong>
 
                 <h4 v-if="groups.length > 0">Groupes :</h4>
             </div>
             <div class="b-assigner-modal__modal__text__groups" v-if="groups.length > 0">
-                <div class="b-assigner-modal__modal__text__groups__group" v-for="group in groups" :key="group.id">
-                    <input type="checkbox" name="group" class="b--out-of-screen" :id="`chk_${group.id}`" v-model="activeGroups" :value="group">
+                <div
+                    class="b-assigner-modal__modal__text__groups__group"
+                    v-for="group in groups"
+                    :key="group.id"
+                >
+                    <input
+                        type="checkbox"
+                        name="group"
+                        class="b--out-of-screen"
+                        :id="`chk_${group.id}`"
+                        v-model="activeGroups"
+                        :value="group"
+                    />
                     <label :for="`chk_${group.id}`">
                         {{ group.name }}
                     </label>
                 </div>
             </div>
         </nfc>
-        <ok v-if="showOkModal" @click.native="showOkModal = false"/>
+        <ok v-if="showOkModal" @click.native="showOkModal = false" />
     </div>
 </template>
 
@@ -96,10 +109,12 @@ export default {
                 let amount = 0;
                 let version = 0;
 
-                pendingCardUpdates.sort((a, b) => a.incrId - b.incrId).forEach(pcu => {
-                    amount += pcu.amount;
-                    version = parseInt(pcu.incrId);
-                });
+                pendingCardUpdates
+                    .sort((a, b) => a.incrId - b.incrId)
+                    .forEach(pcu => {
+                        amount += pcu.amount;
+                        version = parseInt(pcu.incrId);
+                    });
 
                 return {
                     amount,

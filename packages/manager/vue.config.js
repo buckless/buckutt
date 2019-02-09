@@ -26,7 +26,7 @@ module.exports = {
             sass: {
                 includePaths: [
                     path.resolve(__dirname, 'node_modules'),
-                    path.resolve(__dirname, '../../node_modules'),
+                    path.resolve(__dirname, '../../node_modules')
                 ],
                 data: sassTheme
             }
@@ -39,9 +39,9 @@ module.exports = {
             .use('babel-loader')
             .loader('babel-loader')
             .tap((options = {}) => {
-                options.rootMode = 'upward'
-                return options
-            })
+                options.rootMode = 'upward';
+                return options;
+            });
     },
 
     devServer: {

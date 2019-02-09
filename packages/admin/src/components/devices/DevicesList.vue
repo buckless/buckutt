@@ -8,9 +8,7 @@
         </div>
 
         <b-table
-            :headers="[
-                { title: 'Équipement', field: 'name', object: true }
-            ]"
+            :headers="[{ title: 'Équipement', field: 'name', object: true }]"
             :data="authorizedDevices"
             :filter="{ val: this.name, field: 'name' }"
             :sort="{ field: 'name', order: 'ASC' }"
@@ -23,16 +21,15 @@
             :paging="10"
             @associate="associateDevice"
             @edit="editDevice"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
 
         <template v-if="unauthorizedDevices.length > 0">
             <h5>Liste des équipements à associer</h5>
 
             <b-table
-                :headers="[
-                    { title: 'Équipement', field: 'name', object: true }
-                ]"
+                :headers="[{ title: 'Équipement', field: 'name', object: true }]"
                 :data="unauthorizedDevices"
                 :sort="{ field: 'name', order: 'ASC' }"
                 :actions="[
@@ -44,7 +41,8 @@
                 :paging="10"
                 @associate="associateDevice"
                 @edit="editDevice"
-                @remove="removeObject">
+                @remove="removeObject"
+            >
             </b-table>
         </template>
     </div>

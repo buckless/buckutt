@@ -1,9 +1,6 @@
 <template>
     <div class="b-sidebar-reload">
-        <div
-            class="b-sidebar-reload__remove"
-            @click="removeReloads">
-        </div>
+        <div class="b-sidebar-reload__remove" @click="removeReloads"></div>
         <div class="b-sidebar-reload__amount">
             <span>Rechargement</span>&nbsp;<currency :value="amount"></currency>
         </div>

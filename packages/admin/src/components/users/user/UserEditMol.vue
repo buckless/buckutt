@@ -2,26 +2,44 @@
     <div>
         <h5>Identifiants de connexion</h5>
         <form @submit.prevent="createMol(focusedUser, newMol)">
-            <mdl-textfield floating-label="Type" v-model="newMol.type" required="required" error="Le type doit contenir au moins un caractère"></mdl-textfield>
-            <mdl-textfield floating-label="Contenu" v-model="newMol.data" required="required" error="Le contenu doit contenir au moins un caractère"></mdl-textfield><br />
+            <mdl-textfield
+                floating-label="Type"
+                v-model="newMol.type"
+                required="required"
+                error="Le type doit contenir au moins un caractère"
+            ></mdl-textfield>
+            <mdl-textfield
+                floating-label="Contenu"
+                v-model="newMol.data"
+                required="required"
+                error="Le contenu doit contenir au moins un caractère"
+            ></mdl-textfield
+            ><br />
             <mdl-button colored raised>Ajouter</mdl-button>
         </form>
         <br />
         <b-table
             :headers="[
                 { title: 'Type', field: 'type' },
-                { title: 'Contenu', field: 'data'},
+                { title: 'Contenu', field: 'data' },
                 { title: 'Identifiant physique', field: 'physical_id' }
             ]"
             :data="focusedUser.meansOfLogin"
             :actions="[
-                { action: 'lock', text1: 'Bloquer', text2: 'Débloquer', field: 'blocked', type: 'reversible' },
+                {
+                    action: 'lock',
+                    text1: 'Bloquer',
+                    text2: 'Débloquer',
+                    field: 'blocked',
+                    type: 'reversible'
+                },
                 { action: 'remove', text: 'Supprimer', type: 'confirm' }
             ]"
             route="meansOfLogin"
             :paging="10"
             @lock="lockMol"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

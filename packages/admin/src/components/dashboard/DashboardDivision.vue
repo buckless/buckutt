@@ -2,20 +2,28 @@
     <div class="b-dashboard-divisions">
         <div class="b-divisions-graph mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title">
-              <h2 class="mdl-card__title-text">Répartition des achats</h2>
+                <h2 class="mdl-card__title-text">Répartition des achats</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <b-donutchart :chartData="purchasesData" :unit="unit" v-if="purchasesData.labels.length > 0"></b-donutchart>
+                <b-donutchart
+                    :chartData="purchasesData"
+                    :unit="unit"
+                    v-if="purchasesData.labels.length > 0"
+                ></b-donutchart>
                 <span v-else>Aucun achat n'a été effectué sur cette période.</span>
             </div>
         </div>
 
         <div class="b-divisions-graph mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title">
-              <h2 class="mdl-card__title-text">Répartition des rechargements</h2>
+                <h2 class="mdl-card__title-text">Répartition des rechargements</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <b-donutchart :chartData="reloadsData" :unit="unit" v-if="reloadsData.labels.length > 0"></b-donutchart>
+                <b-donutchart
+                    :chartData="reloadsData"
+                    :unit="unit"
+                    v-if="reloadsData.labels.length > 0"
+                ></b-donutchart>
                 <span v-else>Aucun rechargement n'a été effectué sur cette période.</span>
             </div>
         </div>

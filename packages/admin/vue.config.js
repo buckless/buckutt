@@ -17,9 +17,9 @@ module.exports = {
             .use('babel-loader')
             .loader('babel-loader')
             .tap((options = {}) => {
-                options.rootMode = 'upward'
-                return options
-            })
+                options.rootMode = 'upward';
+                return options;
+            });
     },
     configureWebpack: {
         plugins: [

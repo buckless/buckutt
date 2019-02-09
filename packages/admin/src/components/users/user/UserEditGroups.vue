@@ -2,20 +2,32 @@
     <div>
         <h5>Groupes</h5>
         <form @submit.prevent="addGroupToUser(focusedParticipant, membership)">
-            <b-inputselect label="Groupe" id="group-select" :options="groupOptions" v-model="membership.group"></b-inputselect>
-            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="membership.period" v-if="event.usePeriods"></b-inputselect><br />
+            <b-inputselect
+                label="Groupe"
+                id="group-select"
+                :options="groupOptions"
+                v-model="membership.group"
+            ></b-inputselect>
+            <b-inputselect
+                label="Période"
+                id="period-select"
+                :options="currentPeriodOptions"
+                :fullOptions="periodOptions"
+                v-model="membership.period"
+                v-if="event.usePeriods"
+            ></b-inputselect
+            ><br />
             <mdl-button colored raised :disabled="disabledAdd">Ajouter</mdl-button>
         </form>
         <br />
         <b-table
             :headers="displayedColumns"
             :data="displayedMemberships"
-            :actions="[
-                { action: 'remove', text: 'Supprimer', type: 'confirm' }
-            ]"
+            :actions="[{ action: 'remove', text: 'Supprimer', type: 'confirm' }]"
             route="memberships"
             :paging="10"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

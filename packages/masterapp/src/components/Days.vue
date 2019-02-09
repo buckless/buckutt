@@ -1,9 +1,8 @@
 <template>
     <ul>
-        <li
-            v-for="(active, i) in mutableValue"
-            @click.stop="toggle(i)"
-            :active="active">{{ days[i] }}</li>
+        <li v-for="(active, i) in mutableValue" @click.stop="toggle(i)" :active="active" :key="i">
+            {{ days[i] }}
+        </li>
     </ul>
 </template>
 

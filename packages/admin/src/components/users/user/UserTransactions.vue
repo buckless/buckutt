@@ -12,10 +12,16 @@
             ]"
             :data="displayedHistory"
             :actions="[
-                { action: 'cancel', text: 'Annuler', type: 'confirm', condition: { field: 'warning', statement: 'exists' } }
+                {
+                    action: 'cancel',
+                    text: 'Annuler',
+                    type: 'confirm',
+                    condition: { field: 'warning', statement: 'exists' }
+                }
             ]"
             :paging="10"
-            @cancel="cancel">
+            @cancel="cancel"
+        >
         </b-table>
     </div>
 </template>

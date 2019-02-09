@@ -6,10 +6,7 @@
                 <input type="text" v-model="filter" placeholder="Filtre" />
                 <i class="b-icon" @click="filter = ''">highlight_off</i>
             </div>
-            <item
-                v-for="item in displayedItems"
-                :item="item"
-                :key="item.id"></item>
+            <item v-for="item in displayedItems" :item="item" :key="item.id"></item>
             <nfc mode="read" @read="logBuyer" v-if="isWaiting && !isWriting" key="read" />
             <nfc mode="write" @read="validate" @cancel="cancelBuy" v-if="isWriting" key="write" />
         </div>

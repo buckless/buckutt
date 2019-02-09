@@ -1,22 +1,25 @@
 <template>
     <div class="b-ticket" :class="{ 'b-ticket--modal': !inline }">
         <div class="b-ticket__modal">
-            <hr v-if="inline"/>
+            <hr v-if="inline" />
 
             Dernier client :
             <strong class="b--capitalized">{{ user.name || 'anonyme' }}</strong>
 
-            <br/>
+            <br />
 
             Achats :
-            <strong><currency :value="user.bought || 0"></currency></strong> <template v-if="user.cardPaid > 0"> (dont <currency :value="user.cardPaid"></currency> d'activation de carte)</template>
+            <strong><currency :value="user.bought || 0"></currency></strong>
+            <template v-if="user.cardPaid > 0">
+                (dont <currency :value="user.cardPaid"></currency> d'activation de carte)</template
+            >
 
-            <br/>
+            <br />
 
             Rechargement :
             <strong><currency :value="user.reload || 0"></currency></strong>
 
-            <br/>
+            <br />
 
             Nouveau crédit :
             <strong><currency :value="user.credit || 0"></currency></strong>

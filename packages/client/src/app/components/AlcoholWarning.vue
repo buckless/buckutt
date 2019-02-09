@@ -1,7 +1,5 @@
 <template>
-    <div class="b-alcohol-warning" v-if="warnAlcohol">
-        Alcool : {{ alcoholAmount }} UA
-    </div>
+    <div class="b-alcohol-warning" v-if="warnAlcohol">Alcool : {{ alcoholAmount }} UA</div>
 </template>
 
 <script>

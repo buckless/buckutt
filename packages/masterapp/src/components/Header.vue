@@ -1,6 +1,6 @@
 <template>
     <header>
-        <img src="../assets/home.png" width="40" height="40" @click="home" v-if="!isHome">
+        <img src="../assets/home.png" width="40" height="40" @click="home" v-if="!isHome" />
         <h1>{{ appName }}</h1>
     </header>
 </template>

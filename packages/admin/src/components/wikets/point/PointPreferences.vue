@@ -3,9 +3,18 @@
         <h5>Préférences</h5>
         <form @submit.prevent="updatePoint(focusedPoint)">
             <div>
-                <b-inputselect label="Groupe par défaut préféré" id="group-select" :options="groupOptions" :value="focusedPoint.defaultGroup" @input="updateDeepestFocusedElement({ field: 'defaultGroup', value: $event })"></b-inputselect>
+                <b-inputselect
+                    label="Groupe par défaut préféré"
+                    id="group-select"
+                    :options="groupOptions"
+                    :value="focusedPoint.defaultGroup"
+                    @input="updateDeepestFocusedElement({ field: 'defaultGroup', value: $event })"
+                ></b-inputselect>
                 <i class="material-icons" id="grouptip">info</i>
-                <mdl-tooltip target="grouptip">Groupe qui sera pré-rempli par défaut lors de l'assignement des équipements.</mdl-tooltip>
+                <mdl-tooltip target="grouptip"
+                    >Groupe qui sera pré-rempli par défaut lors de l'assignement des
+                    équipements.</mdl-tooltip
+                >
             </div>
             <mdl-button colored raised>Modifier</mdl-button>
         </form>

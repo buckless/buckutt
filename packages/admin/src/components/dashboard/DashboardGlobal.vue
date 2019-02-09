@@ -1,9 +1,31 @@
 <template>
     <div class="b-dashboard-global">
-        <b-global-tile icon="nfc" title="Supports NFC actifs" :value="globalData.activeCards" color="#ff7f0e"></b-global-tile>
-        <b-global-tile icon="map" title="Billets validés" :value="globalData.validatedTickets" color="#98df8a"></b-global-tile>
-        <b-global-tile icon="attach_money" title="Rechargements totaux" :value="globalData.reloads" color="#c7c7c7" type="price"></b-global-tile>
-        <b-global-tile icon="shopping_cart" title="Achats totaux" :value="globalData.purchases" color="#1f77b4" type="price"></b-global-tile>
+        <b-global-tile
+            icon="nfc"
+            title="Supports NFC actifs"
+            :value="globalData.activeCards"
+            color="#ff7f0e"
+        ></b-global-tile>
+        <b-global-tile
+            icon="map"
+            title="Billets validés"
+            :value="globalData.validatedTickets"
+            color="#98df8a"
+        ></b-global-tile>
+        <b-global-tile
+            icon="attach_money"
+            title="Rechargements totaux"
+            :value="globalData.reloads"
+            color="#c7c7c7"
+            type="price"
+        ></b-global-tile>
+        <b-global-tile
+            icon="shopping_cart"
+            title="Achats totaux"
+            :value="globalData.purchases"
+            color="#1f77b4"
+            type="price"
+        ></b-global-tile>
     </div>
 </template>
 

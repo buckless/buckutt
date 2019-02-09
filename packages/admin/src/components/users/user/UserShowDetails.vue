@@ -1,8 +1,12 @@
 <template>
     <div>
         <h5>Détails de l'utilisateur</h5>
-        <p v-if="creationData.pin">Le code PIN de l'utilisateur est <strong>{{ creationData.pin }}</strong></p>
-        <p v-if="creationData.password">Le mot de passe de l'utilisateur est <strong>{{ creationData.password }}</strong></p>
+        <p v-if="creationData.pin">
+            Le code PIN de l'utilisateur est <strong>{{ creationData.pin }}</strong>
+        </p>
+        <p v-if="creationData.password">
+            Le mot de passe de l'utilisateur est <strong>{{ creationData.password }}</strong>
+        </p>
 
         <b-list :elements="elements" :columns="2"></b-list>
 
@@ -10,29 +14,46 @@
             <h5>Accès à l'événement</h5>
             <p v-if="isInDefaultGroup">
                 Cet utilisateur participe à l'événement sélectionné.<br />
-                <mdl-button @click.native="removeMembership(isInDefaultGroup)">Interdire l'accès</mdl-button>
+                <mdl-button @click.native="removeMembership(isInDefaultGroup)"
+                    >Interdire l'accès</mdl-button
+                >
             </p>
             <p v-else>
                 Cet utilisateur ne participe pas à l'événement sélectionné.<br />
-                <mdl-button @click.native="addUserToGroup(focusedUser, event.defaultGroup, event.defaultPeriod)">Accorder l'accès</mdl-button>
+                <mdl-button
+                    @click.native="
+                        addUserToGroup(focusedUser, event.defaultGroup, event.defaultPeriod)
+                    "
+                    >Accorder l'accès</mdl-button
+                >
             </p>
         </template>
         <template v-else>
             <h5>Résumé des groupes pour l'événement</h5>
             <template v-if="groups.length > 0">
                 <b-list :elements="groups" :columns="3"></b-list>
-                <p v-if="isInDefaultGroup">Ce participant est dans le groupe par défaut de l'événement.</p>
+                <p v-if="isInDefaultGroup">
+                    Ce participant est dans le groupe par défaut de l'événement.
+                </p>
             </template>
             <p v-else>
-                Cet utilsateur n'appartient à aucun groupe de l'événement, il ne participe donc pas à l'événement.<br />
-                <mdl-button @click.native="addUserToGroup(focusedUser, event.defaultGroup, event.defaultPeriod)">Ajouter au groupe</mdl-button>
+                Cet utilsateur n'appartient à aucun groupe de l'événement, il ne participe donc pas
+                à l'événement.<br />
+                <mdl-button
+                    @click.native="
+                        addUserToGroup(focusedUser, event.defaultGroup, event.defaultPeriod)
+                    "
+                    >Ajouter au groupe</mdl-button
+                >
             </p>
         </template>
 
         <h5 v-if="rights.length > 0">Résumé des droits pour l'événement</h5>
         <template v-for="(rightPerPoint, index) in rights">
             <h6 v-if="rightPerPoint.point === 'Aucun'" :key="index">Droits du partipant</h6>
-            <h6 v-else :key="index">Droits du participant sur le point {{ rightPerPoint.point }}</h6>
+            <h6 v-else :key="index">
+                Droits du participant sur le point {{ rightPerPoint.point }}
+            </h6>
             <b-list :elements="rightPerPoint.rights" :columns="3" :key="`b-list-${index}`"></b-list>
         </template>
     </div>

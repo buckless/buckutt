@@ -2,7 +2,12 @@
     <div class="b-addarticle">
         <h5>Ajout d'un article à la catégorie</h5>
         <form @submit.prevent="addArticle(article)">
-            <b-inputselect label="Article à ajouter" id="article-select" :options="remainingArticleOptions" v-model="article"></b-inputselect>
+            <b-inputselect
+                label="Article à ajouter"
+                id="article-select"
+                :options="remainingArticleOptions"
+                v-model="article"
+            ></b-inputselect>
             <mdl-button raised colored>Ajouter</mdl-button>
         </form>
     </div>

@@ -9,9 +9,7 @@
             <i class="b-icon">add</i>
         </button>
         <br /><br />
-        <button
-            class="b-unit-input__validate"
-            @click="validate">Valider</button>
+        <button class="b-unit-input__validate" @click="validate">Valider</button>
     </div>
 </template>
 

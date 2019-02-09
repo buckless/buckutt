@@ -2,7 +2,12 @@
     <div>
         <h5>Créer une période</h5>
         <form @submit.prevent="createPeriod(newPeriod)">
-            <mdl-textfield floating-label="Nom" v-model="newPeriod.name" required="required" error="Le nom doit contenir au moins un caractère"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Nom"
+                v-model="newPeriod.name"
+                required="required"
+                error="Le nom doit contenir au moins un caractère"
+            ></mdl-textfield>
             <br />
             <b-datetime-picker
                 v-model="newPeriod.start"
@@ -14,7 +19,8 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="Le début n'est pas une date"
                 label="Début"
-                class="b--limitsize b--inline"></b-datetime-picker>
+                class="b--limitsize b--inline"
+            ></b-datetime-picker>
             <b-datetime-picker
                 v-model="newPeriod.end"
                 locale="fr"
@@ -25,7 +31,8 @@
                 pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                 error="La fin n'est pas une date"
                 label="Fin"
-                class="b--limitsize b--inline"></b-datetime-picker>
+                class="b--limitsize b--inline"
+            ></b-datetime-picker>
             <br />
             <mdl-button colored raised>Créer</mdl-button>
         </form>

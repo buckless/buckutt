@@ -1,6 +1,15 @@
 <template>
-    <div class="b-detailedSwitch mdl-card" :class="{ 'mdl-shadow--2dp': !active, 'mdl-shadow--6dp': active }" @mouseover="active = true" @mouseleave="active = false" @click="update(!value)">
-        <div class="b-detailedSwitch_icon" :class="{ 'mdl-color--green': value, 'mdl-color--orange': !value }">
+    <div
+        class="b-detailedSwitch mdl-card"
+        :class="{ 'mdl-shadow--2dp': !active, 'mdl-shadow--6dp': active }"
+        @mouseover="active = true"
+        @mouseleave="active = false"
+        @click="update(!value)"
+    >
+        <div
+            class="b-detailedSwitch_icon"
+            :class="{ 'mdl-color--green': value, 'mdl-color--orange': !value }"
+        >
             <i class="material-icons">{{ icon }}</i>
         </div>
         <div class="mdl-card__title">
@@ -10,7 +19,10 @@
             <slot></slot>
         </div>
         <div class="mdl-card__menu">
-            <span class="mdl-chip" :class="{ 'mdl-color--green': value, 'mdl-color--orange': !value }">
+            <span
+                class="mdl-chip"
+                :class="{ 'mdl-color--green': value, 'mdl-color--orange': !value }"
+            >
                 <strong class="mdl-chip__text" v-if="value">Actif</strong>
                 <strong class="mdl-chip__text" v-else>Inactif</strong>
             </span>

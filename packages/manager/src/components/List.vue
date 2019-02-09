@@ -1,7 +1,7 @@
 <template>
-  <div class="list">
-    <slot/>
-  </div>
+    <div class="list">
+        <slot />
+    </div>
 </template>
 
 <script>
@@ -9,7 +9,6 @@ export default {
     name: 'List'
 };
 </script>
-
 
 <style lang="scss" scoped>
 @import '@/theme.scss';

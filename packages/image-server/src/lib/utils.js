@@ -1,4 +1,4 @@
-const fs      = require('fs');
+const fs = require('fs');
 const memoize = require('lodash.memoize');
 
 const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -13,7 +13,7 @@ const base64headerRegex = /^data:image\/(\w+);base64,/;
 function pad2(n) {
     const str = String(n);
 
-    return (str.length === 1) ? `0${str}` : str;
+    return str.length === 1 ? `0${str}` : str;
 }
 
 /**

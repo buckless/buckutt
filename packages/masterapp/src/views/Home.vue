@@ -18,7 +18,7 @@
         </Mode>
 
         <label>
-            <input type="checkbox" v-model="developertools">
+            <input type="checkbox" v-model="developertools" />
             Activer les options développeur
         </label>
 
@@ -31,7 +31,8 @@
             key="initialize"
             disableLockCheck
             disableSignCheck
-            shouldPinLock>
+            shouldPinLock
+        >
             Mode: initialisation
         </nfc>
     </div>

@@ -1,12 +1,9 @@
-const path       = require('path');
-const express    = require('express');
-const sharp      = require('sharp');
-const log        = require('../lib/log')(module);
+const path = require('path');
+const express = require('express');
+const sharp = require('sharp');
+const log = require('../lib/log')(module);
 const imagesPath = require('../lib/imagesPath');
-const {
-    isGuid,
-    base64ImageToBuffer
-} = require('../lib/utils');
+const { isGuid, base64ImageToBuffer } = require('../lib/utils');
 
 const router = new express.Router();
 
@@ -35,19 +32,19 @@ router.post('/image/:guid', (req, res) => {
         .then(() => {
             log.info(`writing ${req.params.guid}`);
 
-            res
-                .status(200)
-                .json({ })
+            res.status(200)
+                .json({})
                 .end();
         })
-        .catch(/* istanbul ignore next */ (err) => {
-            log.error('upload failed', err);
+        .catch(
+            /* istanbul ignore next */ err => {
+                log.error('upload failed', err);
 
-            res
-                .status(400)
-                .json({ error: 'INVALID_IMAGE' })
-                .end();
-        });
+                res.status(400)
+                    .json({ error: 'INVALID_IMAGE' })
+                    .end();
+            }
+        );
 });
 
 router.param('guid', (req, res, next, value) => {

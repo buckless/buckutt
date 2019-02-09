@@ -1,10 +1,7 @@
 <template>
-  <span 
-    v-if="name" 
-    :style="sizeStyle" 
-    class="material-icon">
-    {{ name }}
-  </span>
+    <span v-if="name" :style="sizeStyle" class="material-icon">
+        {{ name }}
+    </span>
 </template>
 
 <script>

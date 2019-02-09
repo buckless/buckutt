@@ -76,16 +76,18 @@ module.exports = async (
         .destroy();
 
     // create requested mols
-    const molsPromises = meansOfLogin.filter(mol => molsToSkip.indexOf(mol.type) === -1).map(mol =>
-        new ctx.models.MeanOfLogin({
-            type: mol.type,
-            data: mol.data,
-            physical_id: mol.physical_id,
-            blocked: mol.blocked,
-            user_id: newUser.id,
-            clientTime
-        }).save()
-    );
+    const molsPromises = meansOfLogin
+        .filter(mol => molsToSkip.indexOf(mol.type) === -1)
+        .map(mol =>
+            new ctx.models.MeanOfLogin({
+                type: mol.type,
+                data: mol.data,
+                physical_id: mol.physical_id,
+                blocked: mol.blocked,
+                user_id: newUser.id,
+                clientTime
+            }).save()
+        );
 
     // create standard mols
     if (mergeUser.mail) {

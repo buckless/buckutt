@@ -3,10 +3,15 @@
         <div class="mdl-card mdl-shadow--2dp">
             <b-navbar
                 :title="title"
-                :tabs="[{ route: '', name: 'Détails', exact: true }, { route: 'edit', name: 'Édition' }, { route: 'config', name: 'Configuration' }]"
+                :tabs="[
+                    { route: '', name: 'Détails', exact: true },
+                    { route: 'edit', name: 'Édition' },
+                    { route: 'config', name: 'Configuration' }
+                ]"
                 :inCard="true"
                 :goBack="true"
-                :level="2">
+                :level="2"
+            >
             </b-navbar>
             <router-view></router-view>
         </div>

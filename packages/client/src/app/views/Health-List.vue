@@ -1,10 +1,6 @@
 <template>
     <div class="b-health-list">
-        <div
-            class="b-health-alert"
-            v-for="healthAlert in healthAlerts"
-            :key="healthAlert.id"
-        >
+        <div class="b-health-alert" v-for="healthAlert in healthAlerts" :key="healthAlert.id">
             <div>
                 <h3>Point : {{ healthAlert.location }}</h3>
                 <table>
@@ -15,15 +11,15 @@
                         </tr>
                         <tr>
                             <td>Malaise/Alcool</td>
-                            <td>{{ healthAlert.notAlcohol ? 'Non': 'Oui' }}</td>
+                            <td>{{ healthAlert.notAlcohol ? 'Non' : 'Oui' }}</td>
                         </tr>
                         <tr>
                             <td>Sang</td>
-                            <td>{{ healthAlert.blood ? 'Oui': 'Non' }}</td>
+                            <td>{{ healthAlert.blood ? 'Oui' : 'Non' }}</td>
                         </tr>
                         <tr>
                             <td>Yeux ouverts</td>
-                            <td>{{ healthAlert.closedEyes ? 'Oui': 'Non' }}</td>
+                            <td>{{ healthAlert.closedEyes ? 'Oui' : 'Non' }}</td>
                         </tr>
                     </tbody>
                 </table>

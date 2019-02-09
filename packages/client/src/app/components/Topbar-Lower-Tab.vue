@@ -1,8 +1,5 @@
 <template>
-    <div
-        class="b-tab"
-        :class="{ 'b-tab--selected': selected }"
-        @click="selectTab(id)">
+    <div class="b-tab" :class="{ 'b-tab--selected': selected }" @click="selectTab(id)">
         {{ name }}
     </div>
 </template>

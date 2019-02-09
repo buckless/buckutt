@@ -1,33 +1,31 @@
 <template>
-  <div class="refund">
-    <Card>
-      <h3>Mon billet</h3>
-      <form 
-        v-if="!ticketNumber" 
-        @submit.prevent="assignTicket(ticket)">
-        Pour lier votre billet d'entrée à votre espace cashless, saisissez ici votre numéro de billet.
-        <TextInput 
-          v-model="ticket" 
-          :disabled="working" 
-          label="Numéro de billet" 
-          autofocus/>
-        <div class="actions">
-          <Button to="/dashboard/menu">Retour</Button>
-          <Button 
-            :disabled="working" 
-            raised>Valider</Button>
-        </div>
-      </form>
-      <p v-else>
-        Votre espace cashless est associé avec le billet numéro <strong>{{ ticketNumber }}</strong>.
-        <br>
-        <br>
-        <Button 
-          raised 
-          to="/dashboard/menu">Retour</Button>
-      </p>
-    </Card>
-  </div>
+    <div class="refund">
+        <Card>
+            <h3>Mon billet</h3>
+            <form v-if="!ticketNumber" @submit.prevent="assignTicket(ticket)">
+                Pour lier votre billet d'entrée à votre espace cashless, saisissez ici votre numéro
+                de billet.
+                <TextInput
+                    v-model="ticket"
+                    :disabled="working"
+                    label="Numéro de billet"
+                    autofocus
+                />
+                <div class="actions">
+                    <Button to="/dashboard/menu">Retour</Button>
+                    <Button :disabled="working" raised>Valider</Button>
+                </div>
+            </form>
+            <p v-else>
+                Votre espace cashless est associé avec le billet numéro
+                <strong>{{ ticketNumber }}</strong
+                >.
+                <br />
+                <br />
+                <Button raised to="/dashboard/menu">Retour</Button>
+            </p>
+        </Card>
+    </div>
 </template>
 
 <script>

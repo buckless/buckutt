@@ -1,20 +1,10 @@
 <template>
-  <button
-    v-if="!to"
-    :raised="raised"
-    :small="small"
-    class="button"
-    @click="click">
-    <slot/>
-  </button>
-  <router-link
-    v-else
-    :raised="raised"
-    :small="small"
-    :to="to"
-    class="button">
-    <slot/>
-  </router-link>
+    <button v-if="!to" :raised="raised" :small="small" class="button" @click="click">
+        <slot />
+    </button>
+    <router-link v-else :raised="raised" :small="small" :to="to" class="button">
+        <slot />
+    </router-link>
 </template>
 
 <script>

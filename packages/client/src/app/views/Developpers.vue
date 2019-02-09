@@ -9,7 +9,8 @@
                 :lastUpdate="eventSync.lastUpdate"
                 :running="eventSync.locked"
                 frequency="20 minutes"
-                @update="updateEssentials">
+                @update="updateEssentials"
+            >
                 Données de l'événement
             </syncData>
 
@@ -19,7 +20,8 @@
                     :lastUpdate="itemsSync.lastUpdate"
                     :running="itemsSync.locked"
                     frequency="10 minutes"
-                    @update="updateItems">
+                    @update="updateItems"
+                >
                     Liste des articles
                 </syncData>
 
@@ -28,7 +30,8 @@
                     :lastUpdate="usersSync.lastUpdate"
                     :running="usersSync.locked"
                     frequency="5 minutes"
-                    @update="updateUsersData">
+                    @update="updateUsersData"
+                >
                     Données des utilisateurs
                 </syncData>
 
@@ -37,7 +40,8 @@
                     :lastUpdate="queueSync.lastUpdate"
                     :running="queueSync.locked"
                     frequency="1 minute"
-                    @update="syncQueue">
+                    @update="syncQueue"
+                >
                     Requêtes en attente
                 </syncData>
             </template>

@@ -1,102 +1,86 @@
 <template>
-  <div class="table-wrapper">
-    <div v-if="displayedData.length > 0">
-      <div
-        :class="hasFooter"
-        class="table">
-        <div class="header">
-          <div class="row header-row">
-            <div
-              v-for="(header, i) in headers"
-              :class="header.class"
-              :key="i"
-              class="cell header-cell">
-              {{ header.title }}
+    <div class="table-wrapper">
+        <div v-if="displayedData.length > 0">
+            <div :class="hasFooter" class="table">
+                <div class="header">
+                    <div class="row header-row">
+                        <div
+                            v-for="(header, i) in headers"
+                            :class="header.class"
+                            :key="i"
+                            class="cell header-cell"
+                        >
+                            {{ header.title }}
+                        </div>
+                    </div>
+                </div>
+                <div class="body">
+                    <div
+                        v-for="(data, i) in displayedData"
+                        :key="i"
+                        :class="{ 'row--removed': data.warning }"
+                        class="row"
+                    >
+                        <div
+                            v-for="(header, j) in headers"
+                            :key="j"
+                            :class="header.class"
+                            class="cell"
+                        >
+                            <template v-if="data.warning && j === 0">
+                                <Icon name="delete" />
+                            </template>
+                            <span v-if="header.type === 'price'">
+                                {{ (data[header.field] / 100) | currency }}
+                            </span>
+                            <span v-else-if="header.type === 'date'">
+                                {{ data[header.field] | date }}
+                            </span>
+                            <span v-else-if="data[header.field].length > 0">
+                                {{ data[header.field] }}
+                            </span>
+                            <ul v-if="header.list" class="table-list">
+                                <li v-for="(article, k) in data[header.list]" :key="k">
+                                    {{ article }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="body">
-          <div
-            v-for="(data, i) in displayedData"
-            :key="i"
-            :class="{ 'row--removed': data.warning }"
-            class="row">
-            <div
-              v-for="(header, j) in headers"
-              :key="j"
-              :class="header.class"
-              class="cell">
-              <template v-if="data.warning && j === 0">
-                <Icon name="delete" />
-              </template>
-              <span v-if="header.type === 'price'">
-                {{ data[header.field] / 100 | currency }}
-              </span>
-              <span v-else-if="header.type === 'date'">
-                {{ data[header.field] | date }}
-              </span>
-              <span v-else-if="data[header.field].length > 0">
-                {{ data[header.field] }}
-              </span>
-              <ul
-                v-if="header.list"
-                class="table-list">
-                <li
-                  v-for="(article, k) in data[header.list]"
-                  :key="k">{{ article }}</li>
-              </ul>
+            <div v-if="pagesNumber > 1" class="footer">
+                <div class="row footer-row">
+                    <div class="cell">
+                        <span>
+                            Affichage de {{ displayedData.length }} éléments sur {{ data.length }}
+                        </span>
+                        <div class="space" />
+                        <span>
+                            <a v-show="hasPrevious" href="#" @click.prevent="previous()"
+                                >Précedent</a
+                            >
+                            Page {{ adjustedPage }}/{{ pagesNumber }}
+                            <a v-show="hasNext" href="#" @click.prevent="next()">Suivant</a>
+                        </span>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div v-if="paging" class="paging">
+                Afficher
+                <select v-model="chosenPaging" class="select">
+                    <option v-for="(option, i) in pagingOptions" :key="i">{{ option }}</option>
+                </select>
+                entrées
+            </div>
         </div>
-      </div>
-      <div
-        v-if="pagesNumber > 1"
-        class="footer">
-        <div class="row footer-row">
-          <div class="cell">
-            <span>
-              Affichage de {{ displayedData.length }} éléments sur {{ data.length }}
-            </span>
-            <div class="space" />
-            <span>
-              <a
-                v-show="hasPrevious"
-                href="#"
-                @click.prevent="previous()">Précedent</a>
-              Page {{ adjustedPage }}/{{ pagesNumber }}
-              <a
-                v-show="hasNext"
-                href="#"
-                @click.prevent="next()">Suivant</a>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div
-        v-if="paging"
-        class="paging">
-        Afficher
-        <select
-          v-model="chosenPaging"
-          class="select">
-          <option
-            v-for="(option, i) in pagingOptions"
-            :key="i">{{ option }}</option>
-        </select> entrées
-      </div>
-    </div>
 
-    <div
-      v-else
-      class="empty-content">
-      Aucune donnée à afficher
-      <br>
-      <br>
-      <Button
-        to="/"
-        raised>Recharger mon compte</Button>
+        <div v-else class="empty-content">
+            Aucune donnée à afficher
+            <br />
+            <br />
+            <Button to="/" raised>Recharger mon compte</Button>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>

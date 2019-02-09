@@ -1,29 +1,26 @@
 <template>
-  <div class="card-content">
-    <p>
-      Si vous possédez un billet pour le festival, cochez cette case.
-      Si vous ne possédez pas de billet et souhaitez utiliser le cashless à l'évènement, ne cochez pas cette case.
-    </p>
-    <Checkbox 
-      id="1" 
-      v-model="ticket">J'ai déjà un billet</Checkbox>
-    <p>
-      Si vous avez déjà votre support cashless, cochez cette case. Vous trouverez l'identifiant à rentrer au verso de votre support.
-    </p>
-    <Checkbox 
-      id="2" 
-      v-model="card">J'ai déjà un support cashless (carte, bracelet, ...)</Checkbox>
-    <div class="actions">
-      <Button to="/login">
-        Retour
-      </Button>
-      <Button 
-        raised 
-        @click="next">
-        Suivant
-      </Button>
+    <div class="card-content">
+        <p>
+            Si vous possédez un billet pour le festival, cochez cette case. Si vous ne possédez pas
+            de billet et souhaitez utiliser le cashless à l'évènement, ne cochez pas cette case.
+        </p>
+        <Checkbox id="1" v-model="ticket">J'ai déjà un billet</Checkbox>
+        <p>
+            Si vous avez déjà votre support cashless, cochez cette case. Vous trouverez
+            l'identifiant à rentrer au verso de votre support.
+        </p>
+        <Checkbox id="2" v-model="card"
+            >J'ai déjà un support cashless (carte, bracelet, ...)</Checkbox
+        >
+        <div class="actions">
+            <Button to="/login">
+                Retour
+            </Button>
+            <Button raised @click="next">
+                Suivant
+            </Button>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>

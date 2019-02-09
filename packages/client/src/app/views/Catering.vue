@@ -6,7 +6,14 @@
                 {{ article.name }}
             </div>
         </div>
-        <nfc mode="write" @read="deduct" @cancel="closeWriter" v-if="writeCatering" key="write" :successText="successText" />
+        <nfc
+            mode="write"
+            @read="deduct"
+            @cancel="closeWriter"
+            v-if="writeCatering"
+            key="write"
+            :successText="successText"
+        />
     </div>
 </template>
 

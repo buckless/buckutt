@@ -2,21 +2,38 @@
     <div>
         <h5>Droits</h5>
         <form @submit.prevent="createUserRight(focusedParticipant, userRight)">
-            <b-inputselect label="Droit" id="right-select" :options="rightsList" v-model="userRight.name"></b-inputselect>
-            <b-inputselect label="Point" id="point-select" :options="pointOptions" v-model="userRight.point"></b-inputselect>
-            <b-inputselect label="Période" id="period-select" :options="currentPeriodOptions" :fullOptions="periodOptions" v-model="userRight.period" v-if="event.usePeriods"></b-inputselect><br />
+            <b-inputselect
+                label="Droit"
+                id="right-select"
+                :options="rightsList"
+                v-model="userRight.name"
+            ></b-inputselect>
+            <b-inputselect
+                label="Point"
+                id="point-select"
+                :options="pointOptions"
+                v-model="userRight.point"
+            ></b-inputselect>
+            <b-inputselect
+                label="Période"
+                id="period-select"
+                :options="currentPeriodOptions"
+                :fullOptions="periodOptions"
+                v-model="userRight.period"
+                v-if="event.usePeriods"
+            ></b-inputselect
+            ><br />
             <mdl-button colored raised :disabled="disabledAdd">Ajouter</mdl-button>
         </form>
         <br />
         <b-table
             :headers="displayedColumns"
             :data="displayedRights"
-            :actions="[
-                { action: 'remove', text: 'Supprimer', type: 'confirm' }
-            ]"
+            :actions="[{ action: 'remove', text: 'Supprimer', type: 'confirm' }]"
             route="rights"
             :paging="10"
-            @remove="removeObject">
+            @remove="removeObject"
+        >
         </b-table>
     </div>
 </template>

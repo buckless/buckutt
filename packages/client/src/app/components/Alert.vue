@@ -1,16 +1,21 @@
 <template>
     <div class="b-alert" v-if="alert">
-        <div class="b-alert__drop"/>
+        <div class="b-alert__drop" />
         <div class="b-alert__modal">
             <h3 class="b-alert__modal__title">Alerte</h3>
             <div class="b-alert__modal__error">
                 {{ alert.content }}
             </div>
-            <button class="b-alert__modal__close" v-if="timer > 0">J'ai compris ({{ timer }})</button>
+            <button class="b-alert__modal__close" v-if="timer > 0">
+                J'ai compris ({{ timer }})
+            </button>
             <button
                 class="b-alert__modal__close b-alert__modal__close--active"
                 @click="closeAlert"
-                v-else>J'ai compris</button>
+                v-else
+            >
+                J'ai compris
+            </button>
         </div>
     </div>
 </template>

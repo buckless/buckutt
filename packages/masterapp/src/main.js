@@ -90,5 +90,5 @@ logOperator().then(() => fetchGroups());
 
 // force / as initial URL on cordova
 Vue.nextTick(() => {
-    app.$router.replace('/');
+    window.app.$router.replace('/');
 });

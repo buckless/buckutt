@@ -3,11 +3,23 @@
         <h5>Liste des utilisateurs</h5>
         <div class="b-table-search">
             <i class="material-icons">search</i>
-            <mdl-textfield floating-label="Numéro du support NFC" v-model="mol" @input="search(mol)"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Numéro du support NFC"
+                v-model="mol"
+                @input="search(mol)"
+            ></mdl-textfield>
         </div>
 
         <b-table
-            :headers="[{ title: 'Utilisateur', field: 'fullname', class: 'b--capitalized', object: true, replaceAppendBy: '/users/' }]"
+            :headers="[
+                {
+                    title: 'Utilisateur',
+                    field: 'fullname',
+                    class: 'b--capitalized',
+                    object: true,
+                    replaceAppendBy: '/users/'
+                }
+            ]"
             :data="displayedUsers"
             :sort="{ field: 'firstname', order: 'ASC' }"
             :actions="[
@@ -17,7 +29,8 @@
             route="users"
             :paging="10"
             @edit="editUser"
-            @removeUser="removeUserAndMols">
+            @removeUser="removeUserAndMols"
+        >
         </b-table>
     </div>
 </template>

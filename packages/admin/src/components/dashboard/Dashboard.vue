@@ -14,7 +14,8 @@
                     pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
                     error="Le début n'est pas une date"
                     label="Début"
-                    class="b--limitsize"></b-datetime-picker>
+                    class="b--limitsize"
+                ></b-datetime-picker>
                 <b-datetime-picker
                     v-model="timefilter.dateOut"
                     locale="fr"
@@ -26,15 +27,33 @@
                     error="La fin n'est pas une date"
                     label="Fin"
                     v-if="!realtime"
-                    class="b--limitsize"></b-datetime-picker>
-                <mdl-textfield floating-label="Fin" disabled v-else value=" Maintenant"></mdl-textfield>
-                <mdl-switch v-model="realtime" @input="timefilter.dateOut = new Date()">Temps réel</mdl-switch>
+                    class="b--limitsize"
+                ></b-datetime-picker>
+                <mdl-textfield
+                    floating-label="Fin"
+                    disabled
+                    v-else
+                    value=" Maintenant"
+                ></mdl-textfield>
+                <mdl-switch v-model="realtime" @input="timefilter.dateOut = new Date()"
+                    >Temps réel</mdl-switch
+                >
                 <mdl-switch v-model="isAmount">Sommes en euros</mdl-switch>
             </div>
         </div>
 
-        <b-purchases :start="timefilter.dateIn" :end="timefilter.dateOut" :unit="unit" :realtime="realtime"></b-purchases>
-        <b-division :start="timefilter.dateIn" :end="timefilter.dateOut" :unit="unit" :realtime="realtime"></b-division>
+        <b-purchases
+            :start="timefilter.dateIn"
+            :end="timefilter.dateOut"
+            :unit="unit"
+            :realtime="realtime"
+        ></b-purchases>
+        <b-division
+            :start="timefilter.dateIn"
+            :end="timefilter.dateOut"
+            :unit="unit"
+            :realtime="realtime"
+        ></b-division>
     </div>
 </template>
 

@@ -2,17 +2,26 @@
     <div class="b-health-alert">
         <div class="b-health-alert-content">
             <p class="slider-value">
-                {{ people }} personne<template v-if="people > 1">s</template>
+                {{ people }} personne<template v-if="people > 1"
+                    >s</template
+                >
                 nécessitant de l'aide
             </p>
             <InputSlider v-model="people" />
             <ToggleButton v-model="notAlcohol" off="Malaise/Alcool" on="Autre" />
             <ToggleButton v-model="blood" off="Pas de sang" on="Saignement" />
             <ToggleButton v-model="closedEyes" off="Yeux ouverts" on="Yeux fermés" />
-            <button :disabled="done" @click.prevent="send({ people, notAlcohol, blood, closedEyes, active: true })">
+            <button
+                :disabled="done"
+                @click.prevent="send({ people, notAlcohol, blood, closedEyes, active: true })"
+            >
                 <i class="b-icon">favorite</i>
-                <template v-if="done">Alerte envoyée</template>
-                <template v-else>Envoyer</template>
+                <template v-if="done"
+                    >Alerte envoyée</template
+                >
+                <template v-else
+                    >Envoyer</template
+                >
             </button>
         </div>
     </div>

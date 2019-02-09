@@ -4,13 +4,18 @@
             <h5>Contenu de la formule:</h5>
             <transition name="fade">
                 <div class="b-responsive-table">
-                    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" v-if="displayedPromotion.length > 0">
+                    <table
+                        class="mdl-data-table mdl-js-data-table mdl-shadow--2dp"
+                        v-if="displayedPromotion.length > 0"
+                    >
                         <tbody>
                             <tr v-for="(set, index) in displayedPromotion" :key="index">
                                 <td class="mdl-data-table__cell--non-numeric b-table__little">
                                     1 article parmi :
-                                    <span class="mdl-chip b-chip--margin b-table-inter"
-                                        v-if="displayedPromotion.length > (index + 1)">
+                                    <span
+                                        class="mdl-chip b-chip--margin b-table-inter"
+                                        v-if="displayedPromotion.length > index + 1"
+                                    >
                                         <span class="mdl-chip__text">
                                             +
                                         </span>
@@ -18,25 +23,52 @@
                                 </td>
                                 <td class="mdl-data-table__cell--non-numeric">
                                     <transition-group name="fade">
-                                        <span class="mdl-chip mdl-chip--deletable b--spaces" v-for="(article, indexA) in set.articles" :key="`${index}_${indexA}`">
+                                        <span
+                                            class="mdl-chip mdl-chip--deletable b--spaces"
+                                            v-for="(article, indexA) in set.articles"
+                                            :key="`${index}_${indexA}`"
+                                        >
                                             <span class="mdl-chip__text">{{ article.name }}</span>
-                                            <b-confirm @confirm="removeSelectedArticleFromStep(article, index)" class="b--inline">
-                                                <button class="mdl-chip__action"><i class="material-icons">cancel</i></button>
+                                            <b-confirm
+                                                @confirm="
+                                                    removeSelectedArticleFromStep(article, index)
+                                                "
+                                                class="b--inline"
+                                            >
+                                                <button class="mdl-chip__action">
+                                                    <i class="material-icons">cancel</i>
+                                                </button>
                                             </b-confirm>
                                         </span>
                                     </transition-group>
                                 </td>
                                 <td class="mdl-data-table__cell--non-numeric">
-                                    <mdl-button v-if="chooseArticle && !newStep && chosenIndex === index" mini-fab colored @click.native="chooseIndex(index)"><i class="material-icons">remove</i></mdl-button>
-                                    <mdl-button v-else mini-fab @click.native="chooseIndex(index)"><i class="material-icons">add</i></mdl-button>
+                                    <mdl-button
+                                        v-if="chooseArticle && !newStep && chosenIndex === index"
+                                        mini-fab
+                                        colored
+                                        @click.native="chooseIndex(index)"
+                                        ><i class="material-icons">remove</i></mdl-button
+                                    >
+                                    <mdl-button v-else mini-fab @click.native="chooseIndex(index)"
+                                        ><i class="material-icons">add</i></mdl-button
+                                    >
                                 </td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="3" class="mdl-data-table__cell--non-numeric b--center">
-                                    <mdl-button v-if="chooseArticle && newStep" raised colored @click.native="createStep()"><i class="material-icons">remove</i></mdl-button>
-                                    <mdl-button v-else @click.native="createStep()"><i class="material-icons">add</i></mdl-button>
+                                    <mdl-button
+                                        v-if="chooseArticle && newStep"
+                                        raised
+                                        colored
+                                        @click.native="createStep()"
+                                        ><i class="material-icons">remove</i></mdl-button
+                                    >
+                                    <mdl-button v-else @click.native="createStep()"
+                                        ><i class="material-icons">add</i></mdl-button
+                                    >
                                 </td>
                             </tr>
                         </tfoot>
@@ -46,7 +78,9 @@
             <transition name="fade">
                 <div v-if="displayedPromotion.length == 0">
                     La promotion est vide.<br /><br />
-                    <mdl-button raised colored @click.native="createStep()">Créer un nouveau choix</mdl-button>
+                    <mdl-button raised colored @click.native="createStep()"
+                        >Créer un nouveau choix</mdl-button
+                    >
                 </div>
             </transition>
         </div>
@@ -61,11 +95,17 @@
                 :filter="{ val: this.articleName, field: 'name' }"
                 :sort="{ field: 'name', order: 'ASC' }"
                 :actions="[
-                    { action: 'choose', text: 'Choisir', raised: true, condition: { field: 'id', statement: 'isNotIn', value: alreadyInArticles } },
+                    {
+                        action: 'choose',
+                        text: 'Choisir',
+                        raised: true,
+                        condition: { field: 'id', statement: 'isNotIn', value: alreadyInArticles }
+                    }
                 ]"
                 route="articles"
                 :paging="5"
-                @choose="processArticle">
+                @choose="processArticle"
+            >
             </b-table>
         </div>
     </div>

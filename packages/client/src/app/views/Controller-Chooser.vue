@@ -2,8 +2,19 @@
     <div class="b-controller-chooser">
         <h4 v-if="groups.length > 0">Groupes :</h4>
         <div class="b-controller-chooser__groups" v-if="groups.length > 0">
-            <div class="b-controller-chooser__groups__group" v-for="group in groups" :key="group.id">
-                <input type="checkbox" name="group" class="b--out-of-screen" :id="group.id" v-model="activeGroups" :value="group">
+            <div
+                class="b-controller-chooser__groups__group"
+                v-for="group in groups"
+                :key="group.id"
+            >
+                <input
+                    type="checkbox"
+                    name="group"
+                    class="b--out-of-screen"
+                    :id="group.id"
+                    v-model="activeGroups"
+                    :value="group"
+                />
                 <label :for="group.id">
                     {{ group.name }}
                 </label>

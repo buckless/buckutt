@@ -3,13 +3,21 @@
         <h5>Liste des utilisateurs</h5>
         <div class="b-table-search">
             <i class="material-icons">search</i>
-            <mdl-textfield floating-label="Nom ou Prénom de l'utilisateur" v-model="userName" @input="search(userName)"></mdl-textfield>
+            <mdl-textfield
+                floating-label="Nom ou Prénom de l'utilisateur"
+                v-model="userName"
+                @input="search(userName)"
+            ></mdl-textfield>
             <i class="material-icons" id="usertip">info</i>
-            <mdl-tooltip target="usertip">En dessous de 3 caractères, seule la première page est affichée.</mdl-tooltip>
+            <mdl-tooltip target="usertip"
+                >En dessous de 3 caractères, seule la première page est affichée.</mdl-tooltip
+            >
         </div>
 
         <b-table
-            :headers="[{ title: 'Utilisateur', field: 'fullname', class: 'b--capitalized', object: true }]"
+            :headers="[
+                { title: 'Utilisateur', field: 'fullname', class: 'b--capitalized', object: true }
+            ]"
             :data="displayedUsers"
             :sort="{ field: 'firstname', order: 'ASC' }"
             :actions="[
@@ -20,7 +28,8 @@
             :paging="10"
             @edit="editUser"
             @removeUser="removeUserAndMols"
-            @pagingChanged="pagingChanged">
+            @pagingChanged="pagingChanged"
+        >
         </b-table>
     </div>
 </template>

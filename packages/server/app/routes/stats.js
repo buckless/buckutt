@@ -193,7 +193,10 @@ router.get(
 router.get(
     '/graphs/pointsDivision',
     asyncHandler(async (req, res) => {
-        const graph = await graphPointsDivision(ctx(req), { dateIn: req.query.dateIn, dateOut: req.query.dateOut });
+        const graph = await graphPointsDivision(ctx(req), {
+            dateIn: req.query.dateIn,
+            dateOut: req.query.dateOut
+        });
 
         log.info(logStr('pointsDivisionGraph', req.query));
 

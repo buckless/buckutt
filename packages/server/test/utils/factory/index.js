@@ -14,7 +14,7 @@ module.exports = {
         const documents = await Promise.all(queries.map(query => query(t.context)));
 
         for (let document of documents) {
-            t.context[document.name] = document.data
+            t.context[document.name] = document.data;
         }
     },
 
@@ -27,14 +27,17 @@ module.exports = {
     document(fields) {
         const now = new Date();
 
-        return Object.assign({
-            created_at: now,
-            updated_at: now,
-            deleted_at: null,
-            active: true,
-        }, fields);
+        return Object.assign(
+            {
+                created_at: now,
+                updated_at: now,
+                deleted_at: null,
+                active: true
+            },
+            fields
+        );
     },
 
     db: require('./db'),
     user: require('./user')
-}
+};

@@ -1,15 +1,11 @@
 <template>
-  <div id="app">
-    <header v-if="isRoot">
-      <img 
-        :src="logo" 
-        alt="Cashless" 
-        height="96" 
-        width="96" >
-    </header>
-    <Notification/>
-    <router-view/>
-  </div>
+    <div id="app">
+        <header v-if="isRoot">
+            <img :src="logo" alt="Cashless" height="96" width="96" />
+        </header>
+        <Notification />
+        <router-view />
+    </div>
 </template>
 
 <script>
@@ -52,8 +48,7 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./main.scss">
-</style>
+<style lang="scss" src="./main.scss"></style>
 
 <style lang="scss" scoped>
 @import '@/theme.scss';

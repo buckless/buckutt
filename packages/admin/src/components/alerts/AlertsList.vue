@@ -7,11 +7,16 @@
         </div>
 
         <b-table
-            :headers="[{ title: 'Date d\'envoi', field: 'created_at', type: 'date' }, { title: 'Contenu', field: 'content' }, { title: 'Durée minimale', field: 'minimumViewTime' }]"
+            :headers="[
+                { title: 'Date d\'envoi', field: 'created_at', type: 'date' },
+                { title: 'Contenu', field: 'content' },
+                { title: 'Durée minimale', field: 'minimumViewTime' }
+            ]"
             :data="alerts"
             :filter="{ val: this.content, field: 'content' }"
             :sort="{ field: 'created_at', order: 'DESC' }"
-            :paging="10">
+            :paging="10"
+        >
         </b-table>
     </div>
 </template>

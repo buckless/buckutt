@@ -4,7 +4,9 @@
             <i class="material-icons b-global__icon" :style="{ color }">{{ icon }}</i>
             <div class="b-global__text">
                 <div class="b-global__text-title">{{ title }}</div>
-                <span class="b-global__text-value" v-if="type === 'price'">{{ value | price(true) }}</span>
+                <span class="b-global__text-value" v-if="type === 'price'">{{
+                    value | price(true)
+                }}</span>
                 <span class="b-global__text-value" v-else>{{ value }}</span>
             </div>
         </div>

@@ -1,13 +1,12 @@
 <template>
-    <button
-        class="b-sidebar-validate"
-        :class="statusClasses"
-        @click="validate($event)">
+    <button class="b-sidebar-validate" :class="statusClasses" @click="validate($event)">
         <span class="b-sidebar-validate__amount">
             <currency :value="-1 * basketAmount + reloadAmount" :showPlus="true"></currency>
         </span>
         <i class="b-icon" v-if="basketStatus === 'WAITING'">done_all</i>
-        <i class="b-icon" v-if="basketStatus === 'DOING' || basketStatus === 'WAITING_FOR_BUYER'">query_builder</i>
+        <i class="b-icon" v-if="basketStatus === 'DOING' || basketStatus === 'WAITING_FOR_BUYER'"
+            >query_builder</i
+        >
         <i class="b-icon" v-if="basketStatus === 'ERROR'">error</i>
     </button>
 </template>
