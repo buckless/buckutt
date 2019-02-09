@@ -1,0 +1,48 @@
+{
+  "name": "@buckless/image-server",
+  "version": "0.1.0",
+  "description": "Buckless Image server",
+  "author": "Buckless <contact@buckless.com> https://buckless.com",
+  "contributors": [
+    "Gabriel Juchault <gabriel.juchault@gmail.com>",
+    "Axel Mousset <axel@mousset.me>",
+    "Lucas Soulier <lucas.soulier.utt@gmail.com>"
+  ],
+  "repository": "https://github.com/buckless/image.git",
+  "homepage": "https://buckless.com",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/app",
+    "build:docker": "docker build -t lab.buckless.com:4567/core/image-server .",
+    "dev": "cross-env NODE_ENV=development nodemon src/app.js",
+    "lint": "eslint . --fix",
+    "test": "cross-env NODE_ENV=test nyc --reporter=text-summary --reporter=html  --reporter=lcov mocha",
+    "coverage": "cat ./coverage/lcov.info | coveralls"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "compression": "^1.7.0",
+    "cors": "^2.8.4",
+    "coveralls": "^2.13.1",
+    "express": "^4.15.4",
+    "helmet": "^3.8.1",
+    "lodash.memoize": "^4.1.2",
+    "mkdirp": "^0.5.1",
+    "mocha": "^3.5.0",
+    "nconf": "^0.8.4",
+    "nyc": "^11.1.0",
+    "sharp": "^0.18.2",
+    "validator": "^8.1.0",
+    "winston": "^2.3.1",
+    "winston-tcp-graylog": "^1.0.12"
+  },
+  "devDependencies": {
+    "axios": "^0.16.2",
+    "cross-env": "^5.0.5",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb-base": "^11.3.2",
+    "eslint-plugin-import": "^2.7.0",
+    "nodemon": "^1.11.0",
+    "rimraf": "^2.6.1"
+  }
+}

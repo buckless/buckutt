@@ -1,0 +1,30 @@
+image: lab.buckless.com:4567/core/docker-node-alpine
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - push
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  before_script:
+    - apk add --no-cache git openssh openssl make gcc g++ python fftw-dev
+    - apk add vips-dev --verbose --update-cache --repository https://alpine.global.ssl.fastly.net/alpine/edge/testing/ --repository https://alpine.global.ssl.fastly.net/alpine/edge/main
+  script:
+    - yarn
+    - yarn test
+
+push:
+  stage: push
+  only:
+    - master
+  script:
+    - yarn build:docker
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN https://lab.buckless.com:4567
+    - docker push lab.buckless.com:4567/core/image-server

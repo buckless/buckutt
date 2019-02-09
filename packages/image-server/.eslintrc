@@ -1,0 +1,90 @@
+{
+    "extends": "airbnb-base",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true,
+        "mocha": true
+    },
+    "rules": {
+        // 4 chars instead of 2
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+
+        // Disable last comma
+        "comma-dangle": ["error", "never"],
+
+        // Align object keys
+        "key-spacing": ["error", {
+            "align": "colon"
+        }],
+
+        // Max line length to 120
+        "max-len": ["warn", 120, 4],
+
+        // Disable no-multi-spaces for alignment
+        "no-multi-spaces": ["warn", {
+            "exceptions": {
+                "VariableDeclarator": true,
+                "Property": true,
+                "ImportDeclaration": true,
+                "AssignmentExpression": true
+            }
+        }],
+
+        // Allow hasOwnProperty
+        "no-prototype-builtins": 0,
+
+        // Disable warning about dev dependencies
+        "import/no-extraneous-dependencies": 0,
+
+        // Allow custom requires
+        "import/no-dynamic-require": 0,
+
+        // Allow typeof with variables
+        "valid-typeof": 0,
+
+        // Allow reassign props to params
+        "no-param-reassign": ["error", { "props": false }],
+
+        // Allow console
+        "no-console": 0,
+
+        // Disable consistent return
+        "consistent-return": 0,
+
+        // Disable return in callbacks
+        "array-callback-return": 0,
+
+        // Require allowance
+        "global-require": 0,
+
+        // Dangle underscores allowance
+        "no-underscore-dangle": 0,
+
+        "no-restricted-syntax": [
+          "error",
+          {
+            selector: "ForInStatement",
+            message: "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.",
+          },
+          {
+            selector: "LabeledStatement",
+            message: "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.",
+          },
+          {
+            selector: "WithStatement",
+            message: "`with` is disallowed in strict mode because it makes code impossible to predict and optimize.",
+          },
+        ],
+    }
+}
