@@ -1,0 +1,30 @@
+image: lab.buckless.com:4567/core/docker-node-alpine
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - push
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  before_script:
+    - apk update
+    - apk add --no-cache git openssh openssl make gcc g++ python
+  script:
+    - yarn install --force
+    - yarn build
+
+push:
+  stage: push
+  only:
+    - master
+  script:
+    - yarn build:docker
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN https://lab.buckless.com:4567
+    - docker push lab.buckless.com:4567/core/manager

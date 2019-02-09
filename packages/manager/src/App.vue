@@ -1,0 +1,71 @@
+<template>
+  <div id="app">
+    <header v-if="isRoot">
+      <img 
+        :src="logo" 
+        alt="Cashless" 
+        height="96" 
+        width="96" >
+    </header>
+    <Notification/>
+    <router-view/>
+  </div>
+</template>
+
+<script>
+import { mapActions } from 'vuex';
+import afterUrl from '@/lib/redirectAfterLogin';
+import Notification from '@/components/Notification';
+
+export default {
+    name: 'App',
+
+    components: {
+        Notification
+    },
+
+    data: () => ({
+        isRoot: false,
+        logo: null
+    }),
+
+    async mounted() {
+        const isLoggedIn = await this.autologin();
+
+        if (isLoggedIn && this.$route.meta.guest) {
+            this.$router.push(afterUrl());
+        }
+
+        this.isRoot = window.frameElement === null;
+
+        const logoUrl = process.env.BASE_URL + 'img/icons/android-chrome-192x192.png';
+        const logo = new Image();
+        logo.src = logoUrl;
+        logo.onload = () => (this.logo = logoUrl);
+    },
+
+    methods: {
+        ...mapActions({
+            autologin: 'user/autologin'
+        })
+    }
+};
+</script>
+
+<style lang="scss" src="./main.scss">
+</style>
+
+<style lang="scss" scoped>
+@import '@/theme.scss';
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $cardBackground;
+}
+
+header > img:not([src]) {
+    display: none;
+}
+</style>

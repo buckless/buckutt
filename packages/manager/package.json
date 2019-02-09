@@ -1,0 +1,96 @@
+{
+  "name": "manager",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "static dist --host-address 0.0.0.0 --port 8083 --gzip --spa --cache 86400",
+    "build": "vue-cli-service build",
+    "build:docker": "docker build -t lab.buckless.com:4567/core/manager .",
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service serve",
+    "dev:local": "cross-env DEV_PROXY=1 vue-cli-service serve",
+    "test:e2e": "vue-cli-service test:e2e"
+  },
+  "dependencies": {
+    "@material/button": "^0.38.1",
+    "@material/checkbox": "^0.38.0",
+    "@material/elevation": "^0.38.0",
+    "@material/snackbar": "^0.38.0",
+    "debounce": "^1.2.0",
+    "jspdf": "^1.4.1",
+    "jspdf-autotable": "^3.0.0-alpha.3",
+    "node-static": "gjuchault/node-static#patch-1",
+    "normalize.css": "^8.0.0",
+    "pdfmake": "^0.1.37",
+    "register-service-worker": "^1.5.2",
+    "uuid": "^3.3.2",
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "vuex-router-sync": "^5.0.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.1",
+    "@vue/cli-plugin-e2e-cypress": "^3.0.1",
+    "@vue/cli-plugin-eslint": "^3.0.1",
+    "@vue/cli-plugin-pwa": "^3.0.1",
+    "@vue/cli-service": "^3.0.1",
+    "@vue/eslint-config-prettier": "^3.0.1",
+    "cross-env": "^5.2.0",
+    "lint-staged": "^7.2.2",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/prettier"
+    ],
+    "rules": {
+      "no-console": 0
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "globals": {
+      "config": true,
+      "cordova": true
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 4
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  },
+  "optionalDependencies": {
+    "cypress": "3.1.0"
+  }
+}
