@@ -33,17 +33,6 @@ module.exports = {
         }
     },
 
-    chainWebpack: config => {
-        config.module
-            .rule('js')
-            .use('babel-loader')
-            .loader('babel-loader')
-            .tap((options = {}) => {
-                options.rootMode = 'upward';
-                return options;
-            });
-    },
-
     devServer: {
         port: 8083,
 

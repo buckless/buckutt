@@ -16,7 +16,8 @@
     "build": "vue-cli-service build",
     "build:docker": "docker build -t lab.buckless.com:4567/core/admin .",
     "lint": "vue-cli-service lint",
-    "dev": "vue-cli-service serve"
+    "dev": "vue-cli-service serve",
+    "dev:calm": "vue-cli-service calm-serve"
   },
   "dependencies": {
     "@buckless/datetime-picker": "^0.2.2",
@@ -46,6 +47,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "vue-cli-plugin-calm-serve": "*",
     "@vue/cli-plugin-babel": "^3.0.1",
     "@vue/cli-plugin-eslint": "^3.0.1",
     "@vue/cli-plugin-pwa": "^3.0.1",

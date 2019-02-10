@@ -7,7 +7,7 @@
 #   api.clientname.inst.buckless.com \
 #   images.clientname.inst.buckless.com
 
-echo "127.0.0.1 docker_localhost" >> /etc/hosts
+echo "192.168.0.24 host.docker.internal" >> /etc/hosts
 
 echo "Running nginx"
 exec nginx -g "daemon off;"

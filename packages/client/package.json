@@ -18,6 +18,7 @@
     "dev:browser": "cross-env TARGET=browser NODE_ENV=development vue-cli-service serve",
     "dev:electron": "cross-env TARGET=electron NODE_ENV=development vue-cli-service serve",
     "dev:android": "cross-env TARGET=cordova PLATFORM=android NODE_ENV=development vue-cli-service build --watch --mode development",
+    "dev:calm": "NODE_ENV=development TARGET=browser vue-cli-service calm-serve",
     "browser": "static dist/browser --port 8080",
     "electron": "electron .",
     "android": "cd cordova && cordova run android --emulator",
@@ -51,7 +52,7 @@
     "readline": "^1.3.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vue-virtual-scroller": "^1.0.0-beta.4",
+    "vue-virtual-scroller": "^1.0.0-beta.5",
     "vuex": "^3.0.1",
     "vuex-persist": "^2.0.0"
   },
@@ -80,6 +81,7 @@
     "postcss-url": "^8.0.0",
     "sass-loader": "^7.0.1",
     "shelljs": "^0.8.2",
+    "vue-cli-plugin-calm-serve": "*",
     "vue-template-compiler": "^2.5.17"
   },
   "optionalDependencies": {

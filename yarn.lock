@@ -1226,7 +1226,7 @@
     webpack ">=4 < 4.29"
     workbox-webpack-plugin "^3.6.3"
 
-"@vue/cli-service@^3.0.0-rc.3", "@vue/cli-service@^3.0.1":
+"@vue/cli-service@^3.0.0-rc.3", "@vue/cli-service@^3.0.1", "@vue/cli-service@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@vue/cli-service/-/cli-service-3.4.0.tgz#d2160ee4cf9de8dc4e9d780ccd61cc15862f2950"
   integrity sha512-AtLiin5Jlw0ULKXJtBhUaykz0VzDgYq2RCf7nxfB7Vsi5fTbJyOVeWYe9KsnsM6VTRBWRUI8NzPPMYxV2uxtQA==
@@ -4659,6 +4659,11 @@ dep-graph@1.1.0:
   dependencies:
     underscore "1.2.1"
 
+depd@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/depd/-/depd-2.0.0.tgz#b696163cc757560d09cf22cc8fad1571b79e76df"
+  integrity sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==
+
 depd@~1.1.0, depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
@@ -6865,11 +6870,12 @@ helmet-csp@2.7.1:
     dasherize "2.0.0"
     platform "1.3.5"
 
-helmet@^3.8.1:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.15.0.tgz#fe0bb80e05d9eec589e3cbecaf5384409a3a64c9"
-  integrity sha512-j9JjtAnWJj09lqe/PEICrhuDaX30TeokXJ9tW6ZPhVH0+LMoihDeJ58CdWeTGzM66p6EiIODmgAaWfdeIWI4Gg==
+helmet@^3.15.1:
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.15.1.tgz#2c80d1a59138b6f23929605afca4b1c88b3298ec"
+  integrity sha512-hgoNe/sjKlKNvJ3g9Gz149H14BjMMWOCmW/DTXl7IfyKGtIK37GePwZrHNfr4aPXdKVyXcTj26RgRFbPKDy9lw==
   dependencies:
+    depd "2.0.0"
     dns-prefetch-control "0.1.0"
     dont-sniff-mimetype "1.0.0"
     expect-ct "0.1.1"
@@ -10630,10 +10636,10 @@ pdfkit@^0.9.0:
     png-js ">=0.1.0"
     saslprep "1.0.1"
 
-pdfmake@^0.1.37:
-  version "0.1.50"
-  resolved "https://registry.yarnpkg.com/pdfmake/-/pdfmake-0.1.50.tgz#f01eb888eb28e9b6be5d4719271d27d393514428"
-  integrity sha512-L+xQfurGVOBB7FbbLU/Ptbklm5+iW90amV+w9ABGZ5Ik1+KeTihx/Np3Aq6HrtvV5nZVB8t5QV2JNRO1fuglAg==
+pdfmake@^0.1.51:
+  version "0.1.51"
+  resolved "https://registry.yarnpkg.com/pdfmake/-/pdfmake-0.1.51.tgz#adf99a0ba17c3448210ea41a443d9c871d914e52"
+  integrity sha512-fA7u93fSy+OktQyFPowI8vvYbA8YFMKywJlCBNhnrfk4iMO61aNyhE/qcEiwGDfTAvoUz7BMC1yqWzEDgLMmvQ==
   dependencies:
     iconv-lite "^0.4.24"
     linebreak "^0.3.0"
@@ -14517,10 +14523,10 @@ vue-router@^3.0.1:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.2.tgz#dedc67afe6c4e2bc25682c8b1c2a8c0d7c7e56be"
   integrity sha512-opKtsxjp9eOcFWdp6xLQPLmRGgfM932Tl56U9chYTnoWqKxQ8M20N7AkdEbM5beUh6wICoFGYugAX9vQjyJLFg==
 
-vue-slider-component@^2.7.2:
-  version "2.8.6"
-  resolved "https://registry.yarnpkg.com/vue-slider-component/-/vue-slider-component-2.8.6.tgz#6679e0df9100f77fd7acde114d8edfcc73c1617f"
-  integrity sha512-8VLLeIyKxP+L3wWZbz2EcvNK7KSjxYyNqj/446eL30yH6ZqPukPRrIjANzPWMBYsNvY2E0higRF/XufCq4yPPA==
+vue-slider-component@^2.8.7:
+  version "2.8.7"
+  resolved "https://registry.yarnpkg.com/vue-slider-component/-/vue-slider-component-2.8.7.tgz#4aa5cc06ca161f4331f5309b42fbcfd4ac74add6"
+  integrity sha512-+tjBrRV8ZBzGB60syf4TFhIxAobaio6azy99Ld6Xb2P94GJaGrcWrfBOrB1tEHB9uR7uEby/lg47bcv1b2IpQA==
 
 vue-style-loader@^4.1.0:
   version "4.1.2"
@@ -14543,10 +14549,10 @@ vue-template-es2015-compiler@^1.8.2:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.8.2.tgz#dd73e80ba58bb65dd7a8aa2aeef6089cf6116f2a"
   integrity sha512-cliV19VHLJqFUYbz/XeWXe5CO6guzwd0yrrqqp0bmjlMP3ZZULY7fu8RTC4+3lmHwo6ESVDHFDsvjB15hcR5IA==
 
-vue-virtual-scroller@^1.0.0-beta.4:
-  version "1.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/vue-virtual-scroller/-/vue-virtual-scroller-1.0.0-beta.4.tgz#a86068c83949eebf43f87c85134b37da366f2390"
-  integrity sha512-ZS4iKucfYb5JSH/Zr1LzQv8X+EEHY6eqJuWr7x7P8itKTqVAdNQk9YL/I5IBn1Xw3k2g9z1Sqc3di2O9YpWd2Q==
+vue-virtual-scroller@^1.0.0-beta.5:
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/vue-virtual-scroller/-/vue-virtual-scroller-1.0.0-beta.5.tgz#7d2e34d84f85ccbdd18c845a865f324243c2e6d9"
+  integrity sha512-5JOfVXUKzIqMSO2DuC7hpMpylWoC5A2nKcoz6LVVvcfrEAobHUQYXQDgyr1jdN8Y+jQpsh0BFiSr+MEQ57HzjA==
   dependencies:
     scrollparent "^2.0.1"
     vue-observe-visibility "^0.4.3"
@@ -14715,7 +14721,7 @@ webpack-sources@^1.1.0, webpack-sources@^1.3.0:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-"webpack@>=4 < 4.29":
+webpack@4.28.4, "webpack@>=4 < 4.29":
   version "4.28.4"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.28.4.tgz#1ddae6c89887d7efb752adf0c3cd32b9b07eacd0"
   integrity sha512-NxjD61WsK/a3JIdwWjtIpimmvE6UrRi3yG54/74Hk9rwNj5FPkA4DJCf1z4ByDWLkvZhTZE+P3C/eh6UD5lDcw==

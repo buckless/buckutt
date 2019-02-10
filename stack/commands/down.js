@@ -3,11 +3,9 @@ const path = require('path');
 const { promisify } = require('util');
 const isRoot = require('is-root');
 const hostile = require('hostile');
-const { ip } = require('address');
-const execa = require('execa');
 const log = require('../utils/log');
 
-const set = promisify(hostile.set);
+const remove = promisify(hostile.remove);
 
 module.exports = async () => {
     if (!isRoot()) {
@@ -23,26 +21,19 @@ module.exports = async () => {
         'images.dev.inst.buckless.com'
     ].join(' ');
 
-    await set('127.0.0.1', hosts);
-    log('Added *.inst.buckless.com to /etc/hosts');
+    await remove('127.0.0.1', hosts);
+    log('Removed *.inst.buckless.com from /etc/hosts');
 
     const reverseProxyEntryPoint = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh');
     const lines = (await fs.readFile(reverseProxyEntryPoint)).toString()
         .split('\n')
         .map(line => {
             return (line.match(/host\.docker\.internal" >> \/etc\/hosts$/))
-                ? `echo "${ip()} host.docker.internal" >> /etc/hosts`
+                ? `echo "127.0.0.1 host.docker.internal" >> /etc/hosts`
                 : line;
         })
         .join('\n');
 
     await fs.writeFile(reverseProxyEntryPoint, lines);
-    log(`Added local ip (${ip()}) to reverse_proxy's /etc/hosts`);
-
-    const dockerComposeDevYml = path.join(__dirname, '../../services/docker-compose.dev.yml');
-    await execa('docker-compose', ['-f', dockerComposeDevYml, 'build']);
-    log('Built services docker-compose');
-
-    execa('docker-compose', ['-f', dockerComposeDevYml, 'up', '-d'], { detached: true });
-    log('Starting services docker-compose...');
+    log(`Restored default ip (127.0.0.1) to reverse_proxy's /etc/hosts`);
 };
