@@ -17,7 +17,8 @@
     "packages/image-server",
     "packages/manager",
     "packages/masterapp",
-    "packages/server"
+    "packages/server",
+    "packages/vue-cli-plugin-calm-serve"
   ],
   "scripts": {
     "admin": "cd packages/admin && yarn run",
@@ -26,6 +27,7 @@
     "manager": "cd packages/manager && yarn run",
     "master-app": "cd packages/master-app && yarn run",
     "server": "cd packages/server && yarn run",
+    "stack": "node stack",
     "lint": "eslint --ext .js,.vue --fix ."
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "buckless-server",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "buckless-server",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
@@ -8,9 +8,8 @@
     "Axel Mousset <axel@buckless.com>",
     "Lucas Soulier <lucas@buckless.com>"
   ],
-  "repository": "https://lab.buckless.com/core/server.git",
+  "repository": "https://lab.buckless.com/buckless/buckless.git",
   "homepage": "https://buckless.com",
-  "private": true,
   "scripts": {
     "start": "node app",
     "pretest": "cd node_modules && ln -nsf ../app @",
