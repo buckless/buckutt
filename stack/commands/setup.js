@@ -26,8 +26,8 @@ module.exports = async () => {
     await set('127.0.0.1', hosts);
     log('Added *.inst.buckless.com to /etc/hosts');
 
-    const reverseProxyEntryPoint = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh');
-    const lines = (await fs.readFile(reverseProxyEntryPoint)).toString()
+    const reverseProxyEntryPointExample = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh.example');
+    const lines = (await fs.readFile(reverseProxyEntryPointExample)).toString()
         .split('\n')
         .map(line => {
             return (line.match(/host\.docker\.internal" >> \/etc\/hosts$/))
@@ -35,6 +35,8 @@ module.exports = async () => {
                 : line;
         })
         .join('\n');
+
+    const reverseProxyEntryPoint = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh');
 
     await fs.writeFile(reverseProxyEntryPoint, lines);
     log(`Added local ip (${ip()}) to reverse_proxy's /etc/hosts`);
