@@ -15,6 +15,8 @@ module.exports = async () => {
         process.exit(1);
     }
 
+    log('Adding *.inst.buckless.com to /etc/hosts...');
+
     const hosts = [
         'dev.inst.buckless.com',
         'admin.dev.inst.buckless.com',
@@ -23,8 +25,11 @@ module.exports = async () => {
         'images.dev.inst.buckless.com'
     ].join(' ');
 
+    log.end(' Done');
+
     await set('127.0.0.1', hosts);
-    log('Added *.inst.buckless.com to /etc/hosts');
+
+    log(`Adding local ip (${ip()}) to reversecz_proxy's /etc/hosts...`);
 
     const reverseProxyEntryPointExample = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh.example');
     const lines = (await fs.readFile(reverseProxyEntryPointExample)).toString()
@@ -39,12 +44,19 @@ module.exports = async () => {
     const reverseProxyEntryPoint = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh');
 
     await fs.writeFile(reverseProxyEntryPoint, lines);
-    log(`Added local ip (${ip()}) to reverse_proxy's /etc/hosts`);
+
+    log.end(' Done');
+
+    log('Building services...');
 
     const dockerComposeDevYml = path.join(__dirname, '../../services/docker-compose.dev.yml');
     await execa('docker-compose', ['-f', dockerComposeDevYml, 'build']);
-    log('Built services docker-compose');
+
+    log.end(' Done');
+
+    log('Starting docker-compose services...');
 
     execa('docker-compose', ['-f', dockerComposeDevYml, 'up', '-d'], { detached: true });
-    log('Starting services docker-compose...');
+
+    log.end(' Done');
 };
