@@ -42,3 +42,6 @@ services/volumes/cache/data
 
 # Postgres
 services/volumes/database/data
+
+# Nginx
+services/images/reverse_proxy/docker-entrypoint.sh
