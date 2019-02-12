@@ -1,7 +1,7 @@
 {
-  "name": "buckless-masterapp",
+  "name": "masterapp",
   "version": "1.0.0",
-  "description": "buckless-masterapp",
+  "description": "masterapp",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
     "Gabriel Juchault <gabriel@buckless.com>",
@@ -19,6 +19,7 @@
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\""
   },
   "dependencies": {
+    "config": "*",
     "@buckless/offline-queue": "^1.0.3",
     "@buckless/signed-data": "^2.2.0",
     "axios": "^0.18.0",

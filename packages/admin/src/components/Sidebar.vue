@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div class="b-sidebar" v-show="logged">
-            <h1>{{ barName }}</h1>
+            <h1>{{ name }}</h1>
             <ul>
                 <li>
                     <router-link
@@ -137,15 +137,16 @@
 </template>
 
 <script>
+import { name } from 'config/admin'
 import { mapGetters } from 'vuex';
 
 export default {
+    data: () => ({
+        name
+    }),
+
     computed: {
         ...mapGetters(['logged', 'event']),
-
-        barName() {
-            return process.env.VUE_APP_NAME;
-        }
     }
 };
 </script>

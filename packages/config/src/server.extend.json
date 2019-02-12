@@ -1,0 +1,9 @@
+{
+    "merchantName": "eventOrCompany.name",
+    "app.secret": "security.secret",
+    "mailer": "mail",
+    "urls.managerUrl": "urls.manager",
+    "askpin.from": "eventOrCompany.sender",
+    "assigner": "assigner",
+    "provider": "reload"
+}

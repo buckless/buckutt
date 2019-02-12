@@ -1,12 +1,13 @@
 const path = require('path');
 const crypto = require('crypto');
+const { colors } = require('config/manager');
 
 const theme = {
-    theme: process.env.VUE_APP_COLORS_THEME || '#1abc9c',
-    foregroundTheme: process.env.VUE_APP_COLORS_FOREGROUND_THEME || 'rgba(0,0,0,.9)',
-    background: process.env.VUE_APP_COLORS_BACKGROUND || '#fafafa',
-    cardBackground: process.env.VUE_APP_COLORS_CARD_BACKGROUND || '#fff',
-    foreground: process.env.VUE_APP_COLORS_FOREGROUND || 'rgba(0,0,0,.9)'
+    theme: colors.theme || '#1abc9c',
+    foregroundTheme: colors.foregroundTheme || 'rgba(0,0,0,.9)',
+    background: colors.background || '#fafafa',
+    cardBackground: colors.cardBackground || '#fff',
+    foreground: colors.foreground || 'rgba(0,0,0,.9)'
 };
 
 const sassTheme = Object.keys(theme)

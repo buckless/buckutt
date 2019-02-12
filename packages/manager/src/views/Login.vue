@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { allowRegistration } from 'config/manager';
 import { mapActions, mapGetters } from 'vuex';
 import afterUrl from '@/lib/redirectAfterLogin';
 import TextInput from '@/components/TextInput';
@@ -47,7 +48,7 @@ export default {
     },
 
     data: () => ({
-        showRegistration: process.env.VUE_APP_ALLOW_REGISTRATION === '1',
+        showRegistration: allowRegistration === '1',
         mail: '',
         pin: ''
     }),

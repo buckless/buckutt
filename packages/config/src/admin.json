@@ -1,0 +1,6 @@
+{
+    "name": "eventOrCompany.name",
+    "api": "urls.api",
+    "images": "urls.images",
+    "defaultMol": "security.defaultMol"
+}

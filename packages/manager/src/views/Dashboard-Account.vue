@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { accountShowQrcode } from 'config/manager';
 import { mapActions, mapGetters } from 'vuex';
 import Card from '@/components/Card';
 import List from '@/components/List';
@@ -43,11 +44,9 @@ export default {
         Button
     },
 
-    data: function() {
-        return {
-            showQrCode: process.env.VUE_APP_ACCOUNT_SHOW_QRCODE === '1' && this.qrcode
-        };
-    },
+    data: () => ({
+        showQrCode: accountShowQrcode === '1' && this.qrcode
+    }),
 
     computed: {
         qrcode() {

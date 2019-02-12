@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { invoice } from 'config/manager';
 import PDF from '@/lib/pdf';
 import { mapActions, mapGetters } from 'vuex';
 import { formatDate } from '@/lib/date';
@@ -102,12 +103,12 @@ export default {
             doc.addText('Émetteur', x(0), y(18));
 
             doc.setFontSize(12);
-            doc.addText(process.env.VUE_APP_INVOICE_SENDER_NAME, x(0), y(25));
-            doc.addText(process.env.VUE_APP_INVOICE_SENDER_ADDRESS, x(0), y(30));
-            doc.addText(process.env.VUE_APP_INVOICE_SENDER_POSTAL, x(0), y(35));
-            doc.addText(process.env.VUE_APP_INVOICE_SENDER_CITY, x(0), y(40));
-            doc.addText(process.env.VUE_APP_INVOICE_SENDER_COUNTRY, x(0), y(45));
-            doc.addText(process.env.VUE_APP_INVOICE_SENDER_PHONE, x(0), y(50));
+            doc.addText(invoice.senderName, x(0), y(25));
+            doc.addText(invoice.senderAddress, x(0), y(30));
+            doc.addText(invoice.senderPostal, x(0), y(35));
+            doc.addText(invoice.senderCity, x(0), y(40));
+            doc.addText(invoice.senderCountry, x(0), y(45));
+            doc.addText(invoice.senderPhone, x(0), y(50));
 
             // reciever
             doc.setFontSize(14);

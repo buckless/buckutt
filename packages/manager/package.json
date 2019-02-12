@@ -1,7 +1,7 @@
 {
-  "name": "buckless-manager",
+  "name": "manager",
   "version": "1.0.0",
-  "description": "buckless-manager",
+  "description": "manager",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
     "Gabriel Juchault <gabriel@buckless.com>",
@@ -22,6 +22,7 @@
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
+    "config": "*",
     "@material/button": "^0.44.0",
     "@material/checkbox": "^0.44.0",
     "@material/elevation": "^0.44.0",

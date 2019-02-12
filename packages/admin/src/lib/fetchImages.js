@@ -1,3 +1,4 @@
+import { images } from 'config/admin';
 import memoize from 'lodash.memoize';
 
 const headers = {
@@ -18,7 +19,7 @@ export const getImage = memoize(id => {
         method: 'GET'
     });
 
-    return fetch(`${process.env.VUE_APP_IMAGES}/image/${id}?width=100&height=100`, opts).then(
+    return fetch(`${images}/image/${id}?width=100&height=100`, opts).then(
         res => {
             if (res.status !== 200) {
                 return Promise.reject(res);
@@ -42,7 +43,7 @@ export const postImage = (id, image) => {
         body: JSON.stringify({ image })
     });
 
-    return fetch(`${process.env.VUE_APP_IMAGES}/image/${id}`, opts).then(res => {
+    return fetch(`${images}/image/${id}`, opts).then(res => {
         if (res.status !== 200) {
             return Promise.reject(res);
         }

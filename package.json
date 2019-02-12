@@ -18,6 +18,7 @@
     "packages/manager",
     "packages/masterapp",
     "packages/server",
+    "packages/config",
     "packages/vue-cli-plugin-calm-serve"
   ],
   "scripts": {

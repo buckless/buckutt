@@ -1,7 +1,7 @@
 {
-  "name": "buckless-client",
+  "name": "client",
   "version": "1.0.0",
-  "description": "buckless-client",
+  "description": "client",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
     "Gabriel Juchault <gabriel@buckless.com>",

@@ -1,0 +1,33 @@
+{
+    "name": "eventOrCompany.name",
+    "contactMail": "eventOrCompany.contact",
+    "defaultMol": "security.defaultMol",
+    "sentry": "urls.sentry.manager",
+    "allowRegistration": "manager.allowRegistration",
+    "history": {
+        "showYears": "manager.historyShowYears",
+        "showType": "manager.historyShowType",
+        "showOperator": "manager.historyShowOperator",
+        "showInvoice": "manager.historyShowInvoice"
+    },
+    "menu": {
+        "showTicket": "manager.menuShowTicket",
+        "showCard": "manager.menuShowCard"
+    },
+    "accountShowQrcode": "manager.accountShowQrcode",
+    "invoice": {
+        "senderName": "eventOrCompany.name",
+        "senderAddress": "eventOrCompany.address",
+        "senderPostal": "eventOrCompany.postal",
+        "senderCity": "eventOrCompany.city",
+        "senderCountry": "eventOrCompany.country",
+        "senderPhone": "eventOrCompany.phone"
+    },
+    "colors": {
+        "theme": "manager.colorsTheme",
+        "foregroundTheme": "manager.colorsForegroundTheme",
+        "background": "manager.colorsBackground",
+        "cardBackground": "manager.colorsCardBackground",
+        "foreground": "manager.colorsForeground"
+    }
+}

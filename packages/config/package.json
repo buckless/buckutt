@@ -1,0 +1,21 @@
+{
+  "name": "config",
+  "version": "1.0.0",
+  "description": "config",
+  "author": "Buckless <contact@buckless.com> https://buckless.com",
+  "contributors": [
+    "Gabriel Juchault <gabriel@buckless.com>",
+    "Axel Mousset <axel@buckless.com>",
+    "Lucas Soulier <lucas@buckless.com>"
+  ],
+  "repository": "https://lab.buckless.com/buckless/buckless.git",
+  "homepage": "https://buckless.com",
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "dependencies": {
+    "fs-extra": "^7.0.1",
+    "lodash.get": "^4.4.2",
+    "lodash.merge": "^4.6.1",
+    "lodash.set": "^4.3.2"
+  }
+}

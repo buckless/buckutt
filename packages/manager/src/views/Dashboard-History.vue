@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { history } from 'config/manager';
 import { mapGetters } from 'vuex';
 import Table from '@/components/Table';
 import Button from '@/components/Button';
@@ -33,11 +34,11 @@ export default {
             ]
         };
 
-        if (process.env.VUE_APP_HISTORY_SHOW_TYPE === '1') {
+        if (history.showType === '1') {
             data.headers.splice(1, 0, { title: 'Type', field: 'type' });
         }
 
-        if (process.env.VUE_APP_HISTORY_SHOW_OPERATOR === '1') {
+        if (history.showOperator === '1') {
             data.headers.splice(-1, 0, {
                 title: 'Opérateur',
                 field: 'operator',
@@ -45,7 +46,7 @@ export default {
             });
         }
 
-        data.showInvoice = process.env.VUE_APP_HISTORY_SHOW_INVOICE === '1';
+        data.showInvoice = history.showInvoice === '1';
 
         return data;
     },

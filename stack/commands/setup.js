@@ -6,6 +6,7 @@ const hostile = require('hostile');
 const { ip } = require('address');
 const execa = require('execa');
 const log = require('../utils/log');
+const config = require('../../packages/config/src/build');
 
 const set = promisify(hostile.set);
 
@@ -31,17 +32,24 @@ module.exports = async () => {
 
     log(`Adding local ip (${ip()}) to reversecz_proxy's /etc/hosts...`);
 
-    const reverseProxyEntryPointExample = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh.example');
-    const lines = (await fs.readFile(reverseProxyEntryPointExample)).toString()
+    const reverseProxyEntryPointExample = path.join(
+        __dirname,
+        '../../services/images/reverse_proxy/docker-entrypoint.sh.example'
+    );
+    const lines = (await fs.readFile(reverseProxyEntryPointExample))
+        .toString()
         .split('\n')
         .map(line => {
-            return (line.match(/host\.docker\.internal" >> \/etc\/hosts$/))
+            return line.match(/host\.docker\.internal" >> \/etc\/hosts$/)
                 ? `echo "${ip()} host.docker.internal" >> /etc/hosts`
                 : line;
         })
         .join('\n');
 
-    const reverseProxyEntryPoint = path.join(__dirname, '../../services/images/reverse_proxy/docker-entrypoint.sh');
+    const reverseProxyEntryPoint = path.join(
+        __dirname,
+        '../../services/images/reverse_proxy/docker-entrypoint.sh'
+    );
 
     await fs.writeFile(reverseProxyEntryPoint, lines);
 
@@ -59,4 +67,11 @@ module.exports = async () => {
     execa('docker-compose', ['-f', dockerComposeDevYml, 'up', '-d'], { detached: true });
 
     log.end(' Done');
+
+    log('Starting mapping config...');
+
+    await config();
+
+    log.end(' Done');
+
 };

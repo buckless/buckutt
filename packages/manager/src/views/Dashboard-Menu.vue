@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { menu } from 'config/manager';
 import { mapGetters } from 'vuex';
 import Card from '@/components/Card';
 import List from '@/components/List';
@@ -53,8 +54,8 @@ export default {
     },
 
     data: () => ({
-        showTicket: process.env.VUE_APP_MENU_SHOW_TICKET === '1',
-        showCard: process.env.VUE_APP_MENU_SHOW_CARD === '1'
+        showTicket: menu.showTicket === '1',
+        showCard: menu.showCard === '1'
     }),
 
     computed: {

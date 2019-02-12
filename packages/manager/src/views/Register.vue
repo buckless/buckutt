@@ -6,11 +6,13 @@
 </template>
 
 <script>
+import { allowRegistration } from 'config/manager';
+
 export default {
     name: 'Register',
 
     mounted() {
-        if (process.env.VUE_APP_ALLOW_REGISTRATION !== '1') {
+        if (allowRegistrations !== '1') {
             this.$router.push('/');
         }
     }

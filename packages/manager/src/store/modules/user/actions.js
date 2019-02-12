@@ -1,3 +1,5 @@
+import { defaultMol } from 'config/manager';
+
 export const login = async (ctx, { mail, pin }) => {
     await ctx.dispatch('working/set', true, { root: true });
 
@@ -6,7 +8,7 @@ export const login = async (ctx, { mail, pin }) => {
         {
             url: 'login',
             body: {
-                meanOfLogin: process.env.VUE_APP_DEFAULTMOL,
+                meanOfLogin: defaultMol,
                 data: mail,
                 pin
             }

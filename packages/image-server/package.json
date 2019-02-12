@@ -1,7 +1,7 @@
 {
-  "name": "buckless-image-server",
+  "name": "image-server",
   "version": "1.0.0",
-  "description": "buckless-image-server",
+  "description": "image-server",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
     "Gabriel Juchault <gabriel@buckless.com>",
