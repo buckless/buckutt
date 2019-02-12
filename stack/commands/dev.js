@@ -11,6 +11,14 @@ module.exports = async () => {
         server: 'dev'
     };
 
+    const colors = {
+        admin: 'green',
+        client: 'green',
+        'image-server': 'yellow',
+        manager: 'green',
+        server: 'blue'
+    };
+
     for (let [ name, cmd ] of Object.entries(packages)) {
         const packagePath = path.join(__dirname, '../../packages/', name);
 
@@ -28,13 +36,14 @@ module.exports = async () => {
 
         child.stdout.on('data', (data) => {
             const line = data.toString().trim();
+            const chlk = chalk[colors[name]] || chalk.green;
 
             if (line.match(/^[\w-]+ - build$/)) {
-                console.log(`[${chalk.green(name)}] webpack build succeed`);
+                console.log(`[${chlk(name)}] webpack build succeed`);
             } else if (line.match(/^[\w-]+ - start$/)) {
-                console.log(`[${chalk.green(name)}] webpack build started`);
+                console.log(`[${chlk(name)}] webpack build started`);
             } else {
-                console.log(`[${chalk.green(name)}] ${line}`);
+                console.log(`[${chlk(name)}] ${line}`);
             }
         });
     }
