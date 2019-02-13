@@ -16,7 +16,6 @@
                     <li><mark class="byte credit">ff</mark> Crédit</li>
                     <li><mark class="byte version">ff</mark> Version</li>
                     <li><mark class="byte options">ff</mark> Options + catering</li>
-                    <li><mark class="byte signature">ff</mark> Signature</li>
                 </ul>
             </div>
         </template>
@@ -50,10 +49,6 @@ const bytesOrder = [
     {
         type: 'options',
         length: optionsByteNumber
-    },
-    {
-        type: 'signature',
-        length: 4
     }
 ];
 
@@ -133,10 +128,5 @@ mark.version {
 
 mark.options {
     background-color: #2980b9;
-}
-
-mark.signature {
-    background-color: #8e44ad;
-    color: #fff;
 }
 </style>

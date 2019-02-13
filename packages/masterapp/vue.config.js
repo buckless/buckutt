@@ -8,10 +8,14 @@ const env = process.env.NODE_ENV;
 
 module.exports = {
     outputDir: `./dist/${target}`,
+    publicPath: target === 'cordova' ? '/android_asset/www/' : '/',
+    css: {
+        loaderOptions: {
+            postcss: require('../../postcss.config')
+        }
+    },
 
     configureWebpack: config => {
-        config.output.publicPath = target === 'cordova' ? '/android_asset/www/' : '/';
-
         config.watch = env === 'development' && target === 'cordova';
 
         config.module.rules.push({

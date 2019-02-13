@@ -19,14 +19,13 @@
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\""
   },
   "dependencies": {
-    "config": "*",
     "@buckless/offline-queue": "^1.0.3",
-    "@buckless/signed-data": "^2.2.0",
     "axios": "^0.18.0",
+    "config": "*",
     "lodash.chunk": "^4.2.0",
     "moment": "^2.22.2",
     "normalize.css": "^8.0.0",
-    "rusha": "^0.8.13",
+    "papaparse": "^4.6.3",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vue-slider-component": "^2.8.7",

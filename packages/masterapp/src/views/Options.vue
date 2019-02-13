@@ -74,7 +74,6 @@
             successText="Options écrites"
             v-if="writeModal"
             key="validate"
-            disableSignCheck
             disableLockCheck
             shouldPinUnlock
         />

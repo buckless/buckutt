@@ -31,6 +31,6 @@
         <variable name="ANDROID_SUPPORT_VERSION" value="25.+" />
     </plugin>
     <plugin name="phonegap-plugin-media-stream" spec="^1.2.1" />
-    <plugin name="cordova-plugin-mifare-ultralight" spec="https://github.com/lonk/cordova-plugin-mifare-ultralight#fix-pin-length" />
+    <plugin name="cordova-plugin-mifare-ultralight" spec="~1.0.4" />
     <engine name="android" spec="^6.4.0" />
 </widget>

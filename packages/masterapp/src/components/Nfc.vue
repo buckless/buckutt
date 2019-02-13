@@ -52,7 +52,6 @@ export default {
     props: {
         mode: String,
         successText: String,
-        disableSignCheck: Boolean,
         disableLockCheck: Boolean,
         disablePinCheck: Boolean,
         shouldPinLock: { type: Boolean, default: false },
@@ -152,8 +151,7 @@ export default {
 
                 try {
                     const card = nfc.dataToCard(
-                        data.toLowerCase ? data.toLowerCase() : data,
-                        this.inputValue + process.env.VUE_APP_SIGNINGKEY
+                        data.toLowerCase ? data.toLowerCase() : data
                     );
 
                     console.log('nfc-data', card);
@@ -170,18 +168,9 @@ export default {
 
                     this.onCard(card.credit, card.options);
                 } catch (err) {
-                    console.log(
-                        err.message,
-                        err.message === '[signed-data] signature does not match'
-                    );
+                    console.log(err.message);
                     if (err === 'Locked card') {
                         console.log('Locked card');
-                    } else if (
-                        this.signCheckDisabled &&
-                        err.message === '[signed-data] signature does not match'
-                    ) {
-                        console.log('> oncard anyway');
-                        return this.onCard(err.value.credit, err.value.options);
                     } else if (this.disablePinCheck) {
                         return this.onCard(0, { catering: [] });
                     } else {
@@ -211,7 +200,7 @@ export default {
             this.cardToRewrite = this.inputValue;
 
             nfc.write(
-                nfc.cardToData(this.dataToWrite, this.inputValue + process.env.VUE_APP_SIGNINGKEY)
+                nfc.cardToData(this.dataToWrite)
             )
                 .then(() => {
                     this.success = true;
@@ -248,10 +237,6 @@ export default {
     computed: {
         successTextUpdated() {
             return this.successText || 'Transaction effectuée';
-        },
-
-        signCheckDisabled() {
-            return this.disableSignCheck || this.rewrite;
         }
     },
 

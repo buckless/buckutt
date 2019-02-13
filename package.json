@@ -26,7 +26,7 @@
     "client": "cd packages/client && yarn run",
     "image-server": "cd packages/image-server && yarn run",
     "manager": "cd packages/manager && yarn run",
-    "master-app": "cd packages/master-app && yarn run",
+    "masterapp": "cd packages/masterapp && yarn run",
     "server": "cd packages/server && yarn run",
     "stack": "node stack",
     "lint": "eslint --ext .js,.vue --fix ."

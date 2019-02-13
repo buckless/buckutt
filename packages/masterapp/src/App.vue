@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import 'normalize.css';
 import Header from '@/components/Header';
 
 export default {
@@ -14,8 +15,6 @@ export default {
     }
 };
 </script>
-
-<style src="@/../node_modules/normalize.css" />
 
 <style>
 * {

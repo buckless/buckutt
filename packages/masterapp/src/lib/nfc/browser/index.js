@@ -1,7 +1,7 @@
 /* global nfc */
 
 import { EventEmitter } from 'events';
-import signedData from '../signedData';
+import dataCoder from '../coder';
 
 export default class NFC extends EventEmitter {
     constructor() {
@@ -79,10 +79,7 @@ export default class NFC extends EventEmitter {
 
             // do not store cardValue as buffer because it can't be restored as a buffer
             // we create the buffer directly on read
-            cards[name].cardValue = nfc.cardToData(
-                cards[name].cardValue,
-                cards[name].cardId + process.env.VUE_APP_SIGNINGKEY
-            );
+            cards[name].cardValue = nfc.cardToData(cards[name].cardValue);
 
             this.emit('uid', cards[name].cardId);
             this.emit('atr', '0');
@@ -115,10 +112,7 @@ export default class NFC extends EventEmitter {
         console.trace('nfc-browser-index-write', data);
 
         // do not store cardValue as buffer because it can't be restored as a buffer
-        cards[window.mock.actualCard].cardValue = nfc.dataToCard(
-            data,
-            cards[window.mock.actualCard].cardId + process.env.VUE_APP_SIGNINGKEY
-        );
+        cards[window.mock.actualCard].cardValue = nfc.dataToCard(data);
 
         const debugData = `${cards[window.mock.actualCard].cardId}(${
             cards[window.mock.actualCard].cardValue.credit
@@ -130,11 +124,11 @@ export default class NFC extends EventEmitter {
         return Promise.resolve();
     }
 
-    dataToCard(data, signingKey) {
-        return signedData.key(signingKey).decode(data);
+    dataToCard(data) {
+        return dataCoder().decode(data);
     }
 
-    cardToData(data, signingKey) {
-        return signedData.key(signingKey).encode(data);
+    cardToData(data) {
+        return dataCoder().encode(data);
     }
 }

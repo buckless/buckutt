@@ -12,7 +12,6 @@
             successText="Carte débloquée"
             key="unlock"
             disableLockCheck
-            disableSignCheck
         />
     </div>
 </template>

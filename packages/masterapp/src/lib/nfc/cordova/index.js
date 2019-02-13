@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import NFCReader from './nfc';
-import signedData from '../signedData';
+import dataCoder from '../coder';
 
 export default class NFC extends EventEmitter {
     constructor() {
@@ -32,11 +32,11 @@ export default class NFC extends EventEmitter {
         return this.nfc.write(data);
     }
 
-    dataToCard(data, signingKey) {
-        return signedData.key(signingKey).decode(data);
+    dataToCard(data) {
+        return dataCoder().decode(data);
     }
 
-    cardToData(data, signingKey) {
-        return signedData.key(signingKey).encode(data);
+    cardToData(data) {
+        return dataCoder().encode(data);
     }
 }
