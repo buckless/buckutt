@@ -5,6 +5,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import NFC from './lib/nfc';
+import generateSignature from './utils/generateSignature';
 
 Vue.config.productionTip = false;
 
@@ -47,7 +48,7 @@ const logOperator = force => {
         password: process.env.VUE_APP_OPERATOR_PASSWORD
     };
 
-    return axios.post('services/login', credentials).then(res => {
+    return axios.post('auth/login', credentials).then(res => {
         localStorage.setItem('masterapp-token', res.data.token);
     });
 };
@@ -59,22 +60,32 @@ const fetchGroups = () => {
         }
     };
 
-    return axios.get('services/manager/groups', options).then(res => {
+    return axios.get('manager/account/groups', options).then(res => {
         localStorage.setItem('masterapp-groups', JSON.stringify(res.data));
     });
 };
 
 window.queue = new Queue({
     process(job) {
+        const method = job.method || 'get';
+        const signature = generateSignature(
+            process.env.VUE_APP_PRIVATEKEY,
+            process.env.VUE_APP_FINGERPRINT,
+            method.toUpperCase(),
+            job.url
+        );
+
         const options = {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('masterapp-token')}`
+                Authorization: `Bearer ${localStorage.getItem('masterapp-token')}`,
+                'X-fingerprint': process.env.VUE_APP_FINGERPRINT,
+                'X-signature': signature
             }
         };
 
         return logOperator().then(() =>
             axios({
-                method: job.method || 'get',
+                method,
                 url: job.url,
                 data: job.data,
                 ...Object.assign({}, options, job.params)

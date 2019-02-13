@@ -182,7 +182,7 @@ export default {
                 setTimeout(() => {
                     window.queue.push({
                         method: 'post',
-                        url: 'services/manager/assigner',
+                        url: 'manager/auth/assigner',
                         data: {
                             cardId,
                             anon: true,
