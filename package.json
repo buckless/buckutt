@@ -24,6 +24,7 @@
   "scripts": {
     "admin": "cd packages/admin && yarn run",
     "client": "cd packages/client && yarn run",
+    "config": "cd packages/config && yarn run",
     "image-server": "cd packages/image-server && yarn run",
     "manager": "cd packages/manager && yarn run",
     "masterapp": "cd packages/masterapp && yarn run",

@@ -11,7 +11,9 @@
   "repository": "https://lab.buckless.com/buckless/buckless.git",
   "homepage": "https://buckless.com",
   "license": "UNLICENSED",
-  "main": "index.js",
+  "scripts": {
+    "build": "node src/build"
+  },
   "dependencies": {
     "fs-extra": "^7.0.1",
     "lodash.get": "^4.4.2",

@@ -18,6 +18,7 @@ before_script:
   - apt-get update && apt-get install git openssh-client openssl make gcc g++ python libpcsclite-dev -y
   - yarn config set cache-folder "$(pwd)/.yarn-cache"
   - yarn install --no-progress --pure-lockfile --ignore-platform
+  - yarn run config build
 
 admin:
   script:
