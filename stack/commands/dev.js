@@ -8,7 +8,7 @@ module.exports = async () => {
         client: 'dev:calm',
         'image-server': 'dev',
         manager: 'dev:calm',
-        server: 'dev'
+        server: 'dev:pm2'
     };
 
     const colors = {

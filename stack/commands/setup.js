@@ -30,7 +30,7 @@ module.exports = async () => {
 
     await set('127.0.0.1', hosts);
 
-    log(`Adding local ip (${ip()}) to reversecz_proxy's /etc/hosts...`);
+    log(`Adding local ip (${ip()}) to reverse_proxy's /etc/hosts...`);
 
     const reverseProxyEntryPointExample = path.join(
         __dirname,
