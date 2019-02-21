@@ -171,8 +171,9 @@ export default {
                 reload,
                 date,
                 items,
-                transactionIds: entry.transactionIds,
-                localId: entry.localId
+                basketToSend: entry.basketToSend,
+                localId: entry.localId,
+                cardNumber: entry.cardNumber
             };
         },
 

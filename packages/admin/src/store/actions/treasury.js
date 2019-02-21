@@ -62,30 +62,15 @@ export function getTreasury({ commit, dispatch }, fields) {
     return get(`stats/reloads?${qString}`)
         .then(reloads => {
             commit('CLEAROBJECT', 'reloads');
-            const idReloads = reloads.map(reload => {
-                const newReload = Object.assign({}, reload);
-                newReload.id = newReload.type;
-
-                return newReload;
-            });
-
-            dispatch('checkAndAddObjects', { route: 'reloads', objects: idReloads });
+            dispatch('checkAndAddObjects', { route: 'reloads', objects: reloads });
 
             return get(`stats/refunds?${qString}`);
         })
         .then(refunds => {
             commit('CLEAROBJECT', 'refunds');
-            const idRefunds = refunds.map(refund => {
-                const newRefund = Object.assign({}, refund);
-                newRefund.id = newRefund.type;
-
-                return newRefund;
-            });
-
-            dispatch('checkAndAddObjects', { route: 'refunds', objects: idRefunds });
+            dispatch('checkAndAddObjects', { route: 'refunds', objects: refunds });
 
             const relEmbed = routeToRelation('transfers');
-
             return get(`crud/transfers?embed=${relEmbed}${orQt}`);
         })
         .then(transfers => {

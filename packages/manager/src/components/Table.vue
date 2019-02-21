@@ -18,7 +18,6 @@
                     <div
                         v-for="(data, i) in displayedData"
                         :key="i"
-                        :class="{ 'row--removed': data.warning }"
                         class="row"
                     >
                         <div
@@ -27,9 +26,6 @@
                             :class="header.class"
                             class="cell"
                         >
-                            <template v-if="data.warning && j === 0">
-                                <Icon name="delete" />
-                            </template>
                             <span v-if="header.type === 'price'">
                                 {{ (data[header.field] / 100) | currency }}
                             </span>
@@ -85,7 +81,6 @@
 
 <script>
 import Button from '@/components/Button';
-import Icon from '@/components/Icon';
 import sortOrder from '../lib/sortOrder';
 import '../lib/date';
 
@@ -93,8 +88,7 @@ export default {
     name: 'Table',
 
     components: {
-        Button,
-        Icon
+        Button
     },
 
     props: {

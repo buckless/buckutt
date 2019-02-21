@@ -11,7 +11,6 @@ export function refundUser({ state, dispatch }, refundData) {
         id: refundedUser.id
     })
         .then(user => {
-            console.log(user);
             refundedUser = user;
 
             if (refundData.refund.amount > refundedUser.credit) {

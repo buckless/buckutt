@@ -10,19 +10,19 @@ export const pending = state => state.pending;
 
 export const history = state =>
     state.history.map(transaction => {
+        const splittedType = transaction.type.split('-');
         const displayedTransaction = {
             id: transaction.id,
-            rawType: transaction.type,
+            rawType: splittedType[0],
             date: transaction.date,
             // blank space for the cell to exist and be empty
             point: transaction.point,
             amount: transaction.amount,
-            type: translateTable[transaction.type],
-            operator: `${transaction.seller.firstname} ${transaction.seller.lastname}`,
-            warning: transaction.isCanceled && 'Cette transaction a été annulée.'
+            type: splittedType[1] ? `Annulation ${translateTable[splittedType[0]]}` : translateTable[splittedType[0]],
+            operator: `${transaction.seller.firstname} ${transaction.seller.lastname}`
         };
 
-        switch (transaction.type) {
+        switch (splittedType[0]) {
             case 'transfer':
                 displayedTransaction.object = 'N/A';
                 break;

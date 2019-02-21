@@ -16,7 +16,7 @@
                     action: 'cancel',
                     text: 'Annuler',
                     type: 'confirm',
-                    condition: { field: 'warning', statement: 'exists' }
+                    condition: { field: 'rawType', statement: 'isIn', value: ['purchase', 'reload', 'promotion'] }
                 }
             ]"
             :paging="10"
@@ -42,9 +42,11 @@ export default {
             }
 
             return this.history.map(transaction => {
+                const rawType = transaction.type.replace('-cancellation', '');
+
                 const displayedTransaction = {
                     id: transaction.id,
-                    rawType: transaction.type,
+                    rawType,
                     date: transaction.date,
                     amount: transaction.amount,
                     point: transaction.point,
@@ -54,11 +56,7 @@ export default {
                     }`
                 };
 
-                if (transaction.isCanceled) {
-                    displayedTransaction.warning = 'Cette transaction a été annulée.';
-                }
-
-                switch (transaction.type) {
+                switch (rawType) {
                     case 'transfer':
                         displayedTransaction.object = transaction.point;
                         break;
@@ -87,6 +85,7 @@ export default {
     methods: {
         ...mapActions(['loadUserHistory', 'cancelTransaction', 'notify', 'notifyError']),
         translation(type) {
+            const splittedType = type.split('-');
             const translateTable = {
                 refund: 'Remboursement',
                 promotion: 'Achat',
@@ -95,7 +94,7 @@ export default {
                 transfer: 'Virement'
             };
 
-            return translateTable[type];
+            return splittedType[1] ? `Annulation ${translateTable[splittedType[0]]}` : translateTable[splittedType[0]];
         },
         translateMop(mop) {
             const translation = this.meansofpayment.find(m => m.slug === mop);
@@ -107,7 +106,10 @@ export default {
                 transaction,
                 user: this.focusedUser
             })
-                .then(() => this.notify({ message: 'La transaction a bien été annulée' }))
+                .then(() => {
+                    this.notify({ message: 'La transaction a bien été annulée' });
+                    this.loadUserHistory(this.focusedUser);
+                })
                 .catch(err => {
                     let message;
                     switch (err.message) {

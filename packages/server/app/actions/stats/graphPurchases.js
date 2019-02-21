@@ -57,8 +57,18 @@ module.exports = async (ctx, { dateIn, dateOut, additive, filters }) => {
         }
 
         return ctx.models.Purchase.query(knex => {
-            knex.count('prices.id');
-            knex.select(bookshelf.knex.raw('coalesce(sum(??), 0) as amount', ['prices.amount']));
+            knex.select(
+                bookshelf.knex.raw(
+                    'greatest(sum(case when ?? = false then 1 else -1 end), 0) as count',
+                    ['purchases.isCancellation']
+                )
+            );
+            knex.select(
+                bookshelf.knex.raw(
+                    'greatest(coalesce(sum(case when ?? = false then ?? else -1 * ?? end), 0), 0) as amount',
+                    ['purchases.isCancellation', 'prices.amount', 'prices.amount']
+                )
+            );
             knex.from(
                 bookshelf.knex.raw(
                     `generate_series(timestamp '${startBoundary.toISOString()}', timestamp '${endBoundary.toISOString()}', '${divider} minutes') date`
@@ -85,7 +95,7 @@ module.exports = async (ctx, { dateIn, dateOut, additive, filters }) => {
             knex.groupBy('date');
             knex.orderBy('date');
         })
-            .fetchAll({ withDeleted: true })
+            .fetchAll()
             .then(purchases => purchases.toJSON());
     });
 

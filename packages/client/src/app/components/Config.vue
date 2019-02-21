@@ -6,9 +6,6 @@
             <span v-if="error" class="b-config__modal__warning"
                 >Impossible de joindre ce serveur.</span
             >
-            <span v-else-if="queueFilled || cancellationsFilled" class="b-config__modal__warning"
-                >Attention, les données non communiquées au serveur seront perdues.</span
-            >
             <form @submit.prevent="validate">
                 <div class="b-config__modal__text">
                     Veuillez rentrer l'identifiant de votre espace cashless afin d'y connecter
@@ -34,9 +31,7 @@ export default {
 
     computed: mapState({
         api: state => state.device.api,
-        changeApi: state => state.device.changeApi,
-        queueFilled: state => state.online.offline.queue.filled,
-        cancellationsFilled: state => state.history.pendingCancellations.length > 0
+        changeApi: state => state.device.changeApi
     }),
 
     methods: {

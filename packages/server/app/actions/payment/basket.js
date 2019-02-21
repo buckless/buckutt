@@ -1,5 +1,5 @@
 const { countBy } = require('lodash');
-const { bookshelf, models } = require('@/db');
+const { bookshelf } = require('@/db');
 const creditUser = require('@/helpers/creditUser');
 const createUser = require('@/helpers/createUser');
 const rightsDetails = require('@/utils/rightsDetails');
@@ -10,12 +10,12 @@ const getPriceAmount = (Price, id) =>
         .fetch()
         .then(price => price.get('amount'));
 
-module.exports = async (ctx, { molToCheck, basket, clientTime }) => {
+module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation }) => {
+    let buyer;
+
     const mol = await ctx.models.MeanOfLogin.where(molToCheck)
         .fetch({ withRelated: ['user'] })
         .then(mol => (mol ? mol.toJSON() : null));
-
-    let buyer;
 
     if (!mol || !mol.user || !mol.user.id) {
         buyer = await createUser(
@@ -45,40 +45,27 @@ module.exports = async (ctx, { molToCheck, basket, clientTime }) => {
         cost: articleCosts[i]
     }));
 
-    const promotionsCosts = await Promise.all(
-        purchases.map(item =>
-            Promise.all(
-                item.articles.map(article => getPriceAmount(ctx.models.Price, article.price))
-            )
-        )
-    );
-
-    purchases = purchases.map((purchase, i) => ({
-        ...purchase,
-        articles: purchase.articles.map((article, j) => ({
-            ...article,
-            cost: promotionsCosts[i][j]
-        }))
-    }));
-
     const purchasesInsts = [];
     const reloadsInsts = [];
 
-    const transactionIds = { purchases: [], reloads: [] };
-
+    // If it's a cancellation: credit credit is becoming a cost, cost is becoming a credit*
     const totalCost = basket
         .map(item => {
             if (typeof item.cost === 'number') {
-                return item.cost;
+                return isCancellation ? -1 * item.cost : item.cost;
+            } else if (typeof item.credit === 'number') {
+                return isCancellation ? item.credit : -1 * item.credit;
             }
 
-            return typeof item.credit === 'number' ? -1 * item.credit : 0;
+            return 0;
         })
         .reduce((a, b) => a + b);
 
     const reloadOnly = basket
-        .filter(item => typeof item.credit === 'number')
-        .map(item => item.credit)
+        .filter(item =>
+            isCancellation ? typeof item.cost === 'number' : typeof item.credit === 'number'
+        )
+        .map(item => (isCancellation ? item.cost : item.credit))
         .reduce((a, b) => a + b, 0);
 
     if (buyer.credit < totalCost && !ctx.event.useCardData) {
@@ -144,43 +131,40 @@ module.exports = async (ctx, { molToCheck, basket, clientTime }) => {
                 promotion_id: item.promotion_id || null,
                 seller_id: ctx.user.id,
                 alcohol: item.alcohol,
-                clientTime
+                clientTime,
+                isCancellation
             });
 
-            const savePurchase = purchase
-                .save()
-                .then(() => transactionIds.purchases.push(purchase.id))
-                .then(() =>
-                    Promise.all(
-                        Object.keys(countIds).map(articleId => {
-                            const count = countIds[articleId];
+            const savePurchase = purchase.save().then(() =>
+                Promise.all(
+                    Object.keys(countIds).map(articleId => {
+                        const count = countIds[articleId];
 
-                            return bookshelf.knex('articles_purchases').insert({
-                                article_id: articleId,
-                                purchase_id: purchase.id,
-                                count,
-                                deleted_at: null
-                            });
-                        })
-                    )
-                );
+                        return bookshelf.knex('articles_purchases').insert({
+                            article_id: articleId,
+                            purchase_id: purchase.id,
+                            count,
+                            deleted_at: null
+                        });
+                    })
+                )
+            );
 
             purchasesInsts.push(savePurchase);
         } else if (typeof item.credit === 'number') {
             // reloads
-            const reload = new models.Reload({
+            const reload = new ctx.models.Reload({
                 credit: item.credit,
                 type: item.type,
                 trace: item.trace || '',
                 point_id: ctx.point.id,
                 buyer_id: buyer.id,
                 seller_id: ctx.user.id,
-                clientTime
+                clientTime,
+                isCancellation
             });
 
-            const saveReload = reload.save().then(() => transactionIds.reloads.push(reload.id));
-
-            reloadsInsts.push(saveReload);
+            reloadsInsts.push(reload.save());
         }
     });
 
@@ -190,7 +174,6 @@ module.exports = async (ctx, { molToCheck, basket, clientTime }) => {
     await Promise.all([updateCredit].concat(purchasesInsts).concat(reloadsInsts));
 
     return {
-        updatedBuyer: buyer,
-        transactionIds
+        updatedBuyer: buyer
     };
 };

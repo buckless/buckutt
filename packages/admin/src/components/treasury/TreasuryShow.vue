@@ -118,7 +118,7 @@ export default {
 
         totalReload() {
             return this.reloads
-                .map(reload => parseInt(reload.credit, 10))
+                .map(reload => reload.isCancellation ? -1 * parseInt(reload.credit, 10) : parseInt(reload.credit, 10))
                 .reduce((a, b) => a + b, 0);
         },
 
@@ -142,19 +142,18 @@ export default {
         },
 
         displayedReloads() {
-            return this.reloads.map(reload => {
-                reload.type = this.slugToName(reload.type);
-
-                return reload;
-            });
+            return this.reloads.map(reload => ({
+                ...reload,
+                type: reload.isCancellation ? `Annulation ${this.slugToName(reload.type)}` : this.slugToName(reload.type),
+                credit: reload.isCancellation ? -1 * reload.credit : reload.credit
+            }));
         },
 
         displayedRefunds() {
-            return this.refunds.map(refund => {
-                refund.type = this.slugToName(refund.type);
-
-                return refund;
-            });
+            return this.refunds.map(refund => ({
+                ...refund,
+                type: this.slugToName(refund.type)
+            }));
         },
 
         displayedTransfers() {

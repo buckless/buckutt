@@ -31,29 +31,30 @@ module.exports = async (ctx, { dateIn, dateOut, point, fundation, csv }) => {
     const results = await query
         .query(knex => {
             knex.select(
-                'prices.id as id',
                 'articles.name as article_name',
                 'promotions.name as promotion_name',
-                'prices.amount as amount'
+                'prices.amount as amount',
+                'purchases.isCancellation as isCancellation'
             );
-            knex.count('prices.id as count');
+            knex.count('prices.amount as count');
             knex.sum('prices.amount as total');
             knex.leftJoin('prices', 'prices.id', 'purchases.price_id');
             knex.leftJoin('articles', 'articles.id', 'prices.article_id');
             knex.leftJoin('promotions', 'promotions.id', 'prices.promotion_id');
             price.price(knex);
-            knex.groupBy('prices.id', 'articles.name', 'promotions.name');
+            knex.groupBy('purchases.isCancellation', 'prices.amount', 'articles.name', 'promotions.name');
         })
         .fetchAll();
 
     return results
         .toJSON()
-        .map(p => ({
+        .map((p, id) => ({
+            id,
             price: p.amount,
-            id: p.id,
             totalTI: p.total,
             count: p.count,
-            name: p.article_name || p.promotion_name
+            name: p.article_name || p.promotion_name,
+            isCancellation: p.isCancellation
         }))
         .sort((a, b) => a.name.localeCompare(b.name));
 };

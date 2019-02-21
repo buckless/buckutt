@@ -103,15 +103,6 @@ export function cancelTransaction({ state, dispatch }, payload) {
             field: 'credit',
             value: newUserCredit
         });
-
-        const canceledTransaction = { ...currentTransaction };
-        canceledTransaction.isCanceled = true;
-        canceledTransaction.updated_at = new Date();
-
-        return dispatch('checkAndUpdateObjects', {
-            route: 'history',
-            objects: [canceledTransaction]
-        });
     });
 }
 

@@ -3,7 +3,10 @@ const path = require('path');
 const config = require('@/config');
 const log = require('@/log')(module);
 
-const knex = require('knex')(config.db);
+const knex = require('knex')({
+    ...config.db,
+    debug: true
+});
 const bookshelf = require('bookshelf')(knex);
 
 const modelsPath = path.join(__dirname, 'models');

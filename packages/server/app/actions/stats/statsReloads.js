@@ -20,11 +20,16 @@ module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
     let credits = await query
         .query(q =>
             q
-                .select('type')
+                .select('type', 'isCancellation')
                 .sum('credit as credit')
-                .groupBy('type')
+                .groupBy('type', 'isCancellation')
         )
         .fetchAll();
 
-    return credits.toJSON();
+    return credits
+        .toJSON()
+        .map((credit, id) => ({
+            ...credit,
+            id
+        }));
 };

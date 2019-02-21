@@ -66,7 +66,7 @@
                 { title: 'Total TTC', field: 'totalTI', type: 'price' }
             ]"
             :paging="25"
-            :data="purchases"
+            :data="displayedPurchases"
         >
         </b-table>
 
@@ -115,13 +115,7 @@ export default {
 
         totalSell() {
             return this.purchases
-                .map(purchase => parseInt(purchase.totalTI, 10))
-                .reduce((a, b) => a + b, 0);
-        },
-
-        totalSellWT() {
-            return this.purchases
-                .map(purchase => parseInt(purchase.totalWT, 10))
+                .map(purchase => purchase.isCancellation ? -1 * parseInt(purchase.totalTI, 10) : parseInt(purchase.totalTI, 10))
                 .reduce((a, b) => a + b, 0);
         },
 
@@ -137,6 +131,15 @@ export default {
             fundations.unshift({ name: 'Toutes', value: null });
 
             return fundations;
+        },
+
+        displayedPurchases() {
+            return this.purchases.map(purchase => ({
+                ...purchase,
+                price: purchase.isCancellation ? -1 * purchase.price : purchase.price,
+                totalTI: purchase.isCancellation ? -1 * purchase.totalTI : purchase.totalTI,
+                name: purchase.isCancellation ? `Annulation ${purchase.name}` : purchase.name
+            }));
         }
     },
 

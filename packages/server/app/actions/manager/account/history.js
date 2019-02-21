@@ -2,28 +2,23 @@ const { flatten } = require('lodash');
 
 module.exports = async (ctx, { id, limit, offset }) => {
     const purchaseQuery = ctx.models.Purchase.where({ buyer_id: id }).fetchAll({
-        withRelated: ['seller', 'price', 'price.article', 'price.promotion', 'articles', 'point'],
-        withDeleted: true
+        withRelated: ['seller', 'price', 'price.article', 'price.promotion', 'articles', 'point']
     });
 
     const reloadQuery = ctx.models.Reload.where({ buyer_id: id }).fetchAll({
-        withRelated: ['seller', 'point'],
-        withDeleted: true
+        withRelated: ['seller', 'point']
     });
 
     const refundQuery = ctx.models.Refund.where({ buyer_id: id }).fetchAll({
-        withRelated: ['seller'],
-        withDeleted: true
+        withRelated: ['seller']
     });
 
     const transferFromQuery = ctx.models.Transfer.where({ reciever_id: id }).fetchAll({
-        withRelated: ['sender'],
-        withDeleted: true
+        withRelated: ['sender']
     });
 
     const transferToQuery = ctx.models.Transfer.where({ sender_id: id }).fetchAll({
-        withRelated: ['reciever'],
-        withDeleted: true
+        withRelated: ['reciever']
     });
 
     const pendingCardUpdatesQuery = ctx.models.PendingCardUpdate.where({ user_id: id }).fetchAll();
@@ -56,9 +51,15 @@ module.exports = async (ctx, { id, limit, offset }) => {
 
     purchases = purchases.toJSON().map(purchase => ({
         id: purchase.id,
-        type: purchase.price.promotion ? 'promotion' : 'purchase',
+        type: purchase.price.promotion
+            ? purchase.isCancellation
+                ? 'promotion-cancellation'
+                : 'promotion'
+            : purchase.isCancellation
+            ? 'purchase-cancellation'
+            : 'purchase',
         date: purchase.clientTime,
-        amount: -1 * purchase.price.amount,
+        amount: purchase.isCancellation ? purchase.price.amount : -1 * purchase.price.amount,
         point: purchase.point.name,
         seller: {
             lastname: purchase.seller.lastname,
@@ -67,22 +68,20 @@ module.exports = async (ctx, { id, limit, offset }) => {
         articles: flatten(
             purchase.articles.map(article => Array(article._pivot_count).fill(article.name))
         ),
-        promotion: purchase.price.promotion ? purchase.price.promotion.name : '',
-        isCanceled: !!purchase.deleted_at
+        promotion: purchase.price.promotion ? purchase.price.promotion.name : ''
     }));
 
     reloads = reloads.toJSON().map(reload => ({
         id: reload.id,
-        type: 'reload',
+        type: reload.isCancellation ? 'reload-cancellation' : 'reload',
         date: reload.clientTime,
-        amount: reload.credit,
+        amount: reload.isCancellation ? -1 * reload.credit : reload.credit,
         point: reload.point.name,
         mop: reload.type,
         seller: {
             lastname: reload.seller.lastname,
             firstname: reload.seller.firstname
-        },
-        isCanceled: !!reload.deleted_at
+        }
     }));
 
     refunds = refunds.toJSON().map(refund => ({
@@ -95,8 +94,7 @@ module.exports = async (ctx, { id, limit, offset }) => {
         seller: {
             lastname: refund.seller.lastname,
             firstname: refund.seller.firstname
-        },
-        isCanceled: !!refund.deleted_at
+        }
     }));
 
     transfersFrom = transfersFrom.toJSON().map(transfer => ({
@@ -109,8 +107,7 @@ module.exports = async (ctx, { id, limit, offset }) => {
         seller: {
             lastname: transfer.sender.lastname,
             firstname: transfer.sender.firstname
-        },
-        isCanceled: !!transfer.deleted_at
+        }
     }));
 
     transfersTo = transfersTo.toJSON().map(transfer => ({
@@ -123,8 +120,7 @@ module.exports = async (ctx, { id, limit, offset }) => {
         seller: {
             lastname: transfer.reciever.lastname,
             firstname: transfer.reciever.firstname
-        },
-        isCanceled: !!transfer.deleted_at
+        }
     }));
 
     history = [...purchases, ...reloads, ...refunds, ...transfersFrom, ...transfersTo].sort(

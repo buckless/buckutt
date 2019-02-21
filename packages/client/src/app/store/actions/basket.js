@@ -94,7 +94,6 @@ export const addNfcSupportToBasket = store => {
         store.dispatch('addItemToBasket', {
             price: validCosts[0],
             id: store.state.auth.device.event.nfc_id,
-            vat: 0.2,
             alcohol: 0,
             name: 'Support NFC'
         });
@@ -261,9 +260,7 @@ export const sendBasket = (store, payload = {}) => {
             name: article.name,
             articles: [
                 {
-                    id: article.id,
-                    vat: article.vat,
-                    price: article.price.id
+                    id: article.id
                 }
             ],
             alcohol: article.alcohol,
@@ -278,9 +275,7 @@ export const sendBasket = (store, payload = {}) => {
 
         promotion.content.forEach(articleInside => {
             articlesInside.push({
-                id: articleInside.id,
-                vat: articleInside.vat,
-                price: articleInside.price.id
+                id: articleInside.id
             });
 
             alcohol += articleInside.alcohol;
@@ -308,7 +303,7 @@ export const sendBasket = (store, payload = {}) => {
     const localId = `transaction-id-${window.appId}-${Date.now()}`;
     const transactionToSend = {
         buyer: cardNumber,
-        molType: config.buyerMeanOfLogin,
+        molType: store.state.device.config.buyerMeanOfLogin,
         date: now,
         basket: basketToSend,
         seller: store.state.auth.seller.id,
@@ -322,7 +317,6 @@ export const sendBasket = (store, payload = {}) => {
             data: transactionToSend,
             offlineAnswer: {
                 data: {
-                    transactionIds: null,
                     credit: store.getters.credit,
                     firstname: store.state.auth.buyer.firstname,
                     lastname: store.state.auth.buyer.lastname
@@ -341,12 +335,11 @@ export const sendBasket = (store, payload = {}) => {
                 localId
             });
 
-            // store last lastBuyer + transactionIds
+            // store last buyer
             return store.dispatch('addToHistory', {
                 cardNumber,
                 basketToSend,
                 date: new Date(),
-                transactionIds: lastBuyer.data.transactionIds,
                 localId
             });
         });

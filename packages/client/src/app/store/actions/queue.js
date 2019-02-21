@@ -43,14 +43,9 @@ export const initQueue = store => {
         store.commit('LOCK_QUEUE', true);
     });
 
-    queue.on('synchronized', remainingQueue => {
-        store.dispatch('sendValidCancellations').then(() => {
-            setTimeout(() => {
-                store.commit('LOCK_QUEUE', false);
-                store.commit('SET_LAST_QUEUE', new Date());
-                store.commit('SET_QUEUE_FILLED', remainingQueue.length > 0);
-            }, 200);
-        });
+    queue.on('synchronized', () => {
+        store.commit('LOCK_QUEUE', false);
+        store.commit('SET_LAST_QUEUE', new Date());
     });
 };
 
@@ -89,7 +84,6 @@ export const sendRequest = (store, job) => {
         });
     }
 
-    store.commit('SET_QUEUE_FILLED', true);
     return queue.push({
         data: {
             method: job.method,

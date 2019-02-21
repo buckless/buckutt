@@ -15,6 +15,7 @@ router.post(
         }
 
         req.details.buyer = req.body.buyer;
+        req.details.isCancellation = req.body.isCancellation;
         req.details.basket = req.body.basket;
         req.details.clientTime = req.body.clientTime;
 
@@ -24,7 +25,7 @@ router.post(
             return res.json({});
         }
 
-        const { buyer, molType, basket: basketToSend, clientTime } = req.body;
+        const { buyer, molType, basket: basketToSend, clientTime, isCancellation } = req.body;
 
         if (!buyer || !molType) {
             throw new APIError(module, 400, 'Invalid buyer');
@@ -32,20 +33,18 @@ router.post(
 
         const molToCheck = { type: molType, data: buyer, blocked: false };
 
-        const { updatedBuyer, transactionIds } = await basket(ctx(req), {
+        const { updatedBuyer } = await basket(ctx(req), {
             molToCheck,
             basket: basketToSend,
-            clientTime
+            clientTime,
+            isCancellation
         });
 
-        log.info(`processing basket of ${buyer.id} sold by ${req.user.id}`, req.details);
+        log.info(`processing basket of ${updatedBuyer.id} sold by ${req.user.id}`, req.details);
 
         return res
             .status(200)
-            .json({
-                transactionIds,
-                ...updatedBuyer
-            })
+            .json(updatedBuyer)
             .end();
     })
 );

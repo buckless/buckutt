@@ -21,5 +21,10 @@ module.exports = async (ctx, { dateIn, dateOut, csv }) => {
         )
         .fetchAll();
 
-    return amounts.toJSON();
+    return amounts
+        .toJSON()
+        .map((amount, id) => ({
+            ...amount,
+            id
+        }));
 };
