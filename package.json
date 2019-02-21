@@ -22,13 +22,13 @@
     "packages/vue-cli-plugin-calm-serve"
   ],
   "scripts": {
-    "admin": "cd packages/admin && yarn run",
-    "client": "cd packages/client && yarn run",
-    "config": "cd packages/config && yarn run",
-    "image-server": "cd packages/image-server && yarn run",
-    "manager": "cd packages/manager && yarn run",
-    "masterapp": "cd packages/masterapp && yarn run",
-    "server": "cd packages/server && yarn run",
+    "admin": "cd packages/admin && yarn",
+    "client": "cd packages/client && yarn",
+    "config": "cd packages/config && yarn",
+    "image-server": "cd packages/image-server && yarn",
+    "manager": "cd packages/manager && yarn",
+    "masterapp": "cd packages/masterapp && yarn",
+    "server": "cd packages/server && yarn",
     "stack": "node stack",
     "lint": "eslint --ext .js,.vue --fix ."
   }
