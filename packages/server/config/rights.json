@@ -91,6 +91,7 @@
           "/manager/auth/switchuser",
           "/manager/auth/assigner",
           "/manager/account/block",
+          "/manager/account/invoice-number",
           "/manager/payment/accountRefund",
           "/manager/account/groups",
           "/crud/healthalerts",

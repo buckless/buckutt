@@ -47,21 +47,32 @@ export default {
         Button
     },
 
-    data: () => ({
-        name: '',
-        tva: '',
-        address: '',
-        postal: '',
-        city: '',
-        country: 'France',
-        filename: 'invoice.pdf',
-        url: null
-    }),
+    data: () => {
+        const date = new Date();
+
+        return {
+            name: '',
+            tva: '',
+            address: '',
+            postal: '',
+            city: '',
+            country: 'France',
+            filename: 'invoice.pdf',
+            url: null,
+            invoiceNumber: `${date.getFullYear()}${date.getMonth()}${date.getDate()}`,
+        }
+    },
 
     computed: {
         ...mapGetters({
             history: 'history/history'
         })
+    },
+
+    async mounted() {
+        const { invoiceNumber } = await this.post({ url: 'account/invoice-number', body: {} })
+
+        this.invoiceNumber = invoiceNumber
     },
 
     methods: {
@@ -71,9 +82,9 @@ export default {
             const doc = new PDF();
             const date = new Date();
 
-            const title = `Reçu n°F${date.getFullYear()}${date.getMonth()}${date.getDate()}`;
+            const title = `Reçu n°F${this.invoiceNumber}`;
 
-            this.filename = `recu.cashless.f${date.getFullYear()}${date.getMonth()}${date.getDate()}.pdf`;
+            this.filename = `recu.cashless.f${this.invoiceNumber}.pdf`;
 
             doc.setProperties({
                 title,
@@ -206,6 +217,7 @@ export default {
         },
 
         ...mapActions({
+            post: 'request/post',
             setWorking: 'working/set'
         })
     }

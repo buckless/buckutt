@@ -46,7 +46,7 @@ export default {
             });
         }
 
-        data.showInvoice = history.showInvoice === '1';
+        data.showInvoice = history.showInvoice;
 
         return data;
     },

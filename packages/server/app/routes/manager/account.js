@@ -4,7 +4,12 @@ const sanitizeUser = require('@/utils/sanitizeUser');
 const ctx = require('@/utils/ctx');
 const APIError = require('@/utils/APIError');
 
-const { block, listGroups, history: accountHistory } = require('@/actions/manager/account');
+const {
+    block,
+    listGroups,
+    history: accountHistory,
+    invoice
+} = require('@/actions/manager/account');
 
 const router = require('express').Router();
 
@@ -65,6 +70,15 @@ router.get(
                 history
             })
             .end();
+    })
+);
+
+router.post(
+    '/invoice-number',
+    asyncHandler(async (req, res) => {
+        const invoiceNumber = await invoice(ctx(req));
+
+        res.json({ invoiceNumber });
     })
 );
 
