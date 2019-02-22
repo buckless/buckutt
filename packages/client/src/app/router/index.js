@@ -3,7 +3,6 @@ import VueRouter from 'vue-router';
 
 import store from '@/store';
 import { reloadOnly, reloadNotOnly, routeChooser } from './chooser';
-import HealthDetector from './health';
 
 import Items from '@/views/Items';
 import Reload from '@/views/Reload';
@@ -94,8 +93,6 @@ const routes = [
 const router = new VueRouter({
     routes
 });
-
-new HealthDetector(router);
 
 // if page is reloaded, go back to / to know what page to restore
 store.subscribe(mutation => {
