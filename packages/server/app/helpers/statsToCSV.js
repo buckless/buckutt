@@ -6,7 +6,7 @@ const generate = (data, fields) => {
     return [header, csv].join('\n');
 };
 
-const multiplier = isCancellation => isCancellation ? -1 : 1;
+const multiplier = isCancellation => (isCancellation ? -1 : 1);
 
 const purchaseFields = [
     { title: 'Date', reducer: p => p.clientTime.toISOString() },
@@ -17,8 +17,8 @@ const purchaseFields = [
         title: 'Article',
         reducer: p => (p.price.article ? p.price.article.name : p.price.promotion.name)
     },
-    { title: 'Prix', reducer: p => multiplier(p.isCancellation) * p.price.amount / 100 },
-    { title: 'Type', reducer: p => p.isCancellation ? 'Annulation' : 'Achat' }
+    { title: 'Prix', reducer: p => (multiplier(p.isCancellation) * p.price.amount) / 100 },
+    { title: 'Type', reducer: p => (p.isCancellation ? 'Annulation' : 'Achat') }
 ];
 
 const withdrawalFields = [
@@ -35,8 +35,8 @@ const reloadFields = [
     { title: 'Vendeur', reducer: r => `${r.seller.firstname} ${r.seller.lastname}` },
     { title: 'Acheteur', reducer: r => `${r.buyer.firstname} ${r.buyer.lastname}` },
     { title: 'Moyen de paiement', reducer: r => r.type },
-    { title: 'Montant', reducer: r => multiplier(r.isCancellation) * r.credit / 100 },
-    { title: 'Type', reducer: r => r.isCancellation ? 'Annulation' : 'Rechargement' }
+    { title: 'Montant', reducer: r => (multiplier(r.isCancellation) * r.credit) / 100 },
+    { title: 'Type', reducer: r => (r.isCancellation ? 'Annulation' : 'Rechargement') }
 ];
 
 const refundFields = [

@@ -34,11 +34,11 @@ export default {
             ]
         };
 
-        if (history.showType === '1') {
+        if (history.showType) {
             data.headers.splice(1, 0, { title: 'Type', field: 'type' });
         }
 
-        if (history.showOperator === '1') {
+        if (history.showOperator) {
             data.headers.splice(-1, 0, {
                 title: 'Opérateur',
                 field: 'operator',

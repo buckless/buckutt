@@ -15,11 +15,7 @@
                     </div>
                 </div>
                 <div class="body">
-                    <div
-                        v-for="(data, i) in displayedData"
-                        :key="i"
-                        class="row"
-                    >
+                    <div v-for="(data, i) in displayedData" :key="i" class="row">
                         <div
                             v-for="(header, j) in headers"
                             :key="j"

@@ -45,7 +45,7 @@ export default {
     },
 
     data: () => ({
-        showQrCode: accountShowQrcode === '1' && this.qrcode
+        showQrCode: accountShowQrcode && this.qrcode
     }),
 
     computed: {

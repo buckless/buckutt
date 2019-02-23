@@ -1,7 +1,7 @@
 import { history } from 'config/manager';
 import Vue from 'vue';
 
-const showYears = history.showYears === '1';
+const showYears = history.showYears;
 
 export const formatDate = date => {
     const dateJs = new Date(date);

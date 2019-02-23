@@ -18,7 +18,9 @@ export const history = state =>
             // blank space for the cell to exist and be empty
             point: transaction.point,
             amount: transaction.amount,
-            type: splittedType[1] ? `Annulation ${translateTable[splittedType[0]]}` : translateTable[splittedType[0]],
+            type: splittedType[1]
+                ? `Annulation ${translateTable[splittedType[0]]}`
+                : translateTable[splittedType[0]],
             operator: `${transaction.seller.firstname} ${transaction.seller.lastname}`
         };
 

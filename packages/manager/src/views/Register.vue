@@ -12,7 +12,7 @@ export default {
     name: 'Register',
 
     mounted() {
-        if (allowRegistrations !== '1') {
+        if (!allowRegistration) {
             this.$router.push('/');
         }
     }

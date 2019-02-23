@@ -54,8 +54,8 @@ export default {
     },
 
     data: () => ({
-        showTicket: menu.showTicket === '1',
-        showCard: menu.showCard === '1'
+        showTicket: menu.showTicket,
+        showCard: menu.showCard
     }),
 
     computed: {

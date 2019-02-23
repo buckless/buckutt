@@ -48,7 +48,7 @@ export default {
     },
 
     data: () => ({
-        showRegistration: allowRegistration === '1',
+        showRegistration: allowRegistration,
         mail: '',
         pin: ''
     }),

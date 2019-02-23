@@ -42,7 +42,12 @@ module.exports = async (ctx, { dateIn, dateOut, point, fundation, csv }) => {
             knex.leftJoin('articles', 'articles.id', 'prices.article_id');
             knex.leftJoin('promotions', 'promotions.id', 'prices.promotion_id');
             price.price(knex);
-            knex.groupBy('purchases.isCancellation', 'prices.amount', 'articles.name', 'promotions.name');
+            knex.groupBy(
+                'purchases.isCancellation',
+                'prices.amount',
+                'articles.name',
+                'promotions.name'
+            );
         })
         .fetchAll();
 

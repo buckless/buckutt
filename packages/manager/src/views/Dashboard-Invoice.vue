@@ -59,8 +59,8 @@ export default {
             country: 'France',
             filename: 'invoice.pdf',
             url: null,
-            invoiceNumber: `${date.getFullYear()}${date.getMonth()}${date.getDate()}`,
-        }
+            invoiceNumber: `${date.getFullYear()}${date.getMonth()}${date.getDate()}`
+        };
     },
 
     computed: {
@@ -70,9 +70,9 @@ export default {
     },
 
     async mounted() {
-        const { invoiceNumber } = await this.post({ url: 'account/invoice-number', body: {} })
+        const { invoiceNumber } = await this.post({ url: 'account/invoice-number', body: {} });
 
-        this.invoiceNumber = invoiceNumber
+        this.invoiceNumber = invoiceNumber;
     },
 
     methods: {
