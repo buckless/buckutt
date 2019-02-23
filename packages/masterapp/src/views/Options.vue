@@ -42,9 +42,6 @@
                 <br />
                 Solde sur carte :
                 <UnitInput v-model="balances[i]" :maxNumber="article.maxNumber"></UnitInput>
-                <br />
-                Dépensable les jours :
-                <Days v-model="validities[i]"></Days>
             </Mode>
         </div>
 
@@ -81,14 +78,12 @@
 </template>
 
 <script>
-import Days from '@/components/Days';
 import Mode from '@/components/Mode';
 import Nfc from '@/components/Nfc';
 import UnitInput from '@/components/UnitInput';
 
 export default {
     components: {
-        Days,
         Mode,
         Nfc,
         UnitInput
@@ -96,14 +91,11 @@ export default {
 
     data() {
         const articles = JSON.parse(process.env.VUE_APP_ARTICLES);
-        const days = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
 
         return {
             writeModal: false,
-            days,
             articles,
             balances: articles.map(() => 0),
-            validities: articles.map(() => Array(days).fill(false)),
             selectedArticles: [],
             assignedCard: false,
             paidCard: false,
@@ -145,18 +137,12 @@ export default {
                     balance:
                         this.balances[i] + options.catering[i].balance <= article.maxNumber
                             ? this.balances[i] + options.catering[i].balance
-                            : article.maxNumber,
-                    validity: this.validities[i].map((validity, j) => {
-                        console.log(validity);
-                        console.log(options.catering[i].validity[j]);
-                        return validity || options.catering[i].validity[j];
-                    })
+                            : article.maxNumber
                 }));
             } else {
                 catering = JSON.parse(process.env.VUE_APP_ARTICLES).map((article, i) => ({
                     id: article.id,
-                    balance: this.balances[i],
-                    validity: this.validities[i]
+                    balance: this.balances[i]
                 }));
             }
 

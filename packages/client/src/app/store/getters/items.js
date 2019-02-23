@@ -1,6 +1,8 @@
 import { uniqBy } from 'lodash/array';
+import { groupBy } from 'lodash/collection';
 import isMobile from '../../utils/isMobile';
 import computePromotions from '../../utils/promotions';
+import computeCatering from '../../utils/computeCatering';
 
 export const wiketItems = state => state.items.wiketItems;
 
@@ -41,6 +43,7 @@ export const reloadAmount = state => {
     return state.reload.reloads.map(reload => reload.amount).reduce((a, b) => a + b, 0);
 };
 
+// Credit to write after a purchase
 export const credit = (state, getters) => {
     const initialCredit = state.auth.buyer.credit;
     const reloads = getters.reloadAmount;
@@ -49,13 +52,21 @@ export const credit = (state, getters) => {
     return initialCredit + reloads - basketCost;
 };
 
-export const sidebar = (state, getters) => {
-    const initialSidebar = computePromotions(
-        state.items.basket.itemList.slice(),
-        getters.wiketItems.promotions.slice()
-    );
+// Catering to write after a purchase
+export const catering = (state, getters) => {
+    const caterings = groupBy(getters.sidebar.catering, 'cateringId');
 
-    const items = initialSidebar.items.map(item => {
+    return state.auth.buyer.catering.map(cat => ({
+        id: cat.id,
+        balance: caterings[cat.id] ? cat.balance - caterings[cat.id].length : cat.balance
+    }));
+};
+
+export const sidebar = (state, getters) => {
+    let itemList = state.items.basket.itemList.slice();
+
+    // Update items prices according to the logged buyer
+    itemList = itemList.map(item => {
         let updatedItem = getters.wiketItems.items.find(i => i.id === item.id) || {
             price: { amount: -1 }
         };
@@ -69,16 +80,24 @@ export const sidebar = (state, getters) => {
         };
     });
 
-    const promotions = initialSidebar.promotions.map(promotion => {
-        const updatedPromotion = getters.wiketItems.promotions.find(p => p.id === promotion.id) || {
-            price: { amount: -1 }
-        };
+    let catering = [];
+    if (state.auth.device.event.config.useCardData) {
+        const computedCatering = computeCatering(
+            itemList,
+            state.device.config.catering,
+            state.auth.buyer.catering
+        );
 
-        return {
-            ...promotion,
-            price: updatedPromotion.price
-        };
-    });
+        itemList = computedCatering.itemList;
+        catering = computedCatering.catering;
+    }
 
-    return { items, promotions };
+    // Compute promotion only if the promotion is available for the buyer
+    const availablePromotions = getters.wiketItems.promotions
+        .slice()
+        .filter(promotion => promotion.price.amount > -1);
+
+    const initialSidebar = computePromotions(itemList, availablePromotions);
+
+    return { ...initialSidebar, catering };
 };

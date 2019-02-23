@@ -68,6 +68,7 @@ export default {
             this.buyerLogin({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
+                options,
                 removeUnavailable: true
             });
         },

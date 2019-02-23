@@ -143,7 +143,6 @@ module.exports = async (ctx, { now, lastUpdate }) => {
     }
 
     // step 4: get pendingCardUpdates new and removed inserts
-    // fixme: use whereHas (+ find how to do the count with bookshelf)
     const pendingCardUpdates_ = await ctx.models.PendingCardUpdate.query(knex => {
         knex.select('pendingCardUpdates.*', 'meansoflogin.data', qb => {
             qb.count('*');

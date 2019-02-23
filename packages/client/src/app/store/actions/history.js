@@ -31,19 +31,18 @@ export const cancelEntry = (store, payload) => {
         isCancellation: true
     };
 
-    return store
-        .dispatch('sendRequest', {
-            method: 'post',
-            url: 'payment/basket',
-            data: transactionToSend,
-            offlineAnswer: {
-                data: {
-                    credit: store.getters.credit,
-                    firstname: store.state.auth.buyer.firstname,
-                    lastname: store.state.auth.buyer.lastname
-                }
+    return store.dispatch('sendRequest', {
+        method: 'post',
+        url: 'payment/basket',
+        data: transactionToSend,
+        offlineAnswer: {
+            data: {
+                credit: store.getters.credit,
+                firstname: store.state.auth.buyer.firstname,
+                lastname: store.state.auth.buyer.lastname
             }
-        });
+        }
+    });
 };
 
 export const incrementCatering = (store, id) => {

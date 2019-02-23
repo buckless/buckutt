@@ -35,7 +35,8 @@ const initialState = {
         lastname: null,
         memberships: [],
         purchases: [],
-        meanOfLogin: ''
+        meanOfLogin: '',
+        catering: []
     },
     seller: {
         isAuth: false,
@@ -132,6 +133,7 @@ const mutations = {
         state.buyer.lastname = payload.lastname;
         state.buyer.memberships = payload.memberships;
         state.buyer.purchases = payload.purchases;
+        state.buyer.catering = payload.catering;
     },
 
     OVERRIDE_BUYER_CREDIT(state, credit) {
@@ -154,6 +156,7 @@ const mutations = {
     LOGOUT_BUYER(state) {
         state.buyer.isAuth = false;
         state.buyer.credit = 0;
+        state.buyer.catering = [];
     },
 
     SET_ALERT(state, alert) {

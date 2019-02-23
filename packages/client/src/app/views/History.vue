@@ -88,7 +88,7 @@ export default {
         onCard(value, credit, options) {
             if (!this.loggedBuyer.isAuth) {
                 this.$store.commit('SET_DATA_LOADED', false);
-                return this.buyerLogin({ cardNumber: value, credit })
+                return this.buyerLogin({ cardNumber: value, credit, options })
                     .then(() => {
                         this.$store.commit('SET_DATA_LOADED', true);
                     })

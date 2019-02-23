@@ -1,5 +1,5 @@
 <template>
-    <div class="b-sidebar-item">
+    <div class="b-sidebar-item" :class="{ 'b-sidebar-catering': type }">
         <div class="b-sidebar-item__minus" @click.stop="removeItemFromBasket({ id })"></div>
         <div class="b-sidebar-item__name">
             {{ name }}
@@ -14,7 +14,7 @@
 import { mapActions } from 'vuex';
 
 export default {
-    props: ['id', 'name', 'count'],
+    props: ['id', 'name', 'count', 'type'],
 
     methods: mapActions(['removeItemFromBasket'])
 };
@@ -35,6 +35,10 @@ export default {
     &:not(:first-child) {
         margin-top: 0;
     }
+}
+
+.b-sidebar-catering {
+    background-color: #e6ffe6 !important;
 }
 
 .b-sidebar-item__minus {

@@ -12,7 +12,8 @@ export const clearBasket = ({ commit }) => {
 };
 
 export const removeUnavailableItemsFromBasket = store => {
-    const removals = store.getters.sidebar.items
+    const removals = store.getters.sidebar.catering
+        .concat(store.getters.sidebar.items)
         .filter(item => item.price.amount < 0)
         .map(item => store.dispatch('removeItemFromBasket', item));
 
@@ -102,21 +103,14 @@ export const addNfcSupportToBasket = store => {
     }
 };
 
+// Don't need to check for promotions: it has been automatically unmatched
 export const checkSidebar = store => {
-    if (
-        store.getters.sidebar.items.some(item => item.price.amount < 0) ||
-        store.getters.sidebar.promotions.some(promotion => promotion.price.amount < 0)
-    ) {
-        const items = store.getters.sidebar.items
+    const itemsToCheck = store.getters.sidebar.catering.concat(store.getters.sidebar.items);
+
+    if (itemsToCheck.some(item => item.price.amount < 0)) {
+        const unallowed = itemsToCheck
             .filter(item => item.price.amount < 0)
-            .map(item => item.name);
-
-        const promotions = store.getters.sidebar.promotions
-            .filter(promotion => promotion.price.amount < 0)
-            .map(promotion => promotion.name);
-
-        const unallowed = items
-            .concat(promotions)
+            .map(item => item.name)
             .filter((item, index, original) => original.indexOf(item) === index);
 
         store.commit('SET_UNALLOWED_ITEMS_NAMES', unallowed);
@@ -125,6 +119,12 @@ export const checkSidebar = store => {
 
     return Promise.resolve();
 };
+
+export const generateOptions = store => ({
+    assignedCard: true,
+    paidCard: true,
+    catering: store.getters.catering
+});
 
 export const validateBasket = (store, { cardNumber, credit, options, version }) => {
     if (
@@ -143,7 +143,8 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
     initialPromise = store
         .dispatch('buyerLogin', {
             cardNumber,
-            credit
+            credit,
+            options
         })
         .then(() => store.dispatch('checkSidebar'))
         // If it fails, throw an error and then remove items from the basket
@@ -176,24 +177,20 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
     initialPromise = initialPromise.then(() => store.dispatch('checkBuyerCredit'));
 
     if (store.state.auth.device.event.config.useCardData) {
-        const newOptions = {
-            assignedCard: true,
-            paidCard: true,
-            catering: options.catering
-        };
-
-        initialPromise = initialPromise.then(
-            () =>
-                new Promise(resolve => {
-                    window.app.$root.$emit(
-                        'readyToWrite',
-                        store.getters.credit,
-                        newOptions,
-                        cardVersion
-                    );
-                    window.app.$root.$on('writeCompleted', () => resolve());
-                })
-        );
+        initialPromise = initialPromise
+            .then(() => store.dispatch('generateOptions'))
+            .then(
+                newOptions =>
+                    new Promise(resolve => {
+                        window.app.$root.$emit(
+                            'readyToWrite',
+                            store.getters.credit,
+                            newOptions,
+                            cardVersion
+                        );
+                        window.app.$root.$on('writeCompleted', () => resolve());
+                    })
+            );
     }
 
     return initialPromise
@@ -309,6 +306,19 @@ export const sendBasket = (store, payload = {}) => {
         seller: store.state.auth.seller.id,
         localId
     };
+
+    basket.catering.forEach(cat =>
+        store.dispatch('sendRequest', {
+            method: 'post',
+            url: 'payment/catering',
+            data: {
+                cateringId: cat.cateringId,
+                name: cat.name,
+                molType: store.state.device.config.buyerMeanOfLogin,
+                buyer: cardNumber
+            }
+        })
+    );
 
     return store
         .dispatch('sendRequest', {

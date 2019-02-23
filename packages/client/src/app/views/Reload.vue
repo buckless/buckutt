@@ -151,7 +151,8 @@ export default {
             console.log('reload-buyer-login', cardNumber, credit, options);
             this.buyerLogin({
                 cardNumber,
-                credit: Number.isInteger(credit) ? credit : null
+                credit: Number.isInteger(credit) ? credit : null,
+                options
             });
         },
 

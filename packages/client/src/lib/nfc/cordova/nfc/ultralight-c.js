@@ -59,10 +59,7 @@ export class UltralightC extends EventEmitter {
 
     connect() {
         return new Promise((resolve, reject) => {
-            window.mifare.connect(
-                () => resolve(),
-                err => reject(err)
-            );
+            window.mifare.connect(() => resolve(), err => reject(err));
         });
     }
 
@@ -163,9 +160,11 @@ export class UltralightC extends EventEmitter {
             sequence = sequence.then(() => this.lock(pin));
         }
 
-        return sequence.then(() => newBuf).catch(err => {
-            throw new Error(`Write failed : ${err}`);
-        });
+        return sequence
+            .then(() => newBuf)
+            .catch(err => {
+                throw new Error(`Write failed : ${err}`);
+            });
     }
 
     async lock(pinData = 0x11223344) {

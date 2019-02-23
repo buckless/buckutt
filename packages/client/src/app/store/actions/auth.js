@@ -113,7 +113,7 @@ export const cancelLogout = ({ commit }) => {
     commit('REMOVE_LOGOUT_WARNING');
 };
 
-export const buyerLogin = (store, { cardNumber, credit, removeUnavailable }) => {
+export const buyerLogin = (store, { cardNumber, credit, options, removeUnavailable }) => {
     const doubleValidation = store.state.auth.device.config.doubleValidation;
 
     // if double validation, then a user2 can't eject/replace user1
@@ -172,7 +172,8 @@ export const buyerLogin = (store, { cardNumber, credit, removeUnavailable }) => 
                 firstname: res.data.buyer.firstname || '',
                 lastname: res.data.buyer.lastname || '',
                 memberships,
-                purchases: res.data.buyer.purchases || []
+                purchases: res.data.buyer.purchases || [],
+                catering: options ? options.catering : []
             });
             store.commit('SET_BUYER_MOL', cardNumber.trim());
         })
@@ -194,7 +195,8 @@ export const buyerLogin = (store, { cardNumber, credit, removeUnavailable }) => 
                     firstname: '',
                     lastname: '',
                     memberships: [],
-                    purchases: []
+                    purchases: [],
+                    catering: []
                 });
                 store.commit('SET_BUYER_MOL', cardNumber);
                 return;

@@ -42,7 +42,7 @@
                     floating-label="Montant TTC (centimes)"
                     v-model="newPrice.amount"
                     required="required"
-                    pattern="[0-9]+"
+                    pattern="^[+-]?[0-9]+"
                     error="Le montant doit être un entier"
                 ></mdl-textfield>
                 <b-inputselect

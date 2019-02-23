@@ -74,15 +74,15 @@ export default {
             }, 500);
         },
 
-        validate(cardNumber, credit) {
+        validate(cardNumber, credit, options) {
             if (!this.seller.isAuth && this.seller.meanOfLogin.length === 0) {
                 this.sellerId(cardNumber);
             }
 
-            console.log('login-validate', cardNumber, credit);
+            console.log('login-validate', cardNumber, credit, options);
             if (this.seller.isAuth) {
                 const buyerArgs = Number.isInteger(credit)
-                    ? { cardNumber, credit }
+                    ? { cardNumber, credit, options }
                     : { cardNumber };
 
                 this.buyerLogin(buyerArgs).then(() => {

@@ -45,42 +45,14 @@ export default {
         },
 
         deduct(cardId, credit, options) {
-            const dayOne = new Date(config.catering.dayOne);
-            const today = new Date();
-            const duration = config.catering.duration;
-            let dayToCheck;
-            let rightDayIndex = -1;
-
-            for (let i = 0; i < duration; i++) {
-                dayToCheck = new Date(dayOne.getTime() + i * (24 * 60 * 60 * 1000));
-                if (
-                    dayToCheck.getDate() === today.getDate() &&
-                    dayToCheck.getMonth() === today.getMonth() &&
-                    dayToCheck.getFullYear() === today.getFullYear()
-                ) {
-                    rightDayIndex = i;
-                }
-            }
-
-            if (rightDayIndex < 0) {
-                this.closeWriter();
-                this.$store.commit('ERROR', {
-                    message: 'Catering not available today'
-                });
-                return;
-            }
-
             const userArticleIndex = options.catering.findIndex(
-                article =>
-                    article.id === this.selectedArticle.id &&
-                    article.validity[rightDayIndex] &&
-                    article.balance > 0
+                article => article.id === this.selectedArticle.id && article.balance > 0
             );
 
             if (userArticleIndex < 0) {
                 this.closeWriter();
                 this.$store.commit('ERROR', {
-                    message: 'Insufficient balance for today'
+                    message: 'Insufficient balance'
                 });
                 return;
             }
@@ -92,7 +64,7 @@ export default {
             const cateringToSend = {
                 cateringId: this.selectedArticle.id,
                 name: this.selectedArticle.name,
-                molType: 'cardId',
+                molType: this.buyerMeanOfLogin,
                 buyer: cardId
             };
 
@@ -125,11 +97,24 @@ export default {
 
     computed: {
         ...mapState({
-            operator: state => state.auth.seller
+            operator: state => state.auth.seller,
+            buyerMeanOfLogin: state => state.device.config.buyerMeanOfLogin
         }),
 
         articles() {
-            return Object.values(config.catering.articles).sort((a, b) => a.name - b.name);
+            const now = new Date();
+            return Object.values(config.catering.articles)
+                .filter(article => {
+                    if (!article.start && !article.end) {
+                        return true;
+                    } else if (article.start && !article.end) {
+                        return article.start <= now;
+                    } else if (!article.start && article.end) {
+                        return article.end >= now;
+                    }
+                    return article.start <= now && article.end >= now;
+                })
+                .sort((a, b) => a.name - b.name);
         },
 
         successText() {

@@ -22,14 +22,12 @@ module.exports = async (ctx, { molToCheck, name, cateringId, clientTime }) => {
         buyer = mol.user;
     }
 
-    await ctx.models
-        .Withdrawal({
-            seller_id: ctx.user.id,
-            buyer_id: buyer.id,
-            point_id: ctx.point.id,
-            name,
-            cateringId,
-            clientTime
-        })
-        .save();
+    await new ctx.models.Withdrawal({
+        seller_id: ctx.user.id,
+        buyer_id: buyer.id,
+        point_id: ctx.point.id,
+        name,
+        cateringId,
+        clientTime
+    }).save();
 };

@@ -2,6 +2,14 @@
     <div class="b-sidebar">
         <div class="b-sidebar__items">
             <sidebar-reload v-if="reloadAmount > 0" :amount="reloadAmount"></sidebar-reload>
+            <sidebar-item
+                v-for="item in sidebarCatering"
+                :key="`catering_${item.id}`"
+                :id="item.id"
+                :name="item.name"
+                :count="item.count"
+                type="catering"
+            ></sidebar-item>
             <sidebar-promotion
                 v-for="promotion in sidebar.promotions"
                 :key="promotion.id"
@@ -39,6 +47,19 @@ export default {
 
             return Object.keys(counts).map(id => {
                 const item = this.sidebar.items.find(item => item.id === id);
+                return {
+                    id: id,
+                    name: item.name,
+                    count: counts[id]
+                };
+            });
+        },
+
+        sidebarCatering() {
+            const counts = countBy(this.sidebar.catering.map(item => item.id));
+
+            return Object.keys(counts).map(id => {
+                const item = this.sidebar.catering.find(item => item.id === id);
                 return {
                     id: id,
                     name: item.name,

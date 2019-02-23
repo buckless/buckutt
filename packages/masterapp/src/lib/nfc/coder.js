@@ -7,14 +7,13 @@ export default () => {
         return dataCoder;
     }
 
-    const duration = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
     const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
         (a, b) => a.id - b.id
     );
 
     // The first bit is used by assignedCard parameter, the second by the lock state, the third by the paid state
     const usefulDataLength = articles.reduce(
-        (a, b) => a + b.maxNumber.toString(2).length + duration,
+        (a, b) => a + b.maxNumber.toString(2).length,
         3
     );
     const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
@@ -49,8 +48,7 @@ export default () => {
                  *   catering: [
                  *     {
                  *       id: string,
-                 *       balance: number,
-                 *       validity: Array<Boolean>
+                 *       balance: number
                  *     }
                  *   ]
                  * }
@@ -69,18 +67,11 @@ export default () => {
                     const userCatering = options.catering.find(entry => entry.id === article.id);
 
                     if (!userCatering) {
-                        // Write 0 for balance and validity
-                        data += '0'.padStart(article.maxNumber.toString(2).length + duration, '0');
+                        data += '0'.padStart(article.maxNumber.toString(2).length, '0');
                     } else {
-                        let articleBits = userCatering.balance
+                        data += userCatering.balance
                             .toString(2)
                             .padStart(article.maxNumber.toString(2).length, '0');
-
-                        for (let i = 0; i < duration; i++) {
-                            articleBits += userCatering.validity[i] ? '1' : '0';
-                        }
-
-                        data += articleBits;
                     }
                 });
 
@@ -101,20 +92,15 @@ export default () => {
 
                 let articleIndex = 3;
                 articles.forEach(article => {
-                    const articleSize = article.maxNumber.toString(2).length + duration;
+                    const articleSize = article.maxNumber.toString(2).length;
                     const articleBits = binaryOptions.substr(articleIndex, articleSize);
                     const balance = parseInt(
-                        articleBits.substr(0, articleBits.length - duration),
+                        articleBits.substr(0, articleBits.length),
                         2
                     );
-                    const validity = articleBits
-                        .substr(-duration)
-                        .split('')
-                        .map(bit => bit === '1');
                     options.catering.push({
                         id: article.id,
-                        balance,
-                        validity
+                        balance
                     });
                     articleIndex += articleSize;
                 });
