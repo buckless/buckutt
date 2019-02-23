@@ -1,7 +1,7 @@
 const url = require('url');
 const qs = require('qs');
-const { embedParser } = require('@/utils/embedParser');
-const APIError = require('@/utils/APIError');
+const { embedParser } = require('server/app/utils/embedParser');
+const APIError = require('server/app/utils/APIError');
 
 // set common variables used in all crud routes
 module.exports = (req, res, next) => {

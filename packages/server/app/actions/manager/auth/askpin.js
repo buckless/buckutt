@@ -1,7 +1,7 @@
 const randomstring = require('randomstring');
-const config = require('@/config');
-const mailer = require('@/mailer');
-const { knex } = require('@/db').bookshelf;
+const config = require('server/app/config');
+const mailer = require('server/app/mailer');
+const { knex } = require('server/app/db').bookshelf;
 
 const askpin = async (ctx, { mail }) => {
     const user = await ctx.models.User.query(q =>

@@ -2,8 +2,8 @@ const mkdirp = require('mkdirp');
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, colorize, prettyPrint, printf, splat } = format;
 const WinstonTcpGraylog = require('winston-tcp-graylog');
-const config = require('@/config');
-const pad2 = require('@/utils/pad2');
+const config = require('server/app/config');
+const pad2 = require('server/app/utils/pad2');
 
 const MAX_LOG_FILE_SIZE = 10 * 1000 * 1000;
 

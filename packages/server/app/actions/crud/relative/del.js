@@ -1,4 +1,4 @@
-const checkIfRelationshipExists = require('@/utils/checkIfRelationshipExists');
+const checkIfRelationshipExists = require('server/app/utils/checkIfRelationshipExists');
 
 module.exports = async (ctx, { id, subId, submodel }) => {
     // get relationship data

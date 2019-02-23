@@ -1,8 +1,8 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const sanitizeUser = require('@/utils/sanitizeUser');
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const sanitizeUser = require('server/app/utils/sanitizeUser');
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
 const {
     checkDevice,
@@ -10,7 +10,7 @@ const {
     fetchTicket,
     validateLoginBody,
     login
-} = require('@/actions/auth');
+} = require('server/app/actions/auth');
 
 const router = require('express').Router();
 

@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const rightsDetails = require('@/utils/rightsDetails');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const rightsDetails = require('server/app/utils/rightsDetails');
 
-const { searchuser } = require('@/actions/manager/auth/searchuser');
+const { searchuser } = require('server/app/actions/manager/auth/searchuser');
 
 const router = require('express').Router();
 

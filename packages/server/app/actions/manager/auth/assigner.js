@@ -1,7 +1,7 @@
 const { omit } = require('lodash');
-const assignParser = require('@/helpers/assignParser');
-const assignUser = require('@/helpers/assignUser');
-const createUser = require('@/helpers/createUser');
+const assignParser = require('server/app/helpers/assignParser');
+const assignUser = require('server/app/helpers/assignUser');
+const createUser = require('server/app/helpers/createUser');
 
 const assigner = async (
     ctx,

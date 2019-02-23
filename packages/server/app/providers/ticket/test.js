@@ -1,5 +1,5 @@
 const faker = require('faker/locale/fr');
-const computeUsername = require('@/helpers/username');
+const computeUsername = require('server/app/helpers/username');
 
 module.exports = async () => {
     let firstname = faker.name.firstName();

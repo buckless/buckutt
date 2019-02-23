@@ -1,4 +1,4 @@
-const config = require('@/config');
+const config = require('server/app/config');
 
 module.exports = (user, pointId) => {
     const now = new Date();

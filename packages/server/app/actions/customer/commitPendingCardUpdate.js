@@ -1,4 +1,4 @@
-const creditUser = require('@/helpers/creditUser');
+const creditUser = require('server/app/helpers/creditUser');
 
 module.exports = async (ctx, id) => {
     const pendingCardUpdate = await ctx.models.PendingCardUpdate.where({ id })

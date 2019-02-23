@@ -1,6 +1,6 @@
 const test = require('ava');
 const axios = require('../utils/axios');
-const app = require('../../app');
+const app = require('server/app');
 
 test('start the test application', async t => {
     await app();

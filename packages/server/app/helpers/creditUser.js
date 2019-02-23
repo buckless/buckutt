@@ -1,5 +1,5 @@
-const { bookshelf } = require('@/db');
-const APIError = require('@/utils/APIError');
+const { bookshelf } = require('server/app/db');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, userId, amount) => {
     const isFromInternet = ctx.point.name === 'Internet';

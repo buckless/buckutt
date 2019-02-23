@@ -1,4 +1,4 @@
-const APIError = require('@/utils/APIError');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = (Model, submodel) => {
     const forged = new Model();

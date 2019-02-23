@@ -1,6 +1,6 @@
-const bookshelf = require('@/db');
+const bookshelf = require('server/app/db');
 const { Client } = require('pg');
-const config = require('@/config');
+const config = require('server/app/config');
 
 module.exports = {
     async erase(ctx) {

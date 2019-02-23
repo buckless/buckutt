@@ -1,6 +1,6 @@
 const crypto = require('crypto');
-const APIError = require('@/utils/APIError');
-const config = require('@/config').client;
+const APIError = require('server/app/utils/APIError');
+const config = require('server/app/config').client;
 
 const generateKey = () =>
     new Promise((resolve, reject) => {

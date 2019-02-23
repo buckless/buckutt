@@ -1,7 +1,7 @@
 const axios = require('axios');
-const username = require('@/helpers/username');
+const username = require('server/app/helpers/username');
 
-const config = require('@/config').assigner.billetweb;
+const config = require('server/app/config').assigner.billetweb;
 
 const url = `https://www.billetweb.fr/api/event/${config.event}/attendees`;
 const params = {

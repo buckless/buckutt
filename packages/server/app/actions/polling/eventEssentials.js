@@ -1,6 +1,6 @@
 const { pick } = require('lodash');
-const { embedParser, embedFilter } = require('@/utils/embedParser');
-const rightsDetails = require('@/utils/rightsDetails');
+const { embedParser, embedFilter } = require('server/app/utils/embedParser');
+const rightsDetails = require('server/app/utils/rightsDetails');
 
 module.exports = async ctx => {
     const now = new Date();

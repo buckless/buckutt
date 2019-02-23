@@ -2,7 +2,7 @@ const fs = require('fs');
 const axios = require('axios');
 const parser = require('csv');
 const { pick } = require('lodash');
-const config = require('@/config').assigner.csv;
+const config = require('server/app/config').assigner.csv;
 
 const readFile = require('util').promisify(fs.readFile);
 const parse = require('util').promisify(parser.parse);

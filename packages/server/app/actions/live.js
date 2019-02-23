@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 const { Observable } = require('rxjs');
 const { invert } = require('lodash');
-const { modelsNames } = require('@/utils/modelParser');
+const { modelsNames } = require('server/app/utils/modelParser');
 
 const routeNames = invert(modelsNames);
 const stream = new EventEmitter();

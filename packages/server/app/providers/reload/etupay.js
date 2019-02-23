@@ -1,8 +1,8 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
-const config = require('@/config');
-const ctx = require('@/utils/ctx');
-const creditUser = require('@/helpers/creditUser');
+const config = require('server/app/config');
+const ctx = require('server/app/utils/ctx');
+const creditUser = require('server/app/helpers/creditUser');
 
 const providerConfig = config.provider.etupay;
 

@@ -1,6 +1,6 @@
 const randomstring = require('randomstring');
 const faker = require('faker/locale/fr');
-const computeUsername = require('@/helpers/username');
+const computeUsername = require('server/app/helpers/username');
 
 module.exports = (name, opts) => async ctx => {
     // get ctx.factory.db

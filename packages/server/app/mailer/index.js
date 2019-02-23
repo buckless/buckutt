@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const dot = require('dot');
 const nodemailer = require('nodemailer');
-const config = require('@/config');
+const config = require('server/app/config');
 
 const smtpConfig = Object.assign({}, config.mailer.smtp, { connectionTimeout: 1000 });
 const transporter = nodemailer.createTransport(smtpConfig);

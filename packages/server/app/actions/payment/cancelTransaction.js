@@ -1,7 +1,7 @@
-const { bookshelf } = require('@/db');
-const creditUser = require('@/helpers/creditUser');
-const getPriceAmount = require('@/utils/getPriceAmount');
-const APIError = require('@/utils/APIError');
+const { bookshelf } = require('server/app/db');
+const creditUser = require('server/app/helpers/creditUser');
+const getPriceAmount = require('server/app/utils/getPriceAmount');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, { id, rawType, clientTime }) => {
     const transactionModels = {

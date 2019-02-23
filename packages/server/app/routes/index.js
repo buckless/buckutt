@@ -1,11 +1,11 @@
 const router = require('express').Router();
 
-const pointId = require('@/middlewares/pointId');
-const token = require('@/middlewares/token');
-const accessRequired = require('@/middlewares/accessRequired');
-const query = require('@/middlewares/query');
-const idempotency = require('@/middlewares/idempotency');
-const exposeResBody = require('@/middlewares/exposeResBody');
+const pointId = require('server/app/middlewares/pointId');
+const token = require('server/app/middlewares/token');
+const accessRequired = require('server/app/middlewares/accessRequired');
+const query = require('server/app/middlewares/query');
+const idempotency = require('server/app/middlewares/idempotency');
+const exposeResBody = require('server/app/middlewares/exposeResBody');
 
 // api middlewares
 router.use(exposeResBody, pointId, token, accessRequired, query, idempotency);
@@ -22,6 +22,6 @@ router.use('/stats', require('./stats'));
 router.use('/manager', require('./manager'));
 router.use('/database', require('./database'));
 
-router.use('/provider/callback', require('@/providers/reload').callback);
+router.use('/provider/callback', require('server/app/providers/reload').callback);
 
 module.exports = router;

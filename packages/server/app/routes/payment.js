@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
-const { basket, cancelTransaction, catering } = require('@/actions/payment');
+const { basket, cancelTransaction, catering } = require('server/app/actions/payment');
 
 const router = require('express').Router();
 

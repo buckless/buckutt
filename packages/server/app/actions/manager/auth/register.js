@@ -1,7 +1,7 @@
 const { omit } = require('lodash');
-const assignParser = require('@/helpers/assignParser');
-const createUser = require('@/helpers/createUser');
-const APIError = require('@/utils/APIError');
+const assignParser = require('server/app/helpers/assignParser');
+const createUser = require('server/app/helpers/createUser');
+const APIError = require('server/app/utils/APIError');
 
 const register = async (
     ctx,

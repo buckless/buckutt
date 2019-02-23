@@ -1,5 +1,5 @@
-const { embedParser, embedFilter } = require('@/utils/embedParser');
-const { bookshelf } = require('@/db');
+const { embedParser, embedFilter } = require('server/app/utils/embedParser');
+const { bookshelf } = require('server/app/db');
 
 module.exports = async (ctx, { now, lastUpdate }) => {
     const useCardData = ctx.event.useCardData;

@@ -1,6 +1,6 @@
-const { fetchTicket } = require('@/providers/ticket');
-const { embedParser, embedFilter } = require('@/utils/embedParser');
-const APIError = require('@/utils/APIError');
+const { fetchTicket } = require('server/app/providers/ticket');
+const { embedParser, embedFilter } = require('server/app/utils/embedParser');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, ticketNumber) => {
     const MeanOfLogin = ctx.models.MeanOfLogin;

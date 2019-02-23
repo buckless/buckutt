@@ -1,4 +1,4 @@
-const APIError = require('@/utils/APIError');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, meansOfLogin) => {
     const ticket = meansOfLogin.find(mol => mol.type === 'ticketId');

@@ -1,4 +1,4 @@
-const createUser = require('@/helpers/createUser');
+const createUser = require('server/app/helpers/createUser');
 
 module.exports = async (ctx, { molToCheck, name, cateringId, clientTime }) => {
     const mol = await ctx.models.MeanOfLogin.where(molToCheck)

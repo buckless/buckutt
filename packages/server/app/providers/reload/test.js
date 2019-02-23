@@ -1,7 +1,7 @@
 const uuid = require('uuid');
-const config = require('@/config');
-const creditUser = require('@/helpers/creditUser');
-const ctx = require('@/utils/ctx');
+const config = require('server/app/config');
+const creditUser = require('server/app/helpers/creditUser');
+const ctx = require('server/app/utils/ctx');
 
 const onlinePayment = async (ctx, data) => {
     const Transaction = ctx.models.Transaction;

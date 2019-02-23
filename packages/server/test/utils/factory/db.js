@@ -1,4 +1,4 @@
-const db = require('@/db');
+const db = require('server/app/db');
 
 module.exports = async ctx => {
     await db.ready();

@@ -1,4 +1,4 @@
-const { bookshelf } = require('@/db');
+const { bookshelf } = require('server/app/db');
 
 module.exports = async (_, { user_id }) => {
     await bookshelf

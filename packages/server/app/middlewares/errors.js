@@ -1,6 +1,6 @@
-const { bookshelf } = require('@/db');
-const logger = require('@/log');
-const APIError = require('@/utils/APIError');
+const { bookshelf } = require('server/app/db');
+const logger = require('server/app/log');
+const APIError = require('server/app/utils/APIError');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (err, req, res, _) => {

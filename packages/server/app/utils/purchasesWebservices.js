@@ -1,6 +1,6 @@
 const axios = require('axios');
-const { models, bookshelf } = require('@/db');
-const log = require('@/log')(module);
+const { models, bookshelf } = require('server/app/db');
+const log = require('server/app/log')(module);
 
 module.exports = () => {
     bookshelf.on('saved', models.Purchase, p => {

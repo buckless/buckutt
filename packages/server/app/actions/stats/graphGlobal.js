@@ -1,4 +1,4 @@
-const { bookshelf } = require('@/db');
+const { bookshelf } = require('server/app/db');
 
 module.exports = async ctx => {
     const activeCards = ctx.models.MeanOfLogin.query(knex => knex.count())

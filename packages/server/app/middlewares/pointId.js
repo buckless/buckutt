@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const moment = require('moment');
-const { bookshelf } = require('@/db');
-const APIError = require('@/utils/APIError');
+const { bookshelf } = require('server/app/db');
+const APIError = require('server/app/utils/APIError');
 
 const keyGenerationPaths = ['/auth/checkDevice', '/auth/registerDevice'];
 

@@ -1,7 +1,7 @@
-const checkAnonymousAccount = require('@/helpers/checkAnonymousAccount');
-const checkTicket = require('@/helpers/checkTicket');
-const generateToken = require('@/utils/generateToken');
-const APIError = require('@/utils/APIError');
+const checkAnonymousAccount = require('server/app/helpers/checkAnonymousAccount');
+const checkTicket = require('server/app/helpers/checkTicket');
+const generateToken = require('server/app/utils/generateToken');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, userId, reloads = [], meansOfLogin = [], groups = [], clientTime) => {
     const mergedCreditIsAlreadyOnCard = ctx.point.name !== 'Internet' || !ctx.event.useCardData;

@@ -1,20 +1,16 @@
-const moduleAlias = require('module-alias');
-
-moduleAlias.addAlias('@', __dirname);
-
 const http = require('http');
 const { promisify } = require('util');
-const config = require('@/config');
-const bookshelf = require('@/db');
-const redis = require('@/cache');
-const log = require('@/log')(module);
+const config = require('server/app/config');
+const bookshelf = require('server/app/db');
+const redis = require('server/app/cache');
+const log = require('server/app/log')(module);
 
-const checkSeeds = require('@/utils/checkSeeds');
-const live = require('@/actions/live');
-const ticketsProviders = require('@/providers/ticket');
+const checkSeeds = require('server/app/utils/checkSeeds');
+const live = require('server/app/actions/live');
+const ticketsProviders = require('server/app/providers/ticket');
 
 const main = async () => {
-    const app = require('@/server');
+    const app = require('server/app/server');
 
     app.locals.models = bookshelf.models;
     app.locals.config = config;

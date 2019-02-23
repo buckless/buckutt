@@ -1,9 +1,9 @@
 const { countBy } = require('lodash');
-const { bookshelf } = require('@/db');
-const creditUser = require('@/helpers/creditUser');
-const createUser = require('@/helpers/createUser');
-const rightsDetails = require('@/utils/rightsDetails');
-const APIError = require('@/utils/APIError');
+const { bookshelf } = require('server/app/db');
+const creditUser = require('server/app/helpers/creditUser');
+const createUser = require('server/app/helpers/createUser');
+const rightsDetails = require('server/app/utils/rightsDetails');
+const APIError = require('server/app/utils/APIError');
 
 const getPriceAmount = (Price, id) =>
     Price.where({ id })

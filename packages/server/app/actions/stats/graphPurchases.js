@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { bookshelf } = require('@/db');
+const { bookshelf } = require('server/app/db');
 
 require('moment-round');
 

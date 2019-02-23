@@ -1,10 +1,10 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const rightsDetails = require('@/utils/rightsDetails');
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const rightsDetails = require('server/app/utils/rightsDetails');
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
-const { buyer, listAccesses, logAccess, commitPendingCardUpdate } = require('@/actions/customer');
+const { buyer, listAccesses, logAccess, commitPendingCardUpdate } = require('server/app/actions/customer');
 
 const router = require('express').Router();
 

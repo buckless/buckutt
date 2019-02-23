@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
 const {
     statsPurchases,
@@ -11,7 +11,7 @@ const {
     graphGlobal,
     graphPurchases,
     graphPointsDivision
-} = require('@/actions/stats');
+} = require('server/app/actions/stats');
 
 const router = require('express').Router();
 

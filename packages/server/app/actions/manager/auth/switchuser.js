@@ -1,7 +1,7 @@
-const { knex } = require('@/db').bookshelf;
-const rightsDetails = require('@/utils/rightsDetails');
-const generateToken = require('@/utils/generateToken');
-const APIError = require('@/utils/APIError');
+const { knex } = require('server/app/db').bookshelf;
+const rightsDetails = require('server/app/utils/rightsDetails');
+const generateToken = require('server/app/utils/generateToken');
+const APIError = require('server/app/utils/APIError');
 
 const switchUser = async (ctx, { infos, errDetails }) => {
     const mol = await ctx.models.MeanOfLogin.query(q =>

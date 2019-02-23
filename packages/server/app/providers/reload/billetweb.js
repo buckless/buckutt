@@ -1,8 +1,8 @@
 const axios = require('axios');
-const config = require('@/config');
-const ctx = require('@/utils/ctx');
-const creditUser = require('@/helpers/creditUser');
-const APIError = require('@/utils/APIError');
+const config = require('server/app/config');
+const ctx = require('server/app/utils/ctx');
+const creditUser = require('server/app/helpers/creditUser');
+const APIError = require('server/app/utils/APIError');
 
 const providerConfig = config.provider.billetweb;
 

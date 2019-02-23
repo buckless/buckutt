@@ -1,5 +1,5 @@
-const dateQuery = require('@/utils/statsDateQuery');
-const { bookshelf } = require('@/db');
+const dateQuery = require('server/app/utils/statsDateQuery');
+const { bookshelf } = require('server/app/db');
 
 module.exports = async (ctx, { dateIn, dateOut }) => {
     const purchasesDivision = dateQuery(ctx.models.Purchase, dateIn, dateOut)

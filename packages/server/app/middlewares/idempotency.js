@@ -1,5 +1,5 @@
-const redis = require('@/cache');
-const log = require('@/log')(module);
+const redis = require('server/app/cache');
+const log = require('server/app/log')(module);
 
 module.exports = async (req, res, next) => {
     if (req.method !== 'POST') {

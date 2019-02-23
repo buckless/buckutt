@@ -1,4 +1,4 @@
-const { bookshelf } = require('@/db');
+const { bookshelf } = require('server/app/db');
 
 module.exports = async (ctx, { cardId, wiketId, clientTime }) => {
     const mol = await ctx.models.MeanOfLogin.query(q =>

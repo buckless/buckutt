@@ -1,5 +1,5 @@
-const statsToCSV = require('@/helpers/statsToCSV');
-const dateQuery = require('@/utils/statsDateQuery');
+const statsToCSV = require('server/app/helpers/statsToCSV');
+const dateQuery = require('server/app/utils/statsDateQuery');
 
 const relatedCsv = ['seller', 'buyer', 'point'];
 

@@ -1,5 +1,5 @@
-const config = require('@/config');
-const APIError = require('@/utils/APIError');
+const config = require('server/app/config');
+const APIError = require('server/app/utils/APIError');
 
 const uuid = /[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i;
 

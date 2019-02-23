@@ -1,4 +1,4 @@
-const APIError = require('@/utils/APIError');
+const APIError = require('server/app/utils/APIError');
 
 const modelsNames = {
     alerts: 'Alert',

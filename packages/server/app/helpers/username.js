@@ -1,5 +1,5 @@
 const { transliterate } = require('transliteration');
-const { knex } = require('@/db');
+const { knex } = require('server/app/db');
 
 const concat = (firstname, lastname) => {
     firstname = transliterate(firstname)

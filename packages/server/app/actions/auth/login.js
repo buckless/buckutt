@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
-const { bookshelf } = require('@/db');
-const generateToken = require('@/utils/generateToken');
-const APIError = require('@/utils/APIError');
+const { bookshelf } = require('server/app/db');
+const generateToken = require('server/app/utils/generateToken');
+const APIError = require('server/app/utils/APIError');
 
 const validateLoginBody = body => {
     if (!body.meanOfLogin) {

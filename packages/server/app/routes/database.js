@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
-const { erase } = require('@/actions/database');
+const { erase } = require('server/app/actions/database');
 
 const router = require('express').Router();
 

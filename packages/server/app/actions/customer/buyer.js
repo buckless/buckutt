@@ -1,5 +1,5 @@
 const { omit } = require('lodash');
-const APIError = require('@/utils/APIError');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, { type, buyer }) => {
     const now = new Date();

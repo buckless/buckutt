@@ -1,15 +1,15 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const modelParser = require('@/utils/modelParser');
-const idParser = require('@/utils/idParser');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const modelParser = require('server/app/utils/modelParser');
+const idParser = require('server/app/utils/idParser');
 
-const { create, read, update, del } = require('@/actions/crud');
-const { createRelative, readRelative, deleteRelative } = require('@/actions/crud/relative');
+const { create, read, update, del } = require('server/app/actions/crud');
+const { createRelative, readRelative, deleteRelative } = require('server/app/actions/crud/relative');
 
 // fill req.crud with (withRelated, embedFilters, filters)
-router.use(require('@/middlewares/crud'));
+router.use(require('server/app/middlewares/crud'));
 
 // create
 router.post(

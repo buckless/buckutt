@@ -1,11 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const { omit } = require('lodash');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const rightsDetails = require('@/utils/rightsDetails');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const rightsDetails = require('server/app/utils/rightsDetails');
+const APIError = require('server/app/utils/APIError');
 
-const { eventEssentials, items, usersData } = require('@/actions/polling');
+const { eventEssentials, items, usersData } = require('server/app/actions/polling');
 
 const router = require('express').Router();
 

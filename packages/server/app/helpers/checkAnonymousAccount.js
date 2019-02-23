@@ -1,5 +1,5 @@
-const getAccountFromCard = require('@/helpers/getAccountFromCard');
-const APIError = require('@/utils/APIError');
+const getAccountFromCard = require('server/app/helpers/getAccountFromCard');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, meansOfLogin) => {
     const card = meansOfLogin.find(mol => mol.type === 'cardId');

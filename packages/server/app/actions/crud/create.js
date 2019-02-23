@@ -1,5 +1,5 @@
-const { embedFilter } = require('@/utils/embedParser');
-const modelParser = require('@/utils/modelParser');
+const { embedFilter } = require('server/app/utils/embedParser');
+const modelParser = require('server/app/utils/modelParser');
 
 module.exports = async (ctx, insts, { withRelated, embedFilters }) => {
     let results = await Promise.all(insts.map(inst => inst.save()));

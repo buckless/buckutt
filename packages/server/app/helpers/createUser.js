@@ -2,13 +2,13 @@ const faker = require('faker/locale/fr');
 const bcrypt = require('bcryptjs');
 const randomstring = require('randomstring');
 const { padStart } = require('lodash');
-const config = require('@/config');
-const log = require('@/log')(module);
-const mailer = require('@/mailer');
-const checkAnonymousAccount = require('@/helpers/checkAnonymousAccount');
-const checkTicket = require('@/helpers/checkTicket');
-const username = require('@/helpers/username');
-const APIError = require('@/utils/APIError');
+const config = require('server/app/config');
+const log = require('server/app/log')(module);
+const mailer = require('server/app/mailer');
+const checkAnonymousAccount = require('server/app/helpers/checkAnonymousAccount');
+const checkTicket = require('server/app/helpers/checkTicket');
+const username = require('server/app/helpers/username');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (
     ctx,

@@ -1,15 +1,15 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const sanitizeUser = require('@/utils/sanitizeUser');
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const sanitizeUser = require('server/app/utils/sanitizeUser');
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
 const {
     block,
     listGroups,
     history: accountHistory,
     invoice
-} = require('@/actions/manager/account');
+} = require('server/app/actions/manager/account');
 
 const router = require('express').Router();
 

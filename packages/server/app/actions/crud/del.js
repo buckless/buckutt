@@ -1,4 +1,4 @@
-const modelParser = require('@/utils/modelParser');
+const modelParser = require('server/app/utils/modelParser');
 
 module.exports = async (ctx, id) => {
     const inst = await new ctx.model({ id }).destroy();

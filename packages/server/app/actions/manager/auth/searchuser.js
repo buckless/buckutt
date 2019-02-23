@@ -1,5 +1,5 @@
-const { knex } = require('@/db').bookshelf;
-const { embedParser, embedFilter } = require('@/utils/embedParser');
+const { knex } = require('server/app/db').bookshelf;
+const { embedParser, embedFilter } = require('server/app/utils/embedParser');
 const leven = require('leven');
 
 const searchuser = async (ctx, { name, max, userRights }) => {

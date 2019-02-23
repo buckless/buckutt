@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
 const {
     listGiftReloads,
@@ -9,7 +9,7 @@ const {
     transfer,
     canRefund,
     accountRefund
-} = require('@/actions/manager/payment');
+} = require('server/app/actions/manager/payment');
 
 const router = require('express').Router();
 

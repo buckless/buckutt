@@ -2,9 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser-with-msgpack');
 const compression = require('compression');
 const cors = require('cors');
-const api = require('@/routes');
-const purchasesWebservices = require('@/utils/purchasesWebservices');
-const APIError = require('@/utils/APIError');
+const api = require('server/app/routes');
+const purchasesWebservices = require('server/app/utils/purchasesWebservices');
+const APIError = require('server/app/utils/APIError');
 
 const app = express();
 
@@ -26,7 +26,7 @@ app.use(
 app.use(bodyParser.msgpack({ limit: '5mb' }));
 app.use(bodyParser.json({ limit: '5mb' }));
 
-app.use(require('@/middlewares/msgpack'));
+app.use(require('server/app/middlewares/msgpack'));
 
 app.use(
     compression({
@@ -35,13 +35,13 @@ app.use(
     })
 );
 
-// app.use(require('@/middlewares/exposeResBody'));
+// app.use(require('server/app/middlewares/exposeResBody'));
 
 // notify webservices when a purchase is created
 purchasesWebservices(app);
 
 // reload setup
-app.use(require('@/providers/reload').setup);
+app.use(require('server/app/providers/reload').setup);
 
 // api routes
 app.use('/api/v1', api);
@@ -52,6 +52,6 @@ app.use((req, __, next) => {
 });
 
 // other errors handling
-app.use(require('@/middlewares/errors'));
+app.use(require('server/app/middlewares/errors'));
 
 module.exports = app;

@@ -1,14 +1,14 @@
 const asyncHandler = require('express-async-handler');
-const log = require('@/log')(module);
-const ctx = require('@/utils/ctx');
-const APIError = require('@/utils/APIError');
+const log = require('server/app/log')(module);
+const ctx = require('server/app/utils/ctx');
+const APIError = require('server/app/utils/APIError');
 
-const { assigner } = require('@/actions/manager/auth/assigner');
-const { register } = require('@/actions/manager/auth/register');
-const { switchuser } = require('@/actions/manager/auth/switchuser');
-const { changePin } = require('@/actions/manager/auth/changePin');
-const { askpin } = require('@/actions/manager/auth/askpin');
-const { generatepin } = require('@/actions/manager/auth/generatepin');
+const { assigner } = require('server/app/actions/manager/auth/assigner');
+const { register } = require('server/app/actions/manager/auth/register');
+const { switchuser } = require('server/app/actions/manager/auth/switchuser');
+const { changePin } = require('server/app/actions/manager/auth/changePin');
+const { askpin } = require('server/app/actions/manager/auth/askpin');
+const { generatepin } = require('server/app/actions/manager/auth/generatepin');
 
 const router = require('express').Router();
 

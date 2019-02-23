@@ -1,5 +1,5 @@
-const queryFilterer = require('@/utils/queryFilterer');
-const { embedFilter } = require('@/utils/embedParser');
+const queryFilterer = require('server/app/utils/queryFilterer');
+const { embedFilter } = require('server/app/utils/embedParser');
 
 module.exports = async (ctx, { id, filters, withRelated, withDeleted, embedFilters }) => {
     let request = ctx.model;

@@ -1,5 +1,5 @@
-const { embedFilter } = require('@/utils/embedParser');
-const APIError = require('@/utils/APIError');
+const { embedFilter } = require('server/app/utils/embedParser');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, { id, submodel, embedFilters, withRelated }) => {
     const instance = await ctx.model

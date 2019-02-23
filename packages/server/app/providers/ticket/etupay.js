@@ -1,7 +1,7 @@
 const axios = require('axios');
-const username = require('@/helpers/username');
+const username = require('server/app/helpers/username');
 
-const config = require('@/config').assigner.billetweb;
+const config = require('server/app/config').assigner.billetweb;
 
 const url = `${config.url}/${config.key}/billets`;
 

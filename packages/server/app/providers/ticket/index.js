@@ -1,7 +1,7 @@
 const Queue = require('bull');
-const redis = require('@/cache');
-const config = require('@/config');
-const log = require('@/log')(module);
+const redis = require('server/app/cache');
+const config = require('server/app/config');
+const log = require('server/app/log')(module);
 
 const providers = config.assigner.ticketProviders.map(name => require(`./${name}`));
 

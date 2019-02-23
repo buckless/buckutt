@@ -1,4 +1,4 @@
-const { embedParser, embedFilter } = require('@/utils/embedParser');
+const { embedParser, embedFilter } = require('server/app/utils/embedParser');
 
 module.exports = async (ctx, user) => {
     const now = new Date();

@@ -1,7 +1,7 @@
 const sseExpress = require('sse-express');
-const log = require('@/log')(module);
+const log = require('server/app/log')(module);
 
-const { alert, healthalert, modelChanges, credit } = require('@/actions/live');
+const { alert, healthalert, modelChanges, credit } = require('server/app/actions/live');
 
 const router = require('express').Router();
 

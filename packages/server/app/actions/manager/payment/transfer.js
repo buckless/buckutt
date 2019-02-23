@@ -1,5 +1,5 @@
-const creditUser = require('@/helpers/creditUser');
-const APIError = require('@/utils/APIError');
+const creditUser = require('server/app/helpers/creditUser');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, { amount, recieverUser }) => {
     if (ctx.user.credit - amount < 0) {

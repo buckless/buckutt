@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const APIError = require('@/utils/APIError');
+const APIError = require('server/app/utils/APIError');
 
 const changePin = async (ctx, { currentPin, pin }) => {
     if (currentPin.length !== 4 && pin.length !== 4) {

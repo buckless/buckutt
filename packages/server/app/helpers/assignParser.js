@@ -1,8 +1,8 @@
-const getSupportDetails = require('@/helpers/getSupportDetails');
-const getAccountFromCard = require('@/helpers/getAccountFromCard');
-const fetchTicket = require('@/helpers/fetchTicket');
-const rightsDetails = require('@/utils/rightsDetails');
-const APIError = require('@/utils/APIError');
+const getSupportDetails = require('server/app/helpers/getSupportDetails');
+const getAccountFromCard = require('server/app/helpers/getAccountFromCard');
+const fetchTicket = require('server/app/helpers/fetchTicket');
+const rightsDetails = require('server/app/utils/rightsDetails');
+const APIError = require('server/app/utils/APIError');
 
 module.exports = async (
     ctx,
