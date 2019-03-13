@@ -30,6 +30,11 @@
     "masterapp": "cd packages/masterapp && yarn",
     "server": "cd packages/server && yarn",
     "stack": "node stack",
-    "lint": "eslint --ext .js,.vue --fix ."
+    "lint": "eslint --ext .js,.vue --fix .",
+
+    "admin:docker": "docker build -t lab.buckless.com:4567/buckless/buckless/admin -f ./packages/admin/Dockerfile .",
+    "image-server:docker": "docker build -t lab.buckless.com:4567/buckless/buckless/image-server -f ./packages/image-server/Dockerfile .",
+    "manager:docker": "docker build -t lab.buckless.com:4567/buckless/buckless/manager -f ./packages/manager/Dockerfile .",
+    "server:docker": "docker build -t lab.buckless.com:4567/buckless/buckless/server -f ./packages/server/Dockerfile ."
   }
 }

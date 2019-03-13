@@ -1,0 +1,13 @@
+services
+stack
+node_modules
+packages/admin/dist
+packages/admin/node_modules
+packages/client/dist
+packages/client/node_modules
+packages/image-server/node_modules
+packages/manager/dist
+packages/manager/node_modules
+packages/masterapp
+packages/server/node_modules
+packages/vue-cli-plugin-calm-serve/node_modules

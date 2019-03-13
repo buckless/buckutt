@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:11-alpine
 
 WORKDIR /usr/src/buckless-admin
 
@@ -6,11 +6,28 @@ EXPOSE 8082
 
 RUN apk update && \
     apk add --no-cache git openssh make gcc g++ python && \
-    mkdir -p /usr/src/buckless-admin
+    mkdir -p /usr/src/buckless-admin/packages/admin && \
+    mkdir -p /usr/src/buckless-admin/packages/config && \
+    mkdir -p /usr/src/buckless-admin/packages/vue-cli-plugin-calm-serve
 
-COPY package.json /usr/src/buckless-admin/
-COPY yarn.lock /usr/src/buckless-admin/
+COPY ./packages/admin/package.json \
+     ./packages/admin/yarn.lock \
+     /usr/src/buckless-admin/packages/admin/
 
-RUN yarn --ignore-engines --ignore-optional
+COPY .browserlistrc \
+     .eslintignore \
+     .eslintrc.js \
+     babel.config.js \
+     postcss.config.js \
+     prettier.config.js \
+     yarn.lock \
+     package.json \
+     /usr/src/buckless-admin/
 
-COPY . /usr/src/buckless-admin/
+COPY ./packages/config /usr/src/buckless-admin/packages/config
+COPY ./packages/vue-cli-plugin-calm-serve /usr/src/buckless-admin/packages/vue-cli-plugin-calm-serve
+
+RUN yarn install --ignore-engines --ignore-optional --frozen-lockfile
+
+COPY ./packages/admin /usr/src/buckless-admin/packages/admin
+

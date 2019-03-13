@@ -1,0 +1,96 @@
+version: '3'
+services:
+    reverse_proxy:
+        container_name: buckless_reverse_proxy
+        build: ./images/reverse_proxy
+        depends_on:
+            - server
+            - manager
+            - admin
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./volumes/reverse_proxy/server.prod.conf:/etc/nginx/conf.d/server.conf
+            - ./volumes/reverse_proxy/le-certs:/etc/letsencrypt
+
+    sql:
+        container_name: buckless_sql
+        image: postgres:alpine
+        expose:
+            - "5432"
+        environment:
+            - POSTGRES_DB=buckless
+            - POSTGRES_USER=buckless
+            - POSTGRES_PASSWORD=buckless
+        volumes:
+            - ./volumes/database/data:/var/lib/postgresql/data
+
+    cache:
+        container_name: buckless_cache
+        image: 'redis:alpine'
+        volumes:
+            - './volumes/cache/data:/data'
+            - ./volumes/cache/redis.conf:/usr/local/etc/redis/redis.conf
+        command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+    adminer:
+        container_name: buckless_adminer
+        image: adminer
+        restart: always
+        expose:
+            - "8080"
+        ports:
+            - "8080:8080"
+
+    server:
+        container_name: buckless_server
+        build:
+            context: ./images
+            dockerfile: ./server/Dockerfile
+        command: ["yarn", "server", "start:pm2"]
+        expose:
+            - "3000"
+        environment:
+            NODE_ENV: production
+            SERVER_PROTOCOL: http
+        depends_on:
+            - sql
+        volumes:
+            - ./volumes/server/log:/usr/src/buckless-server/log
+
+    admin:
+        container_name: buckless_admin
+        build:
+            context: ./images
+            dockerfile: ./admin/Dockerfile
+        command: ["yarn", "admin", "start"]
+        expose:
+            - "8082"
+        environment:
+            NODE_ENV: production
+
+    manager:
+        container_name: buckless_manager
+        build:
+            context: ./images
+            dockerfile: ./manager/Dockerfile
+        command: ["yarn", "manager", "start"]
+        expose:
+            - "8083"
+        environment:
+            NODE_ENV: production
+            API_HOST: reverse_proxy
+            API_PORT: 443
+
+    images:
+        container_name: buckless_images
+        image: lab.buckless.com:4567/buckless/buckless/image-server
+        command: ["yarn", "image-server", "start"]
+        expose:
+            - "3400"
+        volumes:
+            - ./volumes/image-server/images:/usr/src/buckless-image-server/images
+        environment:
+            NODE_ENV: production
+

@@ -1,0 +1,107 @@
+server {
+    server_name  _;
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/{{ROOTURL}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ROOTURL}}/privkey.pem;
+
+    access_log /var/log/nginx/access.log;
+    return 503;
+}
+
+server {
+    server_name _;
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    server_name api.{{ROOTURL}} reverse_proxy;
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/{{ROOTURL}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ROOTURL}}/privkey.pem;
+    ssl_session_cache builtin;
+
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        proxy_pass http://server:3000;
+        proxy_http_version 1.1;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_redirect https://api.{{ROOTURL}}/ http://server:3000/;
+    }
+}
+
+server {
+    server_name admin.{{ROOTURL}};
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/{{ROOTURL}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ROOTURL}}/privkey.pem;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        proxy_pass http://admin:8082;
+    }
+}
+
+server {
+    server_name {{ROOTURL}};
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/{{ROOTURL}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ROOTURL}}/privkey.pem;
+    access_log /var/log/nginx/access.log;
+
+    location ^~ /live/ {
+        proxy_set_header Connection '';
+        proxy_http_version 1.1;
+        chunked_transfer_encoding off;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_set_header X-Fingerprint manager;
+
+        rewrite_by_lua_block {
+            local crypto = require "crypto"
+            local hmac = require "crypto.hmac"
+            local uri = string.gsub(ngx.var.uri, "/api/v1", "")
+            local signatureToHash = "manager-" .. ngx.req.get_method() .. "-" .. uri
+            local signature = hmac.digest("sha256", signatureToHash, "manager")
+            ngx.req.set_header("X-Signature", signature)
+        }
+
+        proxy_pass https://reverse_proxy;
+        rewrite ^/live/(.*)$ /api/v1/live/$1 break;
+    }
+
+    location ^~ /api/ {
+        proxy_pass https://reverse_proxy;
+        proxy_set_header X-Fingerprint manager;
+
+        rewrite_by_lua_block {
+            local crypto = require "crypto"
+            local hmac = require "crypto.hmac"
+            local uri = string.gsub(ngx.var.uri, "/api/v1", "")
+            local signatureToHash = "manager-" .. ngx.req.get_method() .. "-" .. uri
+            local signature = hmac.digest("sha256", signatureToHash, "manager")
+            ngx.req.set_header("X-Signature", signature)
+        }
+
+        rewrite /api/provider/callback /api/v1/provider/callback break;
+        rewrite /api/login /api/v1/auth/login break;
+        rewrite /live/credit /api/v1/live/credit break;
+        rewrite ^/api/(.*)$ /api/v1/manager/$1 break;
+    }
+
+    location ^~ /images/ {
+        proxy_pass http://images:3400;
+        rewrite ^/images/(.*)$ /$1 break;
+    }
+
+    location / {
+        proxy_pass http://manager:8083;
+    }
+}

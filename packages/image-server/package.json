@@ -13,7 +13,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node src/app",
-    "build:docker": "docker build -t lab.buckless.com:4567/core/image-server .",
     "dev": "cross-env NODE_ENV=development nodemon src/app.js",
     "lint": "eslint . --fix",
     "test": "cross-env NODE_ENV=test nyc --reporter=text-summary --reporter=html  --reporter=lcov mocha",

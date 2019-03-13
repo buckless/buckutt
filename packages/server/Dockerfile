@@ -1,20 +1,28 @@
 FROM keymetrics/pm2:latest-alpine
 
+WORKDIR /usr/src/buckless-server
+
 EXPOSE 3000
 
 CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]
 
-WORKDIR /usr/src/buckless-server
-
 RUN apk update && \
     apk add --no-cache git openssh openssl make gcc g++ python && \
-    mkdir -p /usr/src/buckless-server
+    mkdir -p /usr/src/buckless-server/packages/server && \
+    mkdir -p /usr/src/buckless-server/packages/config
 
-COPY package.json /usr/src/buckless-server/
-COPY yarn.lock /usr/src/buckless-server/
-COPY config/profiles/development.json.example /usr/src/buckless-manager/config/profiles/development.json
-COPY config/profiles/production.json.example /usr/src/buckless-manager/config/profiles/production.json
+COPY ./packages/server/package.json \
+     ./packages/server/yarn.lock \
+     /usr/src/buckless-server/packages/server/
 
-RUN yarn
+COPY .eslintignore \
+     .eslintrc.js \
+     yarn.lock \
+     package.json \
+     /usr/src/buckless-server/
 
-COPY . /usr/src/buckless-server/
+COPY ./packages/config /usr/src/buckless-server/packages/config
+
+RUN yarn --ignore-engines --ignore-optional --frozen-lockfile
+
+COPY ./packages/server /usr/src/buckless-server/packages/server

@@ -12,10 +12,10 @@
   "homepage": "https://buckless.com",
   "scripts": {
     "start": "node app",
+    "start:pm2": "pm2-runtime start ecosystem.config.js --env production",
     "pretest": "cd node_modules && ln -nsf ../app @",
     "test": "ava **/*.test.js --verbose -s",
     "posttest": "rm node_modules/@",
-    "build:docker": "docker build -t lab.buckless.com:4567/core/server .",
     "dev": "cross-env NODE_ENV=development node app",
     "dev:pm2": "cross-env NODE_ENV=development pm2 start ecosystem.config.js --no-daemon",
     "lint": "eslint app --fix",

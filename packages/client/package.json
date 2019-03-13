@@ -26,7 +26,6 @@
     "build:browser": "cross-env DEBUG=* TARGET=browser NODE_ENV=production vue-cli-service build",
     "build:electron": "cross-env TARGET=electron NODE_ENV=production vue-cli-service build",
     "build:android": "cross-env TARGET=cordova NODE_ENV=android vue-cli-service build",
-    "build:docker": "docker build -t lab.buckless.com:4567/core/client .",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e"
   },

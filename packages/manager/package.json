@@ -14,7 +14,6 @@
   "scripts": {
     "start": "static dist --host-address 0.0.0.0 --port 8083 --gzip --spa --cache 86400",
     "build": "vue-cli-service build",
-    "build:docker": "docker build -t lab.buckless.com:4567/core/manager .",
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service serve",
     "dev:local": "cross-env DEV_PROXY=1 vue-cli-service serve",
