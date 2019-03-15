@@ -1,5 +1,8 @@
-export const tokenHeaders = state => {
-    if (!state.auth.seller.token || state.auth.seller.token.length === 0) {
+export const sellerLogged = state => !!state.auth.seller.token;
+export const buyerLogged = state => !!state.auth.buyer.wallet;
+
+export const tokenHeaders = (state, getters) => {
+    if (!getters.sellerLogged) {
         return {};
     }
 
@@ -10,10 +13,5 @@ export const tokenHeaders = state => {
     };
 };
 
-export const loginState = state => {
-    if (state.auth.device.config.doubleValidation) {
-        return !state.auth.buyer.isAuth;
-    }
-
-    return !state.auth.seller.isAuth;
-};
+export const loginState = (state, getters) =>
+    state.auth.device.config.doubleValidation ? !getters.buyerLogged : !getters.sellerLogged;

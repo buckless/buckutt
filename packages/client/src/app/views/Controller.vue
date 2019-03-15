@@ -58,12 +58,12 @@ export default {
             this.chooser = false;
         },
 
-        onCard(cardId) {
+        onCard(walletId) {
             this.sendRequest({
-                url: `customer/controller?user=${cardId}`,
+                url: `customer/controller?walletId=${walletId}`,
                 noQueue: true,
                 forceOffline: this.useCardData,
-                offlineAnswer: window.database.cardAccesses(cardId)
+                offlineAnswer: window.database.cardAccesses(walletId)
             })
                 .then(res => res.data || res)
                 .then(accesses => {
@@ -90,7 +90,7 @@ export default {
                         const access = {
                             operator_id: this.seller,
                             wiket_id: this.wiket,
-                            cardId
+                            walletId
                         };
 
                         this.sendRequest({

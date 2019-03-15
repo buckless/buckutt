@@ -2,7 +2,8 @@ export const reload = async (ctx, amount) => {
     await ctx.dispatch('working/set', true, { root: true });
 
     const body = {
-        amount: parseInt(amount * 100, 10)
+        amount: parseInt(amount * 100, 10),
+        walletId: ctx.rootState.user.currentWallet
     };
 
     const data = await ctx.dispatch(

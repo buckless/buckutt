@@ -26,15 +26,11 @@
 </template>
 
 <script>
-const duration = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
 const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
     (a, b) => a.id - b.id
 );
 
-const usefulDataLength = articles.reduce(
-    (a, b) => a + b.maxNumber.toString(2).length + duration,
-    3
-);
+const usefulDataLength = articles.reduce((a, b) => a + b.maxNumber.toString(2).length, 3);
 const optionsByteNumber = Math.ceil(usefulDataLength / 8);
 
 const bytesOrder = [

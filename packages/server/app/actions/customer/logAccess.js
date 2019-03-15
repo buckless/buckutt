@@ -1,19 +1,12 @@
-const { bookshelf } = require('server/app/db');
+module.exports = async (ctx, { walletId, wiketId, clientTime }) => {
+    const wallet = await ctx.models.Wallet.where({ logical_id: walletId, blocked: false })
+        .fetch()
+        .then(wallet => (wallet ? wallet.toJSON() : null));
 
-module.exports = async (ctx, { cardId, wiketId, clientTime }) => {
-    const mol = await ctx.models.MeanOfLogin.query(q =>
-        q.where(bookshelf.knex.raw('lower(data)'), '=', cardId)
-    )
-        .where({ type: 'cardId', blocked: false })
-        .fetch({ require: true })
-        .then(mol => (mol ? mol.toJSON() : null));
-
-    const access = new ctx.models.Access({
-        meanOfLogin_id: mol.id,
+    await new ctx.models.Access({
+        wallet_id: wallet.id,
         operator_id: ctx.user.id,
         wiket_id: wiketId,
-        clientTime: clientTime
-    });
-
-    await access.save();
+        clientTime
+    }).save();
 };

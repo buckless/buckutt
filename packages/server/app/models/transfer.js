@@ -6,12 +6,12 @@ module.exports = bookshelf => {
         uuid: true,
         softDelete: true,
 
-        sender() {
-            return this.belongsTo('User', 'sender_id');
+        debitor() {
+            return this.belongsTo('Wallet', 'debitor_id');
         },
 
-        reciever() {
-            return this.belongsTo('User', 'reciever_id');
+        creditor() {
+            return this.belongsTo('Wallet', 'creditor_id');
         }
     });
 

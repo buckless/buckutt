@@ -1,6 +1,6 @@
 <template>
     <div class="b-history">
-        <div class="b-history__text" v-if="!loggedBuyer.isAuth">
+        <div class="b-history__text" v-if="!buyerLogged">
             Approchez la carte cashless
             <div>Pour visualiser les derniers achats sur cette borne</div>
             <nfc mode="read" @read="onCard" />
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import Currency from '@/components/Currency';
 
 export default {
@@ -72,7 +72,7 @@ export default {
     computed: {
         entries() {
             return this.history
-                .filter(e => e.cardNumber === this.loggedBuyer.meanOfLogin)
+                .filter(e => e.cardNumber === this.loggedBuyer.wallet)
                 .sort((a, b) => b.date - a.date)
                 .map(e => this.resume(e));
         },
@@ -81,19 +81,21 @@ export default {
             useCardData: state => state.auth.device.event.config.useCardData,
             loggedBuyer: state => state.auth.buyer,
             history: state => state.history.history
-        })
+        }),
+
+        ...mapGetters(['buyerLogged'])
     },
 
     methods: {
         onCard(value, credit, options) {
-            if (!this.loggedBuyer.isAuth) {
+            if (!this.buyerLogged) {
                 this.$store.commit('SET_DATA_LOADED', false);
                 return this.buyerLogin({ cardNumber: value, credit, options })
                     .then(() => {
                         this.$store.commit('SET_DATA_LOADED', true);
                     })
                     .catch(() => this.$store.commit('SET_DATA_LOADED', true));
-            } else if (this.loggedBuyer.meanOfLogin !== value) {
+            } else if (this.loggedBuyer.wallet !== value) {
                 this.$store.commit('ERROR', { message: 'Different card used' });
                 return;
             }
@@ -130,7 +132,7 @@ export default {
                 .then(() => this.cancelEntry(this.selectedEntry))
                 .then(() => this.removeFromHistory(this.selectedEntry))
                 .then(() => {
-                    if (this.loggedBuyer.isAuth) {
+                    if (this.buyerLogged) {
                         this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
                     }
 

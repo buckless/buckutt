@@ -49,6 +49,7 @@
               "/live/alert"
           ],
           "write": [
+              "/auth/assigner",
               "/customer/pendingCardUpdate",
               "/payment/basket"
           ]
@@ -88,8 +89,8 @@
           "/manager/payment/transfer",
           "/manager/payment/reload",
           "/manager/payment/giftReloads",
-          "/manager/auth/switchuser",
-          "/manager/auth/assigner",
+          "/manager/auth/assignCard",
+          "/manager/auth/assignWallet",
           "/manager/account/block",
           "/manager/account/invoice-number",
           "/manager/payment/accountRefund",

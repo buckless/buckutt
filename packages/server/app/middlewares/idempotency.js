@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const redis = require('server/app/cache');
 const log = require('server/app/log')(module);
 
@@ -11,7 +12,12 @@ module.exports = async (req, res, next) => {
         return next();
     }
 
-    const cacheKey = `idempotency/${idempotencyKey}${req.url}`;
+    const authorization = req.headers.authorization || req.query.authorization;
+    const key = crypto
+        .createHash('sha1')
+        .update(idempotencyKey + req.url + authorization)
+        .digest('hex');
+    const cacheKey = `idempotency/${key}`;
 
     let storedResponse;
     try {

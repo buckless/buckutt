@@ -5,8 +5,10 @@ export const init = (ctx, token) => {
         source.close();
     }
 
+    const walletToListen = ctx.rootState.user.currentWallet;
+
     source = new EventSource(
-        `/live/credit?authorization=Bearer ${token}&fingerprint=manager&handshake-interval=10000&lastEventId=12345&retry=3000`
+        `/live/credit?authorization=Bearer ${token}&fingerprint=manager&handshake-interval=10000&lastEventId=12345&retry=3000&wallet=${walletToListen}`
     );
 
     ctx.commit('SET_SOURCE', source);
@@ -17,9 +19,9 @@ export const init = (ctx, token) => {
 
             if (typeof data.credit === 'number') {
                 ctx.dispatch(
-                    'user/setUser',
+                    'user/updateCurrentWallet',
                     {
-                        ...ctx.rootState.user.user,
+                        id: data.id,
                         credit: data.credit
                     },
                     { root: true }

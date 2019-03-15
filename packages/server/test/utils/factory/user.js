@@ -1,6 +1,5 @@
 const randomstring = require('randomstring');
 const faker = require('faker/locale/fr');
-const computeUsername = require('server/app/helpers/username');
 
 module.exports = (name, opts) => async ctx => {
     // get ctx.factory.db
@@ -8,22 +7,11 @@ module.exports = (name, opts) => async ctx => {
     // create memberships
     // create ...
     // register DELETE commands on ctx.clears
-    let firstname = faker.name.firstName();
-    let lastname = faker.name.lastName();
-    let username = await computeUsername(firstname, lastname);
+    const firstname = faker.name.firstName();
+    const lastname = faker.name.lastName();
+    const mail = `${firstname}.${lastname}@gmail.com`;
 
     const now = new Date();
-
-    const meansOfLogin = [
-        ctx.factory.document({
-            type: 'username',
-            data: username
-        }),
-        ctx.factory.document({
-            type: 'mail',
-            data: `${username}@gmail.com`
-        })
-    ];
 
     const memberships = [
         ctx.factory.document({
@@ -31,24 +19,6 @@ module.exports = (name, opts) => async ctx => {
             period_id: ctx.defaultPeriod.id
         })
     ];
-
-    if (opts.ticket) {
-        meansOfLogin.push(
-            ctx.factory.document({
-                type: 'ticketId',
-                data: `ticket-${randomstring.generate(5)}`
-            })
-        );
-    }
-
-    if (opts.card) {
-        meansOfLogin.push(
-            ctx.factory.document({
-                type: 'cardId',
-                data: randomstring.generate({ length: 15, charset: 'hex' })
-            })
-        );
-    }
 
     const user = new ctx.factory.db.models.User(
         ctx.factory.document({
@@ -58,19 +28,22 @@ module.exports = (name, opts) => async ctx => {
             pin: '$2y$10$fu/BM5Y7ktitbqkPuBYz6OKPB3ge5AsZGD5wLP6nBN0VnbxLW80UK',
             // abcd
             password: '$2y$10$0X3NPBy62Ipg1DKslJPIP.4Q9XY03dPTLvat0iLvS7KbaPQa4tLHK',
-            mail: `${username}@gmail.com`,
+            mail,
             clientTime: now
         })
     );
 
     await user.save();
 
-    for (let meanOfLogin of meansOfLogin) {
-        meanOfLogin.user_id = user.id;
+    const wallet = new ctx.factory.db.models.Wallet(
+        ctx.factory.document({
+            logical_id: opts.card ? randomstring.generate({ length: 15, charset: 'hex' }) : null,
+            user_id: user.id,
+            clientTime: now
+        })
+    );
 
-        const { id } = await new ctx.factory.db.models.MeanOfLogin(meanOfLogin).save();
-        meanOfLogin.id = id;
-    }
+    await wallet.save();
 
     for (let membership of memberships) {
         membership.user_id = user.id;
@@ -79,21 +52,37 @@ module.exports = (name, opts) => async ctx => {
         membership.id = id;
     }
 
+    const data = user.toJSON();
+    data.wallets = [wallet.toJSON()];
+
+    let ticket;
+    if (opts.ticket) {
+        ticket = new ctx.factory.db.models.Ticket(
+            ctx.factory.document({
+                logical_id: `ticket-${randomstring.generate(5)}`,
+                wallet_id: wallet.id,
+                firstname,
+                lastname,
+                mail
+            })
+        );
+
+        await ticket.save();
+
+        data.wallets[0].ticket = ticket.toJSON();
+
+        ctx.factory.clears.push(
+            ctx => new ctx.factory.db.models.Ticket({ id: ticket.id }).destroy({ hardDelete: true })
+        );
+    }
+
     ctx.factory.clears.push(
         ...memberships.map(m => ctx =>
             new ctx.factory.db.models.Membership({ id: m.id }).destroy({ hardDelete: true })
         ),
-        ...meansOfLogin.map(m => ctx =>
-            new ctx.factory.db.models.MeanOfLogin({ id: m.id }).destroy({ hardDelete: true })
-        ),
+        ctx => new ctx.factory.db.models.Wallet({ id: wallet.id }).destroy({ hardDelete: true }),
         ctx => new ctx.factory.db.models.User({ id: user.id }).destroy({ hardDelete: true })
     );
 
-    return {
-        name,
-        data: Object.assign(user.toJSON(), {
-            memberships,
-            meansOfLogin
-        })
-    };
+    return { name, data };
 };

@@ -70,7 +70,7 @@ module.exports = async () => {
 
     log('Starting mapping config...');
 
-    await config();
+    await config(true);
 
     log.end(' Done');
 

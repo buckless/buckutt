@@ -4,7 +4,7 @@
             <h3>Bloquer mon support</h3>
 
             <form v-if="hasCard && !cardBlocked" @submit.prevent="block(card)">
-                Votre espace cashless est associé avec le support <strong>{{ card }}</strong
+                Votre porte-monnaie cashless est associé avec le support <strong>{{ card }}</strong
                 >.<br /><br />
                 Souhaitez-vous bloquer le support ? Cette action est irreversible.
                 <br />
@@ -15,16 +15,8 @@
             </form>
             <template v-else>
                 <p>
-                    Ce compte est associé avec les supports bloqués suivants:
-                    <span v-for="(blockedCard, index) in blockedCards" :key="index">
-                        <strong>{{ blockedCard }}</strong>
-                        <template v-if="index < blockedCards.length - 1"
-                            >,
-                        </template>
-                        <template v-else
-                            >.</template
-                        >
-                    </span>
+                    Ce porte-monnaie est associé avec le support bloqué suivant:
+                    <strong>{{ card }}</strong>
                     <br />
                     <br />
                 </p>
@@ -53,7 +45,6 @@ export default {
         ...mapGetters({
             card: 'user/card',
             cardBlocked: 'user/cardBlocked',
-            blockedCards: 'user/blockedCards',
             hasCard: 'user/hasCard',
             working: 'working/working'
         })

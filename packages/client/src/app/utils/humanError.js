@@ -8,7 +8,7 @@ export default (state, getters, error) => {
     console.error(error);
 
     if (error.message === 'User not found') {
-        return state.auth.seller.isAuth ? 'Client introuvable' : 'Identifiants incorrects';
+        return getters.sellerLogged ? 'Client introuvable' : 'Identifiants incorrects';
     }
 
     if (error.message === 'Login error: Wrong credentials') {

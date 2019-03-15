@@ -1,7 +1,5 @@
 {
     "images": "urls.images",
-    "loginMeanOfLogin": "security.nfcMol",
-    "buyerMeanOfLogin": "security.nfcMol",
     "sentry": "urls.sentry.client",
     "desfire": "nfc.desfire",
     "classic": "nfc.classic",

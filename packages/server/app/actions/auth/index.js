@@ -1,5 +1,6 @@
 const { validateLoginBody, login } = require('./login');
 const { checkDevice, registerDevice } = require('./checkDevice');
+const { assigner } = require('./assigner');
 const fetchTicket = require('./fetchTicket');
 
 module.exports = {
@@ -7,5 +8,6 @@ module.exports = {
     registerDevice,
     validateLoginBody,
     login,
-    fetchTicket
+    fetchTicket,
+    assigner
 };

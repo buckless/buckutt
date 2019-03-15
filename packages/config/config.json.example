@@ -10,9 +10,11 @@
         }
     },
     "security": {
-        "defaultMol": "mail,username",
-        "nfcMol": "cardId",
-        "secret": "NgWlfDWCbX4mPuxau1FmG3TPLHm7iglEA3mp1f8nrlT7zKDn8ZZAwWQOqUArvQBFfMEbFSAMnUHzgQW1FkczTiZYjPZWqdseNtk2"
+        "secret": "NgWlfDWCbX4mPuxau1FmG3TPLHm7iglEA3mp1f8nrlT7zKDn8ZZAwWQOqUArvQBFfMEbFSAMnUHzgQW1FkczTiZYjPZWqdseNtk2",
+        "database": {
+            "user": "buckless",
+            "password": "buckless"
+        }
     },
     "nfc": {
         "desfire": {
@@ -63,9 +65,6 @@
     "letsencrypt": {
         "active": false,
         "mail": "contact@buckless.com"
-    },
-    "redis": {
-        "maxmemory": "1gb"
     },
     "manager": {
         "allowRegistration": 1,

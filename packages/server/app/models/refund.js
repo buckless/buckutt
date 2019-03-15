@@ -6,8 +6,8 @@ module.exports = bookshelf => {
         uuid: true,
         softDelete: true,
 
-        buyer() {
-            return this.belongsTo('User', 'buyer_id');
+        wallet() {
+            return this.belongsTo('Wallet');
         },
 
         seller() {

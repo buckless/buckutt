@@ -1,7 +1,6 @@
 import { get } from '../../lib/fetch';
 import queryString from '../../lib/queryString';
 import treasuryQueryString from '../../lib/treasuryQueryString';
-import routeToRelation from '../../lib/routeToRelation';
 
 /**
  * Purchases actions
@@ -69,15 +68,5 @@ export function getTreasury({ commit, dispatch }, fields) {
         .then(refunds => {
             commit('CLEAROBJECT', 'refunds');
             dispatch('checkAndAddObjects', { route: 'refunds', objects: refunds });
-
-            const relEmbed = routeToRelation('transfers');
-            return get(`crud/transfers?embed=${relEmbed}${orQt}`);
-        })
-        .then(transfers => {
-            commit('CLEAROBJECT', 'transfers');
-            dispatch('checkAndAddObjects', {
-                route: 'transfers',
-                objects: transfers
-            });
         });
 }

@@ -5,8 +5,8 @@ const { admin_id, manager_id, point_id, period_id, item } = require('./utils/_da
 exports.seed = function(knex) {
     return knex('devices')
         .insert([
-            item({ id: admin_id, name: 'admin', fingerprint: 'admin' }),
-            item({ id: manager_id, name: 'manager', fingerprint: 'manager' })
+            item({ id: admin_id, name: 'admin', fingerprint: 'admin', privateKey: 'admin', authorized: true }),
+            item({ id: manager_id, name: 'manager', fingerprint: 'manager', privateKey: 'manager', authorized: true })
         ])
         .then(() => knex('wikets').del())
         .then(() =>

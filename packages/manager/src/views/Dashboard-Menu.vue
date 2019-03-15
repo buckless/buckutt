@@ -2,44 +2,49 @@
     <div class="menu">
         <Card to="/dashboard/transfer" class="transfer">
             <h3>Virement</h3>
-            <p>Effectuez un transfert vers un autre compte</p>
+            <p>Effectuez un transfert vers un autre porte-monnaie</p>
         </Card>
-        <Card v-if="showCard && hasCard && !cardBlocked" to="/dashboard/block">
+        <Card v-if="showCard && hasCard" to="/dashboard/block">
             <h3>Bloquer mon support cashless</h3>
             <p>
-                Votre espace cashless est associé avec la carte numéro <strong>{{ card }}</strong>
+                Votre porte-monnaie cashless est associé avec la carte numéro
+                <strong>{{ card }}</strong>
             </p>
         </Card>
-        <Card v-if="showCard && (!hasCard || cardBlocked)" to="/dashboard/support">
+        <Card v-if="showCard && !hasCard" to="/dashboard/support">
             <h3>Lier mon support cashless</h3>
-            <p>Synchronisez votre support avec votre compte</p>
+            <p>Synchronisez votre support avec votre porte-monnaie</p>
         </Card>
         <Card v-if="showTicket && ticket">
             <h3>Mon billet</h3>
             <p>
-                Votre espace cashless est associé avec le billet numéro
+                Ce porte-monnaie est associé avec le billet numéro
                 <strong>{{ ticket }}</strong>
             </p>
         </Card>
         <Card v-if="showTicket && !ticket" to="/dashboard/ticket">
             <h3>Mon billet</h3>
-            <p>Liez votre billet d'évènement à ce compte cashless</p>
+            <p>Liez votre billet d'évènement à ce porte-monnaie cashless</p>
+        </Card>
+        <Card v-if="showQrCode && !hasCard" class="card-qrcode" @click.native="toggleQrcode">
+            <h3>Mon QR Code</h3>
+            <p>
+                Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer
+                votre support cashless.
+            </p>
+            <img :src="baseQrCode + currentWallet" alt="qr code" v-if="qrcodeVisible" />
         </Card>
         <Card to="/dashboard/refund">
             <h3>Remboursement de solde</h3>
             <p>
-                Faites vous rembourser le solde restant sur votre support (vous devez avoir lié
-                votre support)
+                Faites vous rembourser le solde restant de ce porte-monnaie
             </p>
-        </Card>
-        <Card to="/dashboard/pin">
-            <h3>Changement de code PIN</h3>
-            <p>Changez votre code de connexion à votre espace cashless</p>
         </Card>
     </div>
 </template>
 
 <script>
+import { accountShowQrcode } from 'config/manager';
 import { menu } from 'config/manager';
 import { mapGetters } from 'vuex';
 import Card from '@/components/Card';
@@ -55,16 +60,25 @@ export default {
 
     data: () => ({
         showTicket: menu.showTicket,
-        showCard: menu.showCard
+        showCard: menu.showCard,
+        showQrCode: accountShowQrcode,
+        baseQrCode: `https://chart.apis.google.com/chart?cht=qr&chs=400x400&chl=`,
+        qrcodeVisible: false
     }),
 
     computed: {
         ...mapGetters({
             ticket: 'user/ticket',
             card: 'user/card',
-            cardBlocked: 'user/cardBlocked',
-            hasCard: 'user/hasCard'
+            hasCard: 'user/hasCard',
+            currentWallet: 'user/currentWallet'
         })
+    },
+
+    methods: {
+        toggleQrcode() {
+            this.qrcodeVisible = !this.qrcodeVisible;
+        }
     }
 };
 </script>
@@ -86,6 +100,16 @@ p {
     margin-top: 0.5rem;
     margin-bottom: 0;
     font-size: 0.9rem;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    margin: 1rem auto;
+}
+
+.card-qrcode {
+    cursor: pointer;
 }
 
 .transfer {

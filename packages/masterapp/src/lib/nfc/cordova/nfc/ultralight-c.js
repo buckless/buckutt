@@ -183,9 +183,11 @@ export default class UltralightC extends EventEmitter {
             sequence = sequence.then(() => this.lock(this.pin));
         }
 
-        return sequence.then(() => newBuf).catch(err => {
-            throw new Error(`Write failed : ${err}`);
-        });
+        return sequence
+            .then(() => newBuf)
+            .catch(err => {
+                throw new Error(`Write failed : ${err}`);
+            });
     }
 
     async lock(pinData = 0x11223344) {

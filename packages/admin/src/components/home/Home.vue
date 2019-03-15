@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import { defaultMol } from 'config/admin'
 import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -41,7 +40,7 @@ export default {
         ...mapActions(['login', 'notifyError']),
 
         log(mail, password) {
-            this.login({ meanOfLogin: defaultMol, data: mail, password })
+            this.login({ mail, password })
                 .then(() => this.$router.push('/stats'))
                 .catch(err => {
                     let message;

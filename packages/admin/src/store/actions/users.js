@@ -6,23 +6,10 @@ import routeToRelation from '../../lib/routeToRelation';
  * Users actions
  */
 
-export function createUserWithMol({ dispatch, getters }, user) {
+export function createUserWithMembership({ dispatch, getters }, user) {
     let createdUser;
 
     return post('crud/users', user)
-        .then(result => {
-            if (result.mail) {
-                post('crud/meansoflogin', {
-                    type: 'mail',
-                    data: result.mail,
-                    user_id: result.id
-                });
-            }
-
-            dispatch('checkAndAddObjects', { route: 'users', objects: [result] });
-
-            return result;
-        })
         .then(newUser => {
             createdUser = newUser;
 
@@ -36,18 +23,6 @@ export function createUserWithMol({ dispatch, getters }, user) {
             });
         })
         .then(() => createdUser);
-}
-
-export function removeUserAndMols({ dispatch }, user) {
-    return dispatch('retrieveObject', { route: 'users', id: user.id })
-        .then(fullUser => {
-            const promises = fullUser.meansOfLogin.map(mol =>
-                dispatch('removeObject', { route: 'meansoflogin', value: mol })
-            );
-
-            return Promise.all(promises);
-        })
-        .then(() => dispatch('removeObject', { route: 'users', value: user }));
 }
 
 export function searchUsers({ dispatch }, { name, min }) {
@@ -68,11 +43,11 @@ export function searchUsers({ dispatch }, { name, min }) {
     });
 }
 
-export function loadUserHistory({ state, dispatch }, user) {
-    return get(`manager/account/history?buyer=${user.id}`).then(results => {
+export function loadWalletHistory({ state, dispatch }, wallet) {
+    return get(`manager/account/history?wallet=${wallet.id}`).then(results => {
         dispatch('clearObject', 'history');
         if (results.history.length > 0) {
-            const depth = state.app.focusedElements.findIndex(element => user.id === element.id);
+            const depth = state.app.focusedElements.findIndex(element => wallet.id === element.id);
 
             dispatch('updateFocusedElement', {
                 depth,
@@ -90,40 +65,46 @@ export function loadUserHistory({ state, dispatch }, user) {
 
 export function cancelTransaction({ state, dispatch }, payload) {
     const transaction = payload.transaction;
-    const user = payload.user;
+    const wallet = payload.wallet;
 
-    return post('payment/cancelTransaction?addPendingCardUpdates=1', transaction).then(() => {
+    return post('payment/cancelTransaction', transaction).then(() => {
         const currentTransaction = state.objects.history.find(h => h.id === transaction.id);
 
-        const newUserCredit = user.credit - currentTransaction.amount;
-        const depth = state.app.focusedElements.findIndex(element => user.id === element.id);
+        const newWalletCredit = wallet.credit - currentTransaction.amount;
+        const depth = state.app.focusedElements.findIndex(element => wallet.id === element.id);
 
         dispatch('updateFocusedElement', {
             depth,
             field: 'credit',
-            value: newUserCredit
+            value: newWalletCredit
         });
     });
 }
 
-export function searchMols({ dispatch }, { mol }) {
-    const qt = [
-        {
-            field: 'physical_id',
-            eq: mol
-        }
-    ];
+export function searchWallets({ dispatch }, { wallet, min }) {
+    const limit = wallet.length <= 2 ? `&limit=${min || 10}` : '';
 
-    const orQt = `&q=${queryString(qt)}`;
-    const relEmbed = routeToRelation('meansOfLogin');
+    let orQt = '';
+    if (wallet) {
+        const qt = [
+            {
+                field: 'physical_id',
+                eq: wallet
+            }
+        ];
 
-    return get(`crud/meansoflogin?embed=${relEmbed}${orQt}`).then(results => {
-        dispatch('clearObject', 'users');
+        orQt = `&q=${queryString(qt)}`;
+    }
+
+    const relEmbed = routeToRelation('wallets');
+
+    return get(`crud/wallets?embed=${relEmbed}${orQt}${limit}`).then(results => {
+        dispatch('clearObject', 'wallets');
 
         if (results.length > 0) {
             dispatch('checkAndAddObjects', {
-                route: 'users',
-                objects: results.map(mol => mol.user)
+                route: 'wallets',
+                objects: results
             });
         }
 

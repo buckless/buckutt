@@ -22,15 +22,6 @@
                 <strong>Catering:</strong>
                 <div v-for="(item, i) in cardData.options.catering" :key="i">
                     {{ getCateringName(item.id) }} : {{ item.balance }}
-
-                    (<span
-                        v-for="(active, day) in getCateringAvail(item.validity)"
-                        :key="day"
-                        class="day"
-                        :active="active"
-                    >
-                        {{ day }} </span
-                    >)
                 </div>
             </div>
         </div>
@@ -47,24 +38,11 @@
 </template>
 
 <script>
-import moment from 'moment';
 import * as chunk from 'lodash.chunk';
 
 import Nfc from '@/components/Nfc';
 import CardViewer from '@/components/CardViewer';
 import cards from '@/assets/cards.csv';
-
-window.moment = moment;
-
-const daysTrans = {
-    Sunday: 'Dim',
-    Monday: 'Lun',
-    Tuesday: 'Mar',
-    Wednesday: 'Mer',
-    Thursday: 'Jeu',
-    Friday: 'Ven',
-    Saturday: 'Sam'
-};
 
 export default {
     components: {
@@ -102,21 +80,6 @@ export default {
                 console.log('couldnt find id', id, err);
                 return 'Inconnu';
             }
-        },
-
-        getCateringAvail(validity) {
-            const firstDay = moment(process.env.VUE_APP_CATERING_DAYONE);
-            const days = parseInt(process.env.VUE_APP_CATERING_DAYS, 10);
-
-            const avails = {};
-
-            for (let i = 0; i < days; ++i) {
-                const date = moment(firstDay).add(i, 'day');
-
-                avails[daysTrans[date.format('dddd')]] = validity[i];
-            }
-
-            return avails;
         }
     }
 };

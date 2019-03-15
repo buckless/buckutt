@@ -5,5 +5,7 @@
     "urls.managerUrl": "urls.manager",
     "askpin.from": "eventOrCompany.sender",
     "assigner": "assigner",
-    "provider": "reload"
+    "provider": "reload",
+    "db.connection.user": "security.database.user",
+    "db.connection.password": "security.database.password"
 }

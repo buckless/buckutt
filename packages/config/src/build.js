@@ -20,25 +20,33 @@ const mapConfiguration = mapper => {
     return output;
 };
 
-const mapServerConfig = () => {
+const mapServerConfig = isDev => {
     const base = require('./server.base.json');
     const extend = require('./server.extend.json');
 
     return merge(base, mapConfiguration(extend), {
         log: {
             console: {
-                level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
+                level: isDev ? 'debug' : 'info'
             }
+        },
+        db: {
+            connection: {
+                host: isDev ? 'localhost' : 'sql'
+            }
+        },
+        redis: {
+            host: isDev ? 'localhost' : 'cache'
         },
         client: mapConfiguration(require('./client.json'))
     });
 };
 
-const main = async () => {
+const main = async isDev => {
     const adminConfig = mapConfiguration(require('./admin.json'));
     const managerConfig = mapConfiguration(require('./manager.json'));
     const clientConfig = mapConfiguration(require('./client.json'));
-    const serverConfig = mapServerConfig();
+    const serverConfig = mapServerConfig(isDev || process.env.NODE_ENV === 'development');
 
     await fs.writeFile(path.join(__dirname, '../admin.json'), JSON.stringify(adminConfig, null, 2));
 

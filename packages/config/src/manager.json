@@ -1,7 +1,6 @@
 {
     "name": "eventOrCompany.name",
     "contactMail": "eventOrCompany.contact",
-    "defaultMol": "security.defaultMol",
     "sentry": "urls.sentry.manager",
     "allowRegistration": "manager.allowRegistration",
     "history": {

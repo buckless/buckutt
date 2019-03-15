@@ -11,7 +11,6 @@ const modelsNames = {
     giftreloads: 'GiftReload',
     healthalerts: 'HealthAlert',
     memberships: 'Membership',
-    meansoflogin: 'MeanOfLogin',
     meansofpayment: 'MeanOfPayment',
     accesses: 'Access',
     periods: 'Period',
@@ -24,9 +23,11 @@ const modelsNames = {
     reloads: 'Reload',
     rights: 'Right',
     sets: 'Set',
+    tickets: 'Ticket',
     transfers: 'Transfer',
     transactions: 'Transaction',
     users: 'User',
+    wallets: 'Wallet',
     webservices: 'Webservice',
     withdrawals: 'Withdrawal'
 };

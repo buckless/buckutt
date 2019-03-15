@@ -6,7 +6,11 @@ const modelParser = require('server/app/utils/modelParser');
 const idParser = require('server/app/utils/idParser');
 
 const { create, read, update, del } = require('server/app/actions/crud');
-const { createRelative, readRelative, deleteRelative } = require('server/app/actions/crud/relative');
+const {
+    createRelative,
+    readRelative,
+    deleteRelative
+} = require('server/app/actions/crud/relative');
 
 // fill req.crud with (withRelated, embedFilters, filters)
 router.use(require('server/app/middlewares/crud'));

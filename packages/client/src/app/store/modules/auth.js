@@ -28,24 +28,22 @@ const initialState = {
         privateKey: null
     },
     buyer: {
-        isAuth: false,
         id: null,
         credit: 0,
         firstname: null,
         lastname: null,
         memberships: [],
         purchases: [],
-        meanOfLogin: '',
+        wallet: null,
         catering: []
     },
     seller: {
-        isAuth: false,
-        meanOfLogin: '',
-        pin: '',
-        id: '',
-        token: '',
-        firstname: '',
-        lastname: '',
+        wallet: null,
+        pin: null,
+        id: null,
+        token: null,
+        firstname: null,
+        lastname: null,
         canSell: false,
         canReload: false,
         canAssign: false,
@@ -95,26 +93,19 @@ const mutations = {
         state.device.event.defaultGroup_id = payload.defaultGroup_id;
     },
 
-    ID_SELLER(state, meanOfLogin) {
-        state.seller.meanOfLogin = meanOfLogin;
+    SET_SELLER_WALLET(state, wallet) {
+        state.seller.wallet = wallet;
     },
 
-    SET_BUYER_MOL(state, payload) {
-        state.buyer.meanOfLogin = payload;
+    SET_BUYER_WALLET(state, payload) {
+        state.buyer.wallet = payload;
     },
 
     AUTH_SELLER(state, payload) {
-        state.seller.isAuth = true;
-        state.seller.meanOfLogin = payload.meanOfLogin;
-        state.seller.pin = payload.pin;
-        state.seller.id = payload.id;
-        state.seller.token = payload.token;
-        state.seller.firstname = payload.firstname;
-        state.seller.lastname = payload.lastname;
-        state.seller.canSell = payload.canSell;
-        state.seller.canReload = payload.canReload;
-        state.seller.canAssign = payload.canAssign;
-        state.seller.canControl = payload.canControl;
+        state.seller = {
+            ...state.seller,
+            ...payload
+        };
     },
 
     SET_GROUPS(state, groups) {
@@ -125,15 +116,11 @@ const mutations = {
         state.seller.token = token;
     },
 
-    ID_BUYER(state, payload) {
-        state.buyer.isAuth = true;
-        state.buyer.id = payload.id;
-        state.buyer.credit = payload.credit;
-        state.buyer.firstname = payload.firstname;
-        state.buyer.lastname = payload.lastname;
-        state.buyer.memberships = payload.memberships;
-        state.buyer.purchases = payload.purchases;
-        state.buyer.catering = payload.catering;
+    AUTH_BUYER(state, payload) {
+        state.buyer = {
+            ...state.buyer,
+            ...payload
+        };
     },
 
     OVERRIDE_BUYER_CREDIT(state, credit) {
@@ -141,8 +128,9 @@ const mutations = {
     },
 
     LOGOUT_SELLER(state) {
-        state.seller.isAuth = false;
-        state.seller.pin = '';
+        state.seller = {
+            ...initialState.seller
+        };
     },
 
     FIRST_LOGOUT_SELLER(state) {
@@ -154,9 +142,9 @@ const mutations = {
     },
 
     LOGOUT_BUYER(state) {
-        state.buyer.isAuth = false;
-        state.buyer.credit = 0;
-        state.buyer.catering = [];
+        state.buyer = {
+            ...initialState.buyer
+        };
     },
 
     SET_ALERT(state, alert) {

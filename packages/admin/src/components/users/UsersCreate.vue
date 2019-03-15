@@ -42,14 +42,13 @@ export default {
                 firstname: '',
                 lastname: '',
                 nickname: '',
-                mail: '',
-                credit: 0
+                mail: ''
             }
         };
     },
 
     methods: {
-        ...mapActions(['createUserWithMol', 'updateCreationData', 'notify', 'notifyError']),
+        ...mapActions(['createUserWithMembership', 'updateCreationData', 'notify', 'notifyError']),
 
         createUser(user) {
             const newPin = `${randTen()}${randTen()}${randTen()}${randTen()}`;
@@ -63,7 +62,7 @@ export default {
                 password: newPassword
             });
 
-            this.createUserWithMol(user)
+            this.createUserWithMembership(user)
                 .then(createdUser => {
                     this.notify({ message: "L'utilisateur a bien été créé" });
                     this.$router.push(`/users/${createdUser.id}`);

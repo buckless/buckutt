@@ -10,7 +10,7 @@ server {
 }
 
 server {
-    server_name _;
+    server_name *.inst.buckless.com;
     listen 80;
     return 301 https://$host$request_uri;
 }

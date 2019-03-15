@@ -62,7 +62,13 @@ module.exports = (api, options) => {
             quiet: true,
             compress: false,
             publicPath: options.publicPath,
-            overlay: true
+            overlay: true,
+            historyApiFallback: {
+                disableDotRule: true,
+                rewrites: [
+                    { from: /./, to: require('path').posix.join(options.publicPath, 'index.html') }
+                ]
+            },
         }, projectDevServerOptions, {
             before(app, server) {
                 // allow other plugins to register middlewares, e.g. PWA

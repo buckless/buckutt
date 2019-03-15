@@ -1,13 +1,12 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
-const sanitizeUser = require('server/app/utils/sanitizeUser');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
 const {
     block,
     listGroups,
-    history: accountHistory,
+    history: walletHistory,
     invoice
 } = require('server/app/actions/manager/account');
 
@@ -16,9 +15,24 @@ const router = require('express').Router();
 router.put(
     '/block',
     asyncHandler(async (req, res) => {
-        log.info(`user ${req.user.id} blocked his cards`);
+        const target = await req.app.locals.models.Wallet.where({ id: req.query.wallet })
+            .fetch()
+            .then(wallet => (wallet ? wallet.toJSON() : null));
 
-        await block(ctx(req), { user_id: req.user.id });
+        if (req.user.id !== target.user_id) {
+            return Promise.reject(
+                new APIError(
+                    module,
+                    401,
+                    `This wallet doesn't belong to the logged user`,
+                    req.query.wallet
+                )
+            );
+        }
+
+        log.info(`user ${req.user.id} blocked its card ${target.id}`);
+
+        await block(ctx(req), { wallet_id: target.id });
         res.json({ blocked: true });
     })
 );
@@ -43,21 +57,26 @@ router.get(
             right => right.name === 'admin' && right.period.end > new Date()
         );
 
-        const targetUser = adminRight && req.query.buyer ? req.query.buyer : req.user.id;
+        const target = await req.app.locals.models.Wallet.where({ id: req.query.wallet })
+            .fetch()
+            .then(wallet => (wallet ? wallet.toJSON() : null));
 
-        const target = await req.app.locals.models.User.where({ id: targetUser })
-            .fetch({ withRelated: ['meansOfLogin', 'rights', 'rights.period'] })
-            .then(user => (user ? user.toJSON() : null));
-
-        if (!target) {
-            return Promise.reject(new APIError(module, 404, 'User not found', targetUser));
+        if (!adminRight && req.user.id !== target.user_id) {
+            return Promise.reject(
+                new APIError(
+                    module,
+                    401,
+                    `This wallet doesn't belong to the logged user`,
+                    req.query.wallet
+                )
+            );
         }
 
-        log.info(`get history for user ${target.id}`, req.details);
+        log.info(`get history for wallet ${target.id}`, req.details);
 
         const { offset, limit } = req.query;
 
-        const { history, pending } = await accountHistory(ctx(req), {
+        const { history, pending } = await walletHistory(ctx(req), {
             id: target.id,
             offset,
             limit
@@ -65,9 +84,9 @@ router.get(
 
         res.status(200)
             .json({
-                user: sanitizeUser(req.user, req.point.id),
+                history,
                 pending,
-                history
+                wallet: target
             })
             .end();
     })

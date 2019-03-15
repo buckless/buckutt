@@ -110,7 +110,7 @@ export const listenHealthAlerts = ({ state, dispatch }) => {
         );
 
         healthAlert = new EventSource(
-            `${config.api}/live/healthalert?authorization=Bearer ${token}&fingerprint=${
+            `${state.device.api}/live/healthalert?authorization=Bearer ${token}&fingerprint=${
                 window.fingerprint
             }&signature=${signature}&handshake-interval=20000&lastEventId=12345&retry=3000`
         );
@@ -129,13 +129,12 @@ export const listenHealthAlerts = ({ state, dispatch }) => {
 };
 
 export const logOperator = store => {
-    if (store.getters.tokenHeaders.headers || !store.state.auth.seller.isAuth) {
+    if (store.getters.tokenHeaders.headers || !store.getters.sellerLogged) {
         return Promise.resolve();
     }
 
     const credentials = {
-        meanOfLogin: window.config.loginMeanOfLogin,
-        data: store.state.auth.seller.meanOfLogin,
+        wallet: store.state.auth.seller.wallet,
         pin: store.state.auth.seller.pin
     };
 
@@ -143,12 +142,12 @@ export const logOperator = store => {
         store.state.auth.device.privateKey,
         window.fingerprint,
         'POST',
-        'services/login'
+        'auth/login'
     );
 
     // Use axios to avoid a logOperator loop
     return axios(store.state.device.api)
-        .post('services/login', credentials, {
+        .post('auth/login', credentials, {
             headers: {
                 'X-fingerprint': window.fingerprint,
                 'X-signature': signature

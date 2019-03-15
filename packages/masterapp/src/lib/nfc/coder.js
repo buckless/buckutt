@@ -12,10 +12,7 @@ export default () => {
     );
 
     // The first bit is used by assignedCard parameter, the second by the lock state, the third by the paid state
-    const usefulDataLength = articles.reduce(
-        (a, b) => a + b.maxNumber.toString(2).length,
-        3
-    );
+    const usefulDataLength = articles.reduce((a, b) => a + b.maxNumber.toString(2).length, 3);
     const optionsLength = Math.ceil(usefulDataLength / 8) * 8;
 
     const byteNumber = optionsLength / 8;
@@ -94,10 +91,7 @@ export default () => {
                 articles.forEach(article => {
                     const articleSize = article.maxNumber.toString(2).length;
                     const articleBits = binaryOptions.substr(articleIndex, articleSize);
-                    const balance = parseInt(
-                        articleBits.substr(0, articleBits.length),
-                        2
-                    );
+                    const balance = parseInt(articleBits.substr(0, articleBits.length), 2);
                     options.catering.push({
                         id: article.id,
                         balance

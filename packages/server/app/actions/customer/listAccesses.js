@@ -1,14 +1,14 @@
 const { embedParser, embedFilter } = require('server/app/utils/embedParser');
 
-module.exports = async (ctx, user) => {
+module.exports = async (ctx, walletId) => {
     const now = new Date();
 
     const embedMemberships = [
         { embed: 'user', required: true },
         { embed: 'period', filters: [['end', '>', now]], required: true },
         {
-            embed: 'user.meansOfLogin',
-            filters: [['blocked', '=', false], ['type', '=', 'cardId'], ['data', '=', user]],
+            embed: 'user.wallets',
+            filters: [['blocked', '=', false], ['logical_id', '=', walletId]],
             required: true
         }
     ];
@@ -28,9 +28,8 @@ module.exports = async (ctx, user) => {
     const accesses = [];
 
     for (let i = memberships.length - 1; i >= 0; i -= 1) {
-        if (memberships[i].user.meansOfLogin.length > 0) {
+        if (memberships[i].user.wallets.length > 0) {
             accesses.push({
-                cardId: memberships[i].user.meansOfLogin[0].data,
                 group: memberships[i].group_id,
                 start: memberships[i].period.start,
                 end: memberships[i].period.end

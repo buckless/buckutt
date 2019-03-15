@@ -27,6 +27,8 @@ const DashboardRefund = () =>
     import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard-Refund');
 const DashboardSupport = () =>
     import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard-Support');
+const DashboardAssign = () =>
+    import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard-Assign');
 const DashboardTicket = () =>
     import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard-Ticket');
 const DashboardInvoice = () =>
@@ -67,6 +69,7 @@ const routes = [
             { path: 'pin', component: DashboardPIN },
             { path: 'refund', component: DashboardRefund },
             { path: 'support', component: DashboardSupport },
+            { path: 'assign', component: DashboardAssign },
             { path: 'ticket', component: DashboardTicket },
             { path: 'invoice', component: DashboardInvoice }
         ]

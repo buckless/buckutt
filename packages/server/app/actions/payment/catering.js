@@ -1,30 +1,23 @@
-const createUser = require('server/app/helpers/createUser');
+const createWallet = require('server/app/helpers/createWallet');
 
-module.exports = async (ctx, { molToCheck, name, cateringId, clientTime }) => {
-    const mol = await ctx.models.MeanOfLogin.where(molToCheck)
-        .fetch({ withRelated: ['user'] })
-        .then(mol => (mol ? mol.toJSON() : null));
+module.exports = async (ctx, { walletId, name, cateringId, clientTime }) => {
+    let wallet = await ctx.models.Wallet.where({
+        logical_id: walletId,
+        blocked: false
+    })
+        .fetch()
+        .then(wallet => (wallet ? wallet.toJSON() : null));
 
-    let buyer;
-
-    if (!mol || !mol.user || !mol.user.id) {
-        buyer = await createUser(
-            ctx,
-            {},
-            [],
-            [molToCheck],
-            [ctx.event.defaultGroup_id],
-            false,
-            true,
+    if (!wallet) {
+        wallet = await createWallet(ctx, {
+            logicalId: walletId,
             clientTime
-        );
-    } else {
-        buyer = mol.user;
+        });
     }
 
     await new ctx.models.Withdrawal({
         seller_id: ctx.user.id,
-        buyer_id: buyer.id,
+        wallet_id: wallet.id,
         point_id: ctx.point.id,
         name,
         cateringId,

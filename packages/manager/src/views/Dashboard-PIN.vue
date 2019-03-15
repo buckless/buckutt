@@ -27,7 +27,7 @@
                 />
 
                 <div class="actions">
-                    <Button to="/dashboard/menu">Retour</Button>
+                    <Button to="/dashboard/account">Retour</Button>
 
                     <Button :disabled="working" raised>Modifier</Button>
                 </div>
@@ -67,7 +67,7 @@ export default {
         async changePin(currentPin, pin, confirmation) {
             await this.processChangePin({ currentPin, pin, confirmation });
 
-            this.$router.push('/dashboard/menu');
+            this.$router.push('/dashboard/account');
         },
 
         ...mapActions({

@@ -1,57 +1,20 @@
-const { fetchTicket } = require('server/app/providers/ticket');
 const { embedParser, embedFilter } = require('server/app/utils/embedParser');
 const APIError = require('server/app/utils/APIError');
 
 module.exports = async (ctx, ticketNumber) => {
-    const MeanOfLogin = ctx.models.MeanOfLogin;
-    const now = new Date();
+    const embedTicket = [{ embed: 'wallet' }, { embed: 'wallet.user' }];
+    const embedTicketFilters = embedTicket.filter(rel => rel.required).map(rel => rel.embed);
 
-    const embedMeanOfLogin = [
-        { embed: 'user', required: true },
-        {
-            embed: 'user.meansOfLogin',
-            filters: [['blocked', '=', false], ['type', '=', 'username']]
-        },
-        { embed: 'user.memberships' },
-        {
-            embed: 'user.memberships.period',
-            filters: [['start', '<', now], ['end', '>', now]],
-            required: true
-        }
-    ];
+    const ticketData = await ctx.models.Ticket.query({
+        where: { logical_id: ticketNumber },
+        orWhere: { physical_id: ticketNumber }
+    })
+        .fetch({ withRelated: embedParser(embedTicket) })
+        .then(ticket => (ticket ? embedFilter(embedTicketFilters, [ticket.toJSON()])[0] : null));
 
-    const embedMeanOfLoginFilters = embedMeanOfLogin
-        .filter(rel => rel.required)
-        .map(rel => rel.embed);
-
-    const userData = await fetchTicket(ticketNumber);
-    const ticketId = userData ? userData.ticketId : ticketNumber;
-
-    const apiData = await MeanOfLogin.where('type', 'in', ['ticketId', 'username', 'mail'])
-        .query({ where: { data: ticketId }, orWhere: { physical_id: ticketId } })
-        .where({ blocked: false })
-        .fetch({ withRelated: embedParser(embedMeanOfLogin) })
-        .then(mol => {
-            const mols = mol ? [mol.toJSON()] : [];
-
-            return embedFilter(embedMeanOfLoginFilters, mols);
-        });
-
-    if (apiData.length > 0) {
-        const mol = apiData[0];
-
-        return {
-            id: mol.user.id,
-            credit: mol.user.credit,
-            name: `${mol.user.firstname} ${mol.user.lastname}`,
-            currentGroups: mol.user.memberships.map(membership => ({
-                id: membership.group_id
-            })),
-            username: (mol.user.meansOfLogin[0] || {}).data
-        };
-    } else if (userData) {
-        return userData;
+    if (!ticketData) {
+        throw new APIError(module, 404, "Couldn't find ticket", ticketNumber);
     }
 
-    throw new APIError(module, 404, "Couldn't find ticket", ticketNumber);
+    return ticketData;
 };

@@ -1,59 +1,64 @@
-const fetchFromAPI = require('server/app/providers/ticket');
+const fetchTicket = require('server/app/helpers/fetchTicket');
 const { embedParser, embedFilter } = require('server/app/utils/embedParser');
 const APIError = require('server/app/utils/APIError');
 
-module.exports = async ({ models }, ticketNumber) => {
-    const MeanOfLogin = models.MeanOfLogin;
-    const now = new Date();
+module.exports = async (ctx, ticketNumber) => {
+    const ticket = await fetchTicket(ctx, ticketNumber);
 
-    const embedMeanOfLogin = [
+    if (ticket.wallet.logical_id) {
+        throw new APIError(module, 400, 'This ticket is already assigned to a card', ticketNumber);
+    }
+
+    const now = new Date();
+    const embedWallet = [
         { embed: 'user', required: true },
-        {
-            embed: 'user.meansOfLogin',
-            filters: [['blocked', '=', false], ['type', '=', 'username']]
-        },
         { embed: 'user.memberships' },
         {
             embed: 'user.memberships.period',
             filters: [['start', '<', now], ['end', '>', now]],
             required: true
+        },
+        { embed: 'memberships ' },
+        {
+            embed: 'memberships.period',
+            filters: [['start', '<', now], ['end', '>', now]],
+            required: true
         }
     ];
 
-    const embedMeanOfLoginFilters = embedMeanOfLogin
-        .filter(rel => rel.required)
-        .map(rel => rel.embed);
+    const embedWalletFilters = embedWallet.filter(rel => rel.required).map(rel => rel.embed);
 
-    const userData = await fetchFromAPI(ticketNumber);
-    const ticketId = userData ? userData.ticketId : ticketNumber;
+    let wallet;
+    let memberships = [];
 
-    const apiData = await MeanOfLogin.where('type', 'in', ['ticketId', 'username', 'mail'])
-        .query({
-            where: { data: ticketId },
-            orWhere: { physical_id: ticketId }
-        })
-        .where({ blocked: false })
-        .fetch({ withRelated: embedParser(embedMeanOfLogin) })
-        .then(mol => {
-            const mols = mol ? [mol.toJSON()] : [];
-            return embedFilter(embedMeanOfLoginFilters, mols);
-        });
+    // If the ticket doesn't exists, or if the ticket is already assign, get the wallet & the user responsible of that
+    if (!ticket || ticket.wallet_id) {
+        wallet = await ctx.models.Wallet.where({ id: ticket.wallet_id || ticketNumber })
+            .fetch({ withRelated: embedParser(embedWallet) })
+            .then(wallet => {
+                const wallets = wallet ? [wallet.toJSON()] : [];
+                return embedFilter(embedWalletFilters, wallets);
+            });
 
-    if (apiData.length > 0) {
-        const mol = apiData[0];
+        if (!wallet) {
+            throw new APIError(module, 404, "Couldn't find ticket", ticketNumber);
+        }
 
-        return {
-            id: mol.user.id,
-            credit: mol.user.credit,
-            name: `${mol.user.firstname} ${mol.user.lastname}`,
-            currentGroups: mol.user.memberships.map(membership => ({
-                id: membership.group_id
-            })),
-            username: (mol.user.meansOfLogin[0] || {}).data
-        };
-    } else if (userData) {
-        return userData;
+        memberships = wallet.memberships
+            .concat(wallet.user.memberships)
+            .map(membership => ({ id: membership.group_id }));
     }
 
-    throw new APIError(module, 404, "Couldn't find ticket", ticketNumber);
+    return {
+        credit: wallet ? wallet.credit : ticket.amount,
+        name: wallet
+            ? `${wallet.user.firstname} ${wallet.user.lastname}`
+            : `${ticket.firstname} ${ticket.lastname}`,
+        id: wallet ? wallet.id : ticket.id,
+        walletId: wallet ? wallet.id : null,
+        ticketId: ticket ? ticket.id : null,
+        barcode: ticket ? ticket.logical_id : null,
+        physicalId: ticket ? ticket.physical_id : null,
+        currentGroups: memberships
+    };
 };

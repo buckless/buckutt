@@ -19,10 +19,10 @@ export const clearResults = ctx => {
     ctx.commit('SET_SELECTED_USER', null);
 };
 
-export const transfer = async (ctx, { user, amount }) => {
+export const transfer = async (ctx, { wallet, amount }) => {
     let message = '';
 
-    if (!user || !user.id) {
+    if (!wallet || !wallet.id) {
         message = 'Veuillez sélectionner un destinataire';
     } else {
         amount = parseFloat(amount);
@@ -31,7 +31,7 @@ export const transfer = async (ctx, { user, amount }) => {
             message = 'Le montant doit être supérieur à 0';
         }
 
-        if (user.id === ctx.rootState.user.user.id) {
+        if (wallet.id === ctx.rootState.user.currentWallet.id) {
             message = "Impossible de s'envoyer de l'argent";
         }
     }
@@ -46,7 +46,8 @@ export const transfer = async (ctx, { user, amount }) => {
 
     const body = {
         amount: (amount * 100).toFixed(0),
-        reciever_id: user.id
+        creditor_id: wallet.id,
+        debitor_id: ctx.rootState.user.currentWallet
     };
 
     const result = await ctx.dispatch(

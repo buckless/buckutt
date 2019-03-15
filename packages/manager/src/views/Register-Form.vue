@@ -20,7 +20,7 @@
             <Checkbox id="1" v-model="cgu" :disabled="working">
                 J'accepte les
                 <a href="https://buckless.com/static/cgu.pdf" rel="noopener noref nofollow"
-                    >conditions générales d'utilisation</a
+                    >conditions générales de vente</a
                 >.
             </Checkbox>
             <div class="actions">

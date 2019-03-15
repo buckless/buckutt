@@ -1,12 +1,13 @@
 const { bookshelf } = require('server/app/db');
 
 module.exports = async ctx => {
-    const activeCards = ctx.models.MeanOfLogin.query(knex => knex.count())
-        .where({ type: 'cardId', blocked: false })
+    const activeCards = ctx.models.Wallet.query(knex => knex.count())
+        .where({ blocked: false })
+        .whereNotNull('logical_id')
         .fetch();
 
-    const validatedTickets = ctx.models.MeanOfLogin.query(knex => knex.count())
-        .where({ type: 'ticketId', blocked: true })
+    const validatedTickets = ctx.models.Ticket.query(knex => knex.count())
+        .whereNotNull('wallet_id')
         .fetch();
 
     const reloads = ctx.models.Reload.query(knex =>

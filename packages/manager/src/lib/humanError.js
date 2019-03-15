@@ -9,20 +9,20 @@ export default message => {
 
     switch (message) {
         case 'Login error: Wrong credentials':
-        case 'Login error: No (meanOfLogin) data provided':
+        case 'Login error: No username provided':
         case 'Login error: No password nor pin provided':
             return 'Identifiants incorrects';
         case "Couldn't find ticket":
             return "Ce billet n'existe pas";
-        case 'Physical support not found':
+        case 'Card not found':
             return "Ce support n'existe pas";
-        case 'Card already binded':
-            return 'Cette carte appartient à déjà un autre compte';
-        case 'Ticket already binded':
-            return 'Ce billet appartient à déjà un autre compte';
+        case 'This card already belongs to a user':
+            return 'Ce support appartient déjà à un autre compte';
+        case 'This ticket already belongs to another wallet':
+            return 'Ce billet appartient déjà à un autre compte';
         case 'Duplicate Entry':
             return 'Cette carte est déjà associée à votre compte';
-        case 'User mail exists':
+        case 'This mail is already taken':
             return 'Cette adresse e-mail est déjà utilisée';
         case 'Unauthorized: insufficient rights':
             return 'Droits insuffisants';

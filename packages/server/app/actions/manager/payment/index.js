@@ -1,7 +1,7 @@
 module.exports = {
     accountRefund: require('./accountRefund'),
     canRefund: require('./canRefund'),
-    getReciever: require('./getReciever'),
+    getWallet: require('./getWallet'),
     listGiftReloads: require('./listGiftReloads'),
     transfer: require('./transfer')
 };

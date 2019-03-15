@@ -4,20 +4,25 @@ const rightsDetails = require('server/app/utils/rightsDetails');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
-const { buyer, listAccesses, logAccess, commitPendingCardUpdate } = require('server/app/actions/customer');
+const {
+    buyer,
+    listAccesses,
+    logAccess,
+    commitPendingCardUpdate
+} = require('server/app/actions/customer');
 
 const router = require('express').Router();
 
 router.get(
     '/controller',
     asyncHandler(async (req, res) => {
-        if (!req.query.user) {
-            throw new APIError(module, 400, 'Invalid user');
+        if (!req.query.walletId) {
+            throw new APIError(module, 400, 'Invalid wallet');
         }
 
-        log.info(`get accesses for user ${req.user.id}`, req.details);
+        log.info(`get accesses for wallet ${req.query.walletId}`, req.details);
 
-        const accesses = await listAccesses(req.query.user);
+        const accesses = await listAccesses(req.query.walletId);
 
         res.json(accesses);
     })
@@ -26,19 +31,22 @@ router.get(
 router.post(
     '/controller',
     asyncHandler(async (req, res) => {
-        const cardId = req.body.cardId.toLowerCase().trim();
+        const walletId = req.body.walletId.toLowerCase().trim();
 
-        req.details.mol = cardId;
+        req.details.wallet = walletId;
         req.details.clientTime = req.body.clientTime;
         req.details.point = req.point.id;
 
         await logAccess(ctx(req), {
-            cardId,
+            walletId,
             wiketId: req.wiket_id,
             clientTime: req.body.clientTime
         });
 
-        log.info(`Create access for ${req.details.mol} on wiket ${req.body.wiket_id}`, req.details);
+        log.info(
+            `Create access for ${req.details.walletId} on wiket ${req.body.wiket_id}`,
+            req.details
+        );
 
         res.json({});
     })
@@ -53,13 +61,12 @@ router.get(
             throw new APIError(module, 401, 'No operator right');
         }
 
-        if (!req.query.buyer || !req.query.molType) {
-            throw new APIError(module, 401, 'Missing buyer or molType');
+        if (!req.query.walletId) {
+            throw new APIError(module, 401, 'Missing wallet id');
         }
 
         const foundBuyer = await buyer(ctx(req), {
-            type: req.query.molType,
-            buyer: req.query.buyer
+            wallet: req.query.wallet
         });
 
         res.json({ buyer: foundBuyer });

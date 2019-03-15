@@ -5,7 +5,6 @@
                 title="Utilisateurs"
                 :tabs="[
                     { route: '/users', name: 'Liste', exact: true },
-                    { route: '/users/mol', name: 'Recherche par support NFC' },
                     { route: '/users/create', name: 'Création' },
                     { route: '/users/staff', name: 'Staff' }
                 ]"

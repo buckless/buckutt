@@ -54,6 +54,7 @@ services/volumes/database/data
 # Nginx
 services/images/reverse_proxy/docker-entrypoint.sh
 services/volumes/reverse_proxy/le-certs
+services/volumes/reverse_proxy/server.prod.conf
 
 # Images server
 packages/image-server/images/*

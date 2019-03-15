@@ -19,47 +19,30 @@
             <i class="b-icon" @click="$emit('blankCard')">add</i>
             <i class="b-icon" :disabled="updatingTickets" @click="updateTickets">refresh</i>
         </h4>
-        <div
-            class="b-assigner-search__results"
-            v-if="matches.length > 0 && searchInput.length >= 4"
-        >
-            <div
-                class="b-assigner-search__results__result"
-                v-for="match in matches"
-                :key="match.id"
-                @click="selectUser(match)"
-            >
-                {{ match.name }}
-                <div v-if="match.mail">
-                    <em>{{ match.mail }}</em>
-                </div>
-            </div>
-        </div>
-        <p v-else-if="searchInput.length >= 4">Aucun résultat.</p>
-        <div class="b-assigner-search__results" v-else>
+        <div class="b-assigner-search__results" v-if="displayedResults.length">
             <recycle-scroller
                 class="scroller"
-                :items="tickets"
+                :items="displayedResults"
                 :buffer="60"
-                :item-height="38"
+                :item-height="56"
                 key-field="id"
             >
                 <template slot-scope="{ item }">
                     <div class="b-assigner-search__results__result" @click="selectUser(item)">
                         {{ item.name }}
-                        <div v-if="item.mail">
+                        <div>
                             <em>{{ item.mail }}</em>
                         </div>
                     </div>
                 </template>
             </recycle-scroller>
         </div>
+        <p v-else>Aucun résultat.</p>
     </div>
 </template>
 
 <script>
 import { RecycleScroller } from 'vue-virtual-scroller';
-import formatOfflineResults from '@/utils/formatOfflineResults';
 
 export default {
     components: {
@@ -68,7 +51,6 @@ export default {
 
     data() {
         return {
-            searchBy: 'name',
             searchInput: '',
             updatingTickets: false,
             tickets: [],
@@ -88,39 +70,21 @@ export default {
                 return;
             }
 
-            window.database
-                .find(this.searchInput)
-                .then(users => formatOfflineResults(users))
-                .then(users => {
-                    this.matches = users.data.map(user => {
-                        if (user.firstname) {
-                            user.name = `${user.firstname} ${user.lastname}`;
-                        }
-
-                        if (user.memberships) {
-                            user.currentGroups = user.memberships.map(membership => ({
-                                id: membership.group_id
-                            }));
-                        }
-
-                        return user;
-                    });
-                });
+            window.database.find(this.searchInput).then(tickets => {
+                this.matches = tickets;
+            });
         },
 
         selectUser(user) {
-            const ticketId =
-                user.ticketId || (user.searchBy === 'ticketId' ? this.searchInput : null);
-
             this.$emit(
                 'assign',
                 user.credit,
                 user.name,
-                user.username,
                 user.id,
                 null,
-                ticketId,
-                user.molId
+                user.barcode,
+                user.ticketId,
+                user.walletId
             );
         },
 
@@ -129,11 +93,8 @@ export default {
 
             window.database
                 .listTickets()
-                .then(tickets => formatOfflineResults(tickets))
-                .catch(err => console.log(err))
                 .then(
-                    tickets =>
-                        (this.tickets = tickets.data.sort((a, b) => a.name.localeCompare(b.name)))
+                    tickets => (this.tickets = tickets.sort((a, b) => a.name.localeCompare(b.name)))
                 )
                 .then(() => {
                     window.tickets = this.tickets;
@@ -145,6 +106,12 @@ export default {
             setTimeout(() => {
                 this.updatingTickets = false;
             }, 400);
+        }
+    },
+
+    computed: {
+        displayedResults() {
+            return this.searchInput.length >= 4 ? this.matches : this.tickets;
         }
     },
 
@@ -210,13 +177,15 @@ export default {
 }
 
 .scroller {
-    max-height: 100%;
-    width: 100%;
-    position: absolute;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .b-assigner-search__results__result {
     padding: 10px;
     cursor: pointer;
+    height: 56px;
+    position: absolute;
+    width: 100%;
 }
 </style>

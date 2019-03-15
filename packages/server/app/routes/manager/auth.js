@@ -3,9 +3,9 @@ const log = require('server/app/log')(module);
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
-const { assigner } = require('server/app/actions/manager/auth/assigner');
+const { assignCard } = require('server/app/actions/manager/auth/assignCard');
+const { assignWallet } = require('server/app/actions/manager/auth/assignWallet');
 const { register } = require('server/app/actions/manager/auth/register');
-const { switchuser } = require('server/app/actions/manager/auth/switchuser');
 const { changePin } = require('server/app/actions/manager/auth/changePin');
 const { askpin } = require('server/app/actions/manager/auth/askpin');
 const { generatepin } = require('server/app/actions/manager/auth/generatepin');
@@ -13,20 +13,24 @@ const { generatepin } = require('server/app/actions/manager/auth/generatepin');
 const router = require('express').Router();
 
 router.post(
-    '/assigner',
+    '/assignCard',
     asyncHandler(async (req, res) => {
-        const user = await assigner(ctx(req), req.body);
+        const wallet = await assignCard(ctx(req), req.body);
 
-        log.info(`assign user ${user.firstname} ${user.lastname}`, req.details);
+        log.info(`assign a user, a card or a ticket to a wallet`, req.details);
 
-        req.details.date = user.created_at;
-        req.details.user = {
-            firstname: user.firstname,
-            lastname: user.lastname,
-            mail: user.mail
-        };
+        res.json(wallet);
+    })
+);
 
-        res.json(user);
+router.post(
+    '/assignWallet',
+    asyncHandler(async (req, res) => {
+        const wallet = await assignWallet(ctx(req), req.body);
+
+        log.info(`assign a wallet to a card or a ticket`, req.details);
+
+        res.json(wallet);
     })
 );
 
@@ -44,30 +48,7 @@ router.post(
             mail: user.mail
         };
 
-        res.status(200)
-            .json(user)
-            .end();
-    })
-);
-
-router.post(
-    '/switchuser',
-    asyncHandler(async (req, res) => {
-        const infos = { type: req.body.meanOfLogin.toString(), data: req.body.data.toString() };
-
-        const errDetails = {
-            mol: infos.type,
-            point: req.point.id
-        };
-
-        if (req.connectType !== 'pin') {
-            throw new APIError(module, 401, 'User not found', errDetails);
-        }
-
-        let { user, token } = await switchuser(ctx(req), { infos, errDetails });
-        log.info(`user ${req.user.id} switched to user ${user.id}`, infos);
-
-        return res.json({ user, token });
+        res.json(user);
     })
 );
 

@@ -115,7 +115,11 @@ export default {
 
         totalSell() {
             return this.purchases
-                .map(purchase => purchase.isCancellation ? -1 * parseInt(purchase.totalTI, 10) : parseInt(purchase.totalTI, 10))
+                .map(purchase =>
+                    purchase.isCancellation
+                        ? -1 * parseInt(purchase.totalTI, 10)
+                        : parseInt(purchase.totalTI, 10)
+                )
                 .reduce((a, b) => a + b, 0);
         },
 

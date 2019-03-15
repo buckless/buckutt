@@ -24,13 +24,9 @@ export const setGroups = ({ commit }, payload) => {
     commit('SET_GROUPS', payload);
 };
 
-export const login = ({ commit, dispatch, state }, { meanOfLogin, password }) => {
+export const login = ({ commit, dispatch, state }, { wallet, pin }) => {
     commit('SET_DATA_LOADED', false);
-    const credentials = {
-        meanOfLogin: config.loginMeanOfLogin,
-        data: meanOfLogin,
-        pin: password
-    };
+    const credentials = { wallet, pin };
 
     return dispatch('sendRequest', {
         method: 'post',
@@ -53,8 +49,7 @@ export const login = ({ commit, dispatch, state }, { meanOfLogin, password }) =>
 
             commit('AUTH_SELLER', {
                 id: res.data.user.id,
-                meanOfLogin,
-                pin: password,
+                pin,
                 token: res.data.token,
                 firstname: res.data.user.firstname,
                 lastname: res.data.user.lastname,
@@ -86,19 +81,15 @@ export const login = ({ commit, dispatch, state }, { meanOfLogin, password }) =>
 };
 
 export const logoutBuyer = store => {
-    if (store.state.auth.buyer.isAuth) {
+    if (store.getters.buyerLogged) {
         store.commit('LOGOUT_BUYER');
 
         return store.dispatch('clearBasket').then(() => store.dispatch('loadDefaultItems'));
     }
-
-    return Promise.resolve();
 };
 
 export const pursueLogout = ({ commit, dispatch }) => {
     commit('LOGOUT_SELLER');
-    commit('UPDATE_TOKEN', '');
-    commit('ID_SELLER', '');
     // Remove disconnect warning
     commit('REMOVE_LOGOUT_WARNING');
 
@@ -117,13 +108,13 @@ export const buyerLogin = (store, { cardNumber, credit, options, removeUnavailab
     const doubleValidation = store.state.auth.device.config.doubleValidation;
 
     // if double validation, then a user2 can't eject/replace user1
-    if (doubleValidation && store.state.auth.buyer.isAuth) {
+    if (doubleValidation && store.getters.buyerLogged) {
         return;
     }
 
     store.commit('SET_DATA_LOADED', false);
 
-    const params = `?buyer=${cardNumber.trim()}&molType=${config.buyerMeanOfLogin}`;
+    const params = `?walletId=${cardNumber.trim()}`;
     const offlineAnswer = window.database.cardAccesses(cardNumber.trim()).then(memberships => ({
         data: {
             buyer: {
@@ -166,7 +157,7 @@ export const buyerLogin = (store, { cardNumber, credit, options, removeUnavailab
 
             const buyerCredit = typeof credit === 'number' ? credit : res.data.buyer.credit;
 
-            store.commit('ID_BUYER', {
+            store.commit('AUTH_BUYER', {
                 id: res.data.buyer.id || '',
                 credit: buyerCredit,
                 firstname: res.data.buyer.firstname || '',
@@ -175,30 +166,12 @@ export const buyerLogin = (store, { cardNumber, credit, options, removeUnavailab
                 purchases: res.data.buyer.purchases || [],
                 catering: options ? options.catering : []
             });
-            store.commit('SET_BUYER_MOL', cardNumber.trim());
+            store.commit('SET_BUYER_WALLET', cardNumber.trim());
         })
         .catch(err => {
+            // If use card data, offline answer has been used. Catch can only be triggered in full online mode.
             if (err.message === 'Network Error') {
                 store.commit('ERROR', { message: 'Server not reacheable' });
-                return;
-            }
-
-            if (
-                err.response.data &&
-                err.response.data.message === 'Buyer not found' &&
-                store.state.auth.device.event.config.useCardData &&
-                typeof credit === 'number'
-            ) {
-                store.commit('ID_BUYER', {
-                    id: '',
-                    credit,
-                    firstname: '',
-                    lastname: '',
-                    memberships: [],
-                    purchases: [],
-                    catering: []
-                });
-                store.commit('SET_BUYER_MOL', cardNumber);
                 return;
             }
 
@@ -224,8 +197,8 @@ export const buyerLogin = (store, { cardNumber, credit, options, removeUnavailab
         });
 };
 
-export const sellerId = ({ commit }, meanOfLogin) => {
-    commit('ID_SELLER', meanOfLogin);
+export const setSellerWallet = ({ commit }, wallet) => {
+    commit('SET_SELLER_WALLET', wallet);
 };
 
 export const alert = ({ commit }, alert) => {

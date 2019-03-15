@@ -43,8 +43,7 @@ const logOperator = force => {
     }
 
     const credentials = {
-        meanOfLogin: 'mail',
-        data: process.env.VUE_APP_OPERATOR_MAIL,
+        mail: process.env.VUE_APP_OPERATOR_MAIL,
         password: process.env.VUE_APP_OPERATOR_PASSWORD
     };
 

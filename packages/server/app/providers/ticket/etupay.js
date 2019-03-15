@@ -1,5 +1,4 @@
 const axios = require('axios');
-const username = require('server/app/helpers/username');
 
 const config = require('server/app/config').assigner.billetweb;
 
@@ -12,7 +11,7 @@ const getCredit = ticket => {
         .reduce((a, b) => a + b, 0);
 };
 
-module.exports = async () => {
+module.exports = async function etupay() {
     if (!config.url || !config.key) {
         return [];
     }
@@ -28,10 +27,9 @@ module.exports = async () => {
             firstname: ticket.surname,
             lastname: ticket.name,
             mail: ticket.mail,
-            username: await username(ticket.surname, ticket.name),
-            credit: getCredit(ticket),
-            ticketId: ticket.qrcode,
-            physicalId: ticket.uuid
+            amount: getCredit(ticket),
+            logical_id: ticket.qrcode,
+            physical_id: ticket.uuid
         }))
     );
 };

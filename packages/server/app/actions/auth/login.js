@@ -4,12 +4,8 @@ const generateToken = require('server/app/utils/generateToken');
 const APIError = require('server/app/utils/APIError');
 
 const validateLoginBody = body => {
-    if (!body.meanOfLogin) {
-        throw new APIError(module, 401, 'Login error: No meanOfLogin provided');
-    }
-
-    if (!body.data) {
-        throw new APIError(module, 401, 'Login error: No (meanOfLogin) data provided');
+    if (!body.mail && !body.wallet) {
+        throw new APIError(module, 401, 'Login error: No username provided');
     }
 
     if (!body.password && !body.pin) {
@@ -30,22 +26,35 @@ const validateLoginBody = body => {
 };
 
 const login = async (ctx, { infos, pin, password }) => {
-    const meanOfLogin = await ctx.models.MeanOfLogin.query(q =>
-        q.where(bookshelf.knex.raw('lower(data)'), '=', infos.data)
-    )
-        .where('type', 'in', infos.meanOfLogin.split(','))
-        .where({ blocked: false })
-        .fetch({
-            require: true,
-            withRelated: ['user', 'user.meansOfLogin', 'user.rights', 'user.rights.period']
-        })
-        .then(mol => (mol ? mol.toJSON() : null));
-
-    if (!meanOfLogin.user || !meanOfLogin.user.id) {
-        throw new APIError(module, 401, 'Login error: Wrong credentials');
+    let user;
+    if (infos.mail) {
+        user = await ctx.models.User.query(q =>
+            q.where(bookshelf.knex.raw('lower(mail)'), '=', infos.mail)
+        )
+            .fetch({
+                withRelated: ['rights', 'rights.period', 'wallets', 'wallets.ticket']
+            })
+            .then(user => (user ? user.toJSON() : null));
+    } else {
+        user = await ctx.models.Wallet.query(q =>
+            q.where(bookshelf.knex.raw('lower(logical_id)'), '=', infos.wallet)
+        )
+            .fetch({
+                require: true,
+                withRelated: [
+                    'user',
+                    'user.rights',
+                    'user.rights.period',
+                    'user.wallets',
+                    'user.wallets.ticket'
+                ]
+            })
+            .then(mol => (mol ? mol.toJSON().user : null));
     }
 
-    const user = meanOfLogin.user;
+    if (!user) {
+        throw new APIError(module, 401, 'Login error: Wrong credentials');
+    }
 
     let match = false;
 
@@ -67,22 +76,8 @@ const login = async (ctx, { infos, pin, password }) => {
         throw new APIError(module, 401, 'Login error: Wrong credentials');
     }
 
-    // fetch linked users (same mail)
-    let linkedUsers = await ctx.models.User.where({ mail: user.mail }).fetchAll({
-        withRelated: ['meansOfLogin']
-    });
-
-    linkedUsers = linkedUsers.toJSON().map(u => ({
-        id: u.id,
-        firstname: u.firstname,
-        lastname: u.lastname,
-        credit: u.credit,
-        username: (u.meansOfLogin.find(mol => mol.type === 'username') || {}).data
-    }));
-
     return {
         user,
-        linkedUsers,
         token: generateToken({
             id: user.id,
             wiket: ctx.wiket.id,

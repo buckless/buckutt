@@ -1,15 +1,16 @@
 const axios = require('axios');
 const config = require('server/app/config');
 const ctx = require('server/app/utils/ctx');
-const creditUser = require('server/app/helpers/creditUser');
+const creditWallet = require('server/app/helpers/creditWallet');
 const APIError = require('server/app/utils/APIError');
 
 const providerConfig = config.provider.billetweb;
 
-const onlinePayment = async (app, data) => {
+const onlinePayment = async (ctx, data) => {
     const transaction = new ctx.models.Transaction({
         state: 'pending',
         amount: data.amount,
+        wallet_id: data.wallet.id,
         user_id: data.buyer.id
     });
 
@@ -102,7 +103,7 @@ module.exports = {
                 type: 'card',
                 trace: transaction.get('id'),
                 point_id: req.point.id,
-                buyer_id: transaction.get('user_id'),
+                wallet_id: transaction.get('wallet_id'),
                 seller_id: transaction.get('user_id')
             });
 
@@ -116,15 +117,15 @@ module.exports = {
                 type: 'gift',
                 trace: `card-${amount}`,
                 point_id: req.point.id,
-                buyer_id: transaction.get('user_id'),
+                wallet_id: transaction.get('wallet_id'),
                 seller_id: transaction.get('user_id')
             });
 
             const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
 
-            const updateUser = creditUser(ctx(req), transaction.get('user_id'), amount);
+            const updateWallet = creditWallet(ctx(req), transaction.get('wallet_id'), amount);
 
-            await Promise.all([newReload.save(), transaction.save(), updateUser, reloadGiftSave]);
+            await Promise.all([newReload.save(), transaction.save(), updateWallet, reloadGiftSave]);
         } else {
             await transaction.save();
         }

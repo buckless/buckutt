@@ -18,8 +18,8 @@ module.exports = bookshelf => {
             return this.belongsTo('Promotion');
         },
 
-        buyer() {
-            return this.belongsTo('User', 'buyer_id');
+        wallet() {
+            return this.belongsTo('Wallet');
         },
 
         seller() {

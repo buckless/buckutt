@@ -10,11 +10,11 @@ const router = require('express').Router();
 router.post(
     '/basket',
     asyncHandler(async (req, res) => {
-        if (!req.body.buyer || !req.body.molType || !Array.isArray(req.body.basket)) {
+        if (!req.body.walletId || !Array.isArray(req.body.basket)) {
             throw new APIError(module, 400, 'Invalid basket');
         }
 
-        req.details.buyer = req.body.buyer;
+        req.details.walletId = req.body.walletId;
         req.details.isCancellation = req.body.isCancellation;
         req.details.basket = req.body.basket;
         req.details.clientTime = req.body.clientTime;
@@ -25,26 +25,20 @@ router.post(
             return res.json({});
         }
 
-        const { buyer, molType, basket: basketToSend, clientTime, isCancellation } = req.body;
+        const { walletId, basket: basketToSend, clientTime, isCancellation } = req.body;
 
-        if (!buyer || !molType) {
-            throw new APIError(module, 400, 'Invalid buyer');
-        }
-
-        const molToCheck = { type: molType, data: buyer, blocked: false };
-
-        const { updatedBuyer } = await basket(ctx(req), {
-            molToCheck,
+        const { updatedWallet } = await basket(ctx(req), {
+            walletId,
             basket: basketToSend,
             clientTime,
             isCancellation
         });
 
-        log.info(`processing basket of ${updatedBuyer.id} sold by ${req.user.id}`, req.details);
+        log.info(`processing basket of ${updatedWallet.id} sold by ${req.user.id}`, req.details);
 
         return res
             .status(200)
-            .json(updatedBuyer)
+            .json(updatedWallet)
             .end();
     })
 );
@@ -69,27 +63,17 @@ router.post(
 router.post(
     '/catering',
     asyncHandler(async (req, res) => {
-        if (
-            !req.body.buyer ||
-            !req.body.molType ||
-            !Number.isInteger(req.body.cateringId) ||
-            !req.body.name
-        ) {
+        if (!req.body.walletId || !Number.isInteger(req.body.cateringId) || !req.body.name) {
             throw new APIError(module, 400, 'Invalid catering');
         }
 
         req.details.buyer = req.body.buyer;
 
-        const { name, cateringId, clientTime } = req.body;
-        const molToCheck = {
-            type: req.body.molType,
-            data: req.body.buyer,
-            blocked: false
-        };
+        const { name, cateringId, clientTime, walletId } = req.body;
 
         log.info(`processing catering`, req.details);
 
-        await catering(ctx(req), { molToCheck, name, cateringId, clientTime });
+        await catering(ctx(req), { walletId, name, cateringId, clientTime });
 
         res.json({});
     })

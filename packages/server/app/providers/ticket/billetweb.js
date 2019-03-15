@@ -1,5 +1,4 @@
 const axios = require('axios');
-const username = require('server/app/helpers/username');
 
 const config = require('server/app/config').assigner.billetweb;
 
@@ -20,26 +19,28 @@ const getCredit = ({ data }, { id }) => {
     return Math.floor(parseFloat(result.price) * 100);
 };
 
-module.exports = async () => {
+module.exports = async function billetweb() {
     if (!config.event || !config.user || !config.key || !config.version) {
         return [];
     }
 
+    const ticketIds = config.ticketIdTicket;
     const res = await axios.get(url, { params });
 
     if (!Array.isArray(res.data) || !res.data.length) {
         return [];
     }
 
-    return Promise.all(
-        res.data.map(async ticket => ({
+    // TODO: replace with event emitter + OBOE.js
+    // (we need credit in the ticket and not in another ticket to do so :/)
+    return res.data
+        .filter(ticket => ticketIds.indexOf(ticket.ticket_id.toString()) > -1)
+        .map(ticket => ({
             firstname: ticket.firstname,
             lastname: ticket.name,
             mail: ticket.email || ticket.order_email,
-            username: await username(ticket.firstname, ticket.name),
-            credit: getCredit(res, ticket),
-            ticketId: ticket.barcode,
-            physicalId: ticket.ext_id
-        }))
-    );
+            amount: getCredit(res, ticket),
+            logical_id: ticket.barcode,
+            physical_id: ticket.ext_id
+        }));
 };

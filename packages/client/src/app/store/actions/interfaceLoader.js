@@ -15,7 +15,7 @@ export const clearInterface = store => {
     store.commit('CLEAR_PROMOTIONS');
 };
 
-export const setWiketItems = ({ state, commit }) => {
+export const setWiketItems = ({ state, getters, commit }) => {
     const defaultItems = state.items.items;
     const defaultPromotions = state.items.promotions;
     let groupsToKeep = [
@@ -23,7 +23,7 @@ export const setWiketItems = ({ state, commit }) => {
         state.auth.device.wiket.defaultGroup_id
     ];
 
-    if (state.auth.buyer.isAuth && state.auth.buyer.memberships) {
+    if (getters.buyerLogged && state.auth.buyer.memberships) {
         groupsToKeep = state.auth.buyer.memberships
             .filter(m => new Date(m.start) <= Date.now() && new Date(m.end) >= Date.now())
             .map(m => m.group);

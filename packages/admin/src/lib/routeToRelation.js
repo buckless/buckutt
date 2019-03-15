@@ -2,14 +2,7 @@ export default route => {
     const now = new Date();
 
     const relations = {
-        accesses: [
-            'meanOfLogin',
-            'meanOfLogin.user',
-            'operator',
-            'wiket',
-            'wiket.period',
-            'wiket.point'
-        ],
+        accesses: ['wallet', 'wallet.user', 'operator', 'wiket', 'wiket.period', 'wiket.point'],
         articles: [
             'prices',
             {
@@ -52,7 +45,6 @@ export default route => {
             }
         ],
         events: ['defaultFundation', 'defaultGroup', 'defaultPeriod'],
-        meansOfLogin: ['user'],
         memberships: [
             {
                 embed: 'period',
@@ -143,10 +135,8 @@ export default route => {
                 required: true
             }
         ],
-        transfers: ['sender', 'reciever'],
         users: [
-            'meansOfLogin',
-            'pendingCardUpdates',
+            'wallets',
             'rights',
             {
                 embed: 'rights.period',
@@ -154,6 +144,21 @@ export default route => {
                 required: true
             },
             'rights.point',
+            'memberships',
+            {
+                embed: 'memberships.period',
+                filters: [['end', '>', now]],
+                required: true
+            },
+            {
+                embed: 'memberships.group',
+                required: true
+            }
+        ],
+        wallets: [
+            'pendingCardUpdates',
+            'user',
+            'ticket',
             'memberships',
             {
                 embed: 'memberships.period',

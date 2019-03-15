@@ -7,16 +7,9 @@
 <script>
 import { mapActions } from 'vuex';
 import Instascan from 'instascan';
-import formatOfflineResults from '@/utils/formatOfflineResults';
 
 export default {
-    data() {
-        return {};
-    },
-
-    methods: {
-        ...mapActions(['sendRequest'])
-    },
+    methods: mapActions(['sendRequest']),
 
     mounted() {
         this.scanner = new Instascan.Scanner({
@@ -28,38 +21,23 @@ export default {
         this.scannerListener = qrcode => {
             this.$store.commit('SET_DATA_LOADED', false);
             return this.sendRequest({
-                url: `auth/assigner?ticketOrMail=${qrcode}`,
+                url: `auth/assigner?ticketNumber=${qrcode}`,
                 noQueue: true,
-                offlineAnswer: window.database
-                    .findByBarcode(qrcode)
-                    .then(users => formatOfflineResults(users))
+                offlineAnswer: window.database.findByBarcode(qrcode).then(tickets => {
+                    tickets;
+                })
             })
                 .then(res => {
-                    const user = res.data[0];
-
-                    if (!user) {
-                        return Promise.reject({ response: { data: 'Barcode not found' } });
-                    }
-
-                    if (user.firstname) {
-                        user.name = `${user.firstname} ${user.lastname}`;
-                    }
-
-                    if (user.memberships) {
-                        user.currentGroups = user.memberships.map(membership => ({
-                            id: membership.group_id
-                        }));
-                    }
+                    const ticket = res.data;
 
                     this.$emit(
                         'assign',
-                        user.credit,
-                        user.name,
-                        user.username,
-                        user.id,
-                        user.currentGroups,
-                        user.ticketId || qrcode,
-                        user.molId
+                        ticket.credit,
+                        ticket.name,
+                        ticket.id,
+                        ticket.currentGroups,
+                        ticket.barcode,
+                        ticket.walletId
                     );
                 })
                 .catch(err => {

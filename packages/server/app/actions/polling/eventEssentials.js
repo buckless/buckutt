@@ -9,7 +9,7 @@ module.exports = async ctx => {
     let groups = [];
     let meansOfPayment = [];
     let nfcCosts = [];
-    let operators = [];
+    let operators = undefined;
 
     // step 1: fetch giftReloads
     giftReloads = await ctx.models.GiftReload.fetchAll().then(gr => gr.toJSON());
@@ -37,17 +37,18 @@ module.exports = async ctx => {
     }));
 
     if (ctx.user && rightsDetails(ctx.user, ctx.point.id).operator) {
+        operators = [];
         // step 5: fetch operators
         const embedRights = [
             { embed: 'user', required: true },
-            { embed: 'user.meansOfLogin', filters: [['blocked', '=', false]], required: true },
+            { embed: 'user.wallets', filters: [['blocked', '=', false]], required: true },
             { embed: 'period', filters: [['end', '>', now]], required: true }
         ];
 
         const rights = await ctx.models.Right.where({ point_id: ctx.point.id })
             .where('name', '!=', 'admin')
             .fetchAll({ withRelated: embedParser(embedRights) })
-            .then(rights => embedFilter(['user.meansOfLogin', 'period'], rights.toJSON()));
+            .then(rights => embedFilter(['user.wallets', 'period'], rights.toJSON()));
 
         rights.forEach(right => {
             const foundOperatorId = operators.findIndex(o => o.id === right.user.id);
@@ -65,10 +66,7 @@ module.exports = async ctx => {
                     nickname: right.user.nickname,
                     pin: right.user.pin,
                     rights: [formattedRight],
-                    meansOfLogin: right.user.meansOfLogin.map(mol => ({
-                        type: mol.type,
-                        data: mol.data
-                    }))
+                    wallets: right.user.wallets.map(wallet => wallet.logical_id)
                 };
 
                 operators.push(newOperator);

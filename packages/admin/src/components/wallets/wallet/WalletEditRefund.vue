@@ -2,7 +2,7 @@
     <div>
         <h5>Remboursement</h5>
 
-        <form @submit.prevent="doRefund(focusedUser, refund)">
+        <form @submit.prevent="doRefund(focusedWallet, refund)">
             <mdl-textfield
                 floating-label="Montant (centimes)"
                 v-model="refund.amount"
@@ -52,15 +52,15 @@ export default {
     },
 
     methods: {
-        ...mapActions(['refundUser', 'notify', 'notifyError']),
+        ...mapActions(['refundWallet', 'notify', 'notifyError']),
 
-        doRefund(user, refund) {
-            this.refundUser({ user, refund })
+        doRefund(wallet, refund) {
+            this.refundWallet({ wallet, refund })
                 .then(() => this.notify({ message: 'Le remboursement a bien été effectué' }))
                 .catch(err => {
                     let message = 'Erreur inconnue';
-                    if (err.message === "The user doesn't have enough credit") {
-                        message = "Le solde de l'utilisateur est inférieur au montant à rembourser";
+                    if (err.message === "The wallet doesn't have enough credit") {
+                        message = 'Le solde du support est inférieur au montant à rembourser';
                     }
 
                     this.notifyError({ message, full: err });
@@ -72,7 +72,7 @@ export default {
 
     computed: {
         ...mapState({
-            focusedUser: state => state.app.focusedElements[0]
+            focusedWallet: state => state.app.focusedElements[0]
         })
     }
 };

@@ -1,13 +1,24 @@
 <template>
     <div class="register-form">
         <form @submit.prevent="register(ticketNumber, card, cgu)">
-            <TextInput
-                v-model="ticketNumber"
-                :disabled="working"
-                type="text"
-                label="Numéro de billet"
-                autofocus
-            />
+            <div class="ticket">
+                <TextInput
+                    v-model="ticketNumber"
+                    :disabled="working"
+                    type="text"
+                    label="Numéro de billet"
+                    autofocus
+                />
+                <a class="customMail" v-if="!customMail" @click="customMail = !customMail">
+                    Utiliser un autre mail que celui du billet
+                </a>
+            </div>
+            <div class="ticket" v-if="customMail">
+                <TextInput v-model="mail" :disabled="working" type="text" label="Mail" />
+                <a class="customMail" @click="customMail = !customMail">
+                    Utiliser le mail lié au billet
+                </a>
+            </div>
             <TextInput
                 v-if="hasCard"
                 v-model="card"
@@ -18,7 +29,7 @@
             <Checkbox id="1" v-model="cgu" :disabled="working">
                 J'accepte les
                 <a href="https://buckless.com/static/cgu.pdf" rel="noopener noref nofollow"
-                    >conditions générales d'utilisation</a
+                    >conditions générales de vente</a
                 >.
             </Checkbox>
             <div class="actions">
@@ -50,6 +61,8 @@ export default {
 
     data: () => ({
         cgu: false,
+        customMail: false,
+        mail: '',
         ticketNumber: '',
         card: ''
     }),
@@ -70,7 +83,8 @@ export default {
             const result = await this.processRegister({
                 ticketNumber,
                 card,
-                cgu
+                cgu,
+                mail: this.customMail ? this.mail : undefined
             });
 
             if (result) {
@@ -85,5 +99,19 @@ export default {
 .input-wrapper,
 .checkbox-wrapper {
     margin-top: 1rem;
+}
+
+.ticket {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.customMail {
+    position: absolute;
+    top: calc(1rem - 6px);
+    right: 0;
+    font-size: 0.8rem;
+    transform: translateY(-50%);
+    cursor: pointer;
 }
 </style>

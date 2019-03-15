@@ -7,16 +7,15 @@ const searchuser = async (ctx, { name, max, userRights }) => {
 
     const embedUsers = [
         {
-            embed: 'meansOfLogin',
-            filters: [['blocked', '=', false], ['type', '=', 'username']]
-        },
-        {
             embed: 'memberships'
         },
         {
             embed: 'memberships.period',
             filters: [['start', '<', now], ['end', '>', now]],
             required: true
+        },
+        {
+            embed: 'wallets'
         }
     ];
 
@@ -45,12 +44,10 @@ const searchuser = async (ctx, { name, max, userRights }) => {
             id: user.id,
             firstname: user.firstname,
             lastname: user.lastname,
-            mail: userRights.assign ? user.mail : undefined,
-            credit: userRights.assign ? user.credit : undefined,
-            currentGroups: userRights.assign
-                ? user.memberships.map(membership => ({ id: membership.group_id }))
-                : undefined,
-            username: (user.meansOfLogin[0] || {}).data
+            wallets: user.wallets.map(wallet => ({
+                ...wallet,
+                credit: userRights.assign ? wallet.credit : undefined
+            }))
         }))
         .sort((a, b) => {
             const aName = `${a.firstname} ${a.lastname}`;

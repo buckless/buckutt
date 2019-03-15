@@ -55,14 +55,14 @@ const modelChanges = () =>
         });
     });
 
-const credit = userId =>
+const credit = walletId =>
     Observable.create(observer => {
-        stream.on('userCreditUpdate', ({ id, credit, pending }) => {
-            if (id !== userId) {
+        stream.on('walletCreditUpdate', ({ id, credit, pending }) => {
+            if (id !== walletId) {
                 return;
             }
 
-            observer.next({ credit, pending });
+            observer.next({ id, credit, pending });
         });
     });
 

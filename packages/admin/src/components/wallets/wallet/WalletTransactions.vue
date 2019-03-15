@@ -16,7 +16,11 @@
                     action: 'cancel',
                     text: 'Annuler',
                     type: 'confirm',
-                    condition: { field: 'rawType', statement: 'isIn', value: ['purchase', 'reload', 'promotion'] }
+                    condition: {
+                        field: 'rawType',
+                        statement: 'isIn',
+                        value: ['purchase', 'reload', 'promotion']
+                    }
                 }
             ]"
             :paging="10"
@@ -32,7 +36,7 @@ import { mapState, mapActions } from 'vuex';
 export default {
     computed: {
         ...mapState({
-            focusedUser: state => state.app.focusedElements[0],
+            focusedWallet: state => state.app.focusedElements[0],
             history: state => state.objects.history,
             meansofpayment: state => state.objects.meansofpayment
         }),
@@ -83,7 +87,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['loadUserHistory', 'cancelTransaction', 'notify', 'notifyError']),
+        ...mapActions(['loadWalletHistory', 'cancelTransaction', 'notify', 'notifyError']),
         translation(type) {
             const splittedType = type.split('-');
             const translateTable = {
@@ -94,7 +98,9 @@ export default {
                 transfer: 'Virement'
             };
 
-            return splittedType[1] ? `Annulation ${translateTable[splittedType[0]]}` : translateTable[splittedType[0]];
+            return splittedType[1]
+                ? `Annulation ${translateTable[splittedType[0]]}`
+                : translateTable[splittedType[0]];
         },
         translateMop(mop) {
             const translation = this.meansofpayment.find(m => m.slug === mop);
@@ -102,19 +108,16 @@ export default {
             return translation ? translation.name : mop;
         },
         cancel(transaction) {
-            this.cancelTransaction({
-                transaction,
-                user: this.focusedUser
-            })
+            this.cancelTransaction({ transaction })
                 .then(() => {
                     this.notify({ message: 'La transaction a bien été annulée' });
-                    this.loadUserHistory(this.focusedUser);
+                    this.loadWalletHistory(this.focusedWallet);
                 })
                 .catch(err => {
                     let message;
                     switch (err.message) {
                         case 'Forbidden':
-                            message = "L'utilisateur n'a pas assez de crédit";
+                            message = "Le support n'a pas assez de crédit";
                             break;
                         default:
                             message = 'Erreur inconnue';
@@ -126,7 +129,7 @@ export default {
     },
 
     mounted() {
-        this.loadUserHistory(this.focusedUser);
+        this.loadWalletHistory(this.focusedWallet);
     }
 };
 </script>

@@ -22,12 +22,12 @@
             :sort="{ field: 'firstname', order: 'ASC' }"
             :actions="[
                 { action: 'edit', text: 'Modifier', raised: true, colored: true },
-                { action: 'removeUser', text: 'Supprimer', type: 'confirm' }
+                { action: 'remove', text: 'Supprimer', type: 'confirm' }
             ]"
             route="users"
             :paging="10"
             @edit="editUser"
-            @removeUser="removeUserAndMols"
+            @remove="removeObject"
             @pagingChanged="pagingChanged"
         >
         </b-table>
@@ -47,7 +47,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['searchUsers', 'clearObject', 'removeUserAndMols']),
+        ...mapActions(['searchUsers', 'clearObject', 'removeObject']),
 
         editUser(user) {
             this.$router.push(`/users/${user.id}/edit`);

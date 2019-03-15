@@ -53,7 +53,7 @@ router.get('/listenForModelChanges', sseExpress(), (req, res) => {
 router.get('/credit', sseExpress(), (req, res) => {
     req.details.sse = true;
 
-    const sub = credit(req.user.id).subscribe(data => {
+    const sub = credit(req.query.wallet).subscribe(data => {
         res.sse({ data });
     });
 

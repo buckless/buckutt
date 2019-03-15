@@ -59,8 +59,8 @@ module.exports = async (ctx, { dateIn, dateOut, additive, filters }) => {
         return ctx.models.Purchase.query(knex => {
             knex.select(
                 bookshelf.knex.raw(
-                    'greatest(sum(case when ?? = false then 1 else -1 end), 0) as count',
-                    ['purchases.isCancellation']
+                    'greatest(sum(case when ?? is null then 0 when ?? = false then 1 else -1 end), 0) as count',
+                    ['prices.amount', 'purchases.isCancellation']
                 )
             );
             knex.select(

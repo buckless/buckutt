@@ -43,7 +43,7 @@
         <nfc
             mode="read"
             @read="logBuyer"
-            v-if="!loggedBuyer.isAuth && reloadOnly && isWaiting && !isWriting"
+            v-if="!buyerLogged && reloadOnly && isWaiting && !isWriting"
             key="read"
         />
         <nfc
@@ -84,7 +84,6 @@ export default {
 
     computed: {
         ...mapState({
-            loggedBuyer: state => state.auth.buyer,
             reloadState: state => state.reload.reloadState,
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing,
@@ -92,7 +91,7 @@ export default {
             meanOfPayment: state => state.reload.meanOfPayment
         }),
 
-        ...mapGetters(['reloadSum']),
+        ...mapGetters(['reloadSum', 'buyerLogged']),
 
         reloadGiftAmount() {
             return this.giftReloads

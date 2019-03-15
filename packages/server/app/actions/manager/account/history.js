@@ -1,27 +1,29 @@
 const { flatten } = require('lodash');
 
 module.exports = async (ctx, { id, limit, offset }) => {
-    const purchaseQuery = ctx.models.Purchase.where({ buyer_id: id }).fetchAll({
+    const purchaseQuery = ctx.models.Purchase.where({ wallet_id: id }).fetchAll({
         withRelated: ['seller', 'price', 'price.article', 'price.promotion', 'articles', 'point']
     });
 
-    const reloadQuery = ctx.models.Reload.where({ buyer_id: id }).fetchAll({
+    const reloadQuery = ctx.models.Reload.where({ wallet_id: id }).fetchAll({
         withRelated: ['seller', 'point']
     });
 
-    const refundQuery = ctx.models.Refund.where({ buyer_id: id }).fetchAll({
+    const refundQuery = ctx.models.Refund.where({ wallet_id: id }).fetchAll({
         withRelated: ['seller']
     });
 
-    const transferFromQuery = ctx.models.Transfer.where({ reciever_id: id }).fetchAll({
-        withRelated: ['sender']
+    const transferFromQuery = ctx.models.Transfer.where({ creditor_id: id }).fetchAll({
+        withRelated: ['debitor', 'debitor.user']
     });
 
-    const transferToQuery = ctx.models.Transfer.where({ sender_id: id }).fetchAll({
-        withRelated: ['reciever']
+    const transferToQuery = ctx.models.Transfer.where({ debitor_id: id }).fetchAll({
+        withRelated: ['creditor', 'creditor.user']
     });
 
-    const pendingCardUpdatesQuery = ctx.models.PendingCardUpdate.where({ user_id: id }).fetchAll();
+    const pendingCardUpdatesQuery = ctx.models.PendingCardUpdate.where({
+        wallet_id: id
+    }).fetchAll();
 
     let history = [];
     let pending = 0;
@@ -105,8 +107,8 @@ module.exports = async (ctx, { id, limit, offset }) => {
         point: 'Internet',
         mop: '',
         seller: {
-            lastname: transfer.sender.lastname,
-            firstname: transfer.sender.firstname
+            lastname: transfer.debitor.user.lastname,
+            firstname: transfer.debitor.user.firstname
         }
     }));
 
@@ -118,8 +120,8 @@ module.exports = async (ctx, { id, limit, offset }) => {
         point: 'Internet',
         mop: '',
         seller: {
-            lastname: transfer.reciever.lastname,
-            firstname: transfer.reciever.firstname
+            lastname: transfer.creditor.user.lastname,
+            firstname: transfer.creditor.user.firstname
         }
     }));
 

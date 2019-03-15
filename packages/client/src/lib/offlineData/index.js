@@ -9,9 +9,9 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            tickets: 'id,barcode,userId,name,username,credit,physicalId',
-            accesses: 'id,userId,cardId,groupId,start,end',
-            pendingCardUpdates: 'id,incrId,userId,cardId,amount',
+            tickets: 'id,walletId,ticketId,barcode,name,credit,physicalId',
+            accesses: 'id,walletId,cardId,groupId,start,end',
+            pendingCardUpdates: 'id,incrId,cardId,amount',
             images: 'id,blob'
         });
 
@@ -53,38 +53,30 @@ class OfflineData {
 
         return this.db.tickets
             .filter(
-                user => reg.test(user.name) || user.barcode === input || user.physicalId === input
+                ticket =>
+                    reg.test(ticket.name) ||
+                    ticket.barcode === input ||
+                    ticket.physicalId === input ||
+                    ticket.walletId === input
             )
             .limit(5)
             .toArray();
     }
 
-    findByName(name) {
-        const reg = new RegExp(`(.*)${name}(.*)`, 'i');
-
+    findByBarcode(barcode) {
         return this.db.tickets
-            .filter(user => reg.test(user.name))
-            .limit(5)
+            .filter(
+                ticket =>
+                    ticket.barcode === barcode ||
+                    ticket.physicalId === barcode ||
+                    ticket.walletId === barcode
+            )
+            .limit(1)
             .toArray();
     }
 
-    findByBarcode(barcode) {
-        return (
-            this.db.tickets
-                // user.username === barcode is when user scan their manager qrcode
-                .filter(
-                    user =>
-                        user.barcode === barcode ||
-                        user.username === barcode ||
-                        user.physicalId === barcode
-                )
-                .limit(1)
-                .toArray()
-        );
-    }
-
-    userMemberships(userId) {
-        return this.db.accesses.filter(access => access.userId === userId).toArray();
+    walletMemberships(walletId) {
+        return this.db.accesses.filter(access => access.walletId === walletId).toArray();
     }
 
     cardAccesses(cardId) {
@@ -93,10 +85,6 @@ class OfflineData {
 
     pendingCardUpdates(cardId) {
         return this.db.pendingCardUpdates.filter(pcu => pcu.cardId === cardId).toArray();
-    }
-
-    pendingUserUpdates(userId) {
-        return this.db.pendingCardUpdates.filter(pcu => pcu.userId === userId).toArray();
     }
 
     insert(table, data) {

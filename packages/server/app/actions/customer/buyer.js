@@ -1,33 +1,36 @@
 const { omit } = require('lodash');
 const APIError = require('server/app/utils/APIError');
 
-module.exports = async (ctx, { type, buyer }) => {
+module.exports = async (ctx, { walletId }) => {
     const now = new Date();
 
-    const mol = await ctx.models.MeanOfLogin.where({
-        type,
-        data: buyer,
+    const wallet = await ctx.models.Wallet.where({
+        logical_id: walletId,
         blocked: false
     })
         .fetch({
-            require: true,
             withRelated: [
                 'user',
                 'user.memberships',
-                'user.purchases',
-                'user.purchases.price',
-                'user.purchases.price.period',
+                'purchases',
+                'purchases.price',
+                'purchases.price.period',
                 {
                     'user.memberships.period': q =>
                         q.where('start', '<=', now).where('end', '>=', now)
                 }
             ]
         })
-        .then(mol => (mol ? mol.toJSON() : null));
+        .then(wallet => (wallet ? wallet.toJSON() : null));
 
-    if (!mol.user.id) {
-        throw new APIError(module, 404, 'Buyer not found');
+    if (!wallet.id || !wallet.user.id) {
+        throw new APIError(module, 404, 'User not found');
     }
 
-    return omit(mol.user, ['pin', 'password']);
+    const user = {
+        ...wallet.user,
+        memberships: wallet.user.memberships.filter(membership => membership.period)
+    };
+
+    return omit(user, ['pin', 'password']);
 };

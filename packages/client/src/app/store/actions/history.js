@@ -22,8 +22,7 @@ export const updateOfflineEntry = (store, payload) => {
 export const cancelEntry = (store, payload) => {
     const localId = `transaction-id-${window.appId}-${Date.now()}`;
     const transactionToSend = {
-        buyer: payload.cardNumber,
-        molType: store.state.device.config.buyerMeanOfLogin,
+        walletId: payload.cardNumber,
         date: new Date(),
         basket: payload.basketToSend,
         seller: store.state.auth.seller.id,

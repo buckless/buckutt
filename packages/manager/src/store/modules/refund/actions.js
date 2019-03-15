@@ -1,7 +1,7 @@
 export const canRefund = async ctx => {
     const refundable = await ctx.dispatch(
         'request/get',
-        { url: 'payment/accountRefund' },
+        { url: `payment/accountRefund?wallet_id=${ctx.rootState.user.currentWallet}` },
         { root: true }
     );
 
@@ -19,9 +19,13 @@ export const canRefund = async ctx => {
 export const refund = async ctx => {
     await ctx.dispatch('working/set', true, { root: true });
 
+    const body = {
+        wallet_id: ctx.rootState.user.currentWallet
+    };
+
     const refundable = await ctx.dispatch(
         'request/post',
-        { url: 'payment/accountRefund' },
+        { url: 'payment/accountRefund', body },
         { root: true }
     );
 

@@ -93,7 +93,16 @@
                         class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
                     >
                         <i class="material-icons">person</i>
-                        Comptes
+                        Utilisateurs
+                    </router-link>
+                </li>
+                <li>
+                    <router-link
+                        to="/wallets"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
+                        <i class="material-icons">account_balance_wallet</i>
+                        Supports
                     </router-link>
                 </li>
                 <li>
@@ -137,7 +146,7 @@
 </template>
 
 <script>
-import { name } from 'config/admin'
+import { name } from 'config/admin';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -146,7 +155,7 @@ export default {
     }),
 
     computed: {
-        ...mapGetters(['logged', 'event']),
+        ...mapGetters(['logged', 'event'])
     }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="b-upper-bar">
         <offline />
-        <div class="b-upper-bar__buyer-name" v-if="buyer.isAuth">
+        <div class="b-upper-bar__buyer-name" v-if="buyerLogged">
             <div class="b-upper-bar__buyer-logout">
                 <span class="b-icon" @click="logout">eject</span>
             </div>
@@ -10,7 +10,7 @@
             <span class="b--capitalized">{{ buyerName.lastname }}</span>
         </div>
         <div class="b-space"></div>
-        <div class="b-upper-bar__date" v-if="!buyer.isAuth">
+        <div class="b-upper-bar__date" v-if="!buyerLogged">
             <live-time></live-time>
         </div>
         <div class="b-upper-bar__menu">
@@ -40,17 +40,16 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['isSellerMode', 'isReloaderMode']),
+        ...mapGetters(['isSellerMode', 'isReloaderMode', 'buyerLogged', 'sellerLogged']),
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            seller: state => state.auth.seller,
-            displayLogout: state => state.auth.seller.meanOfLogin.length > 0,
+            displayLogout: state => !!state.auth.seller.wallet,
             buyer: state => state.auth.buyer
         }),
 
         buyerName() {
-            if (this.buyer && this.buyer.lastname === 'Anonyme') {
+            if (!this.buyer.lastname) {
                 return { firstname: '', lastname: '' };
             }
 
@@ -58,7 +57,7 @@ export default {
         },
 
         onlyLogout() {
-            return this.displayLogout && this.seller.isAuth === false;
+            return this.displayLogout && this.sellerLogged === false;
         }
     },
 

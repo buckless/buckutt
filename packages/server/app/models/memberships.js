@@ -10,6 +10,10 @@ module.exports = bookshelf => {
             return this.belongsTo('User');
         },
 
+        wallet() {
+            return this.belongsTo('Wallet');
+        },
+
         group() {
             return this.belongsTo('Group');
         },

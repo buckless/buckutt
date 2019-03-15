@@ -9,6 +9,7 @@
                 }"
                 v-for="(element, index) in list"
                 :key="index"
+                @click="redirect(element)"
             >
                 <span class="mdl-list__item-primary-content">
                     <i class="material-icons mdl-list__item-avatar">{{ element.icon }}</i>
@@ -39,6 +40,14 @@ export default {
             type: Number,
             required: false,
             default: 1
+        }
+    },
+
+    methods: {
+        redirect(element) {
+            if (element.url) {
+                this.$router.push(element.url);
+            }
         }
     },
 

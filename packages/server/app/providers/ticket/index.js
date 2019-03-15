@@ -1,100 +1,82 @@
-const Queue = require('bull');
+const ms = require('ms');
+const uuid = require('uuid');
+const { pullAll, chunk } = require('lodash');
+const util = require('util');
 const redis = require('server/app/cache');
 const config = require('server/app/config');
 const log = require('server/app/log')(module);
+const { knex } = require('server/app/db');
 
 const providers = config.assigner.ticketProviders.map(name => require(`./${name}`));
 
-let redisClient = null;
-let queue = null;
+const lock = 'buckless-server-ticketProviders-lock';
 
-let setAsync;
-let getAsync;
-
-const prefix = 'buckless-server-ticketProviders';
-
-const ticketProvider = {
-    setup: () => {
-        redisClient = redis.getClient().duplicate();
-
-        setAsync = require('util')
-            .promisify(redisClient.set)
-            .bind(redisClient);
-        getAsync = require('util')
-            .promisify(redisClient.get)
-            .bind(redisClient);
-
-        queue = new Queue('ticket-providers', {
-            redis: {
-                host: config.redis.host,
-                port: config.redis.port
-            }
+const processChunk = chunk =>
+    chunk.map(row => {
+        const insert = knex('tickets').insert({
+            id: uuid(),
+            active: true,
+            ...row
         });
+        const update = knex.queryBuilder().update(row);
 
-        queue.process(async (job, done) => {
-            const lock = await getAsync(`${prefix}-tickets-lock`);
+        return knex
+            .raw(`? ON CONFLICT ON CONSTRAINT unique_logical DO ? RETURNING logical_id`, [
+                insert,
+                update
+            ])
+            .then(result => result.rows[0].logical_id);
+    });
 
-            if (lock) {
-                return done();
-            }
+const ticketProvider = async app => {
+    const redisClient = redis.getClient().duplicate();
 
-            await setAsync(`${prefix}-tickets-lock`, true);
+    const setAsync = util.promisify(redisClient.set).bind(redisClient);
+    const getAsync = util.promisify(redisClient.get).bind(redisClient);
 
-            try {
-                let progress = 0;
-                let allTickets = [];
+    const lastCall = await getAsync(lock);
+    const now = new Date().getTime();
 
-                const tasks = providers.map(provider =>
-                    provider().then(tickets => {
-                        // when each provider has resolved, progress should be around 80%
-                        progress += 80 / providers.length;
-                        job.progress(progress);
-
-                        allTickets = allTickets.concat(tickets);
-                    })
-                );
-
-                await Promise.all(tasks);
-
-                await setAsync(`${prefix}-tickets`, JSON.stringify(allTickets));
-                await setAsync(`${prefix}-lastUpdate`, Date.now().toString());
-                log.info(`saved ${allTickets.length} tickets into redis`);
-
-                job.progress(100);
-            } catch (err) {
-                log.error(`Failed to fetch tickets: ${err.message}`);
-            } finally {
-                await setAsync(`${prefix}-tickets-lock`, false);
-                done();
-            }
-        });
-
-        // fetch right now and start a cron task
-        queue.add(null);
-        queue.add(null, { repeat: { cron: '0 */2 * * *' } });
-
+    if (now - lastCall < ms('5m')) {
         setTimeout(() => {
-            ticketProvider.fetchTicket('foo@bar.com');
-        }, 1000);
-    },
-
-    async fetchTicket(input) {
-        let lastUpdate = (await getAsync(`${prefix}-lastUpdate`)) || '0';
-        lastUpdate = parseInt(lastUpdate, 10);
-
-        if (lastUpdate < Date.now() - 5 * 1000 * 1000) {
-            log.info('last update is more than 5 minutes ago, refreshing');
-            queue.add(null);
-        }
-
-        let tickets = await getAsync(`${prefix}-tickets`);
-        tickets = JSON.parse(tickets);
-
-        return tickets.find(
-            ticket =>
-                ticket.mail === input || ticket.ticketId === input || ticket.physicalId === input
-        );
+            ticketProvider(app);
+        }, ms('2m'));
+        return;
     }
+
+    await setAsync(lock, new Date().getTime());
+
+    const logicalIdsToDelete = (await app.locals.models.Ticket.query().select('logical_id')).map(
+        ticket => ticket.logical_id
+    );
+
+    await Promise.all(
+        providers.map(async fetchTicketsFromProvider => {
+            // TODO: we should replace with a Event<->Promise that on('chunk', process + pullAll)
+            // const providerTickets = chunk(await fetchTicketsFromProvider());
+            const providerTickets = await fetchTicketsFromProvider();
+            const savedLogicalIds = await Promise.all(processChunk(providerTickets));
+
+            // remove all saved logical ids from the ones to delete
+            pullAll(logicalIdsToDelete, savedLogicalIds);
+
+            log.info(
+                [
+                    'saved',
+                    providerTickets.length,
+                    'tickets from provider',
+                    fetchTicketsFromProvider.name
+                ].join(' ')
+            );
+        })
+    );
+
+    // left are logical ids that are not in providers anymore
+    await app.locals.models.Ticket.where('logical_id', 'in', logicalIdsToDelete).destroy();
+
+    setTimeout(() => {
+        ticketProvider(app);
+    }, ms('5m'));
 };
 
 module.exports = ticketProvider;

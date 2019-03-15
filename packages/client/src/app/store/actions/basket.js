@@ -241,7 +241,7 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
 
 export const sendBasket = (store, payload = {}) => {
     const now = payload.now || new Date();
-    const cardNumber = payload.cardNumber || store.state.auth.buyer.meanOfLogin;
+    const cardNumber = payload.cardNumber || store.state.auth.buyer.wallet;
 
     store.commit('SET_BASKET_STATUS', 'DOING');
 
@@ -299,8 +299,7 @@ export const sendBasket = (store, payload = {}) => {
 
     const localId = `transaction-id-${window.appId}-${Date.now()}`;
     const transactionToSend = {
-        buyer: cardNumber,
-        molType: store.state.device.config.buyerMeanOfLogin,
+        walletId: cardNumber,
         date: now,
         basket: basketToSend,
         seller: store.state.auth.seller.id,
@@ -314,8 +313,7 @@ export const sendBasket = (store, payload = {}) => {
             data: {
                 cateringId: cat.cateringId,
                 name: cat.name,
-                molType: store.state.device.config.buyerMeanOfLogin,
-                buyer: cardNumber
+                walletId: cardNumber
             }
         })
     );
@@ -328,18 +326,20 @@ export const sendBasket = (store, payload = {}) => {
             offlineAnswer: {
                 data: {
                     credit: store.getters.credit,
-                    firstname: store.state.auth.buyer.firstname,
-                    lastname: store.state.auth.buyer.lastname
+                    user: {
+                        firstname: store.state.auth.buyer.firstname,
+                        lastname: store.state.auth.buyer.lastname
+                    }
                 }
             }
         })
-        .then(lastBuyer => {
+        .then(lastWallet => {
             store.commit('SET_LAST_USER', {
                 display: true,
-                name: lastBuyer.data.firstname
-                    ? `${lastBuyer.data.firstname} ${lastBuyer.data.lastname}`
+                name: lastWallet.data.user.firstname
+                    ? `${lastWallet.data.user.firstname} ${lastWallet.data.user.lastname}`
                     : null,
-                credit: lastBuyer.data.credit,
+                credit: lastWallet.data.credit,
                 reload: store.getters.reloadAmount,
                 bought: store.getters.basketAmount,
                 localId
@@ -367,7 +367,7 @@ export const basketClickValidation = store => {
     }
 
     return store.dispatch('validateBasket', {
-        cardNumber: store.state.auth.buyer.meanOfLogin,
+        cardNumber: store.state.auth.buyer.wallet,
         credit: store.state.auth.buyer.credit,
         options: {
             // To fix: store if the card is paid while buyer login

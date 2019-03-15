@@ -2,19 +2,19 @@
  * Refunds actions
  */
 
-export function refundUser({ state, dispatch }, refundData) {
-    let refundedUser = refundData.user;
+export function refundWallet({ state, dispatch }, refundData) {
+    let refundedWallet = refundData.wallet;
 
     return dispatch('syncFocusedElement', {
         depth: 0,
-        route: 'users',
-        id: refundedUser.id
+        route: 'wallets',
+        id: refundedWallet.id
     })
-        .then(user => {
-            refundedUser = user;
+        .then(wallet => {
+            refundedWallet = wallet;
 
-            if (refundData.refund.amount > refundedUser.credit) {
-                return Promise.reject(new Error("The user doesn't have enough credit"));
+            if (refundData.refund.amount > refundedWallet.credit) {
+                return Promise.reject(new Error("The wallet doesn't have enough credit"));
             }
 
             const refund = {
@@ -22,7 +22,7 @@ export function refundUser({ state, dispatch }, refundData) {
                 trace: refundData.refund.trace,
                 type: refundData.refund.type,
                 seller_id: state.app.loggedUser.id,
-                buyer_id: refundedUser.id
+                wallet_id: refundedWallet.id
             };
 
             return dispatch('createObject', {
@@ -31,14 +31,14 @@ export function refundUser({ state, dispatch }, refundData) {
             });
         })
         .then(() => {
-            const modifiedUser = {
-                id: refundedUser.id,
-                credit: refundedUser.credit - refundData.refund.amount
+            const modifiedWallet = {
+                id: refundedWallet.id,
+                credit: refundedWallet.credit - refundData.refund.amount
             };
 
             return dispatch('updateObject', {
-                route: 'users',
-                value: modifiedUser
+                route: 'wallets',
+                value: modifiedWallet
             });
         });
 }

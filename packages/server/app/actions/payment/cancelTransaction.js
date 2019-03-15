@@ -1,5 +1,5 @@
 const { bookshelf } = require('server/app/db');
-const creditUser = require('server/app/helpers/creditUser');
+const creditWallet = require('server/app/helpers/creditWallet');
 const getPriceAmount = require('server/app/utils/getPriceAmount');
 const APIError = require('server/app/utils/APIError');
 
@@ -16,7 +16,7 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
         throw new APIError(module, 400, 'Invalid transaction type');
     }
 
-    const withRelated = currentModel === 'Purchase' ? ['articles', 'buyer'] : ['buyer'];
+    const withRelated = currentModel === 'Purchase' ? ['articles', 'wallet'] : ['wallet'];
 
     const transaction = await ctx.models[currentModel]
         .where({ id })
@@ -27,7 +27,7 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
     const checkApiCredit = ctx.point.name === 'Internet' || !ctx.event.useCardData;
 
     const isAlreadyACancellation = transaction.isCancellation;
-    const user = transaction.buyer;
+    const wallet = transaction.wallet;
 
     const cancellationData = {
         ...transaction,
@@ -45,11 +45,11 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
         const amount = await getPriceAmount(ctx.models.Price, transaction.price_id);
         const pending = isAlreadyACancellation ? -1 * amount : amount;
 
-        if (user.credit + pending < 0 && checkApiCredit) {
-            throw new APIError(module, 403, "User doesn't have enough credit");
+        if (wallet.credit + pending < 0 && checkApiCredit) {
+            throw new APIError(module, 403, "Wallet doesn't have enough credit");
         }
 
-        await creditUser(ctx, user.id, pending);
+        await creditWallet(ctx, wallet.id, pending);
         const newTransaction = await new ctx.models.Purchase(cancellationData).save();
 
         await Promise.all(
@@ -65,11 +65,11 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
     } else if (currentModel === 'Reload') {
         const pending = isAlreadyACancellation ? transaction.credit : -1 * transaction.credit;
 
-        if (user.credit + pending < 0 && checkApiCredit) {
-            throw new APIError(module, 403, "User doesn't have enough credit");
+        if (wallet.credit + pending < 0 && checkApiCredit) {
+            throw new APIError(module, 403, "Wallet doesn't have enough credit");
         }
 
-        await creditUser(ctx, user.id, pending);
+        await creditWallet(ctx, wallet.id, pending);
         await new ctx.models.Reload(cancellationData).save();
     }
 };

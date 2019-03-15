@@ -7,7 +7,7 @@ const config = require('server/app/config').assigner.csv;
 const readFile = require('util').promisify(fs.readFile);
 const parse = require('util').promisify(parser.parse);
 
-module.exports = async () => {
+module.exports = async function csv() {
     if (!config.url && !config.file) {
         return [];
     }
@@ -19,9 +19,18 @@ module.exports = async () => {
     const results = await parse(input, { columns: true });
 
     return results.map(result => {
-        result.ticketId = result.ticket;
-        result.credit = parseInt(result.preload, 10);
+        result.logical_id = result.ticket;
+        result.physical_id = result.physical;
+        result.amount = parseInt(result.preload, 10);
 
-        return pick(result, ['firstname', 'lastname', 'nickname', 'mail', 'credit', 'ticketId']);
+        return pick(result, [
+            'firstname',
+            'lastname',
+            'nickname',
+            'mail',
+            'amount',
+            'logical_id',
+            'physical_id'
+        ]);
     });
 };

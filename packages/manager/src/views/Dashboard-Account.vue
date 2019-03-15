@@ -1,36 +1,45 @@
 <template>
     <div>
-        <Card v-if="linkedUsers.length > 0">
-            <h3>Comptes liés</h3>
+        <Card v-if="wallets.length > 0">
+            <h3>Mes portes-monnaies</h3>
             <List>
                 <div
-                    v-for="(user, i) in linkedUsers"
+                    v-for="(wallet, i) in wallets"
                     :key="i"
                     class="item"
-                    @click="switchUser(user.username, user.id)"
+                    @click="setCurrentWallet(wallet)"
                 >
-                    <span v-if="user.id === currentUser.id" class="bullet" />
-                    <span class="name">{{ user.firstname }} {{ user.lastname }}</span>
+                    <span v-if="currentWallet === wallet.id" class="bullet" />
+                    <span class="name" v-if="wallet.physical_id">
+                        Support {{ wallet.physical_id }}
+                    </span>
+                    <span class="name" v-else-if="wallet.ticket.physical_id">
+                        Ticket {{ wallet.ticket.physical_id }}
+                    </span>
+                    <span class="name" v-else-if="wallet.logical_id">
+                        Support {{ wallet.logical_id }}
+                    </span>
+                    <span class="name" v-else> Porte-monnaie virtuel {{ i }} </span>
                     &nbsp;
-                    <span class="credit">({{ (user.credit / 100) | currency }})</span>
+                    <span class="credit">({{ (wallet.credit / 100) | currency }})</span>
                 </div>
             </List>
         </Card>
-        <Card v-if="showQrCode">
-            <h3>Mon QR Code</h3>
-            <p>
-                Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer
-                votre support cashless.
-            </p>
-            <img :src="qrcode" alt="qr code" />
+        <Card to="/dashboard/assign" v-if="showRegistration">
+            <h3>Créer un nouveau porte-monnaie</h3>
+            <p>Ajouter un nouveau porte-monnaie à votre espace cashless</p>
+        </Card>
+        <Card to="/dashboard/pin">
+            <h3>Changement de code PIN</h3>
+            <p>Changez votre code de connexion à votre espace cashless</p>
         </Card>
         <Button @click="logout">Déconnexion</Button>
     </div>
 </template>
 
 <script>
-import { accountShowQrcode } from 'config/manager';
 import { mapActions, mapGetters } from 'vuex';
+import { allowRegistration } from 'config/manager';
 import Card from '@/components/Card';
 import List from '@/components/List';
 import Button from '@/components/Button';
@@ -45,38 +54,21 @@ export default {
     },
 
     data: () => ({
-        showQrCode: accountShowQrcode && this.qrcode
+        showRegistration: allowRegistration
     }),
 
     computed: {
-        qrcode() {
-            const username = this.currentUser.meansOfLogin.find(mol => mol.type === 'username');
-
-            if (!username) {
-                return;
-            }
-
-            return `https://chart.apis.google.com/chart?cht=qr&chs=400x400&chl=${username.data}`;
-        },
-
         ...mapGetters({
             currentUser: 'user/user',
-            linkedUsers: 'user/linkedUsers'
+            wallets: 'user/wallets',
+            currentWallet: 'user/currentWallet'
         })
     },
 
     methods: {
-        async switchUser(username, id) {
-            if (id === this.currentUser.id) {
-                return;
-            }
-
-            await this.processSwitchUser(username);
-        },
-
         ...mapActions({
             logout: 'user/logout',
-            processSwitchUser: 'user/switchUser'
+            setCurrentWallet: 'user/setCurrentWallet'
         })
     }
 };
@@ -93,10 +85,10 @@ export default {
     color: rgba($foreground, 0.8);
 }
 
-img {
-    display: block;
-    max-width: 100%;
-    margin: 0 auto;
+p {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    font-size: 0.9rem;
 }
 
 .button {

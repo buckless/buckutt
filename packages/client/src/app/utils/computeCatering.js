@@ -1,8 +1,8 @@
-export default (items, configCaterig, buyerCatering) => {
+export default (items, configCatering, buyerCatering) => {
     const catering = [];
     const now = new Date();
 
-    const validCatering = configCaterig.articles.filter(article => {
+    const validCatering = configCatering.articles.filter(article => {
         if (!article.start && !article.end) {
             return true;
         } else if (article.start && !article.end) {

@@ -150,9 +150,7 @@ export default {
                 this.$emit('fulldata', data);
 
                 try {
-                    const card = nfc.dataToCard(
-                        data.toLowerCase ? data.toLowerCase() : data
-                    );
+                    const card = nfc.dataToCard(data.toLowerCase ? data.toLowerCase() : data);
 
                     console.log('nfc-data', card);
 
@@ -199,9 +197,7 @@ export default {
 
             this.cardToRewrite = this.inputValue;
 
-            nfc.write(
-                nfc.cardToData(this.dataToWrite)
-            )
+            nfc.write(nfc.cardToData(this.dataToWrite))
                 .then(() => {
                     this.success = true;
                     this.$root.$emit('writeCompleted');

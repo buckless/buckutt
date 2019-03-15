@@ -10,7 +10,7 @@
             ></tab>
         </div>
         <div class="b-lower-bar__device">
-            <div v-if="seller.isAuth" class="b-lower-bar__device__seller">
+            <div v-if="sellerLogged" class="b-lower-bar__device__seller">
                 <strong>Opérateur: </strong>
                 <span class="b--capitalized">{{ seller.firstname }} </span>
                 <span class="b--capitalized">{{ seller.lastname }}</span>
@@ -36,7 +36,7 @@ export default {
             buyer: state => state.auth.buyer
         }),
 
-        ...mapGetters(['tabs', 'loginState']),
+        ...mapGetters(['tabs', 'loginState', 'sellerLogged']),
 
         isSelling() {
             return this.$route.matched[0].path === '/items';

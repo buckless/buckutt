@@ -1,10 +1,7 @@
 <template>
     <div class="b-login">
-        <div v-if="!seller.isAuth">
-            <div
-                v-if="seller.meanOfLogin.length > 0"
-                class="b-login__card b-login__card--sellerPassword"
-            >
+        <div v-if="!sellerLogged">
+            <div v-if="seller.wallet" class="b-login__card b-login__card--sellerPassword">
                 <div class="b-login__card__title">
                     Connexion opérateur
                 </div>
@@ -16,14 +13,14 @@
                     ></numerical-input>
                 </div>
             </div>
-            <div v-if="seller.meanOfLogin.length === 0">
+            <div v-else>
                 <div class="b-login__card b-login__card--sellerId">
                     En attente d'un opérateur
                     <nfc mode="read" @read="validate" key="seller" disablePinCheck />
                 </div>
             </div>
         </div>
-        <div v-if="seller.isAuth && doubleValidation" class="b-login__card b-login__card--buyerId">
+        <div v-if="sellerLogged && doubleValidation" class="b-login__card b-login__card--buyerId">
             En attente d'un client
             <ticket v-if="lastUser.name" :inline="true" :user="lastUser"></ticket>
             <nfc mode="read" @read="validate" key="buyer" />
@@ -32,7 +29,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 
 import Ticket from '@/components/Ticket';
 import NumericalInput from '@/components/NumericalInput';
@@ -50,13 +47,17 @@ export default {
         };
     },
 
-    computed: mapState({
-        buyer: state => state.auth.buyer,
-        seller: state => state.auth.seller,
-        lastUser: state => state.ui.lastUser,
-        doubleValidation: state => state.auth.device.config.doubleValidation,
-        point: state => state.auth.device.point.name
-    }),
+    computed: {
+        ...mapState({
+            buyer: state => state.auth.buyer,
+            seller: state => state.auth.seller,
+            lastUser: state => state.ui.lastUser,
+            doubleValidation: state => state.auth.device.config.doubleValidation,
+            point: state => state.auth.device.point.name
+        }),
+
+        ...mapGetters(['sellerLogged'])
+    },
 
     methods: {
         maskPassword(t) {
@@ -75,12 +76,12 @@ export default {
         },
 
         validate(cardNumber, credit, options) {
-            if (!this.seller.isAuth && this.seller.meanOfLogin.length === 0) {
-                this.sellerId(cardNumber);
+            if (!this.sellerLogged && !this.seller.wallet) {
+                this.setSellerWallet(cardNumber);
             }
 
             console.log('login-validate', cardNumber, credit, options);
-            if (this.seller.isAuth) {
+            if (this.sellerLogged) {
                 const buyerArgs = Number.isInteger(credit)
                     ? { cardNumber, credit, options }
                     : { cardNumber };
@@ -100,8 +101,8 @@ export default {
             this.passwordMask = '';
 
             this.login({
-                meanOfLogin: this.seller.meanOfLogin,
-                password
+                wallet: this.seller.wallet,
+                pin: password
             })
                 .then(() => {
                     this.authingSeller = false;
@@ -112,7 +113,7 @@ export default {
                 });
         },
 
-        ...mapActions(['sellerId', 'buyerLogin', 'login'])
+        ...mapActions(['setSellerWallet', 'buyerLogin', 'login'])
     },
 
     mounted() {

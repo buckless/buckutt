@@ -1,8 +1,10 @@
 export const load = async ctx => {
-    if (ctx.rootState.user.user) {
+    const { user, currentWallet } = ctx.rootState.user;
+
+    if (user && currentWallet) {
         const result = await ctx.dispatch(
             'request/get',
-            { url: 'account/history' },
+            { url: `account/history?wallet=${currentWallet}` },
             { root: true }
         );
 
@@ -10,11 +12,7 @@ export const load = async ctx => {
             return;
         }
 
-        ctx.dispatch(
-            'user/setUser',
-            { ...ctx.rootState.user.user, ...result.user },
-            { root: true }
-        );
+        ctx.dispatch('user/updateCurrentWallet', result.wallet, { root: true });
         ctx.commit('SET_HISTORY', result.history);
         ctx.commit('SET_PENDING', result.pending);
     }

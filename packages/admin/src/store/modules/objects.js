@@ -10,7 +10,6 @@ const state = {
     sets: [],
     events: [],
     users: [],
-    transfers: [],
     reloads: [],
     refunds: [],
     purchases: [],
@@ -21,7 +20,8 @@ const state = {
     history: [],
     alerts: [],
     accesses: [],
-    giftreloads: []
+    giftreloads: [],
+    wallets: []
 };
 
 const mutations = {

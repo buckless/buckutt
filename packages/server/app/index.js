@@ -32,7 +32,7 @@ const main = async () => {
     app.locals.pub = await redis.getClient().duplicate();
     app.locals.sub = await redis.getClient().duplicate();
 
-    app.locals.sub.subscribe('userCreditUpdate');
+    app.locals.sub.subscribe('walletCreditUpdate');
     app.locals.sub.subscribe('data');
     app.locals.sub.subscribe('alert');
     app.locals.sub.subscribe('database-reconnect');
@@ -49,7 +49,7 @@ const main = async () => {
     // setup event emitters and redis
     live.setup(app);
     // setup ticket providers jobs
-    ticketsProviders.setup();
+    ticketsProviders(app);
 
     await server.listen(config.http.port, config.http.host);
 

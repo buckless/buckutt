@@ -3,7 +3,6 @@ const { event_id } = require('./utils/_data');
 exports.seed = function(knex) {
     return knex('wikets')
         .del()
-        .then(() => knex('meansoflogin').del())
         .then(() => knex('rights').del())
         .then(() =>
             knex('events')

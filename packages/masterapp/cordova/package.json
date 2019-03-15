@@ -14,7 +14,10 @@
             "android"
         ],
         "plugins": {
-            "cordova-plugin-mifare-ultralight": {}
+            "cordova-plugin-mifare-ultralight": {},
+            "cordova-android-support-gradle-release": {
+                "ANDROID_SUPPORT_VERSION": "25.+"
+            }
         }
     },
     "dependencies": {

@@ -1,7 +1,7 @@
 const { countBy } = require('lodash');
 const { bookshelf } = require('server/app/db');
-const creditUser = require('server/app/helpers/creditUser');
-const createUser = require('server/app/helpers/createUser');
+const createWallet = require('server/app/helpers/createWallet');
+const creditWallet = require('server/app/helpers/creditWallet');
 const rightsDetails = require('server/app/utils/rightsDetails');
 const APIError = require('server/app/utils/APIError');
 
@@ -10,26 +10,19 @@ const getPriceAmount = (Price, id) =>
         .fetch()
         .then(price => price.get('amount'));
 
-module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation }) => {
-    let buyer;
+module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) => {
+    let wallet = await ctx.models.Wallet.where({
+        logical_id: walletId,
+        blocked: false
+    })
+        .fetch()
+        .then(wallet => (wallet ? wallet.toJSON() : null));
 
-    const mol = await ctx.models.MeanOfLogin.where(molToCheck)
-        .fetch({ withRelated: ['user'] })
-        .then(mol => (mol ? mol.toJSON() : null));
-
-    if (!mol || !mol.user || !mol.user.id) {
-        buyer = await createUser(
-            ctx,
-            {},
-            [],
-            [molToCheck],
-            [ctx.event.defaultGroup_id],
-            false,
-            true,
+    if (!wallet) {
+        wallet = await createWallet(ctx, {
+            logicalId: walletId,
             clientTime
-        );
-    } else {
-        buyer = mol.user;
+        });
     }
 
     let purchases = basket.filter(item => typeof item.cost === 'number');
@@ -48,7 +41,7 @@ module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation })
     const purchasesInsts = [];
     const reloadsInsts = [];
 
-    // If it's a cancellation: credit credit is becoming a cost, cost is becoming a credit*
+    // If it's a cancellation: credit credit is becoming a cost, cost is becoming a credit
     const totalCost = basket
         .map(item => {
             if (typeof item.cost === 'number') {
@@ -68,13 +61,13 @@ module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation })
         .map(item => (isCancellation ? item.cost : item.credit))
         .reduce((a, b) => a + b, 0);
 
-    if (buyer.credit < totalCost && !ctx.event.useCardData) {
+    if (wallet.credit < totalCost && !ctx.event.useCardData) {
         throw new APIError(module, 400, 'Not enough credit');
     }
 
     if (
         ctx.event.maxPerAccount &&
-        buyer.credit - totalCost > ctx.event.maxPerAccount &&
+        wallet.credit - totalCost > ctx.event.maxPerAccount &&
         reloadOnly > 0 &&
         !ctx.event.useCardData
     ) {
@@ -87,7 +80,7 @@ module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation })
         throw new APIError(module, 400, `Can not reload less than : ${min}€`);
     }
 
-    const newCredit = buyer.credit - totalCost;
+    const newCredit = wallet.credit - totalCost;
 
     if (Number.isNaN(newCredit)) {
         throw new APIError(module, 400, `Credit is not a number`);
@@ -125,7 +118,7 @@ module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation })
             const countIds = countBy(articlesIds);
 
             const purchase = new ctx.models.Purchase({
-                buyer_id: buyer.id,
+                wallet_id: wallet.id,
                 price_id: item.price_id,
                 point_id: ctx.point.id,
                 promotion_id: item.promotion_id || null,
@@ -158,7 +151,7 @@ module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation })
                 type: item.type,
                 trace: item.trace || '',
                 point_id: ctx.point.id,
-                buyer_id: buyer.id,
+                wallet_id: wallet.id,
                 seller_id: ctx.user.id,
                 clientTime,
                 isCancellation
@@ -168,12 +161,12 @@ module.exports = async (ctx, { molToCheck, basket, clientTime, isCancellation })
         }
     });
 
-    const updateCredit = creditUser(ctx, buyer.id, -1 * totalCost);
-    buyer.credit = newCredit;
+    const updateCredit = creditWallet(ctx, wallet.id, -1 * totalCost);
+    wallet.credit = newCredit;
 
     await Promise.all([updateCredit].concat(purchasesInsts).concat(reloadsInsts));
 
     return {
-        updatedBuyer: buyer
+        updatedWallet: wallet
     };
 };

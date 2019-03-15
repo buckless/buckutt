@@ -13,7 +13,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "cross-env TARGET=browser NODE_ENV=development vue-cli-service serve --open",
-    "dev:android": "cross-env TARGET=cordova NODE_ENV=development vue-cli-service build",
+    "dev:android": "cross-env TARGET=cordova NODE_ENV=development vue-cli-service build --watch --mode development",
     "build": "cross-env TARGET=browser vue-cli-service build",
     "build:android": "cross-env TARGET=cordova vue-cli-service build",
     "lint": "prettier --single-quote --print-width 100 --tab-width 4 --write \"src/**/*.{js,vue}\""

@@ -12,6 +12,7 @@ const router = require('express').Router();
 router.get(
     '/eventEssentials',
     asyncHandler(async (req, res) => {
+        // TODO: operators
         log.info('get eventEssentials', req.details);
 
         const { giftReloads, groups, meansOfPayment, nfcCosts, operators } = await eventEssentials(
@@ -53,6 +54,7 @@ router.get(
 router.get(
     '/usersData',
     asyncHandler(async (req, res) => {
+        // TODO: revamp with cardsData, and all tickets table
         const now = new Date();
         const lastUpdate = req.query.lastUpdate ? new Date(req.query.lastUpdate) : new Date(0);
 

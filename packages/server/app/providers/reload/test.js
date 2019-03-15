@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 const config = require('server/app/config');
-const creditUser = require('server/app/helpers/creditUser');
+const creditWallet = require('server/app/helpers/creditWallet');
 const ctx = require('server/app/utils/ctx');
 
 const onlinePayment = async (ctx, data) => {
@@ -9,6 +9,7 @@ const onlinePayment = async (ctx, data) => {
     const transaction = new Transaction({
         state: 'pending',
         amount: data.amount,
+        wallet_id: data.wallet.id,
         user_id: data.buyer.id
     });
 
@@ -48,7 +49,7 @@ const fakeCallback = async (ctx, id, data) => {
             type: 'card',
             trace: transaction.get('id'),
             point_id: data.point,
-            buyer_id: transaction.get('user_id'),
+            wallet_id: transaction.get('wallet_id'),
             seller_id: transaction.get('user_id')
         });
 
@@ -62,19 +63,19 @@ const fakeCallback = async (ctx, id, data) => {
             type: 'gift',
             trace: `card-${amount}`,
             point_id: data.point,
-            buyer_id: transaction.get('user_id'),
+            wallet_id: transaction.get('wallet_id'),
             seller_id: transaction.get('user_id')
         });
 
         const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
 
-        const updateUser = creditUser(
+        const updateWallet = creditWallet(
             { ...ctx, event: { useCardData }, point: { name: 'Internet' } },
-            transaction.get('user_id'),
+            transaction.get('wallet_id'),
             amount
         );
 
-        return Promise.all([newReload.save(), transaction.save(), updateUser, reloadGiftSave]);
+        return Promise.all([newReload.save(), transaction.save(), updateWallet, reloadGiftSave]);
     } else {
         return transaction.save();
     }

@@ -72,20 +72,6 @@
             :paging="25"
         >
         </b-table>
-
-        <h4>
-            Transferts <span class="small">(total: {{ totalTransfer | price(true) }})</span>
-        </h4>
-        <b-table
-            :headers="[
-                { title: 'De', field: 'sender.fullname', class: 'b--capitalized' },
-                { title: 'À', field: 'reciever.fullname', class: 'b--capitalized' },
-                { title: 'Montant', field: 'amount', type: 'price' }
-            ]"
-            :paging="25"
-            :data="displayedTransfers"
-        >
-        </b-table>
     </div>
 </template>
 
@@ -108,7 +94,6 @@ export default {
 
     computed: {
         ...mapState({
-            transfers: state => state.objects.transfers,
             reloads: state => state.objects.reloads,
             refunds: state => state.objects.refunds,
             meansofpayment: state => state.objects.meansofpayment
@@ -118,19 +103,17 @@ export default {
 
         totalReload() {
             return this.reloads
-                .map(reload => reload.isCancellation ? -1 * parseInt(reload.credit, 10) : parseInt(reload.credit, 10))
+                .map(reload =>
+                    reload.isCancellation
+                        ? -1 * parseInt(reload.credit, 10)
+                        : parseInt(reload.credit, 10)
+                )
                 .reduce((a, b) => a + b, 0);
         },
 
         totalRefund() {
             return this.refunds
                 .map(refund => parseInt(refund.amount, 10))
-                .reduce((a, b) => a + b, 0);
-        },
-
-        totalTransfer() {
-            return this.transfers
-                .map(transfer => parseInt(transfer.amount, 10))
                 .reduce((a, b) => a + b, 0);
         },
 
@@ -144,7 +127,9 @@ export default {
         displayedReloads() {
             return this.reloads.map(reload => ({
                 ...reload,
-                type: reload.isCancellation ? `Annulation ${this.slugToName(reload.type)}` : this.slugToName(reload.type),
+                type: reload.isCancellation
+                    ? `Annulation ${this.slugToName(reload.type)}`
+                    : this.slugToName(reload.type),
                 credit: reload.isCancellation ? -1 * reload.credit : reload.credit
             }));
         },
@@ -154,19 +139,6 @@ export default {
                 ...refund,
                 type: this.slugToName(refund.type)
             }));
-        },
-
-        displayedTransfers() {
-            return this.transfers.map(transfer => {
-                transfer.sender.fullname = `${transfer.sender.firstname} ${
-                    transfer.sender.lastname
-                }`;
-                transfer.reciever.fullname = `${transfer.reciever.firstname} ${
-                    transfer.reciever.lastname
-                }`;
-
-                return transfer;
-            });
         }
     },
 

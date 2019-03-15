@@ -168,10 +168,9 @@ export default {
                 setTimeout(() => {
                     window.queue.push({
                         method: 'post',
-                        url: 'manager/auth/assigner',
+                        url: 'auth/assigner',
                         data: {
-                            cardId,
-                            anon: true,
+                            logicalId: cardId,
                             groups: this.activeGroups.map(g => g.id)
                         },
 

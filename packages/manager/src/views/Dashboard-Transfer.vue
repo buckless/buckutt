@@ -4,7 +4,8 @@
             <h3>Virement</h3>
             <p>
                 Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle verte
-                indique le compte receveur.
+                indique le compte receveur. Attention, vous ne pouvez virer de l'argent qu'à une
+                personne ayant créé un compte.
             </p>
             <form @submit.prevent="transfer(selected, amount)">
                 <TextInput
@@ -17,9 +18,9 @@
                     @input="findUser"
                 />
 
-                <List v-if="results.length > 0" class="results">
+                <List v-if="displayedResults.length > 0" class="results">
                     <div
-                        v-for="(result, i) in results"
+                        v-for="(result, i) in displayedResults"
                         :key="i"
                         class="item"
                         @click="selectResult(result)"
@@ -27,11 +28,11 @@
                         <span v-if="result.id === selected.id" class="bullet" />
                         <span class="name">{{ result.firstname }} {{ result.lastname }}</span>
                         &nbsp;
-                        <span class="username">({{ result.username }})</span>
+                        <span class="logical">({{ result.walletId }})</span>
                     </div>
                 </List>
 
-                <p v-if="results.length === 0 && user.length > 4">
+                <p v-if="displayedResults.length === 0 && user.length > 4">
                     Aucun résultat.
                 </p>
 
@@ -89,7 +90,24 @@ export default {
             results: 'transfer/results',
             selected: 'transfer/selectedUser',
             working: 'working/working'
-        })
+        }),
+
+        displayedResults() {
+            const results = [];
+
+            this.results.forEach(result => {
+                result.wallets.forEach(wallet => {
+                    results.push({
+                        id: wallet.id,
+                        firstname: result.firstname,
+                        lastname: result.lastname,
+                        walletId: wallet.logical_id || result.mail
+                    });
+                });
+            });
+
+            return results;
+        }
     },
 
     mounted() {
@@ -105,13 +123,13 @@ export default {
 
             await this.processFindUser(this.user);
 
-            if (this.results.length === 1) {
+            if (this.displayedResults.length === 1) {
                 this.selectResult(this.results[0]);
             }
         },
 
-        async transfer(user, amount) {
-            const res = await this.processTransfer({ user, amount });
+        async transfer(wallet, amount) {
+            const res = await this.processTransfer({ wallet, amount });
 
             if (res) {
                 this.$router.push('/dashboard');
@@ -148,7 +166,7 @@ export default {
     font-weight: 500;
 }
 
-.username {
+.logical {
     color: $foreground;
 }
 </style>

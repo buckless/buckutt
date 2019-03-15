@@ -9,7 +9,8 @@ const {
     registerDevice,
     fetchTicket,
     validateLoginBody,
-    login
+    login,
+    assigner
 } = require('server/app/actions/auth');
 
 const router = require('express').Router();
@@ -37,16 +38,27 @@ router.post(
 router.get(
     '/assigner',
     asyncHandler(async (req, res) => {
-        const ticketOrMail = req.query.ticketOrMail;
+        const ticketNumber = req.query.ticketNumber;
 
-        if (!ticketOrMail || ticketOrMail.length === 0) {
-            throw new APIError(module, 400, 'Invalid ticketOrMail');
+        if (!ticketNumber || ticketNumber.length === 0) {
+            throw new APIError(module, 400, 'Invalid ticketNumber');
         }
 
-        log.info(`Search results for ticket ${ticketOrMail}`, req.details);
+        log.info(`Search results for ticket ${ticketNumber}`, req.details);
 
-        const user = await fetchTicket(ctx(req), ticketOrMail);
-        res.json([user]);
+        const ticket = await fetchTicket(ctx(req), ticketNumber);
+        res.json([ticket]);
+    })
+);
+
+router.post(
+    '/assigner',
+    asyncHandler(async (req, res) => {
+        const wallet = await assigner(ctx(req), req.body);
+
+        log.info(`assign a card to a ticket`, req.details);
+
+        res.json(wallet);
     })
 );
 
@@ -55,21 +67,21 @@ router.post(
     asyncHandler(async (req, res) => {
         await validateLoginBody(req.body);
 
+        const mail = req.body.mail ? req.body.mail.toString() : undefined;
+        const wallet = req.body.wallet
+            ? req.body.wallet
+                  .toString()
+                  .toLowerCase()
+                  .trim()
+            : undefined;
         const connectType = req.body.hasOwnProperty('pin') ? 'pin' : 'password';
-        const infos = {
-            meanOfLogin: req.body.meanOfLogin.toString(),
-            data: req.body.data
-                .toString()
-                .toLowerCase()
-                .trim(),
-            connectType
-        };
+        const infos = { mail, wallet, connectType };
 
         const { pin, password } = req.body;
 
         req.details.infos = infos;
 
-        let { user, linkedUsers, token } = await login(ctx(req), {
+        let { user, token } = await login(ctx(req), {
             infos,
             pin,
             password
@@ -77,12 +89,11 @@ router.post(
 
         user = sanitizeUser(user, req.wiket.point.id);
 
-        log.info(
-            `login with mol ${infos.meanOfLogin}(${infos.data}) and ${infos.connectType}`,
-            req.details
-        );
+        const info = infos.wallet ? `wallet ${infos.wallet}` : `mail ${infos.mail}`;
 
-        return res.json({ user, linkedUsers, token });
+        log.info(`login with ${info} and ${infos.connectType}`, req.details);
+
+        return res.json({ user, token });
     })
 );
 

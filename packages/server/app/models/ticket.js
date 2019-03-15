@@ -1,13 +1,13 @@
 module.exports = bookshelf => {
-    const name = 'MeanOfLogin';
+    const name = 'Ticket';
     const Model = bookshelf.Model.extend({
-        tableName: 'meansoflogin',
+        tableName: 'tickets',
         hasTimestamps: true,
         uuid: true,
         softDelete: true,
 
-        user() {
-            return this.belongsTo('User');
+        wallet() {
+            return this.belongsTo('Wallet');
         }
     });
 

@@ -10,8 +10,8 @@ module.exports = bookshelf => {
             return this.belongsTo('Point');
         },
 
-        buyer() {
-            return this.belongsTo('User', 'buyer_id');
+        wallet() {
+            return this.belongsTo('Wallet');
         },
 
         seller() {

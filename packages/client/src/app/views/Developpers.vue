@@ -14,7 +14,7 @@
                 Données de l'événement
             </syncData>
 
-            <template v-if="seller.isAuth">
+            <template v-if="sellerLogged">
                 <syncData
                     icon="free_breakfast"
                     :lastUpdate="itemsSync.lastUpdate"
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import SyncData from '@/components/SyncData';
 
 export default {
@@ -63,7 +63,6 @@ export default {
         eventSync: state => state.online.offline.eventEssentials,
         itemsSync: state => state.online.offline.items,
         queueSync: state => state.online.offline.queue,
-        seller: state => state.auth.seller,
         name: state => state.auth.device.name
     }),
 
@@ -75,6 +74,8 @@ export default {
             'syncQueue',
             'loadDefaultItems'
         ]),
+
+        ...mapGetters(['sellerLogged']),
 
         updateItems() {
             this.updateStoredItems().then(() => this.loadDefaultItems());

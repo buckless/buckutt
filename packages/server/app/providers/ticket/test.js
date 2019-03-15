@@ -1,19 +1,17 @@
 const faker = require('faker/locale/fr');
-const computeUsername = require('server/app/helpers/username');
 
-module.exports = async () => {
+module.exports = async function test() {
     let firstname = faker.name.firstName();
     let lastname = faker.name.lastName();
-    let username = await computeUsername(firstname, lastname);
 
     return [
         {
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
+            firstname,
+            lastname,
             mail: 'test@mail.com',
-            credit: 500,
-            ticketId: '1234'
+            amount: 500,
+            logical_id: '1234',
+            physical_id: 'TK1234'
         }
     ];
 };

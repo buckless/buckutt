@@ -151,7 +151,7 @@ export const updateEssentials = (store, force) => {
             noQueue: true
         })
         .then(res => {
-            if (!store.state.auth.device.point.id || !store.state.auth.seller.isAuth || force) {
+            if (!store.state.auth.device.point.id || !store.getters.sellerLogged || force) {
                 return store
                     .dispatch('setDevice', {
                         id: res.data.device.id,

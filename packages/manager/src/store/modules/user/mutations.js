@@ -2,27 +2,41 @@ export const SET_USER = (state, payload) => {
     state.user = payload;
 };
 
-export const SET_LINKED_USERS = (state, payload) => {
-    state.linkedUsers = payload;
+export const SET_CURRENT_WALLET = (state, payload) => {
+    state.currentWallet = payload;
+};
+
+export const UPDATE_CURRENT_WALLET = (state, payload) => {
+    state.user.wallets = state.user.wallets.map(wallet => {
+        if (wallet.id !== state.currentWallet) {
+            return wallet;
+        }
+
+        return Object.assign({}, wallet, payload);
+    });
+};
+
+export const ADD_WALLET = (state, payload) => {
+    state.user.wallets.push(payload);
 };
 
 export const SET_GIFT_RELOADS = (state, payload) => {
     state.giftReloads = payload;
 };
 
-export const BLOCK_CARD = (state, cardId) => {
-    if (!state.user || !state.user.meansOfLogin) {
+export const BLOCK_CARD = (state, logicalId) => {
+    if (!state.user) {
         return;
     }
 
-    state.user.meansOfLogin = state.user.meansOfLogin.map(mol => {
-        if (mol.type === 'cardId' && mol.data === cardId) {
+    state.user.wallets = state.user.wallets.map(wallet => {
+        if (wallet.logicalId === logicalId) {
             return {
-                ...mol,
+                ...wallet,
                 blocked: true
             };
         }
 
-        return mol;
+        return wallet;
     });
 };

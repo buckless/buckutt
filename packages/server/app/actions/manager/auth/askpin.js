@@ -19,7 +19,7 @@ const askpin = async (ctx, { mail }) => {
         },
         from: config.askpin.from,
         to: user.get('mail'),
-        subject: config.askpin.subject
+        subject: `${config.merchantName} — ${config.askpin.subject}`
     });
 
     return user.toJSON();

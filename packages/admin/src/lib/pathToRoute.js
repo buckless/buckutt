@@ -11,8 +11,8 @@ const translation = {
     promotion: 'promotions',
     user: 'users',
     webservice: 'webservices',
-    // Special cases
-    participant: 'users',
+    wallet: 'wallets',
+    // Special case
     wiket: 'points'
 };
 

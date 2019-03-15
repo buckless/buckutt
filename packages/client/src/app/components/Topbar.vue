@@ -1,10 +1,10 @@
 <template>
     <header class="b-header">
-        <div class="b-header__user-image" v-if="buyer.isAuth && showPicture">
+        <div class="b-header__user-image" v-if="buyerLogged && showPicture">
             <img src="../assets/placeholder.jpg" height="150" width="150" />
         </div>
         <upper />
-        <div class="b-header__buyer-credit" v-if="buyer.isAuth">
+        <div class="b-header__buyer-credit" v-if="buyerLogged">
             <span :class="{ 'b-header__buyer__credit--negative': buyer.credit < 0 }">
                 <currency :value="buyer.credit"></currency>
             </span>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import isMobile from '@/utils/isMobile';
 
@@ -39,9 +39,10 @@ export default {
 
         ...mapState({
             showPicture: state => state.auth.device.config.showPicture,
-            seller: state => state.auth.seller,
             buyer: state => state.auth.buyer
-        })
+        }),
+
+        ...mapGetters(['buyerLogged'])
     }
 };
 </script>

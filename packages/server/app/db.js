@@ -3,8 +3,6 @@ const path = require('path');
 const config = require('server/app/config');
 const log = require('server/app/log')(module);
 
-console.log(config.db);
-
 const knex = require('knex')(config.db);
 const bookshelf = require('bookshelf')(knex);
 

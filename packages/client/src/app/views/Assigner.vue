@@ -18,8 +18,6 @@
             <div class="b-assigner-modal__modal__text__head" v-else>
                 <strong>{{ assignModal.name }}</strong
                 ><br />
-                Nom d'utilisateur : <strong>{{ assignModal.username }}</strong
-                ><br />
                 Nouveau crédit : <strong><currency :value="assignModal.credit"/></strong>
 
                 <h4 v-if="groups.length > 0">Groupes :</h4>
@@ -104,26 +102,6 @@ export default {
             this.$router.push('/assigner/scan');
         },
 
-        getPendingCardUpdates(userId) {
-            return window.database.pendingUserUpdates(userId.trim()).then(pendingCardUpdates => {
-                let amount = 0;
-                let version = 0;
-
-                pendingCardUpdates
-                    .sort((a, b) => a.incrId - b.incrId)
-                    .forEach(pcu => {
-                        amount += pcu.amount;
-                        version = parseInt(pcu.incrId);
-                    });
-
-                return {
-                    amount,
-                    version,
-                    pendingCardUpdates
-                };
-            });
-        },
-
         assignCard(cardId, _, options) {
             this.$store.commit('SET_DATA_LOADED', false);
 
@@ -136,15 +114,10 @@ export default {
 
             const assignPromise = this.useCardData
                 ? new Promise(resolve => {
-                      window.app.$root.$emit(
-                          'readyToWrite',
-                          this.assignModal.credit,
-                          {
-                              assignedCard: true,
-                              catering: options.catering
-                          },
-                          this.assignModal.version
-                      );
+                      window.app.$root.$emit('readyToWrite', this.assignModal.credit, {
+                          assignedCard: true,
+                          catering: options.catering
+                      });
                       window.app.$root.$on('writeCompleted', () => resolve());
                   })
                 : Promise.resolve();
@@ -155,45 +128,24 @@ export default {
 
             assignPromise
                 .then(() => {
-                    const requests = [];
+                    const data = {
+                        walletId: this.assignModal.walletId,
+                        logicalId: cardId,
+                        groups,
+                        ticketNumber: this.assignModal.ticketId
+                            ? this.assignModal.barcode
+                            : undefined,
+                        writtenCredit: this.assignModal.credit
+                    };
 
-                    const data = this.assignModal.blank
-                        ? { anon: true, groups, cardId }
-                        : {
-                              userId: this.assignModal.id,
-                              ticketNumber: this.assignModal.ticketId,
-                              groups,
-                              cardId
-                          };
-
-                    requests.push(
-                        this.sendRequest({
-                            method: 'post',
-                            url: 'manager/auth/assigner',
-                            data,
-                            immediate: true
-                        })
-                    );
-
-                    this.assignModal.pendingCardUpdates.forEach(pcu => {
-                        requests.push(
-                            this.sendRequest({
-                                method: 'post',
-                                url: 'customer/pendingCardUpdate',
-                                data: {
-                                    id: pcu.id
-                                },
-                                immediate: true
-                            })
-                        );
+                    return this.sendRequest({
+                        method: 'post',
+                        url: 'auth/assigner',
+                        data,
+                        immediate: true
                     });
-
-                    if (this.assignModal.molId) {
-                        requests.push(window.database.delete('tickets', this.assignModal.molId));
-                    }
-
-                    return Promise.all(requests);
                 })
+                .then(() => window.database.delete('tickets', this.assignModal.id))
                 .then(() => this.ok())
                 .catch(err => {
                     console.log(err);
@@ -211,43 +163,32 @@ export default {
             this.assignModal = {
                 opened: true,
                 credit: 0,
-                pendingCardUpdates: [],
                 blank: true
             };
         },
 
-        async setAssignModal(credit, name, username, id, groups = [], ticketId, molId) {
+        async setAssignModal(credit, name, id, groups = [], barcode, ticketId, walletId) {
             if (!groups) {
-                groups = await formatMemberships(id);
+                groups = walletId ? await formatMemberships(walletId) : [];
             }
 
             const precheckedGroups = groups
                 .filter(group => group.id !== this.defaultGroup.id)
                 .map(group => this.groups.find(g => g.id === group.id));
 
-            let pendingPromise = Promise.resolve({ amount: 0, version: 0, ids: [] });
-            if (id) {
-                pendingPromise = this.getPendingCardUpdates(id);
-            }
+            this.assignModal = {
+                opened: true,
+                credit,
+                name,
+                id,
+                barcode,
+                walletId,
+                ticketId
+            };
+            this.activeGroups = precheckedGroups;
+            this.precheckedGroups = groups;
 
-            return pendingPromise
-                .then(({ amount, version, pendingCardUpdates }) => {
-                    this.assignModal = {
-                        opened: true,
-                        credit: credit + amount,
-                        name,
-                        username,
-                        id,
-                        ticketId,
-                        pendingCardUpdates,
-                        version,
-                        molId
-                    };
-                    this.activeGroups = precheckedGroups;
-                    this.precheckedGroups = groups;
-                })
-                .catch(() => Promise.resolve())
-                .then(() => this.$store.commit('SET_DATA_LOADED', true));
+            this.$store.commit('SET_DATA_LOADED', true);
         },
 
         ok() {
@@ -256,9 +197,7 @@ export default {
         },
 
         ...mapActions(['sendRequest'])
-    },
-
-    mounted() {}
+    }
 };
 </script>
 

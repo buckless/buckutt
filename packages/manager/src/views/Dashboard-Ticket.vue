@@ -3,8 +3,8 @@
         <Card>
             <h3>Mon billet</h3>
             <form v-if="!ticketNumber" @submit.prevent="assignTicket(ticket)">
-                Pour lier votre billet d'entrée à votre espace cashless, saisissez ici votre numéro
-                de billet.
+                Pour lier votre billet d'entrée à ce porte-monnaie cashless, saisissez ici votre
+                numéro de billet.
                 <TextInput
                     v-model="ticket"
                     :disabled="working"
