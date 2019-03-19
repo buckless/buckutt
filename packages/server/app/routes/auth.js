@@ -67,7 +67,7 @@ router.post(
     asyncHandler(async (req, res) => {
         await validateLoginBody(req.body);
 
-        const mail = req.body.mail ? req.body.mail.toString() : undefined;
+        const mail = req.body.mail ? req.body.mail.toString().toLowerCase() : undefined;
         const wallet = req.body.wallet
             ? req.body.wallet
                   .toString()

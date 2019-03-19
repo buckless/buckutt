@@ -58,3 +58,6 @@ services/volumes/reverse_proxy/server.prod.conf
 
 # Images server
 packages/image-server/images/*
+
+# PWA
+services/images/manager/manifest.json

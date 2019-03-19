@@ -114,6 +114,7 @@ export default {
 @import '@/theme.scss';
 
 .forgot {
+    padding: 1.5rem;
     max-width: 700px;
     width: 100%;
     margin: 0 auto;
