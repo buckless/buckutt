@@ -75,11 +75,11 @@
         "menuShowTicket": 1,
         "menuShowCard": 1,
         "accountShowQrcode": 1,
-        "colorsTheme": "#539de9",
+        "colorsTheme": "#1abc9c",
         "colorsForegroundTheme": "rgba(0,0,0,.9)",
-        "colorsBackground": "#2a2a2a",
-        "colorsCardBackground": "#3a3a3a",
-        "colorsForeground": "rgba(255,255,255,.9)"
+        "colorsBackground": "#fafafa",
+        "colorsCardBackground": "#fff",
+        "colorsForeground": "rgba(0,0,0,.9)"
     },
     "mail": {
         "smtp": {
