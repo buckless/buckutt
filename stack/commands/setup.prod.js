@@ -60,6 +60,32 @@ module.exports = async () => {
 
     log.end(' Done');
 
+    log(`Mapping manifest's configuration`);
+
+    const manifestBase = path.join(
+        __dirname,
+        '../utils/manifest.base.json'
+    );
+
+    const manifestBaseFile = JSON.parse(await fs.readFile(manifestBase));
+
+    const stackManifest = {
+        ...manifestBaseFile,
+        name: configFile.eventOrCompany.name,
+        short_name: configFile.eventOrCompany.shortName,
+        background_color: configFile.manager.colorsBackground,
+        theme_color: configFile.manager.colorsTheme
+    };
+
+    const manifest = path.join(
+        __dirname,
+        '../../services/images/manager/manifest.json'
+    );
+
+    await fs.writeFile(manifest, JSON.stringify(stackManifest));
+
+    log.end(' Done');
+
     log('Building services...');
 
     const dockerComposeYml = path.join(__dirname, '../../services/docker-compose.yml');
