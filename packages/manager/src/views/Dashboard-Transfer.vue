@@ -3,7 +3,7 @@
         <Card>
             <h3>Virement</h3>
             <p>
-                Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle verte
+                Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle colorée
                 indique le compte receveur. Attention, vous ne pouvez virer de l'argent qu'à une
                 personne ayant créé un compte.
             </p>
@@ -101,7 +101,7 @@ export default {
                         id: wallet.id,
                         firstname: result.firstname,
                         lastname: result.lastname,
-                        walletId: wallet.logical_id || result.mail
+                        walletId: wallet.physical_id || result.mail
                     });
                 });
             });

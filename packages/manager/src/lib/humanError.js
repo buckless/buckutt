@@ -27,7 +27,9 @@ export default message => {
         case 'Unauthorized: insufficient rights':
             return 'Droits insuffisants';
         case 'Not enough sender credit':
-            return 'Pas assez de crédit';
+            return 'Votre crédit est insuffisant pour transférer cette somme';
+        case 'Too much reciever credit':
+            return 'Le receveur a un crédit déjà trop important pour recevoir cette somme';
         default:
             return message;
     }
