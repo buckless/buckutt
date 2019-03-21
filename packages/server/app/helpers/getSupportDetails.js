@@ -11,7 +11,7 @@ module.exports = async (ctx, condition) => {
 
     await physicalSupport.fetch();
 
-    if (physicalSupport) {
+    if (physicalSupport.get('logical_id')) {
         return {
             logical_id: physicalSupport.get('logical_id'),
             physical_id: physicalSupport.get('physical_id')
