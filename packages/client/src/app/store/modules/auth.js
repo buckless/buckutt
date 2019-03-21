@@ -35,7 +35,11 @@ const initialState = {
         memberships: [],
         purchases: [],
         wallet: null,
-        catering: []
+        catering: [],
+        pendingData: {
+            version: null,
+            ids: []
+        }
     },
     seller: {
         wallet: null,

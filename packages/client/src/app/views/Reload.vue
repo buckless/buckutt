@@ -40,12 +40,7 @@
                 </div>
             </div>
         </div>
-        <nfc
-            mode="read"
-            @read="logBuyer"
-            v-if="!buyerLogged && reloadOnly && isWaiting && !isWriting"
-            key="read"
-        />
+        <nfc mode="read" @read="logBuyer" v-if="reloadOnly && isWaiting && !isWriting" key="read" />
         <nfc
             mode="write"
             @read="validate"
@@ -146,21 +141,23 @@ export default {
             initialPromise.then(() => this.closeReload());
         },
 
-        logBuyer(cardNumber, credit, options) {
-            console.log('reload-buyer-login', cardNumber, credit, options);
+        logBuyer(cardNumber, credit, options, version) {
+            console.log('reload-buyer-login', cardNumber, credit, options, version);
             this.buyerLogin({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
-                options
+                options,
+                version
             });
         },
 
-        validate(cardNumber, credit, options) {
-            console.log('reload-validate', cardNumber, credit, options);
+        validate(cardNumber, credit, options, version) {
+            console.log('reload-validate', cardNumber, credit, options, version);
             this.validateBasket({
                 cardNumber,
                 credit: Number.isInteger(credit) ? credit : null,
-                options
+                options,
+                version
             }).then(() => this.closeReload());
         },
 

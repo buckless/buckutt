@@ -25,56 +25,29 @@ export const checkBuyerCredit = store => {
         const minReload = store.state.auth.device.event.config.minReload;
         const maxPerAccount = store.state.auth.device.event.config.maxPerAccount;
         if (store.getters.credit < 0) {
-            return Promise.reject({
-                response: { data: { message: 'Not enough credit' } }
-            });
+            return Promise.reject({ message: 'Not enough credit' });
         } else if (store.getters.credit > maxPerAccount && store.getters.reloadAmount > 0) {
             const max = (maxPerAccount / 100).toFixed(2);
-            return Promise.reject({
-                response: { data: { message: `Maximum exceeded : ${max}€` } }
-            });
+            return Promise.reject({ message: `Maximum exceeded : ${max}€` });
         } else if (store.getters.reloadAmount > 0 && store.getters.reloadAmount < minReload) {
             const min = (minReload / 100).toFixed(2);
-            return Promise.reject({
-                response: {
-                    data: { message: `Can not reload less than : ${min}€` }
-                }
-            });
+            return Promise.reject({ message: `Can not reload less than : ${min}€` });
         }
     }
 
     return Promise.resolve();
 };
 
-export const checkPendingCardUpdates = (store, { cardNumber, version }) =>
-    window.database.pendingCardUpdates(cardNumber.trim()).then(pendingCardUpdates => {
-        const pendingPromise = Promise.resolve();
-        let updatedCredit = store.state.auth.buyer.credit;
-        let updatedVersion = version;
-
-        pendingCardUpdates
-            .filter(pcu => pcu.incrId > version)
-            .sort((a, b) => a.incrId - b.incrId)
-            .forEach(pcu => {
-                pendingPromise.then(() =>
-                    store.dispatch('sendRequest', {
-                        method: 'post',
-                        url: 'customer/pendingCardUpdate',
-                        data: {
-                            id: pcu.id
-                        }
-                    })
-                );
-
-                updatedCredit += pcu.amount;
-                updatedVersion = parseInt(pcu.incrId);
-            });
-
-        return pendingPromise.then(() => ({
-            credit: updatedCredit,
-            version: updatedVersion
-        }));
-    });
+export const commitPendingCardUpdates = store =>
+    Promise.all(
+        store.state.auth.buyer.pendingData.ids.map(id =>
+            store.dispatch('sendRequest', {
+                method: 'post',
+                url: 'customer/pendingCardUpdate',
+                data: { id }
+            })
+        )
+    );
 
 export const addNfcSupportToBasket = store => {
     const now = new Date();
@@ -114,7 +87,7 @@ export const checkSidebar = store => {
             .filter((item, index, original) => original.indexOf(item) === index);
 
         store.commit('SET_UNALLOWED_ITEMS_NAMES', unallowed);
-        return Promise.reject({ response: { data: { message: 'User unallowed to buy this' } } });
+        return Promise.reject({ message: 'User unallowed to buy this' });
     }
 
     return Promise.resolve();
@@ -126,7 +99,7 @@ export const generateOptions = store => ({
     catering: store.getters.catering
 });
 
-export const validateBasket = (store, { cardNumber, credit, options, version }) => {
+export const validateBasket = async (store, { cardNumber, credit, options, version }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
         (store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0)
@@ -136,107 +109,79 @@ export const validateBasket = (store, { cardNumber, credit, options, version }) 
 
     store.commit('SET_DATA_LOADED', false);
 
-    let cardVersion = version;
-    let initialPromise = Promise.resolve();
-
     // Log-in buyer to update user prices
-    initialPromise = store
-        .dispatch('buyerLogin', {
-            cardNumber,
-            credit,
-            options
-        })
-        .then(() => store.dispatch('checkSidebar'))
-        // If it fails, throw an error and then remove items from the basket
-        .catch(err =>
-            store.dispatch('removeUnavailableItemsFromBasket').then(() => Promise.reject(err))
-        );
+    await store.dispatch('buyerLogin', {
+        cardNumber,
+        credit,
+        options,
+        version
+    });
+
+    // Check if the newly logged user can buy what's inside its basket
+    try {
+        await store.dispatch('checkSidebar');
+    } catch (err) {
+        await store.dispatch('removeUnavailableItemsFromBasket');
+        return store.commit('ERROR', err);
+    }
 
     const shouldPayCard = !options.paidCard && store.state.auth.device.event.config.useCardData;
 
+    // If the support hasn't been paid yet, add it to the basket
     if (shouldPayCard) {
-        initialPromise = initialPromise.then(() => store.dispatch('addNfcSupportToBasket'));
+        await store.dispatch('addNfcSupportToBasket');
     }
 
-    const shouldCheckPending = store.state.auth.device.event.config.useCardData;
-
-    if (shouldCheckPending) {
-        initialPromise = initialPromise
-            .then(() =>
-                store.dispatch('checkPendingCardUpdates', {
-                    cardNumber,
-                    version
-                })
-            )
-            .then(newValues => {
-                store.commit('OVERRIDE_BUYER_CREDIT', newValues.credit);
-                cardVersion = newValues.version;
-            });
+    // Check if the buyer has enough credit
+    try {
+        await store.dispatch('checkBuyerCredit');
+    } catch (err) {
+        await store.dispatch('initiateBasket');
+        return store.commit('ERROR', err);
     }
 
-    initialPromise = initialPromise.then(() => store.dispatch('checkBuyerCredit'));
-
+    // If we use card data, write new data on it
     if (store.state.auth.device.event.config.useCardData) {
-        initialPromise = initialPromise
-            .then(() => store.dispatch('generateOptions'))
-            .then(
-                newOptions =>
-                    new Promise(resolve => {
-                        window.app.$root.$emit(
-                            'readyToWrite',
-                            store.getters.credit,
-                            newOptions,
-                            cardVersion
-                        );
-                        window.app.$root.$on('writeCompleted', () => resolve());
-                    })
+        const newOptions = await store.dispatch('generateOptions');
+        const newCardVersion = store.state.auth.buyer.pendingData.version;
+
+        await new Promise(resolve => {
+            window.app.$root.$emit(
+                'readyToWrite',
+                store.getters.credit,
+                newOptions,
+                newCardVersion
             );
+            window.app.$root.$on('writeCompleted', () => resolve());
+        });
     }
 
-    return initialPromise
-        .then(() =>
-            store.dispatch('sendBasket', {
-                cardNumber
-            })
-        )
-        .then(() => {
-            store.commit('LOGOUT_BUYER');
-            store.commit('SET_BASKET_STATUS', 'WAITING');
-            store.dispatch('clearBasket');
-            return store.dispatch('loadDefaultItems');
-        })
-        .catch(err => {
-            console.log(err);
+    try {
+        // Send the basket
+        await store.dispatch('sendBasket', { cardNumber });
+    } catch (err) {
+        if (err.message === 'Network Error') {
+            return store.commit('ERROR', { message: 'Server not reacheable' });
+        }
 
-            if (err.message === 'Network Error') {
-                store.commit('ERROR', { message: 'Server not reacheable' });
-                return;
-            }
+        store.commit('ERROR', err.response.data);
+    }
 
-            let errorPromise = Promise.resolve();
+    await store.dispatch('commitPendingCardUpdates');
+    return store.dispatch('initiateBasket');
+};
 
-            // If a PCU has been ack, write it
-            if (cardVersion > version) {
-                errorPromise = new Promise(resolve => {
-                    window.app.$root.$emit(
-                        'readyToWrite',
-                        store.state.auth.buyer.credit,
-                        options,
-                        cardVersion
-                    );
-                    window.app.$root.$on('writeCompleted', () => resolve());
-                });
-            }
+export const initiateBasket = async store => {
+    store.commit('LOGOUT_BUYER');
+    store.commit('SET_BASKET_STATUS', 'WAITING');
+    await store.dispatch('clearBasket');
+    await store.dispatch('loadDefaultItems');
 
-            return errorPromise.then(() => store.commit('ERROR', err.response.data));
-        })
-        .then(() => {
-            store.commit('SET_DATA_LOADED', true);
-            store.commit('SET_WRITING', false);
-            return store.dispatch('removeItemFromBasket', {
-                id: store.state.auth.device.event.nfc_id
-            });
-        });
+    store.commit('SET_DATA_LOADED', true);
+    store.commit('SET_WRITING', false);
+    return store.dispatch('removeItemFromBasket', {
+        id: store.state.auth.device.event.nfc_id
+    });
 };
 
 export const sendBasket = (store, payload = {}) => {

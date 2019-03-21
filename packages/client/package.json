@@ -23,7 +23,7 @@
     "electron": "electron .",
     "android": "cd cordova && cordova run android --emulator",
     "android:device": "cd cordova && cordova run android --device",
-    "build:browser": "cross-env DEBUG=* TARGET=browser NODE_ENV=production vue-cli-service build",
+    "build:browser": "cross-env TARGET=browser NODE_ENV=production vue-cli-service build",
     "build:electron": "cross-env TARGET=electron NODE_ENV=production vue-cli-service build",
     "build:android": "cross-env TARGET=cordova NODE_ENV=android vue-cli-service build",
     "lint": "vue-cli-service lint",
