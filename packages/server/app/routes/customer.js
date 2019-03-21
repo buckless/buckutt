@@ -22,7 +22,7 @@ router.get(
 
         log.info(`get accesses for wallet ${req.query.walletId}`, req.details);
 
-        const accesses = await listAccesses(req.query.walletId);
+        const accesses = await listAccesses(ctx(req), req.query.walletId);
 
         res.json(accesses);
     })

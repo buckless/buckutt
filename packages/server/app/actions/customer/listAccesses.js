@@ -4,12 +4,15 @@ module.exports = async (ctx, walletId) => {
     const now = new Date();
 
     const embedMemberships = [
-        { embed: 'user', required: true },
+        { embed: 'user' },
         { embed: 'period', filters: [['end', '>', now]], required: true },
         {
             embed: 'user.wallets',
-            filters: [['blocked', '=', false], ['logical_id', '=', walletId]],
-            required: true
+            filters: [['blocked', '=', false], ['logical_id', '=', walletId]]
+        },
+        {
+            embed: 'wallet',
+            filters: [['blocked', '=', false], ['logical_id', '=', walletId]]
         }
     ];
 
@@ -28,7 +31,7 @@ module.exports = async (ctx, walletId) => {
     const accesses = [];
 
     for (let i = memberships.length - 1; i >= 0; i -= 1) {
-        if (memberships[i].user.wallets.length > 0) {
+        if (memberships[i].user.wallets.length > 0 || memberships[i].wallet.id) {
             accesses.push({
                 group: memberships[i].group_id,
                 start: memberships[i].period.start,
