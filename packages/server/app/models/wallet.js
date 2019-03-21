@@ -20,6 +20,10 @@ module.exports = bookshelf => {
 
         ticket() {
             return this.hasOne('Ticket');
+        },
+
+        purchases() {
+            return this.hasMany('Purchase', 'wallet_id');
         }
     });
 

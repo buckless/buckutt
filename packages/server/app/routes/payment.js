@@ -67,7 +67,7 @@ router.post(
             throw new APIError(module, 400, 'Invalid catering');
         }
 
-        req.details.buyer = req.body.buyer;
+        req.details.walletId = req.body.walletId;
 
         const { name, cateringId, clientTime, walletId } = req.body;
 

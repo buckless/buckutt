@@ -16,10 +16,6 @@ module.exports = bookshelf => {
 
         rights() {
             return this.hasMany('Right');
-        },
-
-        purchases() {
-            return this.hasMany('Purchase', 'buyer_id');
         }
     });
 

@@ -6,7 +6,7 @@ module.exports = () => {
     bookshelf.on('saved', models.Purchase, p => {
         models.Purchase.where('id', p.id)
             .fetch({
-                withRelated: ['price', 'point', 'buyer', 'seller', 'articles', 'promotion']
+                withRelated: ['price', 'point', 'wallet', 'wallet.user', 'seller', 'articles', 'promotion']
             })
             .then(purchase_ => {
                 if (!purchase_) {
@@ -15,12 +15,15 @@ module.exports = () => {
 
                 const purchase = purchase_.toJSON();
 
-                delete purchase.buyer.pin;
-                delete purchase.buyer.password;
                 delete purchase.seller.pin;
                 delete purchase.seller.password;
-                delete purchase.buyer.recoverKey;
                 delete purchase.seller.recoverKey;
+
+                if (purchase.wallet.user) {
+                    delete purchase.wallet.user.pin;
+                    delete purchase.wallet.user.password;
+                    delete purchase.wallet.user.recoverKey;
+                }
 
                 return models.Webservice.fetchAll().then(webservices =>
                     Promise.all(
