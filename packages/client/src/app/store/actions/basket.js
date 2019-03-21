@@ -69,7 +69,8 @@ export const addNfcSupportToBasket = store => {
             price: validCosts[0],
             id: store.state.auth.device.event.nfc_id,
             alcohol: 0,
-            name: 'Support NFC'
+            name: 'Support NFC',
+            uncancellable: true
         });
 
         store.commit('SET_LAST_USER_CARD_PAID', validCosts[0].amount);
@@ -207,7 +208,8 @@ export const sendBasket = (store, payload = {}) => {
             ],
             alcohol: article.alcohol,
             cost: article.price.amount,
-            type: 'purchase'
+            type: 'purchase',
+            uncancellable: article.uncancellable
         });
     });
 

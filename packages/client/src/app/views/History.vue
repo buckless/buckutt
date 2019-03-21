@@ -150,7 +150,7 @@ export default {
 
         resume(entry) {
             const items = entry.basketToSend
-                .filter(e => typeof e.cost === 'number')
+                .filter(e => typeof e.cost === 'number' && !e.uncancellable)
                 .map(e => ({
                     name: e.name,
                     cost: e.cost
