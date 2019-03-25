@@ -13,7 +13,7 @@
                     <span class="name" v-if="wallet.physical_id">
                         Support {{ wallet.physical_id }}
                     </span>
-                    <span class="name" v-else-if="wallet.ticket.physical_id">
+                    <span class="name" v-else-if="wallet.ticket && wallet.ticket.physical_id">
                         Ticket {{ wallet.ticket.physical_id }}
                     </span>
                     <span class="name" v-else-if="wallet.logical_id">
