@@ -63,8 +63,11 @@ export default (state, getters, error) => {
         return error.message.replace('Maximum exceeded', 'Crédit maximum');
     }
 
-    if (error.message === 'Not enough credit') {
-        return `Pas assez de crédit: ${(-1 * getters.credit / 100).toFixed(2)}€ manquants`;
+    if (error.message.startsWith('Not enough credit')) {
+        return error.message.replace(
+            'Not enough credit : missing',
+            'Crédit insuffisant : il manque'
+        );
     }
 
     if (error.message === 'Catering not available today') {

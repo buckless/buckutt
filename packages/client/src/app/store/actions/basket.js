@@ -25,7 +25,8 @@ export const checkBuyerCredit = store => {
         const minReload = store.state.auth.device.event.config.minReload;
         const maxPerAccount = store.state.auth.device.event.config.maxPerAccount;
         if (store.getters.credit < 0) {
-            return Promise.reject({ message: 'Not enough credit' });
+            const missingCredit = ((-1 * store.getters.credit) / 100).toFixed(2);
+            return Promise.reject({ message: `Not enough credit : missing ${missingCredit}€` });
         } else if (store.getters.credit > maxPerAccount && store.getters.reloadAmount > 0) {
             const max = (maxPerAccount / 100).toFixed(2);
             return Promise.reject({ message: `Maximum exceeded : ${max}€` });
@@ -137,9 +138,8 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
     try {
         await store.dispatch('checkBuyerCredit');
     } catch (err) {
-        store.commit('ERROR', err);
         await store.dispatch('initiateBasket');
-        return;
+        return store.commit('ERROR', err);
     }
 
     // If we use card data, write new data on it

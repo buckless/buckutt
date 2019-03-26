@@ -14,7 +14,9 @@ export const updateOfflineEntry = (store, payload) => {
     if (store.state.ui.lastUser.localId === payload.localId) {
         store.commit('SET_LAST_USER', {
             ...store.state.ui.lastUser,
-            name: user ? `${payload.basketData.user.firstname} ${payload.basketData.user.lastname}` : null
+            name: payload.basketData.user
+                ? `${payload.basketData.user.firstname} ${payload.basketData.user.lastname}`
+                : null
         });
     }
 };
