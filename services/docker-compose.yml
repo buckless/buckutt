@@ -57,7 +57,7 @@ services:
         depends_on:
             - sql
         volumes:
-            - ./volumes/server/log:/usr/src/buckless-server/log
+            - ./volumes/server/log:/usr/src/buckless-server/packages/server/log
 
     admin:
         container_name: buckless_admin
@@ -90,7 +90,7 @@ services:
         expose:
             - "3400"
         volumes:
-            - ./volumes/image-server/images:/usr/src/buckless-image-server/images
+            - ./volumes/image-server/images:/usr/src/buckless-image-server/packages/image-server/images
         environment:
             NODE_ENV: production
 
