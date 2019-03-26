@@ -1,5 +1,3 @@
-import { credit } from '../store/getters/items';
-
 export default (state, getters, error) => {
     if (!error || !error.message) {
         return null;
@@ -66,7 +64,7 @@ export default (state, getters, error) => {
     }
 
     if (error.message === 'Not enough credit') {
-        return `Pas assez de crédit: ${(credit(state, getters) / 100).toFixed(2)}€`;
+        return `Pas assez de crédit: ${(-1 * getters.credit / 100).toFixed(2)}€ manquants`;
     }
 
     if (error.message === 'Catering not available today') {

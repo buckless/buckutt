@@ -137,8 +137,9 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
     try {
         await store.dispatch('checkBuyerCredit');
     } catch (err) {
+        store.commit('ERROR', err);
         await store.dispatch('initiateBasket');
-        return store.commit('ERROR', err);
+        return;
     }
 
     // If we use card data, write new data on it
