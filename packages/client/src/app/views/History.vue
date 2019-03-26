@@ -149,15 +149,17 @@ export default {
         },
 
         resume(entry) {
-            const items = entry.basketToSend
-                .filter(e => typeof e.cost === 'number' && !e.uncancellable)
+            const basketToSend = entry.basketToSend.filter(e => !e.uncancellable);
+
+            const items = basketToSend
+                .filter(e => typeof e.cost === 'number')
                 .map(e => ({
                     name: e.name,
                     cost: e.cost
                 }));
 
             const cost = items.map(e => e.cost).reduce((a, b) => a + b, 0);
-            const reload = entry.basketToSend
+            const reload = basketToSend
                 .filter(e => e.credit)
                 .map(e => e.credit)
                 .reduce((a, b) => a + b, 0);
@@ -173,7 +175,7 @@ export default {
                 reload,
                 date,
                 items,
-                basketToSend: entry.basketToSend,
+                basketToSend,
                 localId: entry.localId,
                 cardNumber: entry.cardNumber
             };
