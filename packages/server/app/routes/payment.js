@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
 const ctx = require('server/app/utils/ctx');
+const sanitizeUser = require('server/app/utils/sanitizeUser');
 const APIError = require('server/app/utils/APIError');
 
 const { basket, cancelTransaction, catering } = require('server/app/actions/payment');
@@ -38,7 +39,10 @@ router.post(
 
         return res
             .status(200)
-            .json(updatedWallet)
+            .json({
+                ...updatedWallet,
+                user: sanitizeUser(updatedWallet.user, req.wiket.point.id)
+            })
             .end();
     })
 );

@@ -15,7 +15,7 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         logical_id: walletId,
         blocked: false
     })
-        .fetch()
+        .fetch({ withRelated: ['user'] })
         .then(wallet => (wallet ? wallet.toJSON() : null));
 
     if (!wallet) {
