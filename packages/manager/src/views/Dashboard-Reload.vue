@@ -50,9 +50,12 @@
                 />
                 <Button raised>Valider</Button>
             </form>
+
+            <form v-if="isCheckout" class="payment-form" method="POST" action="https://merchant.com/successUrl"></form>
+
             <p class="info">
                 Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br />
-                Les opérations en ligne ne sont validées qu'à la suite une transaction sur site.
+                Les opérations en ligne ne sont validées qu'à la suite d'une transaction sur site.
             </p>
             <div v-if="giftReloads && giftReloads.length > 0" class="gifts">
                 <div v-for="(giftReload, i) in giftReloads" :key="i" class="gift">
@@ -70,10 +73,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { reload } from 'config/manager';
 import Card from '@/components/Card';
 import Icon from '@/components/Icon';
 import TextInput from '@/components/TextInput';
 import Button from '@/components/Button';
+
+let scriptsLoaded = false;
+let counter = 0;
 
 export default {
     name: 'DashboardReload',
@@ -87,7 +94,8 @@ export default {
 
     data: () => ({
         buttonsInputs: true,
-        amount: '10'
+        amount: '10',
+        isCheckout: reload.name === 'checkout'
     }),
 
     computed: {
@@ -95,14 +103,50 @@ export default {
             credit: 'user/credit',
             pending: 'history/pending',
             giftReloads: 'user/giftReloads',
-            working: 'working/working'
+            working: 'working/working',
+            user: 'user/user'
         })
     },
 
     methods: {
         ...mapActions({
-            reload: 'reload/reload'
-        })
+            reloadAction: 'reload/reload'
+        }),
+
+        reload(amount) {
+            if (reload.name === 'checkout') {
+                // Dirty fix to avoid multiple callbacks to be called
+                counter += 1;
+                const currentCounter = counter;
+
+                Checkout.configure({
+                    publicKey: reload.checkout.publicKey,
+                    customerEmail: this.user.mail,
+                    value: parseInt(amount * 100, 10),
+                    currency: 'EUR',
+                    cardFormMode: 'cardTokenisation',
+                    paymentMode: 'cards',
+                    cardTokenised: event => {
+                        if (currentCounter === counter) {
+                            this.reloadAction({ amount, cardToken: event.data.cardToken });
+                        }
+                    }
+                });
+                Checkout.open();
+            } else {
+                this.reloadAction({ amount });
+            }
+        }
+    },
+
+    mounted() {
+        if (!scriptsLoaded && reload.name === 'checkout') {
+            const checkoutScript = document.createElement('script');
+            checkoutScript.setAttribute('src', reload.checkout.scriptLocation);
+            checkoutScript.setAttribute('async', true);
+            document.head.appendChild(checkoutScript);
+            scriptsLoaded = true;
+        }
     }
 };
 </script>

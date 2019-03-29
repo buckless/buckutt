@@ -49,6 +49,7 @@ router.post(
             buyer: req.user,
             wallet,
             amount,
+            cardToken: req.body.cardToken,
             // used by test reloadProvider
             point: req.point.id
         });

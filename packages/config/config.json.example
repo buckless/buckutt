@@ -130,17 +130,11 @@
             "url": "https://etupay.utt.fr/initiate",
             "key": ""
         },
-        "epayments": {
-            "apiKeyId": "3c05301f77ceba9e",
-            "secretApiKey": "",
-            "merchantId": "1812",
-            "variant": "default",
-            "urlPrefix": "https://buckless"
-        },
-        "payline": {
-            "id": "foo",
-            "password": "bar",
-            "contractNumber": "1"
+        "checkout": {
+            "privateKey": "",
+            "publicKey": "",
+            "scriptLocation": "https://cdn.checkout.com/sandbox/js/checkout.js",
+            "api": "https://api.sandbox.checkout.com"
         },
         "billetweb": {
             "url": "https://www.billetweb.fr/shop.php?event=name",

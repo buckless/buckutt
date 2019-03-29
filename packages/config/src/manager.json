@@ -28,5 +28,12 @@
         "background": "manager.colorsBackground",
         "cardBackground": "manager.colorsCardBackground",
         "foreground": "manager.colorsForeground"
+    },
+    "reload": {
+        "name": "reload.name",
+        "checkout": {
+            "publicKey": "reload.checkout.publicKey",
+            "scriptLocation": "reload.checkout.scriptLocation"
+        }
     }
 }
