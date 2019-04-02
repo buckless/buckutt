@@ -5,16 +5,17 @@
 
             <p>
                 Si l'organisateur a activé cette option, vous pouvez être remboursé de votre solde
-                restant. Le solde maximum remboursable correspond à la somme de vos rechargements
-                sur Internet. Il n'est pas possible de rembourser les montants rechargés en
-                physique.
+                restant.
 
                 <br />
                 <br />
 
                 <template v-if="refundData.allowed">
                     Vous pouvez demander le remboursement de
-                    <strong>{{ (refundData.refundable / 100) | currency }}</strong>
+                    <strong>{{ (refundData.refundable / 100) | currency }}</strong>.<br />
+                    <template v-if="refundCost > 0">
+                        Des frais bancaires d'une valeur de <strong>{{ (refundCost / 100) | currency }}</strong> seront retenus, <strong>{{ ((refundData.refundable - refundCost) / 100) | currency }}</strong> seront virés sur votre compte.
+                    </template>
                 </template>
                 <template v-else>
                     <div v-for="(error, i) in whyCantRefund" :key="i">
@@ -48,8 +49,13 @@ export default {
         ...mapGetters({
             refundData: 'refund/refund',
             whyCantRefund: 'refund/whyCant',
-            working: 'working/working'
-        })
+            working: 'working/working',
+            costs: 'user/costs'
+        }),
+
+        refundCost() {
+            return (this.costs.variableCostsRefund / 100) * this.refundData.refundable + this.costs.fixedCostsRefund;
+        }
     },
 
     mounted() {

@@ -14,6 +14,7 @@ export const canRefund = async ctx => {
     ctx.commit('SET_REFUNDABLE', refundable.refundable);
     ctx.commit('SET_START', refundable.start);
     ctx.commit('SET_END', refundable.end);
+    ctx.commit('SET_MINIMUM', refundable.minimum);
 };
 
 export const refund = async ctx => {
@@ -44,6 +45,7 @@ export const refund = async ctx => {
     ctx.commit('SET_REFUNDABLE', refundable.refundable);
     ctx.commit('SET_START', refundable.start);
     ctx.commit('SET_END', refundable.end);
+    ctx.commit('SET_MINIMUM', refundable.minimum);
 
     await ctx.dispatch('notification/send', { message: 'Remboursement effectué' }, { root: true });
 

@@ -5,6 +5,7 @@ export const wallets = state => state.user.wallets;
 export const currentWallet = state => state.currentWallet;
 
 export const giftReloads = state => state.giftReloads;
+export const costs = state => state.costs;
 
 export const hasCard = state => {
     if (!state.user || !state.currentWallet) {

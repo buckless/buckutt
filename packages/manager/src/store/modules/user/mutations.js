@@ -24,6 +24,10 @@ export const SET_GIFT_RELOADS = (state, payload) => {
     state.giftReloads = payload;
 };
 
+export const SET_PAYMENT_COSTS = (state, payload) => {
+    state.costs = payload;
+};
+
 export const BLOCK_CARD = (state, logicalId) => {
     if (!state.user) {
         return;

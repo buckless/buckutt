@@ -2,7 +2,7 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const config = require('server/app/config');
 const ctx = require('server/app/utils/ctx');
-const creditWallet = require('server/app/helpers/creditWallet');
+const processReload = require('server/app/helpers/processReload');
 
 const providerConfig = config.provider.etupay;
 
@@ -42,11 +42,7 @@ const generateRouter = () => {
         '/',
         etupay.middleware,
         asyncHandler(async (req, res) => {
-            const { Transaction, Reload, GiftReload } = req.app.locals.models;
-
-            const giftReloads = await GiftReload.fetchAll().then(grs =>
-                grs && grs.length ? grs.toJSON() : []
-            );
+            const { Transaction } = req.app.locals.models;
 
             const transaction = await Transaction.where({ id: req.etupay.serviceData }).fetch({
                 withRelated: ['user'],
@@ -59,46 +55,10 @@ const generateRouter = () => {
                 transaction.set('transactionId', req.etupay.transactionId);
                 transaction.set('state', req.etupay.step);
 
+                await transaction.save();
+
                 if (req.etupay.paid) {
-                    const newReload = new Reload({
-                        credit: amount,
-                        type: 'card',
-                        trace: transaction.get('id'),
-                        point_id: req.point.id,
-                        wallet_id: transaction.get('wallet_id'),
-                        seller_id: transaction.get('user_id')
-                    });
-
-                    const reloadGiftAmount = giftReloads
-                        .filter(gr => amount >= gr.minimalAmount)
-                        .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
-                        .reduce((a, b) => a + b, 0);
-
-                    const reloadGift = new Reload({
-                        credit: reloadGiftAmount,
-                        type: 'gift',
-                        trace: `card-${amount}`,
-                        point_id: req.point.id,
-                        wallet_id: transaction.get('wallet_id'),
-                        seller_id: transaction.get('user_id')
-                    });
-
-                    const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
-
-                    const updateWallet = creditWallet(
-                        ctx(req),
-                        transaction.get('wallet_id'),
-                        amount
-                    );
-
-                    await Promise.all([
-                        newReload.save(),
-                        transaction.save(),
-                        updateWallet,
-                        reloadGiftSave
-                    ]);
-                } else {
-                    await transaction.save();
+                    await processReload(ctx(req), { transaction: transaction.toJSON() })
                 }
             }
 

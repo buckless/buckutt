@@ -2,9 +2,7 @@ import * as actions from './actions';
 import * as getters from './getters';
 import * as mutations from './mutations';
 
-const state = {
-    token: null
-};
+const state = {};
 
 export default {
     namespaced: true,

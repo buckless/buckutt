@@ -1,13 +1,13 @@
 const axios = require('axios');
 const config = require('server/app/config');
 const ctx = require('server/app/utils/ctx');
-const creditWallet = require('server/app/helpers/creditWallet');
+const processReload = require('server/app/helpers/processReload');
 const APIError = require('server/app/utils/APIError');
 
 const providerConfig = config.provider.checkout;
 
 const onlinePayment = async (ctx, data) => {
-    const { Transaction, GiftReload, Reload } = ctx.models;
+    const { Transaction } = ctx.models;
 
     const transaction = new Transaction({
         state: 'pending',
@@ -43,43 +43,10 @@ const onlinePayment = async (ctx, data) => {
         transaction.set('state', 'FAILED');
     }
 
-    const amount = transaction.get('amount');
-
     if (transaction.get('state') === 'SUCCESS') {
-        transaction.set('cardToken', result.data.card.id);
-
-        const newReload = new Reload({
-            credit: amount,
-            type: 'card',
-            trace: transaction.get('id'),
-            point_id: ctx.point.id,
-            wallet_id: transaction.get('wallet_id'),
-            seller_id: transaction.get('user_id')
-        });
-
-        const giftReloads = await GiftReload.fetchAll().then(grs =>
-            grs && grs.length ? grs.toJSON() : []
-        );
-
-        const reloadGiftAmount = giftReloads
-            .filter(gr => amount >= gr.minimalAmount)
-            .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
-            .reduce((a, b) => a + b, 0);
-
-        const reloadGift = new Reload({
-            credit: reloadGiftAmount,
-            type: 'gift',
-            trace: `card-${amount}`,
-            point_id: ctx.point.id,
-            wallet_id: transaction.get('wallet_id'),
-            seller_id: transaction.get('user_id')
-        });
-
-        const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
-
-        const updateWallet = creditWallet(ctx, transaction.get('wallet_id'), amount);
-
-        await Promise.all([newReload.save(), transaction.save(), updateWallet, reloadGiftSave]);
+        transaction.set('cardToken', result.data.source.id);
+        await transaction.save();
+        await processReload(ctx, { transaction: transaction.toJSON() });
     } else {
         await transaction.save();
 

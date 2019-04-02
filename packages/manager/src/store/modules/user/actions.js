@@ -73,6 +73,7 @@ export function load(ctx) {
     });
     ctx.dispatch('history/load', null, { root: true });
     ctx.dispatch('loadGiftReloads');
+    ctx.dispatch('loadPaymentCosts');
 }
 
 export const loadGiftReloads = async ctx => {
@@ -83,4 +84,14 @@ export const loadGiftReloads = async ctx => {
     );
 
     ctx.commit('SET_GIFT_RELOADS', result);
+};
+
+export const loadPaymentCosts = async ctx => {
+    const result = await ctx.dispatch(
+        'request/get',
+        { url: 'payment/costs' },
+        { root: true }
+    );
+
+    ctx.commit('SET_PAYMENT_COSTS', result);
 };

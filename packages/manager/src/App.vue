@@ -10,6 +10,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { reload } from 'config/manager';
 import afterUrl from '@/lib/redirectAfterLogin';
 import Notification from '@/components/Notification';
 
@@ -26,6 +27,13 @@ export default {
     }),
 
     async mounted() {
+        if (reload.name === 'checkout') {
+            const checkoutScript = document.createElement('script');
+            checkoutScript.setAttribute('src', reload.checkout.scriptLocation);
+            checkoutScript.setAttribute('async', true);
+            document.head.appendChild(checkoutScript);
+        }
+
         const isLoggedIn = await this.autologin();
 
         if (isLoggedIn && this.$route.meta.guest) {

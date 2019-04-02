@@ -1,7 +1,7 @@
 const axios = require('axios');
 const config = require('server/app/config');
 const ctx = require('server/app/utils/ctx');
-const creditWallet = require('server/app/helpers/creditWallet');
+const processReload = require('server/app/helpers/processReload');
 const APIError = require('server/app/utils/APIError');
 
 const providerConfig = config.provider.billetweb;
@@ -46,7 +46,7 @@ module.exports = {
     },
 
     async callback(req, res) {
-        const { Transaction, GiftReload, Reload } = req.app.locals.models;
+        const { Transaction } = req.app.locals.models;
 
         if (!req.query.form_data) {
             throw new APIError(module, 404, 'Missing form_data');
@@ -59,10 +59,6 @@ module.exports = {
         }
 
         formData = formData[0];
-
-        const giftReloads = await GiftReload.fetchAll().then(grs =>
-            grs && grs.length ? grs.toJSON() : []
-        );
 
         const transaction = await Transaction.where({ id: formData['10037'] }).fetch({
             withRelated: ['user'],
@@ -89,45 +85,12 @@ module.exports = {
         }
 
         transaction.set('amount', Math.floor(ticket.price * 100));
-
-        const amount = transaction.get('amount');
-
         transaction.set('state', ticket.order_paid ? 'SUCCESS' : 'FAILED');
 
+        await transaction.save();
+
         if (transaction.get('state') === 'SUCCESS') {
-            transaction.set('active', null);
-            transaction.set('deleted_at', new Date());
-
-            const newReload = new Reload({
-                credit: amount,
-                type: 'card',
-                trace: transaction.get('id'),
-                point_id: req.point.id,
-                wallet_id: transaction.get('wallet_id'),
-                seller_id: transaction.get('user_id')
-            });
-
-            const reloadGiftAmount = giftReloads
-                .filter(gr => amount >= gr.minimalAmount)
-                .map(gr => Math.floor(amount / gr.everyAmount) * gr.amount)
-                .reduce((a, b) => a + b, 0);
-
-            const reloadGift = new Reload({
-                credit: reloadGiftAmount,
-                type: 'gift',
-                trace: `card-${amount}`,
-                point_id: req.point.id,
-                wallet_id: transaction.get('wallet_id'),
-                seller_id: transaction.get('user_id')
-            });
-
-            const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
-
-            const updateWallet = creditWallet(ctx(req), transaction.get('wallet_id'), amount);
-
-            await Promise.all([newReload.save(), transaction.save(), updateWallet, reloadGiftSave]);
-        } else {
-            await transaction.save();
+            await processReload(ctx(req), { transaction: transaction.toJSON() });
         }
 
         res.json({});

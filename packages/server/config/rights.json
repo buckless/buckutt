@@ -89,6 +89,7 @@
           "/manager/payment/transfer",
           "/manager/payment/reload",
           "/manager/payment/giftReloads",
+          "/manager/payment/costs",
           "/manager/auth/assignCard",
           "/manager/auth/assignWallet",
           "/manager/account/block",

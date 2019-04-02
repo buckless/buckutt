@@ -5,7 +5,8 @@ import * as mutations from './mutations';
 const state = {
     user: null,
     currentWallet: null,
-    giftReloads: []
+    giftReloads: [],
+    costs: {}
 };
 
 export default {

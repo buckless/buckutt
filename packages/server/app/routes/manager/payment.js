@@ -1,10 +1,12 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
 const ctx = require('server/app/utils/ctx');
+const getAmountToReload = require('server/app/utils/getAmountToReload');
 const APIError = require('server/app/utils/APIError');
 
 const {
     listGiftReloads,
+    paymentCosts,
     getWallet,
     transfer,
     canRefund,
@@ -16,11 +18,12 @@ const router = require('express').Router();
 router.post(
     '/reload',
     asyncHandler(async (req, res) => {
-        log.info(`reload ${req.body.walletId} ${req.body.amount}`);
-
         if (!req.body.amount || !parseInt(req.body.amount, 10)) {
             throw new APIError(module, 400, 'Invalid amount', req.body);
         }
+
+        const amountToCheck = getAmountToReload(req.event, parseInt(req.body.amount, 10));
+        log.info(`reload ${req.body.walletId} ${amountToCheck}`);
 
         const wallet = await req.app.locals.models.Wallet.where({
             id: req.body.walletId,
@@ -33,18 +36,17 @@ router.post(
             throw new APIError(module, 400, 'Wallet not found');
         }
 
-        const amount = parseInt(req.body.amount, 10);
-
-        if (req.event.maxPerAccount && wallet.credit + amount > req.event.maxPerAccount) {
+        if (req.event.maxPerAccount && wallet.credit + amountToCheck > req.event.maxPerAccount) {
             const max = (req.event.maxPerAccount / 100).toFixed(2);
             throw new APIError(module, 400, `Maximum exceeded : ${max}€`, { user: wallet.id });
         }
 
-        if (req.event.minReload && amount < req.event.minReload) {
+        if (req.event.minReload && amountToCheck < req.event.minReload) {
             const min = (req.event.minReload / 100).toFixed(2);
             throw new APIError(module, 400, `Can not reload less than : ${min}€`);
         }
 
+        const amount = parseInt(req.body.amount, 10);
         const result = await req.onlinePayment({
             buyer: req.user,
             wallet,
@@ -118,10 +120,7 @@ router.get(
 
         const refund = await canRefund(ctx(req), { wallet });
 
-        res.json({
-            ...refund,
-            minimum: req.event.minimumAccountRefund
-        });
+        res.json(refund);
     })
 );
 
@@ -164,6 +163,15 @@ router.get(
         const giftReloads = await listGiftReloads(ctx(req));
 
         res.json(giftReloads);
+    })
+);
+
+router.get(
+    '/costs',
+    asyncHandler(async (req, res) => {
+        const costs = await paymentCosts(ctx(req));
+
+        res.json(costs);
     })
 );
 

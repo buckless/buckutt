@@ -17,3 +17,7 @@ export const SET_START = (state, payload) => {
 export const SET_END = (state, payload) => {
     state.end = payload;
 };
+
+export const SET_MINIMUM = (state, payload) => {
+    state.minimum = payload;
+};
