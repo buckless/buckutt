@@ -60,10 +60,7 @@ module.exports = {
 
         formData = formData[0];
 
-        const transaction = await Transaction.where({ id: formData['10037'] }).fetch({
-            withRelated: ['user'],
-            require: true
-        });
+        const transaction = await Transaction.where({ id: formData['10037'] }).fetch();
 
         const url = `https://www.billetweb.fr/api/event/${providerConfig.event}/attendees`;
 

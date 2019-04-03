@@ -44,10 +44,7 @@ const generateRouter = () => {
         asyncHandler(async (req, res) => {
             const { Transaction } = req.app.locals.models;
 
-            const transaction = await Transaction.where({ id: req.etupay.serviceData }).fetch({
-                withRelated: ['user'],
-                require: true
-            });
+            const transaction = await Transaction.where({ id: req.etupay.serviceData }).fetch();
 
             if (transaction && transaction.get('state') === 'pending') {
                 const amount = transaction.get('amount');

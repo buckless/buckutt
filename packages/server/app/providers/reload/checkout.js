@@ -37,11 +37,10 @@ const onlinePayment = async (ctx, data) => {
     let result;
     try {
         result = await axios.post(url, body, { headers });
-        console.log(result);
+
         transaction.set('state', result.data.approved ? 'SUCCESS' : 'FAILED');
         transaction.set('transactionId', result.data.id);
     } catch (err) {
-        console.log(err);
         transaction.set('state', 'FAILED');
     }
 

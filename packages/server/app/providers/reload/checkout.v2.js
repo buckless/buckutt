@@ -39,7 +39,6 @@ const onlinePayment = async (ctx, data) => {
         transaction.set('state', result.data.responseMessage === 'Approved' ? 'SUCCESS' : 'FAILED');
         transaction.set('transactionId', result.data.id);
     } catch (err) {
-        console.log(err);
         transaction.set('state', 'FAILED');
     }
 
