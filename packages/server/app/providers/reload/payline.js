@@ -85,6 +85,11 @@ module.exports = {
         }
 
         const paymentDetails = await payline.runAction('getWebPaymentDetails', { version: 21, token });
+
+        if (['PENDING_RISK', 'ONHOLD_PARTNER', 'INPROGRESS'].indexOf(paymentDetails.result.shortMessage) > -1) {
+            return res.json({});
+        }
+
         const transaction = await Transaction.where({ id: paymentDetails.order.ref }).fetch();
 
         if (transaction.get('state') !== 'pending') {
