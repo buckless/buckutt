@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <header v-if="isRoot">
-            <img :src="logo" alt="Cashless" height="96" width="96" />
+            <img :src="logo" alt="Cashless" height="96" />
         </header>
         <Notification />
         <router-view />
@@ -42,7 +42,7 @@ export default {
 
         this.isRoot = window.frameElement === null;
 
-        const logoUrl = process.env.BASE_URL + 'img/icons/android-chrome-192x192.png';
+        const logoUrl = process.env.BASE_URL + 'img/manager-logo.png';
         const logo = new Image();
         logo.src = logoUrl;
         logo.onload = () => (this.logo = logoUrl);
