@@ -136,6 +136,11 @@
             "scriptLocation": "https://cdn.checkout.com/sandbox/js/checkout.js",
             "api": "https://api.sandbox.checkout.com"
         },
+        "payline": {
+            "id": "",
+            "password": "",
+            "contractNumber": ""
+        },
         "billetweb": {
             "url": "https://www.billetweb.fr/shop.php?event=name",
             "ticket": "",
