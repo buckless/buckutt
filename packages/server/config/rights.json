@@ -86,6 +86,7 @@
           "/manager/auth/changepin",
           "/manager/account/history",
           "/manager/searchuser",
+          "/manager/payment/cardRegister",
           "/manager/payment/transfer",
           "/manager/payment/reload",
           "/manager/payment/giftReloads",

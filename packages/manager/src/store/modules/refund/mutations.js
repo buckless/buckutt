@@ -21,3 +21,7 @@ export const SET_END = (state, payload) => {
 export const SET_MINIMUM = (state, payload) => {
     state.minimum = payload;
 };
+
+export const SET_CARD_REGISTERED = (state, payload) => {
+    state.cardRegistered = payload;
+};

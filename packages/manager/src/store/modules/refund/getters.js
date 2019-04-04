@@ -7,7 +7,8 @@ export const refund = state => ({
     minimum: state.minimum,
     refundable: state.refundable,
     start: state.start,
-    end: state.end
+    end: state.end,
+    cardRegistered: state.cardRegistered
 });
 
 export const whyCant = state => {
@@ -30,13 +31,13 @@ export const whyCant = state => {
         errors.push(`Le remboursement minimum est de : ${formatCurrency(state.minimum / 100)}`);
     }
 
-    if (now <= state.start) {
+    if (now <= new Date(state.start)) {
         errors.push(
             `Les remboursements ne sont pas encore ouverts avant le ${formatDate(state.start)}`
         );
     }
 
-    if (now >= state.end) {
+    if (now >= new Date(state.end)) {
         errors.push(`Les remboursements sont fermés depuis le ${formatDate(state.end)}`);
     }
 

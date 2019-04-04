@@ -16,6 +16,33 @@ const {
 const router = require('express').Router();
 
 router.post(
+    '/cardRegister',
+    asyncHandler(async (req, res) => {
+        log.info(`register card for ${req.body.walletId}`);
+
+        const wallet = await req.app.locals.models.Wallet.where({
+            id: req.body.walletId,
+            user_id: req.user.id
+        })
+            .fetch()
+            .then(res => (res ? res.toJSON() : null));
+
+        if (!wallet) {
+            throw new APIError(module, 400, 'Wallet not found');
+        }
+
+        const result = await req.onlinePayment({
+            buyer: req.user,
+            wallet,
+            amount: 100,
+            type: 'refund'
+        });
+
+        res.json(result);
+    })
+);
+
+router.post(
     '/reload',
     asyncHandler(async (req, res) => {
         if (!req.body.amount || !parseInt(req.body.amount, 10)) {
@@ -142,7 +169,7 @@ router.post(
 
         const refundData = await canRefund(ctx(req), { wallet });
 
-        if (!refundData.allowed) {
+        if (!refundData.allowed || !refundData.cardRegistered) {
             throw new APIError(module, 403, 'Not authorized to refund');
         }
 

@@ -35,6 +35,8 @@ const DashboardInvoice = () =>
     import(/* webpackChunkName: "invoice" */ '@/views/Dashboard-Invoice');
 const DashboardReloadStatus = () =>
     import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard-ReloadStatus');
+const DashboardRefundStatus = () =>
+    import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard-RefundStatus');
 
 Vue.use(Router);
 
@@ -53,6 +55,7 @@ const routes = [
         ]
     },
     { path: '/reload/:status', component: DashboardReloadStatus },
+    { path: '/refund/:status', component: DashboardRefundStatus },
     { path: '/register/:status', component: RegisterStatus },
     {
         path: '/dashboard',

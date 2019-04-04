@@ -62,6 +62,10 @@ module.exports = {
 
         const transaction = await Transaction.where({ id: formData['10037'] }).fetch();
 
+        if (transaction.get('state') !== 'pending') {
+            throw new APIError(module, 403, 'This transaction has been already processed');
+        }
+
         const url = `https://www.billetweb.fr/api/event/${providerConfig.event}/attendees`;
 
         const params = {

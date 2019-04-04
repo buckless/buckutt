@@ -1,3 +1,21 @@
+export const registerCard = async ctx => {
+    const body = {
+        walletId: ctx.rootState.user.currentWallet
+    };
+
+    const data = await ctx.dispatch(
+        'request/post',
+        { url: 'payment/cardRegister', body },
+        { root: true }
+    );
+
+    if (data && data.type === 'url') {
+        window.location.href = data.res;
+    }
+
+    await ctx.dispatch('working/set', false, { root: true });
+};
+
 export const canRefund = async ctx => {
     const refundable = await ctx.dispatch(
         'request/get',
@@ -15,6 +33,7 @@ export const canRefund = async ctx => {
     ctx.commit('SET_START', refundable.start);
     ctx.commit('SET_END', refundable.end);
     ctx.commit('SET_MINIMUM', refundable.minimum);
+    ctx.commit('SET_CARD_REGISTERED', refundable.cardRegistered);
 };
 
 export const refund = async ctx => {
@@ -38,6 +57,10 @@ export const refund = async ctx => {
         );
 
         return false;
+    }
+
+    if (refundable && refundable.type === 'url') {
+        window.location.href = refundable.res;
     }
 
     ctx.commit('SET_ALLOWED', refundable.allowed);

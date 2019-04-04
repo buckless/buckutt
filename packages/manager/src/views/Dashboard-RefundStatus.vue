@@ -1,21 +1,15 @@
 <template>
-    <div class="reloadStatus">
+    <div class="refundStatus">
         <Card>
-            <h2 class="title">Rechargement</h2>
+            <h2 class="title">Enregistrement de carte</h2>
             <p v-if="status === 'success'">
-                Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici
-                quelques instants.
-            </p>
-            <p v-else-if="status === 'waiting' || status === 'return'">
-                Votre rechargement est en cours de traitement, s'il est accepté par votre banque, il
-                sera effectif dans quelques instants.
+                La carte a bien été enregistrée. Vous pouvez maintenant demander votre remboursement.
             </p>
             <p v-else>
-                Le paiement <strong>n'a pas été pris en compte</strong>. Contactez votre banque si
-                vous ne pensez pas que cela correspond à un fonctionnement normal.
+                La carte n'a pas pu être enregistrée. Veuillez contacter votre banque pour plus d'informations.
             </p>
-            <div v-if="status !== 'waiting'" class="actions">
-                <Button raised to="/">Retour à l'accueil</Button>
+            <div class="actions">
+                <Button raised to="/dashboard/refund">Retour aux remboursements</Button>
             </div>
         </Card>
     </div>
@@ -27,7 +21,7 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 
 export default {
-    name: 'DashboardReloadStatus',
+    name: 'DashboardRefundStatus',
 
     components: {
         Card,
@@ -58,7 +52,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/theme.scss';
 
-.reloadStatus {
+.refundStatus {
     padding: 1rem 0;
 }
 

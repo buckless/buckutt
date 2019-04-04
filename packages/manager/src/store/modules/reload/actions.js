@@ -19,3 +19,11 @@ export const reload = async (ctx, { amount, cardToken }) => {
 
     await ctx.dispatch('working/set', false, { root: true });
 };
+
+export const callback = async (ctx, { token }) => {
+    await ctx.dispatch(
+        'request/get',
+        { url: `provider/callback?token=${token}&isNotification=1` },
+        { root: true }
+    );
+};

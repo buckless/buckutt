@@ -2,6 +2,10 @@ const creditWallet = require('server/app/helpers/creditWallet');
 const getAmountToReload = require('server/app/utils/getAmountToReload');
 
 module.exports = async (ctx, { transaction }) => {
+    if (transaction.isAuthorization) {
+        return;
+    }
+
     const { GiftReload, Reload } = ctx.models;
     const amount = getAmountToReload(ctx.event, transaction.amount);
 

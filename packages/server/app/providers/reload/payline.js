@@ -10,18 +10,20 @@ const providerConfig = config.provider.payline;
 
 const ns = type => ({ xsi_type: { type, xmlns: 'http://obj.ws.payline.experian.com' } });
 const currencies = { eur: 978 };
-const actions = { payment: 101, refund: 421, credit: 422 };
+const actions = { authorization: 100, payment: 101, refund: 421, credit: 422 };
 const modes = { full: 'CPT', differed: 'DIF', nInstalments: 'NX', recurring: 'REC' };
 const dateFormat = 'DD/MM/YYYY HH:mm';
 
 const onlinePayment = async (ctx, data) => {
     const payline = new Payline(providerConfig.id, providerConfig.password);
+    const type = data.type || 'reload';
 
     const transaction = new ctx.models.Transaction({
         state: 'pending',
         amount: data.amount,
         wallet_id: data.wallet.id,
-        user_id: data.buyer.id
+        user_id: data.buyer.id,
+        isAuthorization: type === 'refund'
     });
 
     await transaction.save();
@@ -31,12 +33,12 @@ const onlinePayment = async (ctx, data) => {
             attributes: ns('payment'),
             amount: data.amount,
             currency: currencies.eur,
-            action: actions.payment,
+            action: type === 'refund' ? actions.authorization : actions.payment,
             mode: modes.full,
             contractNumber: providerConfig.contractNumber
         },
-        returnURL: `${config.urls.managerUrl}/reload/success`,
-        cancelURL: `${config.urls.managerUrl}/reload/failed`,
+        returnURL: `${config.urls.managerUrl}/${type}/success`,
+        cancelURL: `${config.urls.managerUrl}/${type}/failed`,
         order: {
             attributes: ns('order'),
             ref: transaction.get('id'),
@@ -85,14 +87,16 @@ module.exports = {
         const paymentDetails = await payline.runAction('getWebPaymentDetails', { version: 21, token });
         const transaction = await Transaction.where({ id: paymentDetails.order.ref }).fetch();
 
-        if (transaction.get('state') === 'ACCEPTED') {
-            throw new APIError(module, 403, 'This transaction has been already accepted');
+        if (transaction.get('state') !== 'pending') {
+            throw new APIError(module, 403, 'This transaction has been already processed');
         }
 
         transaction.set('transactionId', paymentDetails.transaction.id);
         transaction.set('state', paymentDetails.result.shortMessage);
         transaction.set('longState', paymentDetails.result.longMessage);
         transaction.set('cardToken', paymentDetails.card.token);
+        transaction.set('cardExpiration', paymentDetails.card.expirationDate);
+        transaction.set('cardType', paymentDetails.card.type);
 
         await transaction.save();
 
