@@ -19,6 +19,7 @@
     "packages/masterapp",
     "packages/server",
     "packages/config",
+    "packages/ui",
     "packages/vue-cli-plugin-calm-serve"
   ],
   "scripts": {
@@ -29,6 +30,7 @@
     "manager": "cd packages/manager && yarn",
     "masterapp": "cd packages/masterapp && yarn",
     "server": "cd packages/server && yarn",
+    "ui": "cd packages/ui && yarn",
     "stack": "node stack",
     "lint": "eslint --ext .js,.vue --fix .",
 

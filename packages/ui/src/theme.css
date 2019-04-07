@@ -1,0 +1,100 @@
+:root {
+    --radius: 6px;
+
+    --transition-fast-in: .1s;
+    --transition-fast-out: .075s;
+    --transition-medium-in: .15s;
+    --transition-medium-out: .12s;
+    --transition-long-in: .25s;
+    --transition-long-out: .2s;
+    --transition-easing: cubic-bezier(0.4, 0.0, 0.2, 1);
+
+    --foreground-light-100: rgba(255,255,255,.50);
+    --foreground-light-200: rgba(255,255,255,.71);
+    --foreground-light-300: rgba(255,255,255,.87);
+    --foreground-dark-100: rgba(0,0,0,.50);
+    --foreground-dark-200: rgba(0,0,0,.71);
+    --foreground-dark-300: rgba(0,0,0,.87);
+
+    --grey-50: #fff;
+    --grey-100: #fcfcfd;
+    --grey-200: #f2f2f3;
+    --grey-300: #ececed;
+    --grey-400: #eaeaeb;
+    --grey-500: #e6e6e7;
+    --grey-600: #e3e3e4;
+
+    --black: #0A0D15;
+
+    --primary-50: #e8ebfb;
+    --primary-100: #c4cdf6;
+    --primary-200: #9cadf0;
+    --primary-300: #708cea;
+    --primary-400: #4a71e5;
+    --primary-500: #1e58da;
+    --primary-600: #154fd0;
+    --primary-700: #0045c3;
+    --primary-800: #003ab6;
+    --primary-900: #00279f;
+
+    --accent-50: #e3faee;
+    --accent-100: #bbf1d4;
+    --accent-200: #8ae9b9;
+    --accent-300: #47e09b;
+    --accent-400: #00d783;
+    --accent-500: #00ce6e;
+    --accent-600: #00bd63;
+    --accent-700: #00aa55;
+    --accent-800: #009849;
+    --accent-900: #007733;
+
+    --error-200: #ff8f7c;
+    --error-300: #f75d4f;
+
+    --warning-200: #ffd95f;
+    --warning-300: #ffa72b;
+
+    --success-200: #8dff9b;
+    --success-300: #54e26b;
+
+    --typography-family: 'Oxygen', 'Roboto', 'Open-Sans', sans-serif;
+    --typography-h1-size: 92px;
+    --typography-h1-spacing: -1.5px;
+    --typography-h1-weight: bold;
+    --typography-h2-size: 58px;
+    --typography-h2-spacing: -0.5px;
+    --typography-h2-weight: bold;
+    --typography-h3-size: 47px;
+    --typography-h3-spacing: 0px;
+    --typography-h3-weight: bold;
+    --typography-h4-size: 33px;
+    --typography-h4-spacing: 0.25px;
+    --typography-h4-weight: bold;
+    --typography-h5-size: 23px;
+    --typography-h5-spacing: 0px;
+    --typography-h5-weight: bold;
+    --typography-h6-size: 19px;
+    --typography-h6-spacing: 0.25px;
+    --typography-h6-weight: bold;
+    --typography-body-1-size: 16px;
+    --typography-body-1-spacing: 0.5px;
+    --typography-body-1-weight: normal;
+    --typography-body-2-size: 14px;
+    --typography-body-2-spacing: 0.25px;
+    --typography-body-2-weight: normal;
+    --typography-button-size: 14px;
+    --typography-button-spacing: 1.25px;
+    --typography-button-weight: bold;
+
+    --elevation-1dp: 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12), 0 1px 3px 0 rgba(0,0,0,.20);
+    --elevation-2dp: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12), 0 1px 5px 0 rgba(0,0,0,.20);
+    --elevation-3dp: 0 3px 4px 0 rgba(0,0,0,.14), 0 3px 3px -2px rgba(0,0,0,.12), 0 1px 8px 0 rgba(0,0,0,.20);
+    --elevation-4dp: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.20);
+    --elevation-6dp: 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12), 0 3px 5px -1px rgba(0,0,0,.20);
+    --elevation-8dp: 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12), 0 5px 5px -3px rgba(0,0,0,.20);
+    --elevation-9dp: 0 9px 12px 1px rgba(0,0,0,.14), 0 3px 16px 2px rgba(0,0,0,.12), 0 5px 6px -3px rgba(0,0,0,.20);
+    --elevation-12dp: 0 12px 17px 2px rgba(0,0,0,.14), 0 5px 22px 4px rgba(0,0,0,.12), 0 7px 8px -4px rgba(0,0,0,.20);
+    --elevation-16dp: 0 16px 24px 2px rgba(0,0,0,.14), 0 6px 30px 5px rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.20);
+    --elevation-24dp: 0 24px 38px 3px rgba(0,0,0,.14), 0 9px 46px 8px rgba(0,0,0,.12), 0 11px 15px -7px rgba(0,0,0,.20);
+
+}
