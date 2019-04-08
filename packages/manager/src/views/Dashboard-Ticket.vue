@@ -1,28 +1,27 @@
 <template>
     <div class="refund">
         <Card>
-            <h3>Mon billet</h3>
+            <h3>{{ $t('dashboard.menu.ticket') }}</h3>
             <form v-if="!ticketNumber" @submit.prevent="assignTicket(ticket)">
-                Pour lier votre billet d'entrée à ce porte-monnaie cashless, saisissez ici votre
-                numéro de billet.
+                {{ $t('dashboard.ticket.info') }}
                 <TextInput
                     v-model="ticket"
                     :disabled="working"
-                    label="Numéro de billet"
+                    :label="$t('dashboard.ticket.number')"
                     autofocus
                 />
                 <div class="actions">
-                    <Button to="/dashboard/menu">Retour</Button>
-                    <Button :disabled="working" raised>Valider</Button>
+                    <Button to="/dashboard/menu">{{ $t('ui.back') }}</Button>
+                    <Button :disabled="working" raised>{{ $t('ui.confirm') }}</Button>
                 </div>
             </form>
             <p v-else>
-                Votre espace cashless est associé avec le billet numéro
+                {{ $t('dashboard.menu.ticketinfo') }}
                 <strong>{{ ticketNumber }}</strong
                 >.
                 <br />
                 <br />
-                <Button raised to="/dashboard/menu">Retour</Button>
+                <Button raised to="/dashboard/menu">{{ $t('ui.back') }}</Button>
             </p>
         </Card>
     </div>

@@ -16,18 +16,20 @@ export default {
         Tabs
     },
 
-    data: () => ({
-        tabs: [
-            { name: 'Charger', route: '/dashboard/reload' },
-            { name: 'Historique', route: '/dashboard/history' },
-            {
-                name: 'Virement',
-                route: '/dashboard/transfer',
-                classes: 'transfer'
-            },
-            { name: 'Autre', route: '/dashboard/menu' }
-        ]
-    })
+    computed: {
+        tabs() {
+            return [
+                { name: this.$t('tabs.reload'), route: '/dashboard/reload' },
+                { name: this.$t('tabs.history'), route: '/dashboard/history' },
+                {
+                    name: this.$t('tabs.transfer'),
+                    route: '/dashboard/transfer',
+                    classes: 'transfer'
+                },
+                { name: this.$t('tabs.other'), route: '/dashboard/menu' }
+            ];
+        }
+    }
 };
 </script>
 

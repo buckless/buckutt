@@ -44,33 +44,38 @@
                 <div class="row footer-row">
                     <div class="cell">
                         <span>
-                            Affichage de {{ displayedData.length }} éléments sur {{ data.length }}
+                            {{
+                                $t('components.table.pages', {
+                                    number: displayedData.length,
+                                    total: data.length
+                                })
+                            }}
                         </span>
                         <div class="space" />
                         <span>
-                            <a v-show="hasPrevious" href="#" @click.prevent="previous()"
-                                >Précedent</a
-                            >
-                            Page {{ adjustedPage }}/{{ pagesNumber }}
-                            <a v-show="hasNext" href="#" @click.prevent="next()">Suivant</a>
+                            <a v-show="hasPrevious" href="#" @click.prevent="previous()">{{
+                                $t('ui.previous')
+                            }}</a>
+                            {{ $t('ui.page') }} {{ adjustedPage }}/{{ pagesNumber }}
+                            <a v-show="hasNext" href="#" @click.prevent="next()">{{
+                                $t('ui.next')
+                            }}</a>
                         </span>
                     </div>
                 </div>
             </div>
-            <div v-if="paging" class="paging">
-                Afficher
-                <select v-model="chosenPaging" class="select">
+            <i18n path="components.table.selector" tag="div" v-if="paging" class="paging">
+                <select v-model="chosenPaging" class="select" place="selector">
                     <option v-for="(option, i) in pagingOptions" :key="i">{{ option }}</option>
                 </select>
-                entrées
-            </div>
+            </i18n>
         </div>
 
         <div v-else class="empty-content">
-            Aucune donnée à afficher
+            {{ $t('components.table.noresult') }}
             <br />
             <br />
-            <Button to="/" raised>Recharger mon compte</Button>
+            <Button to="/" raised>{{ $t('components.table.reload') }}</Button>
         </div>
     </div>
 </template>

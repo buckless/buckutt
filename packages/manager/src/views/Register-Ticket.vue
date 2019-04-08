@@ -6,17 +6,22 @@
                     v-model="ticketNumber"
                     :disabled="working"
                     type="text"
-                    label="Numéro de billet"
+                    :label="$t('register.form.ticket')"
                     autofocus
                 />
                 <a class="customMail" v-if="!customMail" @click="customMail = !customMail">
-                    Utiliser un autre mail que celui du billet
+                    {{ $t('register.form.usemail') }}
                 </a>
             </div>
             <div class="ticket" v-if="customMail">
-                <TextInput v-model="mail" :disabled="working" type="text" label="Mail" />
+                <TextInput
+                    v-model="mail"
+                    :disabled="working"
+                    type="text"
+                    :label="$t('register.form.mail')"
+                />
                 <a class="customMail" @click="customMail = !customMail">
-                    Utiliser le mail lié au billet
+                    {{ $t('register.form.useticket') }}
                 </a>
             </div>
             <TextInput
@@ -24,20 +29,17 @@
                 v-model="card"
                 :disabled="working"
                 type="text"
-                label="Identifiant de carte"
+                :label="$t('register.form.identifier')"
             />
             <Checkbox id="1" v-model="cgu" :disabled="working">
-                J'accepte les
-                <a href="https://buckless.com/static/cgu.pdf" rel="noopener noref nofollow"
-                    >conditions générales de vente</a
-                >.
+                <span v-html="$t('register.form.conditions')"></span>
             </Checkbox>
             <div class="actions">
                 <Button to="/register">
-                    Retour
+                    {{ $t('ui.back') }}
                 </Button>
                 <Button :disabled="working" raised>
-                    Inscription
+                    {{ $t('register.form.signin') }}
                 </Button>
             </div>
         </form>

@@ -1,28 +1,19 @@
 <template>
     <div class="card-content">
         <template v-if="showTicket">
-            <p>
-                Si vous possédez un billet pour le festival, cochez cette case. Si vous ne possédez
-                pas de billet et souhaitez utiliser le cashless à l'évènement, ne cochez pas cette
-                case.
-            </p>
-            <Checkbox id="1" v-model="ticket">J'ai déjà un billet</Checkbox>
+            <p>{{ $t('register.chooser.ticketinfo') }}</p>
+            <Checkbox id="1" v-model="ticket">{{ $t('register.chooser.ticketbox') }}</Checkbox>
         </template>
         <template v-if="showCard">
-            <p>
-                Si vous avez déjà votre support cashless, cochez cette case. Vous trouverez
-                l'identifiant à rentrer au verso de votre support.
-            </p>
-            <Checkbox id="2" v-model="card"
-                >J'ai déjà un support cashless (carte, bracelet, ...)</Checkbox
-            >
+            <p>{{ $t('register.chooser.cardinfo') }}</p>
+            <Checkbox id="2" v-model="card">{{ $t('register.chooser.cardbox') }}</Checkbox>
         </template>
         <div class="actions">
             <Button to="/login">
-                Retour
+                {{ $t('ui.back') }}
             </Button>
             <Button raised @click="next">
-                Suivant
+                {{ $t('ui.next') }}
             </Button>
         </div>
     </div>

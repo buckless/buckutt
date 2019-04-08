@@ -1,19 +1,15 @@
 <template>
     <div class="transfer">
         <Card>
-            <h3>Virement</h3>
-            <p>
-                Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle colorée
-                indique le compte receveur. Attention, vous ne pouvez virer de l'argent qu'à une
-                personne ayant créé un compte.
-            </p>
+            <h3>{{ $t('dashboard.menu.transfer') }}</h3>
+            <p>{{ $t('dashboard.transfer.info') }}</p>
             <form @submit.prevent="transfer(selected, amount)">
                 <TextInput
                     v-model="user"
                     :disabled="working"
                     type="text"
-                    label="Destinataire"
-                    placeholder="Entrez 4 caractères minimum"
+                    :label="$t('dashboard.transfer.recipient')"
+                    :placeholder="$t('dashboard.transfer.4min')"
                     autofocus
                     @input="findUser"
                 />
@@ -32,8 +28,8 @@
                     </div>
                 </List>
 
-                <p v-if="displayedResults.length === 0 && user.length > 4">
-                    Aucun résultat.
+                <p v-if="displayedResults.length === 0 && user.length >= 4">
+                    {{ $t('dashboard.transfer.noresult') }}
                 </p>
 
                 <TextInput
@@ -42,18 +38,18 @@
                     type="number"
                     step="0.01"
                     min="0.01"
-                    label="Montant (€)"
+                    :label="$t('dashboard.transfer.amount')"
                 />
 
-                <p v-if="selected.id">
-                    En cliquant sur « Envoyer », je confirme envoyer {{ amount | currency }} à
-                    {{ selected.firstname }} {{ selected.lastname }}
-                </p>
+                <i18n path="dashboard.transfer.confirmtext" tag="p" v-if="selected.id">
+                    <span place="amount">{{ amount | currency }}</span>
+                    <span place="name">{{ selected.firstname }} {{ selected.lastname }}</span>
+                </i18n>
 
                 <div class="actions">
-                    <Button :disabled="working || !selected.id || amount === '0'" raised
-                        >Envoyer</Button
-                    >
+                    <Button :disabled="working || !selected.id || amount === '0'" raised>{{
+                        $t('ui.send')
+                    }}</Button>
                 </div>
             </form>
         </Card>

@@ -1,21 +1,15 @@
 <template>
     <div class="reloadStatus">
         <Card>
-            <h2 class="title">Rechargement</h2>
-            <p v-if="status === 'success'">
-                Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici
-                quelques instants.
-            </p>
-            <p v-else-if="status === 'waiting' || status === 'return'">
-                Votre rechargement est en cours de traitement, s'il est accepté par votre banque, il
-                sera effectif dans quelques instants.
-            </p>
-            <p v-else>
-                Le paiement <strong>n'a pas été pris en compte</strong>. Contactez votre banque si
-                vous ne pensez pas que cela correspond à un fonctionnement normal.
-            </p>
-            <div v-if="status !== 'waiting'" class="actions">
-                <Button raised to="/">Retour à l'accueil</Button>
+            <h2 class="title">{{ $t('dashboard.reload.status.title') }}</h2>
+            <p v-if="status === 'success'" v-html="$t('dashboard.reload.status.success')"></p>
+            <p
+                v-else-if="status === 'waiting' || status === 'return'"
+                v-html="$t('dashboard.reload.status.waiting')"
+            ></p>
+            <p v-else v-html="$t('dashboard.reload.status.fail')"></p>
+            <div class="actions">
+                <Button raised to="/">{{ $t('ui.backhome') }}</Button>
             </div>
         </Card>
     </div>

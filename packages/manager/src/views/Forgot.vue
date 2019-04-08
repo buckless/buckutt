@@ -1,39 +1,34 @@
 <template>
     <div class="forgot">
-        <h1 v-if="!key">Code PIN oublié</h1>
-        <h1 v-else>Réinitialisation du code PIN</h1>
+        <h1 v-if="!key">{{ $t('forgot.title') }}</h1>
+        <h1 v-else>{{ $t('forgot.step2title') }}</h1>
 
         <form v-if="!key" @submit.prevent="sendReset(mail)">
-            <p>
-                Saisissez votre e-mail ci-dessous. Vous receverez par e-mail un lien vous permettant
-                de changer votre mot de passe.
-            </p>
+            <p>{{ $t('forgot.info') }}</p>
             <TextInput
                 v-model="mail"
                 :disabled="working"
                 placeholder="nom@mail.com"
-                label="E-mail"
+                :label="$t('forgot.mail')"
             />
             <div class="actions">
                 <Button to="/login">
-                    Retour
+                    {{ $t('ui.back') }}
                 </Button>
                 <Button :disabled="working" raised>
-                    Envoyer
+                    {{ $t('ui.send') }}
                 </Button>
             </div>
         </form>
         <form v-else @submit.prevent="reset(key, pin, confirmation)">
-            <p>
-                Le nouveau code PIN doit exclusivement être composé de 4 chiffres.
-            </p>
+            <p>{{ $t('forgot.step2info') }}</p>
             <TextInput
                 v-model="pin"
                 :disabled="working"
                 pattern="\d{4}"
                 maxlength="4"
                 type="password"
-                label="Code PIN"
+                :label="$t('dashboard.pin.new')"
             />
             <TextInput
                 v-model="confirmation"
@@ -41,14 +36,14 @@
                 pattern="\d{4}"
                 maxlength="4"
                 type="password"
-                label="Confirmation"
+                :label="$t('dashboard.pin.confirm')"
             />
             <div class="actions">
                 <Button to="/login">
-                    Retour
+                    {{ $t('ui.back') }}
                 </Button>
                 <Button :disabled="working" raised>
-                    Envoyer
+                    {{ $t('ui.send') }}
                 </Button>
             </div>
         </form>

@@ -1,7 +1,9 @@
 <template>
     <div class="history">
         <Table :headers="headers" :data="history" :paging="10" />
-        <Button to="/dashboard/invoice" v-if="showInvoice">Imprimer un reçu</Button>
+        <Button to="/dashboard/invoice" v-if="showInvoice">{{
+            $t('dashboard.history.invoice')
+        }}</Button>
     </div>
 </template>
 
@@ -19,42 +21,42 @@ export default {
         Button
     },
 
-    data: () => {
-        const data = {
-            headers: [
-                { title: 'Date', field: 'date', type: 'date' },
-                { title: 'Point', field: 'point', type: 'plain' },
-                { title: 'Objet', field: 'object', list: 'articles' },
-                {
-                    title: 'Valeur',
-                    field: 'amount',
-                    type: 'price',
-                    class: 'numeric-cell'
-                }
-            ]
-        };
-
-        if (history.showType) {
-            data.headers.splice(1, 0, { title: 'Type', field: 'type' });
-        }
-
-        if (history.showOperator) {
-            data.headers.splice(-1, 0, {
-                title: 'Opérateur',
-                field: 'operator',
-                class: 'capitalized'
-            });
-        }
-
-        data.showInvoice = history.showInvoice;
-
-        return data;
-    },
+    data: () => ({
+        showInvoice: history.showInvoice
+    }),
 
     computed: {
         ...mapGetters({
             history: 'history/history'
-        })
+        }),
+
+        headers() {
+            let headers = [
+                { title: this.$t('dashboard.history.date'), field: 'date', type: 'date' },
+                { title: this.$t('dashboard.history.location'), field: 'point', type: 'plain' },
+                { title: this.$t('dashboard.history.object'), field: 'object', list: 'articles' },
+                {
+                    title: this.$t('dashboard.history.amount'),
+                    field: 'amount',
+                    type: 'price',
+                    class: 'numeric-cell'
+                }
+            ];
+
+            if (history.showType) {
+                headers.splice(1, 0, { title: this.$t('dashboard.history.type'), field: 'type' });
+            }
+
+            if (history.showOperator) {
+                headers.splice(-1, 0, {
+                    title: this.$t('dashboard.history.operator'),
+                    field: 'operator',
+                    class: 'capitalized'
+                });
+            }
+
+            return headers;
+        }
     }
 };
 </script>

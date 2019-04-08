@@ -1,31 +1,29 @@
 <template>
     <div class="login">
-        <h1>Interface cashless</h1>
-        <p>
-            Saisissez votre e-mail ainsi que votre code PIN pour accéder à l'interface cashless.
-        </p>
+        <h1>{{ $t('login.title') }}</h1>
+        <p>{{ $t('login.info') }}</p>
         <form @submit.prevent="login">
-            <TextInput v-model="mail" :disabled="working" label="Mail" />
+            <TextInput v-model="mail" :disabled="working" :label="$t('login.mail')" />
             <div class="pin">
                 <TextInput
                     v-model="pin"
                     :disabled="working"
                     type="password"
-                    label="Code PIN"
+                    :label="$t('login.pin')"
                     maxlength="4"
                 />
                 <router-link class="forgot" to="forgot">
-                    Oublié ?
+                    {{ $t('login.forgot') }}
                 </router-link>
             </div>
             <Button :disabled="working" raised>
-                Connexion
+                {{ $t('login.login') }}
             </Button>
         </form>
         <div class="register" @click="register" v-if="showRegistration">
-            Pas encore de compte cashless ?
+            {{ $t('login.noaccount') }}
             <br />
-            <router-link to="register">Inscription</router-link>
+            <router-link to="register">{{ $t('login.register') }}</router-link>
         </div>
     </div>
 </template>

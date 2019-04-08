@@ -1,44 +1,39 @@
 <template>
     <div class="menu">
         <Card to="/dashboard/transfer" class="transfer">
-            <h3>Virement</h3>
-            <p>Effectuez un transfert vers un autre porte-monnaie</p>
+            <h3>{{ $t('dashboard.menu.transfer') }}</h3>
+            <p>{{ $t('dashboard.menu.transferinfo') }}</p>
         </Card>
         <Card v-if="showCard && hasCard" to="/dashboard/block">
-            <h3>Bloquer mon support cashless</h3>
+            <h3>{{ $t('dashboard.menu.lock') }}</h3>
             <p>
-                Votre porte-monnaie cashless est associé avec la carte numéro
+                {{ $t('dashboard.menu.lockinfo') }}
                 <strong>{{ card }}</strong>
             </p>
         </Card>
         <Card v-if="showCard && !hasCard" to="/dashboard/support">
-            <h3>Lier mon support cashless</h3>
-            <p>Synchronisez votre support avec votre porte-monnaie</p>
+            <h3>{{ $t('dashboard.menu.link') }}</h3>
+            <p>{{ $t('dashboard.menu.linkinfo') }}</p>
         </Card>
         <Card v-if="showTicket && ticket">
-            <h3>Mon billet</h3>
+            <h3>{{ $t('dashboard.menu.ticket') }}</h3>
             <p>
-                Ce porte-monnaie est associé avec le billet numéro
+                {{ $t('dashboard.menu.ticketinfo') }}
                 <strong>{{ ticket }}</strong>
             </p>
         </Card>
         <Card v-if="showTicket && !ticket" to="/dashboard/ticket">
-            <h3>Mon billet</h3>
-            <p>Liez votre billet d'évènement à ce porte-monnaie cashless</p>
+            <h3>{{ $t('dashboard.menu.ticket') }}</h3>
+            <p>{{ $t('dashboard.menu.ticketlink') }}</p>
         </Card>
         <Card v-if="showQrCode && !hasCard" class="card-qrcode" @click.native="toggleQrcode">
-            <h3>Mon QR Code</h3>
-            <p>
-                Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer
-                votre support cashless.
-            </p>
+            <h3>{{ $t('dashboard.menu.qr') }}</h3>
+            <p>{{ $t('dashboard.menu.qrinfo') }}</p>
             <img :src="baseQrCode + currentWallet" alt="qr code" v-if="qrcodeVisible" />
         </Card>
         <Card to="/dashboard/refund">
-            <h3>Remboursement de solde</h3>
-            <p>
-                Faites vous rembourser le solde restant de ce porte-monnaie
-            </p>
+            <h3>{{ $t('dashboard.menu.refund') }}</h3>
+            <p>{{ $t('dashboard.menu.refundinfo') }}</p>
         </Card>
     </div>
 </template>

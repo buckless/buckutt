@@ -1,0 +1,179 @@
+{
+    "tabs": {
+        "reload": "Reload",
+        "history": "History",
+        "transfer": "Transfer",
+        "other": "Other"
+    },
+    "login": {
+        "title": "Cashless interface",
+        "info": "Entrer your e-mail and your PIN code to access the cashless interface.",
+        "mail": "Mail",
+        "pin": "PIN code",
+        "forgot": "Forgotten ?",
+        "login": "Login",
+        "noaccount": "No cashless account yet ?",
+        "register": "Sign in"
+    },
+    "forgot": {
+        "title": "Forgotten PIN code",
+        "info": "Enter your mail address below. You will get a mail with a link which allows you to change your PIN code.",
+        "mail": "E-mail",
+        "step2title": "PIN code reset",
+        "step2info": "The new PIN code must be 4 digits only."
+    },
+    "register": {
+        "title": "Sign in",
+        "chooser": {
+            "ticketinfo": "If you already own a ticket for this event, check this box. If you don't own one, and want to use the cashless at this event, don't check it.",
+            "ticketbox": "I already own a ticket",
+            "cardinfo": "If you already own a cashless support, check this box. You can find its identifier on the back of the support.",
+            "cardbox": "I already own a cashless support (card, wristband, ...)"
+        },
+        "form": {
+            "firstname": "Firstname",
+            "lastname": "Lastname",
+            "mail": "Mail",
+            "identifier": "Support identifier",
+            "ticket": "Ticket number",
+            "useticket": "Use the mail address associated with the ticket",
+            "usemail": "Use another mail address than the one associated with the ticket",
+            "conditions": "I accept the <a href='https://buckless.com/static/cgu.pdf' rel='noopener noref nofollow'>general sales conditions</a>.",
+            "signin": "Sign in"
+        },
+        "status": {
+            "success": "Your registration is validated. Check your inbox, you should have recieved your PIN code. You can change it once logged in.",
+            "fail": "Registreation failed. Check your data and retry, or contact an organizer."
+        }
+    },
+    "dashboard": {
+        "reload": {
+            "title": "My credit",
+            "pending": "pending",
+            "infopending": "It may take a few minutes before transactions are synchronised on this customer area. Online transactions are « pending » until an operation is performed on site.",
+            "reload": "Reloading",
+            "custom": "Custom amount",
+            "security": "You'll be redirected on a <strong>securised</strong> website.<br /> Online transactions are validated following an on site transaction only.",
+            "bankcost1": "A bank fee of {fixed} will be applied.",
+            "bankcost2": "A bank fee of {variable} of the transaction's amount will be applied.",
+            "bankcost3": "A bank fee of {fixed} + {variable} of the transaction's amount will be applied.",
+            "status": {
+                "title": "Reloading",
+                "success": "The payment has been <strong>successfuly processed</strong>. It will be applied shortly.",
+                "waiting": "Your transaction is being processed. If your bank accept it, it will be applied shortly.",
+                "fail": "The payment has been <strong>rejected</strong>. Please contact your bank if you think this is an error."
+            }
+        },
+        "account": {
+            "title": "My wallets",
+            "support": "Support",
+            "ticket": "Ticket",
+            "virtual": "Virtual wallet",
+            "create": "Create a new wallet",
+            "createinfo": "Add a new wallet to your cashless area",
+            "changepin": "Change my PIN code",
+            "changepininfo": "Change the PIN code of your cashless area",
+            "logout": "Logout"
+        },
+        "assign": {
+            "info": "To create a new cashless wallet from your physical support, write here the identifier written on its back.",
+            "number": "Support number"
+        },
+        "pin": {
+            "current": "Current PIN code",
+            "new": "New PIN code",
+            "confirm": "Confirmation"
+        },
+        "menu": {
+            "transfer": "Transfer",
+            "transferinfo": "Process a transfer to another wallet",
+            "lock": "Lock my cashless support",
+            "lockinfo": "This wallet is associated with the support number",
+            "link": "Link my cashless support",
+            "linkinfo": "Synchronise your support with this wallet",
+            "ticket": "My ticket",
+            "ticketinfo": "This wallet is associated with the ticket number",
+            "ticketlink": "Link your event ticket to this wallet",
+            "qr": "My QR code",
+            "qrinfo": "Once at the event, use this QR Code or your ticket to link your wallet to your support.",
+            "refund": "Credit refund",
+            "refundinfo": "Get a refund for this wallet"
+        },
+        "transfer": {
+            "info": "Research the recepient on the field bellow and click on his name. The colored bubble shows the recepient account. Be careful, you can send money to someone who has created an account only.",
+            "recipient": "Recipient name",
+            "4min": "Enter 4 characters minimum",
+            "noresult": "No result.",
+            "amount": "Amount (€)",
+            "confirmtext": "By clicking on « Send », I confirm my transfer of {amount} to {name}."
+        },
+        "history": {
+            "invoice": "Print a receipt",
+            "date": "Date",
+            "location": "Location",
+            "object": "Object",
+            "amount": "Amount",
+            "type": "Type",
+            "operator": "Operator"
+        },
+        "lock": {
+            "question": "Do you want to lock this support ? Be careful, this can't be undone.",
+            "button": "Yes, lock my support",
+            "info": "This wallet is associated with the following locked support number:"
+        },
+        "invoice": {
+            "title": "Create a receipt",
+            "name": "Corporation",
+            "vat": "Intra-community VAT number",
+            "address": "Address",
+            "zip": "ZIP code",
+            "city": "City",
+            "country": "Country"
+        },
+        "ticket": {
+            "info": "To link your ticket to this cashless wallet, enter your ticket number below.",
+            "number": "Ticket number"
+        },
+        "refund": {
+            "info": "If this option has been activated by the organizer, you can be refunded of your remaining credit.",
+            "amount": "The amount of {amount} can be refunded.",
+            "bankfee": "A bank fee of {amount} will be substracted, {refunded} will be refunded on your bank account.",
+            "cardinfo": "By default, the refund will be sent <strong>to the last card you used to refill your cashless account</strong>.",
+            "registerinfo": "The registration of a new bank card to be refunded is processed by a debit authorization of 1 euro, which will never be debited of your bank account.",
+            "new": "You can register a new card by clicking",
+            "here": "here",
+            "status": {
+                "title": "Register a new card",
+                "success": "The card has been successfuly registered. You can now ask for a refund.",
+                "fail": "The card registration has failed. Please contact you bank if you think this is an error.",
+                "backrefund": "Back to refund"
+            },
+            "errors": {
+                "deactivated": "Refunds hasn't been activated by the organizer.",
+                "minimum": "The minimum possible refund value is {value}",
+                "start": "Refunds will start on {value}",
+                "end": "Refunds ended on {value}",
+                "already": "You already asked for a refund on {value}"
+            }
+        }
+    },
+    "components": {
+        "table": {
+            "selector": "Display {selector} entries",
+            "pages": "Showing {number} out of {total} items",
+            "noresult": "Nothing to display",
+            "reload": "Reload my wallet"
+        }
+    },
+    "ui": {
+        "confirm": "Confirm",
+        "back": "Back",
+        "modify": "Modify",
+        "send": "Send",
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page",
+        "download": "Download",
+        "backhome": "Back to home"
+    }
+}

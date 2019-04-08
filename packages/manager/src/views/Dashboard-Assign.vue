@@ -1,20 +1,19 @@
 <template>
     <div class="assign">
         <Card>
-            <h3>Créer un nouveau porte-monnaie</h3>
+            <h3>{{ $t('dashboard.account.create') }}</h3>
 
             <form @submit.prevent="assign(newCard)">
-                Pour créer un nouveau porte-monnaie cashless à partir de votre support, saisissez
-                ici l'identifiant présent au dos de celui-ci.
+                {{ $t('dashboard.assign.info') }}
                 <TextInput
                     v-model="newCard"
                     :disabled="working"
-                    label="Numéro de support"
+                    :label="$t('dashboard.assign.number')"
                     autofocus
                 />
                 <div class="actions">
-                    <Button to="/dashboard/account">Retour</Button>
-                    <Button :disabled="working" raised>Valider</Button>
+                    <Button to="/dashboard/account">{{ $t('ui.back') }}</Button>
+                    <Button :disabled="working" raised>{{ $t('ui.confirm') }}</Button>
                 </div>
             </form>
         </Card>

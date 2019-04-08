@@ -87,11 +87,7 @@ export const loadGiftReloads = async ctx => {
 };
 
 export const loadPaymentCosts = async ctx => {
-    const result = await ctx.dispatch(
-        'request/get',
-        { url: 'payment/costs' },
-        { root: true }
-    );
+    const result = await ctx.dispatch('request/get', { url: 'payment/costs' }, { root: true });
 
     ctx.commit('SET_PAYMENT_COSTS', result);
 };

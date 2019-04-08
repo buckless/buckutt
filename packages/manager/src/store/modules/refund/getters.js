@@ -1,5 +1,6 @@
 import { formatDate } from '@/lib/date';
 import { formatCurrency } from '@/lib/currency';
+import i18n from '@/i18n';
 
 export const refund = state => ({
     allowed: state.allowed,
@@ -17,28 +18,30 @@ export const whyCant = state => {
 
     if (state.alreadyAsked) {
         return [
-            `Vous avez déjà fait votre demande de remboursement au ${formatDate(
-                state.alreadyAsked.created_at
-            )}`
+            i18n.t('dashboard.refund.errors.already', {
+                value: formatDate(state.alreadyAsked.created_at)
+            })
         ];
     }
 
     if (state.minimum <= 0 || !state.start) {
-        return ["Le remboursement n'a pas été activé par l'organisateur"];
+        return [i18n.t('dashboard.refund.errors.deactivated')];
     }
 
     if (state.refundable < state.minimum) {
-        errors.push(`Le remboursement minimum est de : ${formatCurrency(state.minimum / 100)}`);
-    }
-
-    if (now <= new Date(state.start)) {
         errors.push(
-            `Les remboursements ne sont pas encore ouverts avant le ${formatDate(state.start)}`
+            i18n.t('dashboard.refund.errors.minimum', {
+                value: formatCurrency(state.minimum / 100)
+            })
         );
     }
 
+    if (now <= new Date(state.start)) {
+        errors.push(i18n.t('dashboard.refund.errors.start', { value: formatDate(state.start) }));
+    }
+
     if (now >= new Date(state.end)) {
-        errors.push(`Les remboursements sont fermés depuis le ${formatDate(state.end)}`);
+        errors.push(i18n.t('dashboard.refund.errors.end', { value: formatDate(state.end) }));
     }
 
     return errors;

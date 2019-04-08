@@ -1,23 +1,20 @@
 <template>
     <div class="reload">
         <Card>
-            <div>
-                Mon solde :
-            </div>
+            <div>{{ $t('dashboard.reload.title') }} :</div>
             <div class="credit">
                 <span class="actual">{{ (credit / 100) | currency }}</span>
                 <span class="pending">
-                    <Icon name="access_time" /> {{ (pending / 100) | currency }} en attente
+                    <Icon name="access_time" /> {{ (pending / 100) | currency }}
+                    {{ $t('dashboard.reload.pending') }}
                 </span>
             </div>
             <p class="info">
-                Les opérations peuvent prendre plusieurs minutes avant d'être synchronisée sur cet
-                espace cashless. Les transactions en lignes seront marquées « en attente » jusqu'à
-                une opération réalisée sur place.
+                {{ $t('dashboard.reload.infopending') }}
             </p>
         </Card>
         <div class="reload-buttons">
-            <h3>Rechargement</h3>
+            <h3>{{ $t('dashboard.reload.reload') }}</h3>
             <div v-if="buttonsInputs" class="amounts">
                 <Button :disabled="working" small raised class="amount" @click="reload(10)"
                     >10€</Button
@@ -45,26 +42,24 @@
                     v-model="amount"
                     :disabled="working"
                     type="number"
-                    label="Montant personnalisé"
+                    :label="$t('dashboard.reload.custom')"
                     autofocus
                 />
-                <Button raised>Valider</Button>
+                <Button raised>{{ $t('ui.confirm') }}</Button>
             </form>
 
             <form v-if="isCheckout" class="payment-form" method="POST"></form>
 
             <p class="info">
-                Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br />
-                Les opérations en ligne ne sont validées qu'à la suite d'une transaction sur site.<br />
-                <template v-if="costs.fixedCostsReload > 0 && costs.variableCostsReload > 0">
-                    Des frais bancaires d'une valeur de <strong>{{ (costs.fixedCostsReload / 100) | currency }}</strong> + <strong>{{ costs.variableCostsReload }}%</strong> du montant de la transaction seront appliqués.
-                </template>
-                <template v-else-if="costs.fixedCostsReload > 0">
-                    Des frais bancaires d'une valeur de <strong>{{ (costs.fixedCostsReload / 100) | currency }}</strong> seront appliqués.
-                </template>
-                <template v-else-if="costs.variableCostsReload > 0">
-                    Des frais bancaires d'une valeur de <strong>{{ costs.variableCostsReload }}%</strong> du montant de la transaction seront appliqués.
-                </template>
+                <span v-html="$t('dashboard.reload.security')"></span><br />
+                <i18n
+                    :path="localeToDisplay"
+                    tag="span"
+                    v-if="costs.fixedCostsReload > 0 || costs.variableCostsReload > 0"
+                >
+                    <strong place="fixed">{{ (costs.fixedCostsReload / 100) | currency }}</strong>
+                    <strong place="variable">{{ costs.variableCostsReload }}%</strong>
+                </i18n>
             </p>
             <div v-if="giftReloads && giftReloads.length > 0" class="gifts">
                 <div v-for="(giftReload, i) in giftReloads" :key="i" class="gift">
@@ -112,7 +107,17 @@ export default {
             costs: 'user/costs',
             working: 'working/working',
             user: 'user/user'
-        })
+        }),
+
+        localeToDisplay() {
+            if (this.costs.fixedCostsReload > 0 && this.costs.variableCostsReload > 0) {
+                return 'dashboard.reload.bankcost3';
+            } else if (this.costs.fixedCostsReload > 0) {
+                return 'dashboard.reload.bankcost1';
+            }
+
+            return 'dashboard.reload.bankcost2';
+        }
     },
 
     methods: {
@@ -122,7 +127,9 @@ export default {
 
         reload(amount) {
             const intAmount = parseInt(amount, 10);
-            const fullAmount = intAmount * (1 + (this.costs.variableCostsReload / 100)) + (this.costs.fixedCostsReload / 100);
+            const fullAmount =
+                intAmount * (1 + this.costs.variableCostsReload / 100) +
+                this.costs.fixedCostsReload / 100;
 
             if (reload.name === 'checkout') {
                 Checkout.configure({

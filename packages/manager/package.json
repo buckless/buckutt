@@ -1,31 +1,21 @@
 {
   "name": "manager",
   "version": "1.0.0",
-  "description": "manager",
-  "author": "Buckless <contact@buckless.com> https://buckless.com",
-  "contributors": [
-    "Gabriel Juchault <gabriel@buckless.com>",
-    "Axel Mousset <axel@buckless.com>",
-    "Lucas Soulier <lucas@buckless.com>"
-  ],
-  "repository": "https://lab.buckless.com/buckless/buckless.git",
-  "homepage": "https://buckless.com",
-  "license": "UNLICENSED",
   "scripts": {
-    "start": "static dist --host-address 0.0.0.0 --port 8083 --gzip --spa --cache 86400",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "start": "static dist --host-address 0.0.0.0 --port 8083 --gzip --spa --cache 86400",
     "dev": "vue-cli-service serve",
     "dev:local": "cross-env DEV_PROXY=1 vue-cli-service serve",
     "dev:calm": "cross-env NODE_ENV=development vue-cli-service calm-serve",
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
-    "config": "*",
     "@material/button": "^0.44.0",
     "@material/checkbox": "^0.44.0",
     "@material/elevation": "^0.44.0",
     "@material/snackbar": "^0.44.0",
+    "config": "*",
     "debounce": "^1.2.0",
     "jspdf": "^1.4.1",
     "jspdf-autotable": "^3.0.0-alpha.3",
@@ -35,6 +25,7 @@
     "register-service-worker": "^1.5.2",
     "uuid": "^3.3.2",
     "vue": "^2.5.16",
+    "vue-i18n": "^8.10.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vuex-router-sync": "^5.0.0"
@@ -51,9 +42,20 @@
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "vue-cli-plugin-calm-serve": "*",
+    "vue-cli-plugin-i18n": "^0.5.2",
     "vue-template-compiler": "^2.5.16"
   },
+  "repository": "https://lab.buckless.com/buckless/buckless.git",
   "optionalDependencies": {
     "cypress": "3.1.5"
-  }
+  },
+  "license": "UNLICENSED",
+  "description": "manager",
+  "author": "Buckless <contact@buckless.com> https://buckless.com",
+  "contributors": [
+    "Gabriel Juchault <gabriel@buckless.com>",
+    "Axel Mousset <axel@buckless.com>",
+    "Lucas Soulier <lucas@buckless.com>"
+  ],
+  "homepage": "https://buckless.com"
 }

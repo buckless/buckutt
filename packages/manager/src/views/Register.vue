@@ -1,6 +1,6 @@
 <template>
     <div class="register">
-        <h1>Inscription</h1>
+        <h1>{{ $t('register.title') }}</h1>
         <router-view />
     </div>
 </template>

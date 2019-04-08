@@ -1,27 +1,27 @@
 <template>
     <div class="block">
         <Card>
-            <h3>Bloquer mon support</h3>
+            <h3>{{ $t('dashboard.menu.lock') }}</h3>
 
             <form v-if="hasCard && !cardBlocked" @submit.prevent="block(card)">
-                Votre porte-monnaie cashless est associé avec le support <strong>{{ card }}</strong
+                {{ $t('dashboard.menu.lockinfo') }} <strong>{{ card }}</strong
                 >.<br /><br />
-                Souhaitez-vous bloquer le support ? Cette action est irreversible.
+                {{ $t('dashboard.lock.question') }}
                 <br />
                 <br />
                 <div class="actions">
-                    <Button :disabled="working" raised>Oui, bloquer mon support</Button>
+                    <Button :disabled="working" raised>{{ $t('dashboard.lock.button') }}</Button>
                 </div>
             </form>
             <template v-else>
                 <p>
-                    Ce porte-monnaie est associé avec le support bloqué suivant:
+                    {{ $t('dashboard.lock.info') }}
                     <strong>{{ card }}</strong>
                     <br />
                     <br />
                 </p>
                 <div class="actions">
-                    <Button raised to="/dashboard/menu">Retour</Button>
+                    <Button raised to="/dashboard/menu">{{ $t('ui.back') }}</Button>
                 </div>
             </template>
         </Card>

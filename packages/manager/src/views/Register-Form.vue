@@ -5,30 +5,37 @@
                 v-model="firstname"
                 :disabled="working"
                 type="text"
-                label="Prénom"
+                :label="$t('register.form.firstname')"
                 autofocus
             />
-            <TextInput v-model="lastname" :disabled="working" type="text" label="Nom" />
-            <TextInput v-model="mail" :disabled="working" type="text" label="Mail" />
+            <TextInput
+                v-model="lastname"
+                :disabled="working"
+                type="text"
+                :label="$t('register.form.lastname')"
+            />
+            <TextInput
+                v-model="mail"
+                :disabled="working"
+                type="text"
+                :label="$t('register.form.mail')"
+            />
             <TextInput
                 v-if="hasCard"
                 v-model="card"
                 :disabled="working"
                 type="text"
-                label="Identifiant de carte"
+                :label="$t('register.form.identifier')"
             />
             <Checkbox id="1" v-model="cgu" :disabled="working">
-                J'accepte les
-                <a href="https://buckless.com/static/cgu.pdf" rel="noopener noref nofollow"
-                    >conditions générales de vente</a
-                >.
+                <span v-html="$t('register.form.conditions')"></span>
             </Checkbox>
             <div class="actions">
                 <Button to="/register">
-                    Retour
+                    {{ $t('ui.back') }}
                 </Button>
                 <Button :disabled="working" raised>
-                    Inscription
+                    {{ $t('register.form.signin') }}
                 </Button>
             </div>
         </form>

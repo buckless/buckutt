@@ -1,0 +1,179 @@
+{
+    "tabs": {
+        "reload": "Charger",
+        "history": "Historique",
+        "transfer": "Virement",
+        "other": "Autre"
+    },
+    "login": {
+        "title": "Interface cashless",
+        "info": "Saisissez votre e-mail ainsi que votre code PIN pour accéder à l'interface cashless.",
+        "mail": "Mail",
+        "pin": "Code PIN",
+        "forgot": "Oublié ?",
+        "login": "Connexion",
+        "noaccount": "Pas encore de compte cashless ?",
+        "register": "Inscription"
+    },
+    "forgot": {
+        "title": "Code PIN oublié",
+        "info": "Saisissez votre e-mail ci-dessous. Vous receverez par e-mail un lien vous permettant de changer votre mot de passe.",
+        "mail": "E-mail",
+        "step2title": "Réinitialisation du code PIN",
+        "step2info": "Le nouveau code PIN doit exclusivement être composé de 4 chiffres."
+    },
+    "register": {
+        "title": "Inscription",
+        "chooser": {
+            "ticketinfo": "Si vous possédez un billet pour le festival, cochez cette case. Si vous ne possédez pas de billet et souhaitez utiliser le cashless à l'évènement, ne cochez pas cette case.",
+            "ticketbox": "J'ai déjà un billet",
+            "cardinfo": "Si vous avez déjà votre support cashless, cochez cette case. Vous trouverez l'identifiant à rentrer au verso de votre support.",
+            "cardbox": "J'ai déjà un support cashless (carte, bracelet, ...)"
+        },
+        "form": {
+            "firstname": "Prénom",
+            "lastname": "Nom",
+            "mail": "Mail",
+            "identifier": "Identifiant du support",
+            "ticket": "Numéro du billet",
+            "useticket": "Utiliser le mail lié au billet",
+            "usemail": "Utiliser un autre mail que celui du billet",
+            "conditions": "J'accepte les <a href='https://buckless.com/static/cgu.pdf' rel='noopener noref nofollow'>conditions générales de vente</a>.",
+            "signin": "Inscription"
+        },
+        "status": {
+            "success": "Votre inscription est validée. Vérifiez votre boîte mail, vous devriez avoir reçu votre code PIN. Vous pourrez le changer une fois connecté.",
+            "fail": "Échec de l'inscription. Vérifiez vos informations et réessayez, ou contactez un organisateur."
+        }
+    },
+    "dashboard": {
+        "reload": {
+            "title": "Mon solde",
+            "pending": "en attente",
+            "infopending": "Les opérations peuvent prendre plusieurs minutes avant d'être synchronisée sur cet espace cashless. Les transactions en ligne seront marquées « en attente » jusqu'à une opération réalisée sur place.",
+            "reload": "Rechargement",
+            "custom": "Montant personnalisé",
+            "security": "Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br /> Les opérations en ligne ne sont validées qu'à la suite d'une transaction sur site.",
+            "bankcost1": "Des frais bancaires d'une valeur de {fixed} seront appliqués.",
+            "bankcost2": "Des frais bancaires d'une valeur de {variable}% du montant de la transaction seront appliqués.",
+            "bankcost3": "Des frais bancaires d'une valeur de {fixed} + {variable}% du montant de la transaction seront appliqués.",
+            "status": {
+                "title": "Rechargement",
+                "success": "Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici quelques instants.",
+                "waiting": "Votre rechargement est en cours de traitement. S'il est accepté par votre banque, il sera effectif dans quelques instants.",
+                "fail": "Le paiement <strong>n'a pas été pris en compte</strong>. Contactez votre banque si vous ne pensez pas que cela correspond à un fonctionnement normal."
+            }
+        },
+        "account": {
+            "title": "Mes portes-monnaies",
+            "support": "Support",
+            "ticket": "Ticket",
+            "virtual": "Porte-monnaie virtuel",
+            "create": "Créer un nouveau porte-monnaie",
+            "createinfo": "Ajouter un nouveau porte-monnaie à votre espace cashless",
+            "changepin": "Changement de code PIN",
+            "changepininfo": "Changez votre code de connexion à votre espace cashless",
+            "logout": "Déconnexion"
+        },
+        "assign": {
+            "info": "Pour créer un nouveau porte-monnaie cashless à partir de votre support, saisissez ici l'identifiant présent au dos de celui-ci.",
+            "number": "Numéro de support"
+        },
+        "pin": {
+            "current": "Code PIN actuel",
+            "new": "Nouveau code PIN",
+            "confirm": "Confirmation"
+        },
+        "menu": {
+            "transfer": "Virement",
+            "transferinfo": "Effectuez un transfert vers un autre porte-monnaie",
+            "lock": "Bloquer mon support cashless",
+            "lockinfo": "Votre porte-monnaie cashless est associé avec la carte numéro",
+            "link": "Lier mon support cashless",
+            "linkinfo": "Synchronisez votre support avec votre porte-monnaie",
+            "ticket": "Mon billet",
+            "ticketinfo": "Ce porte-monnaie est associé avec le billet numéro",
+            "ticketlink": "Liez votre billet d'évènement à ce porte-monnaie cashless",
+            "qr": "Mon QR code",
+            "qrinfo": "Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer votre support cashless.",
+            "refund": "Remboursement de solde",
+            "refundinfo": "Faites vous rembourser le solde restant de ce porte-monnaie"
+        },
+        "transfer": {
+            "info": "Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle colorée indique le compte receveur. Attention, vous ne pouvez virer de l'argent qu'à une personne ayant créé un compte.",
+            "recipient": "Destinataire",
+            "4min": "Entrez 4 caractères minimum",
+            "noresult": "Aucun résultat.",
+            "amount": "Montant (€)",
+            "confirmtext": "En cliquant sur « Envoyer », je confirme envoyer {amount} à {name}."
+        },
+        "history": {
+            "invoice": "Imprimer un reçu",
+            "date": "Date",
+            "location": "Point",
+            "object": "Objet",
+            "amount": "Valeur",
+            "type": "Type",
+            "operator": "Opérateur"
+        },
+        "lock": {
+            "question": "Souhaitez-vous bloquer le support ? Cette action est irreversible.",
+            "button": "Oui, bloquer mon support",
+            "info": "Ce porte-monnaie est associé avec le support bloqué suivant:"
+        },
+        "invoice": {
+            "title": "Création d'un reçu",
+            "name": "Société",
+            "vat": "N° de TVA intracommunautaire",
+            "address": "Adresse",
+            "zip": "Code postal",
+            "city": "Ville",
+            "country": "Pays"
+        },
+        "ticket": {
+            "info": "Pour lier votre billet d'entrée à ce porte-monnaie cashless, saisissez ici votre numéro de billet.",
+            "number": "Numéro de billet"
+        },
+        "refund": {
+            "info": "Si l'organisateur a activé cette option, vous pouvez être remboursé de votre solde restant.",
+            "amount": "Vous pouvez demander le remboursement de {amount}.",
+            "bankfee": "Des frais bancaires d'une valeur de {amount} seront retenus, {refunded} seront virés sur votre compte.",
+            "cardinfo": "Le remboursement sera effectué par défaut <strong>sur la dernière carte que vous avez utiliser pour créditer votre compte</strong>.",
+            "registerinfo": "L'enregistrement d'une carte bleue à rembourser se fait par une demande d'autorisation de débit de 1 euro, qui ne sera pas débitée de votre compte bancaire.",
+            "new": "Pour enregistrer une autre carte, cliquez",
+            "here": "ici",
+            "status": {
+                "title": "Enregistrement de carte",
+                "success": "La carte a bien été enregistrée. Vous pouvez maintenant demander votre remboursement.",
+                "fail": "La carte n'a pas pu être enregistrée. Veuillez contacter votre banque pour plus d'informations.",
+                "backrefund": "Retour au remboursement"
+            },
+            "errors": {
+                "deactivated": "Le remboursement n'a pas été activé par l'organisateur",
+                "minimum": "Le remboursement minimum est de {value}",
+                "start": "Les remboursements ouvriront le {value}",
+                "end": "Les remboursements sont fermés depuis le {value}",
+                "already": "Vous avez déjà fait votre demande de remboursement au {value}"
+            }
+        }
+    },
+    "components": {
+        "table": {
+            "selector": "Afficher {selector} entrées",
+            "pages": "Affichage de {number} éléments sur {total}",
+            "noresult": "Aucune donnée à afficher",
+            "reload": "Recharger mon portefeuille"
+        }
+    },
+    "ui": {
+        "confirm": "Valider",
+        "back": "Retour",
+        "modify": "Modifier",
+        "send": "Envoyer",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "page": "Page",
+        "download": "Télécharger",
+        "backhome": "Retour à l'accueil"
+    }
+}

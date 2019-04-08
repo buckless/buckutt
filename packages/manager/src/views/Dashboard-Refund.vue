@@ -1,29 +1,38 @@
 <template>
     <div class="refund">
         <Card>
-            <h3>Remboursement de solde</h3>
+            <h3>{{ $t('dashboard.menu.refund') }}</h3>
 
             <p>
-                Si l'organisateur a activé cette option, vous pouvez être remboursé de votre solde
-                restant.
+                {{ $t('dashboard.refund.info') }}
 
                 <br />
                 <br />
 
                 <template v-if="refundData.allowed">
-                    Vous pouvez demander le remboursement de
-                    <strong>{{ (refundData.refundable / 100) | currency }}</strong>.<br />
-                    <template v-if="refundCost > 0">
-                        Des frais bancaires d'une valeur de <strong>{{ (refundCost / 100) | currency }}</strong> seront retenus, <strong>{{ ((refundData.refundable - refundCost) / 100) | currency }}</strong> seront virés sur votre compte.
+                    <i18n path="dashboard.refund.amount" tag="span">
+                        <span place="amount">{{ (refundData.refundable / 100) | currency }}</span>
+                    </i18n>
+                    <br />
+                    <i18n path="dashboard.refund.bankfee" tag="span" v-if="refundCost > 0">
+                        <strong place="amount">{{ (refundCost / 100) | currency }}</strong>
+                        <strong place="refunded">
+                            {{ ((refundData.refundable - refundCost) / 100) | currency }}
+                        </strong>
+                    </i18n>
+                    <template v-if="refundData.cardRegistered">
+                        <br />
+                        <span v-html="$t('dashboard.refund.cardinfo')"></span>
+                        <br />
+                        <br />
+                        {{ $t('dashboard.refund.new') }}
+                        <strong @click="registerCard" class="refundLink">{{
+                            $t('dashboard.refund.here')
+                        }}</strong
+                        >.
                     </template>
                     <br />
-                    <template v-if="refundData.cardRegistered">
-                        Le remboursement sera effectué par défaut <strong>sur la dernière carte que vous avez utiliser pour créditer votre compte</strong>.
-                        <br />
-                        <br />
-                        Pour enregistrer une autre carte, cliquez <strong @click="registerCard">ici</strong>.
-                    </template>
-                    <i>L'enregistrement d'une carte bleue à rembourser se fait par une demande d'autorisation de débit de 1 euro, qui ne sera pas débitée de votre compte bancaire</i>.
+                    <i>{{ $t('dashboard.refund.registerinfo') }}</i>
                 </template>
                 <template v-else>
                     <div v-for="(error, i) in whyCantRefund" :key="i">
@@ -33,9 +42,20 @@
             </p>
 
             <form class="actions" @submit.prevent="refund">
-                <Button to="/dashboard/menu">Retour</Button>
-                <Button v-if="refundData.allowed && refundData.cardRegistered" :disabled="working" raised>Remboursement</Button>
-                <Button v-if="refundData.allowed && !refundData.cardRegistered" :disabled="working" raised @click.prevent="registerCard">Enregistrer une carte</Button>
+                <Button to="/dashboard/menu">{{ $t('ui.back') }}</Button>
+                <Button
+                    v-if="refundData.allowed && refundData.cardRegistered"
+                    :disabled="working"
+                    raised
+                    >Remboursement</Button
+                >
+                <Button
+                    v-if="refundData.allowed && !refundData.cardRegistered"
+                    :disabled="working"
+                    raised
+                    @click.prevent="registerCard"
+                    >Enregistrer une carte</Button
+                >
             </form>
         </Card>
     </div>
@@ -63,7 +83,10 @@ export default {
         }),
 
         refundCost() {
-            return (this.costs.variableCostsRefund / 100) * this.refundData.refundable + this.costs.fixedCostsRefund;
+            return (
+                (this.costs.variableCostsRefund / 100) * this.refundData.refundable +
+                this.costs.fixedCostsRefund
+            );
         }
     },
 
@@ -80,3 +103,9 @@ export default {
     }
 };
 </script>
+
+<style lang="scss" scoped>
+.refundLink {
+    cursor: pointer;
+}
+</style>

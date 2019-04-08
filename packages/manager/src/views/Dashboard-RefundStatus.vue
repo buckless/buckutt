@@ -1,15 +1,13 @@
 <template>
     <div class="refundStatus">
         <Card>
-            <h2 class="title">Enregistrement de carte</h2>
-            <p v-if="status === 'success'">
-                La carte a bien été enregistrée. Vous pouvez maintenant demander votre remboursement.
-            </p>
-            <p v-else>
-                La carte n'a pas pu être enregistrée. Veuillez contacter votre banque pour plus d'informations.
-            </p>
+            <h2 class="title">{{ $t('dashboard.refund.status.title') }}</h2>
+            <p v-if="status === 'success'">{{ $t('dashboard.refund.status.success') }}</p>
+            <p v-else>{{ $t('dashboard.refund.status.fail') }}</p>
             <div class="actions">
-                <Button raised to="/dashboard/refund">Retour aux remboursements</Button>
+                <Button raised to="/dashboard/refund">{{
+                    $t('dashboard.refund.status.backrefund')
+                }}</Button>
             </div>
         </Card>
     </div>

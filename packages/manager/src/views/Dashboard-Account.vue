@@ -1,7 +1,7 @@
 <template>
     <div>
         <Card v-if="wallets.length > 0">
-            <h3>Mes portes-monnaies</h3>
+            <h3>{{ $t('dashboard.account.title') }}</h3>
             <List>
                 <div
                     v-for="(wallet, i) in wallets"
@@ -11,29 +11,31 @@
                 >
                     <span v-if="currentWallet === wallet.id" class="bullet" />
                     <span class="name" v-if="wallet.physical_id">
-                        Support {{ wallet.physical_id }}
+                        {{ $t('dashboard.account.support') }} {{ wallet.physical_id }}
                     </span>
                     <span class="name" v-else-if="wallet.ticket && wallet.ticket.physical_id">
-                        Ticket {{ wallet.ticket.physical_id }}
+                        {{ $t('dashboard.account.ticket') }} {{ wallet.ticket.physical_id }}
                     </span>
                     <span class="name" v-else-if="wallet.logical_id">
-                        Support {{ wallet.logical_id }}
+                        {{ $t('dashboard.account.support') }} {{ wallet.logical_id }}
                     </span>
-                    <span class="name" v-else> Porte-monnaie virtuel {{ i }} </span>
+                    <span class="name" v-else>
+                        {{ $t('dashboard.account.virtual') }} {{ i + 1 }}
+                    </span>
                     &nbsp;
                     <span class="credit">({{ (wallet.credit / 100) | currency }})</span>
                 </div>
             </List>
         </Card>
         <Card to="/dashboard/assign" v-if="showRegistration">
-            <h3>Créer un nouveau porte-monnaie</h3>
-            <p>Ajouter un nouveau porte-monnaie à votre espace cashless</p>
+            <h3>{{ $t('dashboard.account.create') }}</h3>
+            <p>{{ $t('dashboard.account.createinfo') }}</p>
         </Card>
         <Card to="/dashboard/pin">
-            <h3>Changement de code PIN</h3>
-            <p>Changez votre code de connexion à votre espace cashless</p>
+            <h3>{{ $t('dashboard.account.changepin') }}</h3>
+            <p>{{ $t('dashboard.account.changepininfo') }}</p>
         </Card>
-        <Button @click="logout">Déconnexion</Button>
+        <Button @click="logout">{{ $t('dashboard.account.logout') }}</Button>
     </div>
 </template>
 
