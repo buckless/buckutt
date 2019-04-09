@@ -1,3 +1,5 @@
+import i18n from '@/i18n';
+
 export const ticket = async (ctx, ticketNumber) => {
     await ctx.dispatch('working/set', true, { root: true });
 
@@ -23,7 +25,7 @@ export const ticket = async (ctx, ticketNumber) => {
 
     ctx.dispatch(
         'notifications/send',
-        { message: 'Le billet a bien été lié à votre compte' },
+        { message: i18n.t('dashboard.assign.confirmticket') },
         { root: true }
     );
 
@@ -55,7 +57,7 @@ export const card = async (ctx, physicalId) => {
 
     ctx.dispatch(
         'notifications/send',
-        { message: 'Le support a bien été lié à votre porte-monnaie' },
+        { message: i18n.t('dashboard.assign.confirmsupport') },
         { root: true }
     );
 
@@ -87,7 +89,7 @@ export const create = async (ctx, physicalId) => {
 
     ctx.dispatch(
         'notifications/send',
-        { message: 'Le porte-monnaie a bien été créé' },
+        { message: i18n.t('dashboard.assign.confirmcreate') },
         { root: true }
     );
 
@@ -95,7 +97,7 @@ export const create = async (ctx, physicalId) => {
 };
 
 export const block = async (ctx, logicalId) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir bloquer votre carte ?')) {
+    if (!window.confirm(i18n.t('dashboard.lock.question'))) {
         return;
     }
 
@@ -110,7 +112,7 @@ export const block = async (ctx, logicalId) => {
     );
     await ctx.commit('user/BLOCK_CARD', logicalId, { root: true });
 
-    ctx.dispatch('notifications/send', { message: 'Le support a bien été bloqué' }, { root: true });
+    ctx.dispatch('notifications/send', { message: i18n.t('dashboard.lock.confirmlock') }, { root: true });
 
     await ctx.dispatch('working/set', false, { root: true });
 };

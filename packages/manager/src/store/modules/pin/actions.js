@@ -1,12 +1,14 @@
+import i18n from '@/i18n';
+
 export const change = async (ctx, { currentPin, pin, confirmation }) => {
     let message = null;
 
     if (pin !== confirmation) {
-        message = 'Les deux codes PIN ne sont pas identiques';
+        message = i18n.t('dashboard.pin.same');
     }
 
     if (currentPin === pin) {
-        message = "L'ancien et le nouveau code PIN rentrés sont identiques";
+        message = i18n.t('dashboard.pin.notnew');
     }
 
     if (message) {
@@ -27,7 +29,7 @@ export const change = async (ctx, { currentPin, pin, confirmation }) => {
     if (!result || !result.changed) {
         await ctx.dispatch(
             'notifications/send',
-            { message: "L'ancien code PIN est faux" },
+            { message: i18n.t('dashboard.pin.oldwrong') },
             { root: true }
         );
         await ctx.dispatch('working/set', false, { root: true });
@@ -37,7 +39,7 @@ export const change = async (ctx, { currentPin, pin, confirmation }) => {
 
     await ctx.dispatch(
         'notifications/send',
-        { message: 'Le code PIN a bien été changé' },
+        { message: i18n.t('dashboard.pin.success') },
         { root: true }
     );
 
@@ -58,7 +60,7 @@ export const sendReset = async (ctx, mail) => {
     if (!result || !result.success) {
         await ctx.dispatch(
             'notifications/send',
-            { message: 'Cette adresse mail est inconnue' },
+            { message: i18n.t('forgot.wrongmail') },
             { root: true }
         );
         await ctx.dispatch('working/set', false, { root: true });
@@ -66,7 +68,7 @@ export const sendReset = async (ctx, mail) => {
         return false;
     }
 
-    await ctx.dispatch('notifications/send', { message: 'Lien envoyé' }, { root: true });
+    await ctx.dispatch('notifications/send', { message: i18n.t('forgot.sent') }, { root: true });
 
     await ctx.dispatch('working/set', false, { root: true });
 
@@ -77,7 +79,7 @@ export const reset = async (ctx, { key, pin, confirmation }) => {
     if (pin !== confirmation) {
         await ctx.dispatch(
             'notifications/send',
-            { message: 'Les deux codes PIN ne sont pas identiques' },
+            { message: i18n.t('dashboard.pin.same') },
             { root: true }
         );
 
@@ -101,7 +103,7 @@ export const reset = async (ctx, { key, pin, confirmation }) => {
         await ctx.dispatch('working/set', false, { root: true });
         await ctx.dispatch(
             'notifications/send',
-            { message: 'Impossible de changer le code PIN' },
+            { message: i18n.t('forgot.fail') },
             { root: true }
         );
 
@@ -110,7 +112,7 @@ export const reset = async (ctx, { key, pin, confirmation }) => {
 
     await ctx.dispatch(
         'notifications/send',
-        { message: 'Le code PIN a bien été changé' },
+        { message: i18n.t('dashboard.pin.success') },
         { root: true }
     );
 

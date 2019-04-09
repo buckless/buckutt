@@ -20,7 +20,10 @@
         "info": "Enter your mail address below. You will get a mail with a link which allows you to change your PIN code.",
         "mail": "E-mail",
         "step2title": "PIN code reset",
-        "step2info": "The new PIN code must be 4 digits only."
+        "step2info": "The new PIN code must be 4 digits only.",
+        "wrongmail": "Mail address not found",
+        "sent": "Regeneration link sent",
+        "fail": "Unable to change the PIN code"
     },
     "register": {
         "title": "Sign in",
@@ -44,6 +47,13 @@
         "status": {
             "success": "Your registration is validated. Check your inbox, you should have recieved your PIN code. You can change it once logged in.",
             "fail": "Registreation failed. Check your data and retry, or contact an organizer."
+        },
+        "invalid": {
+            "ticket": "Invalid ticket",
+            "firstname": "Invalid firstname",
+            "lastname": "Invalid lastname",
+            "mail": "Invalid mail",
+            "conditions": "You must accept general conditions."
         }
     },
     "dashboard": {
@@ -77,12 +87,19 @@
         },
         "assign": {
             "info": "To create a new cashless wallet from your physical support, write here the identifier written on its back.",
-            "number": "Support number"
+            "number": "Support number",
+            "confirmticket": "The ticket has been linked to your wallet",
+            "confirmsupport": "The support has been linked to your wallet",
+            "confirmcreate": "The wallet has been successfuly created"
         },
         "pin": {
             "current": "Current PIN code",
             "new": "New PIN code",
-            "confirm": "Confirmation"
+            "confirm": "Confirmation",
+            "same": "The two provided PIN code are different",
+            "notnew": "The old and the new PIN code are the same",
+            "oldwrong": "The old PIN code is wrong",
+            "success": "The PIN code has been changed successfuly"
         },
         "menu": {
             "transfer": "Transfer",

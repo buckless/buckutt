@@ -1,4 +1,10 @@
+import i18n from '@/i18n';
+
 export default message => {
+    if (i18n.locale !== 'fr') {
+        return message;
+    }
+
     if (message.indexOf('Can not reload less than') > -1) {
         return message.replace('Can not reload less than', 'Rechargement minimal');
     }

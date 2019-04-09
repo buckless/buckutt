@@ -20,7 +20,10 @@
         "info": "Saisissez votre e-mail ci-dessous. Vous receverez par e-mail un lien vous permettant de changer votre mot de passe.",
         "mail": "E-mail",
         "step2title": "Réinitialisation du code PIN",
-        "step2info": "Le nouveau code PIN doit exclusivement être composé de 4 chiffres."
+        "step2info": "Le nouveau code PIN doit exclusivement être composé de 4 chiffres.",
+        "wrongmail": "Cette adresse mail est inconnue",
+        "sent": "Lien envoyé",
+        "fail": "Impossible de changer le code PIN"
     },
     "register": {
         "title": "Inscription",
@@ -44,6 +47,13 @@
         "status": {
             "success": "Votre inscription est validée. Vérifiez votre boîte mail, vous devriez avoir reçu votre code PIN. Vous pourrez le changer une fois connecté.",
             "fail": "Échec de l'inscription. Vérifiez vos informations et réessayez, ou contactez un organisateur."
+        },
+        "invalid": {
+            "ticket": "Billet invalide",
+            "firstname": "Prénom invalide",
+            "lastname": "Nom invalide",
+            "mail": "Mail invalide",
+            "conditions": "Vous devez accepter les conditions générales."
         }
     },
     "dashboard": {
@@ -77,12 +87,19 @@
         },
         "assign": {
             "info": "Pour créer un nouveau porte-monnaie cashless à partir de votre support, saisissez ici l'identifiant présent au dos de celui-ci.",
-            "number": "Numéro de support"
+            "number": "Numéro de support",
+            "confirmticket": "Le billet a bien été lié à votre compte",
+            "confirmsupport": "Le support a bien été lié à votre porte-monnaie",
+            "confirmcreate": "Le porte-monnaie a bien été créé"
         },
         "pin": {
             "current": "Code PIN actuel",
             "new": "Nouveau code PIN",
-            "confirm": "Confirmation"
+            "confirm": "Confirmation",
+            "same": "Les deux codes PIN ne sont pas identiques",
+            "notnew": "L'ancien et le nouveau code PIN rentrés sont identiques",
+            "oldwrong": "L'ancien code PIN est faux",
+            "success": "Le code PIN a bien été changé"
         },
         "menu": {
             "transfer": "Virement",
@@ -119,7 +136,9 @@
         "lock": {
             "question": "Souhaitez-vous bloquer le support ? Cette action est irreversible.",
             "button": "Oui, bloquer mon support",
-            "info": "Ce porte-monnaie est associé avec le support bloqué suivant:"
+            "info": "Ce porte-monnaie est associé avec le support bloqué suivant:",
+            "question": "Êtes-vous sûr de vouloir bloquer votre support ?",
+            "confirmlock": "Le support a bien été bloqué"
         },
         "invoice": {
             "title": "Création d'un reçu",
