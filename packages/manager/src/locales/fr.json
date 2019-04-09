@@ -55,8 +55,8 @@
             "custom": "Montant personnalisé",
             "security": "Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br /> Les opérations en ligne ne sont validées qu'à la suite d'une transaction sur site.",
             "bankcost1": "Des frais bancaires d'une valeur de {fixed} seront appliqués.",
-            "bankcost2": "Des frais bancaires d'une valeur de {variable}% du montant de la transaction seront appliqués.",
-            "bankcost3": "Des frais bancaires d'une valeur de {fixed} + {variable}% du montant de la transaction seront appliqués.",
+            "bankcost2": "Des frais bancaires d'une valeur de {variable} du montant de la transaction seront appliqués.",
+            "bankcost3": "Des frais bancaires d'une valeur de {fixed} + {variable} du montant de la transaction seront appliqués.",
             "status": {
                 "title": "Rechargement",
                 "success": "Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici quelques instants.",
