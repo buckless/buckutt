@@ -41,9 +41,11 @@ export const autologin = async ctx => {
 };
 
 export const logout = ctx => {
+    const lang = localStorage.getItem('buckless/manager/user/lang');
     ctx.dispatch('changes/close', null, { root: true });
     localStorage.clear();
     sessionStorage.clear();
+    localStorage.setItem('buckless/manager/user/lang', lang);
     location.reload();
 };
 

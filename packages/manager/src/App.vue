@@ -5,6 +5,7 @@
         </header>
         <Notification />
         <router-view />
+        <LangChooser />
     </div>
 </template>
 
@@ -13,12 +14,14 @@ import { mapActions } from 'vuex';
 import { reload } from 'config/manager';
 import afterUrl from '@/lib/redirectAfterLogin';
 import Notification from '@/components/Notification';
+import LangChooser from '@/components/LangChooser';
 
 export default {
     name: 'App',
 
     components: {
-        Notification
+        Notification,
+        LangChooser
     },
 
     data: () => ({

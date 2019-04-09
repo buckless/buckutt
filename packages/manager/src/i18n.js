@@ -17,7 +17,7 @@ function loadLocaleMessages() {
 }
 
 export default new VueI18n({
-    locale: navigator.language.split('-')[0] || 'fr',
+    locale: localStorage.getItem('buckless/manager/user/lang') || navigator.language.split('-')[0],
     fallbackLocale: 'en',
     messages: loadLocaleMessages()
 });
