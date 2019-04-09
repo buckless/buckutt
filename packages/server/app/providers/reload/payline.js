@@ -8,6 +8,7 @@ const ctx = require('server/app/utils/ctx');
 
 const providerConfig = config.provider.payline;
 
+const wsdl = process.env.NODE_ENV !== 'dev' ? path.join(__dirname, 'utils', 'WebPaymentAPI.v4.44.wsdl') : null;
 const ns = type => ({ xsi_type: { type, xmlns: 'http://obj.ws.payline.experian.com' } });
 const currencies = { eur: 978 };
 const actions = { authorization: 100, payment: 101, refund: 421, credit: 422 };
@@ -15,7 +16,7 @@ const modes = { full: 'CPT', differed: 'DIF', nInstalments: 'NX', recurring: 'RE
 const dateFormat = 'DD/MM/YYYY HH:mm';
 
 const onlinePayment = async (ctx, data) => {
-    const payline = new Payline(providerConfig.id, providerConfig.password);
+    const payline = new Payline(providerConfig.id, providerConfig.password, wsdl);
     const type = data.type || 'reload';
 
     const transaction = new ctx.models.Transaction({
@@ -73,7 +74,7 @@ module.exports = {
     },
 
     async callback(req, res) {
-        const payline = new Payline(providerConfig.id, providerConfig.password);
+        const payline = new Payline(providerConfig.id, providerConfig.password, wsdl);
         const { Transaction } = req.app.locals.models;
 
         const isNotification =
