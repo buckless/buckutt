@@ -155,7 +155,7 @@
         },
         "refund": {
             "info": "Si l'organisateur a activé cette option, vous pouvez être remboursé de votre solde restant.",
-            "amount": "Vous pouvez demander le remboursement de {amount}.",
+            "amount": "Vous pouvez demander le remboursement de {amount} jusqu'au {end}.",
             "bankfee": "Des frais bancaires d'une valeur de {amount} seront retenus, {refunded} seront virés sur votre compte.",
             "cardinfo": "Le remboursement sera effectué par défaut <strong>sur la dernière carte que vous avez utiliser pour créditer votre compte</strong>.",
             "registerinfo": "L'enregistrement d'une carte bleue à rembourser se fait par une demande d'autorisation de débit de 1 euro, qui ne sera pas débitée de votre compte bancaire.",
@@ -170,7 +170,7 @@
             "errors": {
                 "deactivated": "Le remboursement n'a pas été activé par l'organisateur",
                 "minimum": "Le remboursement minimum est de {value}",
-                "start": "Les remboursements ouvriront le {value}",
+                "start": "Les remboursements seront ouverts du {value} au {value2}",
                 "end": "Les remboursements sont fermés depuis le {value}",
                 "already": "Vous avez déjà fait votre demande de remboursement au {value}"
             }

@@ -153,7 +153,7 @@
         },
         "refund": {
             "info": "If this option has been activated by the organizer, you can be refunded of your remaining credit.",
-            "amount": "The amount of {amount} can be refunded.",
+            "amount": "The amount of {amount} can be refunded until {end}.",
             "bankfee": "A bank fee of {amount} will be substracted, {refunded} will be refunded on your bank account.",
             "cardinfo": "By default, the refund will be sent <strong>to the last card you used to refill your cashless account</strong>.",
             "registerinfo": "The registration of a new bank card to be refunded is processed by a debit authorization of 1 euro, which will never be debited of your bank account.",
@@ -168,7 +168,7 @@
             "errors": {
                 "deactivated": "Refunds hasn't been activated by the organizer.",
                 "minimum": "The minimum possible refund value is {value}",
-                "start": "Refunds will start on {value}",
+                "start": "Refunds will be open from {value} to {value2}",
                 "end": "Refunds ended on {value}",
                 "already": "You already asked for a refund on {value}"
             }

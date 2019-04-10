@@ -12,6 +12,7 @@
                 <template v-if="refundData.allowed">
                     <i18n path="dashboard.refund.amount" tag="span">
                         <span place="amount">{{ (refundData.refundable / 100) | currency }}</span>
+                        <span place="end">{{ refundData.end | date }}</span>
                     </i18n>
                     <br />
                     <i18n path="dashboard.refund.bankfee" tag="span" v-if="refundCost > 0">
