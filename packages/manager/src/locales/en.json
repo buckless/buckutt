@@ -90,7 +90,9 @@
             "number": "Support number",
             "confirmticket": "The ticket has been linked to your wallet",
             "confirmsupport": "The support has been linked to your wallet",
-            "confirmcreate": "The wallet has been successfuly created"
+            "confirmcreate": "The wallet has been successfuly created",
+            "lock": "This support is currently blocked according to your request. Ask an orginzer to unlock it.",
+            "linkinfo": "To link your physical support to this cashless wallet, write here the identifier written on its back."
         },
         "pin": {
             "current": "Current PIN code",

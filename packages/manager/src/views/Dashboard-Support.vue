@@ -1,34 +1,32 @@
 <template>
     <div class="support">
         <Card>
-            <h3>Lier mon support cashless</h3>
+            <h3>{{ $t('dashboard.menu.link') }}</h3>
 
             <form v-if="!hasCard" @submit.prevent="assignCard(newCard)">
-                Pour lier un nouveau support à ce porte-monnaie cashless, saisissez ici
-                l'identifiant présent au dos de celui-ci.
+                {{ $t('dashboard.assign.linkinfo') }}
                 <TextInput
                     v-model="newCard"
                     :disabled="working"
-                    label="Numéro de support"
+                    :label="$t('dashboard.assign.number')"
                     autofocus
                 />
                 <div class="actions">
-                    <Button to="/dashboard/menu">Retour</Button>
-                    <Button :disabled="working" raised>Valider</Button>
+                    <Button to="/dashboard/menu">{{ $t('ui.back') }}</Button>
+                    <Button :disabled="working" raised>{{ $t('ui.confirm') }}</Button>
                 </div>
             </form>
             <p v-else>
-                Votre porte-monnaie cashless est associé avec le support
+                {{ $t('dashboard.menu.lockinfo') }}
                 <strong>{{ cardNumber }}</strong
                 >.
                 <template v-if="cardBlocked">
                     <br />
-                    Ce support est actuellement bloqué à votre demande. Adressez-vous à un
-                    organisateur pour le débloquer.
+                    {{ $t('dashboard.assign.lock') }}
                 </template>
                 <br />
                 <br />
-                <Button raised to="/dashboard/menu">Retour</Button>
+                <Button raised to="/dashboard/menu">{{ $t('ui.back') }}</Button>
             </p>
         </Card>
     </div>

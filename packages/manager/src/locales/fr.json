@@ -90,7 +90,9 @@
             "number": "Numéro de support",
             "confirmticket": "Le billet a bien été lié à votre compte",
             "confirmsupport": "Le support a bien été lié à votre porte-monnaie",
-            "confirmcreate": "Le porte-monnaie a bien été créé"
+            "confirmcreate": "Le porte-monnaie a bien été créé",
+            "lock": "Ce support est actuellement bloqué à votre demande. Adressez-vous à un organisateur pour le débloquer.",
+            "linkinfo": "Pour lier un nouveau support à ce porte-monnaie cashless, saisissez ici l'identifiant présent au dos de celui-ci."
         },
         "pin": {
             "current": "Code PIN actuel",
