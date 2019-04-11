@@ -110,6 +110,7 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
     }
 
     store.commit('SET_DATA_LOADED', false);
+    store.commit('SET_BASKET_STATUS', 'DOING');
 
     // Log-in buyer to update user prices
     await store.dispatch('buyerLogin', {
@@ -189,8 +190,6 @@ export const initiateBasket = async store => {
 export const sendBasket = (store, payload = {}) => {
     const now = payload.now || new Date();
     const cardNumber = payload.cardNumber || store.state.auth.buyer.wallet;
-
-    store.commit('SET_BASKET_STATUS', 'DOING');
 
     const basket = store.getters.sidebar;
     const reloads = store.state.reload.reloads;
