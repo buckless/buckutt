@@ -29,7 +29,7 @@
                     icon="group"
                     :lastUpdate="usersSync.lastUpdate"
                     :running="usersSync.locked"
-                    frequency="5 minutes"
+                    frequency="2 minutes"
                     @update="updateUsersData"
                 >
                     Données des utilisateurs

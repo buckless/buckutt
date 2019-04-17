@@ -88,12 +88,12 @@ export const updateUsersData = store => {
         })
         .catch(err => console.log(err))
         .then(() => {
-            // Poll every 5 minutes
+            // Poll every 2 minutes
             if (lastUpdate) {
                 store.commit('SET_LAST_USERS_UPDATE', lastUpdate);
             }
 
-            loopUsers = setTimeout(() => store.dispatch('updateUsersData'), 5 * 60 * 1000);
+            loopUsers = setTimeout(() => store.dispatch('updateUsersData'), 2 * 60 * 1000);
             lockUsers = false;
             store.commit('LOCK_USERS_UPDATE', false);
         });
