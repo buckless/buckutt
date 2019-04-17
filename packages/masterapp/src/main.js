@@ -33,7 +33,7 @@ const axios = axios_.create({
     headers: {
         Accept: '',
         'Accept-Language': '',
-        'X-fingerprint': 'admin'
+        'X-fingerprint': process.env.VUE_APP_FINGERPRINT
     }
 });
 
@@ -42,20 +42,41 @@ const logOperator = force => {
         return Promise.resolve();
     }
 
+    const signature = generateSignature(
+        process.env.VUE_APP_PRIVATEKEY,
+        process.env.VUE_APP_FINGERPRINT,
+        'POST',
+        'auth/login'
+    );
+
+    const options = {
+        headers: {
+            'X-signature': signature
+        }
+    };
+
     const credentials = {
         mail: process.env.VUE_APP_OPERATOR_MAIL,
         password: process.env.VUE_APP_OPERATOR_PASSWORD
     };
 
-    return axios.post('auth/login', credentials).then(res => {
+    return axios.post('auth/login', credentials, options).then(res => {
         localStorage.setItem('masterapp-token', res.data.token);
     });
 };
 
 const fetchGroups = () => {
+    const signature = generateSignature(
+        process.env.VUE_APP_PRIVATEKEY,
+        process.env.VUE_APP_FINGERPRINT,
+        'GET',
+        'manager/account/groups'
+    );
+
     const options = {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem('masterapp-token')}`
+            Authorization: `Bearer ${localStorage.getItem('masterapp-token')}`,
+            'X-signature': signature
         }
     };
 
@@ -77,7 +98,6 @@ window.queue = new Queue({
         const options = {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('masterapp-token')}`,
-                'X-fingerprint': process.env.VUE_APP_FINGERPRINT,
                 'X-signature': signature
             }
         };
@@ -92,9 +112,11 @@ window.queue = new Queue({
         );
     },
 
-    syncInterval: 60000,
-    syncToStorage: localStorage
+    interval: 60000,
+    storage: localStorage
 });
+
+window.logOperator = logOperator;
 
 logOperator().then(() => fetchGroups());
 
