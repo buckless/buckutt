@@ -263,6 +263,7 @@ export const sendBasket = (store, payload = {}) => {
                 walletId: cardNumber
             }
         })
+            .then(() => store.dispatch('incrementCatering', cat.cateringId))
     );
 
     return store
