@@ -19,9 +19,9 @@ module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
     const withdrawals = await query
         .query(q =>
             q
-                .select('cateringId as id', 'name')
+                .select('name')
                 .count('* as count')
-                .groupBy('cateringId', 'name')
+                .groupBy('name')
                 .orderBy('name')
         )
         .fetchAll();
