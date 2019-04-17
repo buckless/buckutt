@@ -58,12 +58,9 @@ export const login = ({ commit, dispatch, state }, { wallet, pin }) => {
                 canAssign: res.data.user.canAssign,
                 canControl: res.data.user.canControl
             });
-
-            return dispatch('updateEssentials', true)
-                .then(() => dispatch('updateStoredItems'))
-                .then(() => dispatch('loadDefaultItems'));
+            return dispatch('setupClient');
         })
-        .then(() => dispatch('setupSocket', state.auth.seller.token))
+        .then(() => dispatch('loadDefaultItems'))
         .then(() => commit('SET_DATA_LOADED', true))
         .catch(err => {
             console.error(err);
