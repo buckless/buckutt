@@ -29,7 +29,7 @@ const assignCard = async (ctx, { physicalId, logicalId, ticketNumber, userId, cl
             physical_id: physicalId
         });
 
-        if (!supportDetails.logical_id || !supportDetails.physical_id) {
+        if (!supportDetails.logical_id) {
             return Promise.reject(new APIError(module, 404, 'Card not found'));
         }
 
