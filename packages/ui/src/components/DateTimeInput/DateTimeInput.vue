@@ -6,6 +6,7 @@
             :placeholder="placeholder"
             :disabled="disabled"
             :value="inputValue"
+            ref="input"
             @input="onInputChange"
             @focus="onOpen"
             @blur="onBlur"
@@ -139,8 +140,8 @@ export default {
         return {
             opened: false,
             inputValue: this.value && this.value.toLocaleDateString(),
-            hours: this.value && getHours(this.value).toString(),
-            minutes: this.value && getMinutes(this.value).toString(),
+            hours: this.value ? getHours(this.value).toString() : '12',
+            minutes: this.value ? getMinutes(this.value).toString() : '00',
             activeDate: this.value,
             viewDate: new Date()
         };
@@ -225,6 +226,7 @@ export default {
             this.activeDate = date;
             this.updateInputValue();
             this.$emit('input', date);
+            this.$refs.input.$el.querySelector('input').focus();
         },
 
         isActive(date) {
@@ -285,6 +287,7 @@ export default {
     display: flex;
     height: 40px;
     align-items: center;
+    user-select: none;
 }
 
 .prev,
