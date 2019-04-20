@@ -1,7 +1,6 @@
 <template>
     <Input
         v-bind="props"
-        @input="onInput"
         @keydown="onKeydown"
         @keyup="onKeyup"
         @keypress="onKeypress"
@@ -39,7 +38,27 @@ export default {
     },
 
     mounted() {
-        this.cleave = new Cleave(this.$el.querySelector('input'), this.options);
+        this.input = this.$el.querySelector('input');
+        this.cleave = new Cleave(this.input, {
+            ...this.options,
+            onValueChanged: (e) => {
+                /**
+                 * Change input value (used by v-model)
+                 *
+                 * @event input
+                 * @type {text}
+                 */
+                this.$emit('input', e.target.value);
+
+                /**
+                 * Change input raw value (12/03/123 --> 1203123)
+                 *
+                 * @event input
+                 * @type {text}
+                 */
+                this.$emit('raw', e.target.rawValue);
+            }
+        });
     },
 
     beforeDestroy() {
@@ -47,16 +66,6 @@ export default {
     },
 
     methods: {
-        onInput(value) {
-            /**
-             * Change input value (used by v-model)
-             *
-             * @event input
-             * @type {text}
-             */
-            this.$emit('input', value);
-        },
-
         onKeydown(e) {
             /**
              * Keydown event
