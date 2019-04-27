@@ -24,7 +24,7 @@
                 class="scroller"
                 :items="displayedResults"
                 :buffer="60"
-                :item-height="56"
+                :item-size="56"
                 key-field="id"
             >
                 <template slot-scope="{ item }">

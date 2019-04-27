@@ -17128,9 +17128,9 @@ vue-template-es2015-compiler@^1.8.2:
   integrity sha512-cliV19VHLJqFUYbz/XeWXe5CO6guzwd0yrrqqp0bmjlMP3ZZULY7fu8RTC4+3lmHwo6ESVDHFDsvjB15hcR5IA==
 
 vue-virtual-scroller@^1.0.0-beta.5:
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/vue-virtual-scroller/-/vue-virtual-scroller-1.0.0-beta.5.tgz#7d2e34d84f85ccbdd18c845a865f324243c2e6d9"
-  integrity sha512-5JOfVXUKzIqMSO2DuC7hpMpylWoC5A2nKcoz6LVVvcfrEAobHUQYXQDgyr1jdN8Y+jQpsh0BFiSr+MEQ57HzjA==
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/vue-virtual-scroller/-/vue-virtual-scroller-1.0.0-rc.2.tgz#b03828496c87889641bdacc75510e5b1bf5bda7f"
+  integrity sha512-4YFx1a+QDP4f6HW/HBI/qHcmSTlh7BMH6IjEH8WC3ylt499cErl0LpvLLAx9yo3c6NtuK/XvjYXi0vvdxFB5dw==
   dependencies:
     scrollparent "^2.0.1"
     vue-observe-visibility "^0.4.3"
