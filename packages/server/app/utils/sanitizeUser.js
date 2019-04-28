@@ -1,6 +1,10 @@
 const rightsDetails = require('./rightsDetails');
 
 module.exports = (user, point) => {
+    if(!user) {
+        return;
+    }
+
     user.pin = '';
     user.password = '';
 
