@@ -105,7 +105,7 @@ export default {
             if (this.rewrite) {
                 debug('onCard rewrite');
                 this.write();
-            } else {
+            } else if (this.inputValue) {
                 debug('onCard read');
                 this.$emit('read', this.inputValue, credit, options, version);
             }
