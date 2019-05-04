@@ -102,27 +102,6 @@ export default {
         },
 
         updateUser(user) {
-            let existingMol = null;
-
-            user.meansOfLogin.forEach(meanOfLogin => {
-                if (meanOfLogin.type === 'mail') {
-                    existingMol = meanOfLogin;
-                }
-            });
-
-            if (!existingMol) {
-                this.createObject({
-                    route: 'meansOfLogin',
-                    value: { type: 'mail', data: user.mail, user_id: user.id }
-                });
-            } else {
-                existingMol.data = user.mail;
-                this.updateObject({
-                    route: 'meansOfLogin',
-                    value: existingMol
-                });
-            }
-
             const fields = ['id', 'lastname', 'firstname', 'nickname', 'mail'];
 
             this.updateObject({ route: 'users', value: pick(user, fields) })
