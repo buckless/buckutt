@@ -40,6 +40,7 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
     delete cancellationData.created_at;
     delete cancellationData.updated_at;
     delete cancellationData.articles;
+    delete cancellationData.wallet;
 
     if (currentModel === 'Purchase') {
         const amount = await getPriceAmount(ctx.models.Price, transaction.price_id);

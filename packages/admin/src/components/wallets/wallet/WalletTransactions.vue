@@ -108,7 +108,7 @@ export default {
             return translation ? translation.name : mop;
         },
         cancel(transaction) {
-            this.cancelTransaction({ transaction })
+            this.cancelTransaction({ transaction, wallet: this.focusedWallet })
                 .then(() => {
                     this.notify({ message: 'La transaction a bien été annulée' });
                     this.loadWalletHistory(this.focusedWallet);
