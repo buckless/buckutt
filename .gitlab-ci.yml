@@ -15,7 +15,7 @@ cache:
     - node_modules
 
 before_script:
-  - apt-get update && apt-get install git openssh-client openssl make gcc g++ python libpcsclite-dev -y
+  - apt-get update && apt-get install git openssh-client openssl make gcc g++ python libpcsclite-dev libpcsclite1 pcscd -y
   - yarn config set cache-folder "$(pwd)/.yarn-cache"
   - yarn install --no-progress --pure-lockfile --ignore-platform
   - cp packages/config/config.json.example packages/config/config.json
