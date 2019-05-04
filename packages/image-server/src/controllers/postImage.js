@@ -1,6 +1,6 @@
 const path = require('path');
 const express = require('express');
-const sharp = require('sharp');
+const jimp = require('jimp');
 const log = require('../lib/log')(module);
 const imagesPath = require('../lib/imagesPath');
 const { isGuid, base64ImageToBuffer } = require('../lib/utils');
@@ -26,9 +26,8 @@ router.post('/image/:guid', (req, res) => {
 
     const filename = `${req.params.guid}.png`;
 
-    image = sharp(image.buffer)
-        .png()
-        .toFile(path.join(imagesPath, filename))
+    jimp.read(image.buffer)
+        .then(image => image.writeAsync(path.join(imagesPath, filename)))
         .then(() => {
             log.info(`writing ${req.params.guid}`);
 
@@ -38,6 +37,7 @@ router.post('/image/:guid', (req, res) => {
         })
         .catch(
             /* istanbul ignore next */ err => {
+                console.log(err);
                 log.error('upload failed', err);
 
                 res.status(400)

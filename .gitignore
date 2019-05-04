@@ -21,6 +21,10 @@ log/
 # Build
 dist/
 
+# Coverage
+.nyc_output
+coverage
+
 # Editor
 .idea
 .vscode

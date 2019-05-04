@@ -2,7 +2,7 @@
     "imagePath": "testImages/",
     "log": {
         "console": {
-            "level": "error"
+            "level": "critical"
         },
         "file": {
             "level": "none"

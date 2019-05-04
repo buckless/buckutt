@@ -1,6 +1,6 @@
 const path = require('path');
 const express = require('express');
-const sharp = require('sharp');
+const jimp = require('jimp');
 const { isInt, isIn } = require('validator');
 const log = require('../lib/log')(module);
 const imagesPath = require('../lib/imagesPath');
@@ -13,25 +13,25 @@ router.get('/image/:guid', (req, res) => {
     const imagePath = path.join(imagesPath, filename);
 
     fileExists(imagePath)
-        .then(() => {
-            let image = sharp(imagePath);
+        .then(() => jimp.read(imagePath))
+        .then(image => {
+            let mime = `image/${image.getExtension()}`;
 
-            if (req.query.width && req.query.height) {
-                if (!isInt(req.query.width) || !isInt(req.query.height)) {
+            if (req.query.size) {
+                if (!isInt(req.query.size)) {
                     return res
                         .status(400)
                         .send({ error: 'INVALID_SIZE' })
                         .end();
                 }
 
-                const w = parseInt(req.query.width, 10);
-                const h = parseInt(req.query.height, 10);
+                const size = parseInt(req.query.size, 10);
 
-                image = image.resize(w, h).embed();
+                image = image.resize(size, jimp.AUTO);
             }
 
             if (req.query.format) {
-                if (!isIn(req.query.format, ['jpeg', 'png', 'webp'])) {
+                if (!isIn(req.query.format, ['jpeg', 'png'])) {
                     return res
                         .status(400)
                         .send({ error: 'INVALID_FORMAT' })
@@ -39,15 +39,15 @@ router.get('/image/:guid', (req, res) => {
                 }
 
                 if (req.query.format === 'jpeg') {
-                    image = image.flatten('#fff');
+                    image = image.background(0xffffffff);
                 }
 
-                image = image.toFormat(req.query.format);
+                mime = `image/${req.query.format}`;
             }
 
             log.debug(`querying ${req.params.guid}`, req.query);
 
-            return image.toBuffer().then(buf => {
+            return image.getBufferAsync(mime).then(buf => {
                 const format = req.query.format || 'png';
                 const dataImage = `data:image/${format};base64,${buf.toString('base64')}`;
 
@@ -57,6 +57,7 @@ router.get('/image/:guid', (req, res) => {
             });
         })
         .catch(err => {
+            console.log(err);
             log.error(`couldn't find image ${req.params.guid}`, err);
 
             return res

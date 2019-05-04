@@ -5,7 +5,7 @@ const config = require('../config');
 const app = require('../src/app');
 const imagesPath = require('../src/lib/imagesPath');
 
-const { guid, wrongGuid, image, png, webp, small } = require('./testData');
+const { guid, wrongGuid, image, png, jpg, small } = require('./testData');
 
 const url = `http://localhost:${config.http.port}/image/${guid}`;
 const wrongUrl = `http://localhost:${config.http.port}/image/${wrongGuid}`;
@@ -20,12 +20,12 @@ describe('Image getter', () => {
         }));
 
     it('should return the original image back', () =>
-        axios.get(url, { params: { format: 'webp' } }).then(res => {
-            assert.equal(res.data.image, webp);
+        axios.get(url, { params: { format: 'jpeg' } }).then(res => {
+            assert.equal(res.data.image, jpg);
         }));
 
     it('should resize the image', () =>
-        axios.get(url, { params: { width: 10, height: 10 } }).then(res => {
+        axios.get(url, { params: { size: 10 } }).then(res => {
             assert.equal(res.data.image, small);
         }));
 

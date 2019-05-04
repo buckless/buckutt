@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const mkdirp = require('mkdirp');
 const bodyParser = require('body-parser');
+const { promisify } = require('util');
 const config = require('../config');
 
 const log = require('./lib/log')(module);
@@ -44,7 +45,7 @@ app.use((err, _, res, __) => {
 });
 
 app.start = () =>
-    new Promise(resolve => {
+    new Promise((resolve, reject) => {
         const server = app.listen(config.http.port, config.http.host, () => {
             log.info('Server is listening %s:%d', config.http.host, config.http.port);
 
@@ -52,7 +53,9 @@ app.start = () =>
             app.server = server;
 
             // Avoid race condition on server starting before directory creation
-            mkdirp(imagesPath, resolve);
+            promisify(mkdirp)(imagesPath)
+                .then(resolve)
+                .catch(reject);
         });
     });
 

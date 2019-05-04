@@ -19,7 +19,7 @@ export const getImage = memoize(id => {
         method: 'GET'
     });
 
-    return fetch(`${images}/image/${id}?width=100&height=100`, opts).then(res => {
+    return fetch(`${images}/image/${id}?size=100`, opts).then(res => {
         if (res.status !== 200) {
             return Promise.reject(res);
         }

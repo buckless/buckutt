@@ -3,7 +3,7 @@ import { memoize } from 'lodash/function';
 
 const cachedGetImage = memoize((id, token) => {
     return axios()
-        .get(`${window.config.images}/image/${id}?width=100&height=100`, token)
+        .get(`${window.config.images}/image/${id}?size=100`, token)
         .then(res => {
             if (res.data && res.data.image) {
                 if (!window.database || !window.database.setImage) {
