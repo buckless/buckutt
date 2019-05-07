@@ -2,7 +2,6 @@ const axios = require('axios');
 const config = require('server/app/config');
 const ctx = require('server/app/utils/ctx');
 const processReload = require('server/app/helpers/processReload');
-const APIError = require('server/app/utils/APIError');
 
 const providerConfig = config.provider.checkout;
 
@@ -28,7 +27,7 @@ const onlinePayment = async (ctx, data) => {
     };
 
     const headers = {
-        'Authorization': providerConfig.privateKey,
+        Authorization: providerConfig.privateKey,
         'Content-Type': 'application/json'
     };
 

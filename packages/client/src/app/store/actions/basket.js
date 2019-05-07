@@ -254,15 +254,16 @@ export const sendBasket = (store, payload = {}) => {
     };
 
     basket.catering.forEach(cat =>
-        store.dispatch('sendRequest', {
-            method: 'post',
-            url: 'payment/catering',
-            data: {
-                cateringId: cat.cateringId,
-                name: cat.name,
-                walletId: cardNumber
-            }
-        })
+        store
+            .dispatch('sendRequest', {
+                method: 'post',
+                url: 'payment/catering',
+                data: {
+                    cateringId: cat.cateringId,
+                    name: cat.name,
+                    walletId: cardNumber
+                }
+            })
             .then(() => store.dispatch('incrementCatering', cat.cateringId))
     );
 

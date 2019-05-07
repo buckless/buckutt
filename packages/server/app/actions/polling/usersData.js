@@ -133,7 +133,8 @@ module.exports = async (ctx, { now, lastUpdate }) => {
             name: `${ticketsDb[i].firstname} ${ticketsDb[i].lastname}`,
             credit: ticketsDb[i].amount,
             physicalId: ticketsDb[i].physical_id,
-            mail: ticketsDb[i].mail
+            mail: ticketsDb[i].mail,
+            validation: ticketsDb[i].validation
         });
     }
 

@@ -7,7 +7,7 @@ module.exports = async ctx => {
         .fetch();
 
     const validatedTickets = ctx.models.Ticket.query(knex => knex.count())
-        .whereNotNull('wallet_id')
+        .whereNotNull('validation')
         .fetch();
 
     const reloads = ctx.models.Reload.query(knex =>

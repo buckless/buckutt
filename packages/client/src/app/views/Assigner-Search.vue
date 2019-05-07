@@ -84,11 +84,16 @@ export default {
                 null,
                 user.barcode,
                 user.ticketId,
-                user.walletId
+                user.walletId,
+                user.validation
             );
         },
 
         updateTickets() {
+            if (this.updatingTickets) {
+                return;
+            }
+
             this.updatingTickets = true;
 
             window.database
@@ -106,6 +111,8 @@ export default {
             setTimeout(() => {
                 this.updatingTickets = false;
             }, 400);
+
+            setTimeout(this.updateTickets, 60000);
         }
     },
 

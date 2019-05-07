@@ -1,7 +1,7 @@
 const rightsDetails = require('./rightsDetails');
 
 module.exports = (user, point) => {
-    if(!user) {
+    if (!user) {
         return;
     }
 

@@ -10,13 +10,11 @@ module.exports = async (ctx, { wallet }) => {
         wallet_id: wallet.id
     }).fetch();
 
-    const cardToken = await ctx.models.Transaction
-        .query(knex => {
-            knex.where('wallet_id', wallet.id);
-            knex.whereNotNull('cardToken');
-            knex.whereNotNull('cardExpiration');
-        })
-        .fetch();
+    const cardToken = await ctx.models.Transaction.query(knex => {
+        knex.where('wallet_id', wallet.id);
+        knex.whereNotNull('cardToken');
+        knex.whereNotNull('cardExpiration');
+    }).fetch();
 
     const refundable = wallet.credit;
 

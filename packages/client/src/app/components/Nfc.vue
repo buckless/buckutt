@@ -20,7 +20,7 @@
                     <span v-if="rewrite" class="b-writer__modal__text__card"
                         >Fermeture possible dans {{ timer }} secondes<br /><br
                     /></span>
-                    Gardez le contact jusqu'à la validation du paiement
+                    Gardez le contact jusqu'à la validation de l'opération
                     <br /><br />
                     <slot></slot>
                 </div>

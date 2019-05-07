@@ -50,6 +50,7 @@
           ],
           "write": [
               "/auth/assigner",
+              "/auth/validateTicket",
               "/customer/pendingCardUpdate",
               "/payment/basket"
           ]

@@ -9,7 +9,7 @@ class OfflineData {
 
     init() {
         this.db.version(1).stores({
-            tickets: 'id,walletId,ticketId,barcode,name,credit,physicalId',
+            tickets: 'id,walletId,ticketId,barcode,name,credit,physicalId,validation',
             accesses: 'id,walletId,cardId,groupId,start,end',
             pendingCardUpdates: 'id,incrId,cardId,amount',
             images: 'id,blob'
@@ -85,6 +85,10 @@ class OfflineData {
 
     pendingCardUpdates(cardId) {
         return this.db.pendingCardUpdates.filter(pcu => pcu.cardId === cardId).toArray();
+    }
+
+    validateTicket(key) {
+        return this.db.tickets.update(key, { validation: new Date().toISOString() });
     }
 
     insert(table, data) {

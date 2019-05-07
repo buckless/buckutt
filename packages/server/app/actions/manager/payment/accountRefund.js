@@ -1,7 +1,8 @@
 const creditWallet = require('server/app/helpers/creditWallet');
 
 module.exports = async (ctx, { refundData, wallet }) => {
-    const refundCosts = (ctx.event.variableCostsRefund / 100) * refundData.refundable + ctx.event.fixedCostsRefund;
+    const refundCosts =
+        (ctx.event.variableCostsRefund / 100) * refundData.refundable + ctx.event.fixedCostsRefund;
 
     const refund = new ctx.models.Refund({
         amount: refundData.refundable - refundCosts,

@@ -8,7 +8,10 @@ const ctx = require('server/app/utils/ctx');
 
 const providerConfig = config.provider.payline;
 
-const wsdl = process.env.NODE_ENV !== 'dev' ? path.join(__dirname, 'utils', 'WebPaymentAPI.v4.44.wsdl') : null;
+const wsdl =
+    process.env.NODE_ENV !== 'dev'
+        ? path.join(__dirname, 'utils', 'WebPaymentAPI.v4.44.wsdl')
+        : null;
 const ns = type => ({ xsi_type: { type, xmlns: 'http://obj.ws.payline.experian.com' } });
 const currencies = { eur: 978 };
 const actions = { authorization: 100, payment: 101, refund: 421, credit: 422 };
@@ -85,9 +88,16 @@ module.exports = {
             throw new APIError(module, 400, 'No token provided');
         }
 
-        const paymentDetails = await payline.runAction('getWebPaymentDetails', { version: 21, token });
+        const paymentDetails = await payline.runAction('getWebPaymentDetails', {
+            version: 21,
+            token
+        });
 
-        if (['PENDING_RISK', 'ONHOLD_PARTNER', 'INPROGRESS'].indexOf(paymentDetails.result.shortMessage) > -1) {
+        if (
+            ['PENDING_RISK', 'ONHOLD_PARTNER', 'INPROGRESS'].indexOf(
+                paymentDetails.result.shortMessage
+            ) > -1
+        ) {
             return res.json({});
         }
 

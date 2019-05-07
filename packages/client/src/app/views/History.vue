@@ -56,6 +56,7 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
+import shortDate from '@/utils/shortDate';
 import Currency from '@/components/Currency';
 
 export default {
@@ -164,16 +165,10 @@ export default {
                 .map(e => e.credit)
                 .reduce((a, b) => a + b, 0);
 
-            const p = n => (n < 10 ? `0${n}` : n.toString());
-
-            let date = `${p(entry.date.getDate())}/${p(entry.date.getMonth() + 1)}`;
-            date += '-';
-            date += `${p(entry.date.getHours())}:${p(entry.date.getMinutes())}`;
-
             return {
                 cost,
                 reload,
-                date,
+                date: shortDate(entry.date),
                 items,
                 basketToSend,
                 localId: entry.localId,

@@ -42,7 +42,7 @@ const fakeCallback = async (ctx, id, data) => {
     await transaction.save();
 
     if (transaction.get('state') === 'ACCEPTED') {
-        await processReload(fakeCtx, { transaction: transaction.toJSON() })
+        await processReload(fakeCtx, { transaction: transaction.toJSON() });
     }
 };
 

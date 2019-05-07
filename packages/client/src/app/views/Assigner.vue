@@ -18,7 +18,7 @@
             <div class="b-assigner-modal__modal__text__head" v-else>
                 <strong>{{ assignModal.name }}</strong
                 ><br />
-                Nouveau crédit : <strong><currency :value="assignModal.credit"/></strong>
+                Crédit préchargé : <strong><currency :value="assignModal.credit"/></strong>
 
                 <h4 v-if="groups.length > 0">Groupes :</h4>
             </div>
@@ -41,6 +41,18 @@
                     </label>
                 </div>
             </div>
+            <div v-if="!assignModal.blank">
+                <button
+                    @click="validateTicket"
+                    class="b-assigner__modal__close b-alert__modal__close--active"
+                    v-if="!assignModal.validation"
+                >
+                    Valider sans associer
+                </button>
+                <button class="b-assigner__modal__close" v-else>
+                    Billet déjà validé ({{ validationDate }})
+                </button>
+            </div>
         </nfc>
         <ok v-if="showOkModal" @click.native="showOkModal = false" />
     </div>
@@ -49,6 +61,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { formatMemberships } from '@/utils/formatOfflineResults';
+import shortDate from '@/utils/shortDate';
 
 import Ok from '@/components/Ok';
 import Currency from '@/components/Currency';
@@ -90,7 +103,15 @@ export default {
                 state.auth.groups.filter(
                     group => group.id !== state.auth.device.event.defaultGroup_id
                 )
-        })
+        }),
+
+        validationDate() {
+            if (!this.assignModal.validation) {
+                return;
+            }
+
+            return shortDate(this.assignModal.validation);
+        }
     },
 
     methods: {
@@ -100,6 +121,23 @@ export default {
 
         toggleScan() {
             this.$router.push('/assigner/scan');
+        },
+
+        validateTicket() {
+            if (this.assignModal.barcode && !this.assignModal.validation) {
+                this.sendRequest({
+                    method: 'post',
+                    url: 'auth/validateTicket',
+                    data: {
+                        ticketNumber: this.assignModal.barcode
+                    },
+                    immediate: true
+                });
+
+                window.database.validateTicket(this.assignModal.id);
+            }
+
+            return this.ok();
         },
 
         assignCard(cardId, _, options) {
@@ -127,6 +165,7 @@ export default {
                 .map(g => g.id);
 
             assignPromise
+                .then(() => this.validateTicket())
                 .then(() => {
                     const data = {
                         walletId: this.assignModal.walletId,
@@ -146,7 +185,7 @@ export default {
                     });
                 })
                 .then(() => window.database.delete('tickets', this.assignModal.id))
-                .then(() => this.ok())
+                .then(() => this.validateTicket())
                 .catch(err => {
                     console.log(err);
                     this.$store.commit('ERROR', err.response.data);
@@ -167,7 +206,16 @@ export default {
             };
         },
 
-        async setAssignModal(credit, name, id, groups = [], barcode, ticketId, walletId) {
+        async setAssignModal(
+            credit,
+            name,
+            id,
+            groups = [],
+            barcode,
+            ticketId,
+            walletId,
+            validation
+        ) {
             if (!groups) {
                 groups = walletId ? await formatMemberships(walletId) : [];
             }
@@ -183,7 +231,8 @@ export default {
                 id,
                 barcode,
                 walletId,
-                ticketId
+                ticketId,
+                validation
             };
             this.activeGroups = precheckedGroups;
             this.precheckedGroups = groups;
@@ -268,6 +317,27 @@ export default {
     & > input:checked + label {
         background-color: #2980b9;
         color: #fff;
+    }
+}
+
+.b-assigner__modal__close {
+    background-color: #95a5a6;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    height: 36px;
+    margin-top: 1em;
+    padding: 0 16px;
+    pointer-events: none;
+    border-radius: 2px;
+    font-size: 14px;
+    text-transform: uppercase;
+    width: 100%;
+
+    &.b-alert__modal__close--active {
+        pointer-events: all;
+        background-color: #e74c3c;
     }
 }
 </style>

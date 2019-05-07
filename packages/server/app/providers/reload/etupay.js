@@ -47,15 +47,13 @@ const generateRouter = () => {
             const transaction = await Transaction.where({ id: req.etupay.serviceData }).fetch();
 
             if (transaction && transaction.get('state') === 'pending') {
-                const amount = transaction.get('amount');
-
                 transaction.set('transactionId', req.etupay.transactionId);
                 transaction.set('state', req.etupay.step);
 
                 await transaction.save();
 
                 if (req.etupay.paid) {
-                    await processReload(ctx(req), { transaction: transaction.toJSON() })
+                    await processReload(ctx(req), { transaction: transaction.toJSON() });
                 }
             }
 

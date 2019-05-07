@@ -10,7 +10,8 @@ const {
     fetchTicket,
     validateLoginBody,
     login,
-    assigner
+    assigner,
+    validateTicket
 } = require('server/app/actions/auth');
 
 const router = require('express').Router();
@@ -59,6 +60,17 @@ router.post(
         log.info(`assign a card to a ticket`, req.details);
 
         res.json(wallet);
+    })
+);
+
+router.post(
+    '/validateTicket',
+    asyncHandler(async (req, res) => {
+        const ticket = await validateTicket(ctx(req), req.body);
+
+        log.info(`validate a ticket`, req.details);
+
+        res.json(ticket);
     })
 );
 

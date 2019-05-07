@@ -6,7 +6,15 @@ module.exports = () => {
     bookshelf.on('saved', models.Purchase, p => {
         models.Purchase.where('id', p.id)
             .fetch({
-                withRelated: ['price', 'point', 'wallet', 'wallet.user', 'seller', 'articles', 'promotion']
+                withRelated: [
+                    'price',
+                    'point',
+                    'wallet',
+                    'wallet.user',
+                    'seller',
+                    'articles',
+                    'promotion'
+                ]
             })
             .then(purchase_ => {
                 if (!purchase_) {

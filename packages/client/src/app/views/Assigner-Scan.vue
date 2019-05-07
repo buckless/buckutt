@@ -37,7 +37,8 @@ export default {
                         ticket.id,
                         ticket.currentGroups,
                         ticket.barcode,
-                        ticket.walletId
+                        ticket.walletId,
+                        ticket.validation
                     );
                 })
                 .catch(err => {
