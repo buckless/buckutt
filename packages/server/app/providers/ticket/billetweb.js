@@ -41,6 +41,7 @@ module.exports = async function billetweb() {
             mail: ticket.email || ticket.order_email,
             amount: getCredit(res, ticket),
             logical_id: ticket.barcode,
-            physical_id: ticket.ext_id
+            physical_id: ticket.ext_id,
+            clientTime: ticket.order_date
         }));
 };
