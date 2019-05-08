@@ -106,7 +106,7 @@ export const checkDevice = ({ state, commit, dispatch }) =>
                 });
             }
 
-            if (!device.data.authorized) {
+            if (device.data.authorized === false) {
                 commit('SET_PRIVATEKEY', null);
             }
 
