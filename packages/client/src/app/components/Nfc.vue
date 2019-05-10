@@ -74,7 +74,8 @@ export default {
             },
             timer: 15,
             currentTimer: null,
-            cardLocked: false
+            cardLocked: false,
+            lockEventCalled: false
         };
     },
 
@@ -142,6 +143,7 @@ export default {
                 nfc.on('locked', locked => {
                     debug('on locked');
                     console.log('mifareTagDiscovered', performance.now());
+                    this.lockEventCalled = true;
                     this.cardLocked = locked;
 
                     if (nfc.shouldUnlock) {
@@ -167,6 +169,10 @@ export default {
 
                         debug('card ', card);
 
+                        if (this.lockEventCalled && !this.cardLocked) {
+                            throw 'PIN not set';
+                        }
+
                         let cardToLock = false;
                         if (this.forbiddenIds.indexOf(this.inputValue) > -1) {
                             debug('lock card');
@@ -191,9 +197,12 @@ export default {
                             this.$store.commit('ERROR', {
                                 message: 'Locked card'
                             });
+                        } else if (err === 'PIN not set') {
+                            debug('pin not set');
+                            return this.onCard(0, { assignedCard: false, locked: false, paidCard: false, catering: [] }, 0);
                         } else if (this.disablePinCheck) {
                             debug('pin check disabled');
-                            return this.onCard(0, { catering: [] });
+                            return this.onCard(0, { assignedCard: false, locked: false, paidCard: false, catering: [] }, 0);
                         } else {
                             debug('invalid card ', err);
                             this.$store.commit('ERROR', {
@@ -299,6 +308,8 @@ export default {
                 credit: null,
                 options: null
             };
+            this.cardLocked = false;
+            this.lockEventCalled = false;
         }
     },
 
