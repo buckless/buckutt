@@ -1,8 +1,6 @@
 import bcrypt from 'bcryptjs';
 
 export default (deviceSellers, credentials) => {
-    console.log(deviceSellers);
-    console.log(credentials);
     const now = new Date();
     const seller = deviceSellers.find(user => user.wallets.indexOf(credentials.wallet) > -1);
 
@@ -27,11 +25,10 @@ export default (deviceSellers, credentials) => {
     const canAssign = validRights.some(right => right.name === 'assigner');
     const canControl = validRights.some(right => right.name === 'controller');
 
-    return Promise.resolve({
+    return {
         data: {
             user: {
                 id: seller.id,
-                token: null,
                 firstname: seller.firstname,
                 lastname: seller.lastname,
                 canSell,
@@ -40,5 +37,5 @@ export default (deviceSellers, credentials) => {
                 canControl
             }
         }
-    });
+    };
 };

@@ -1,4 +1,4 @@
-export const sellerLogged = state => !!state.auth.seller.token;
+export const sellerLogged = state => !!state.auth.seller.id;
 export const buyerLogged = state => !!state.auth.buyer.wallet;
 
 export const tokenHeaders = (state, getters) => {
