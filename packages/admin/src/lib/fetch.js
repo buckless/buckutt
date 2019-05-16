@@ -1,8 +1,6 @@
 import { api } from 'config/admin';
 import crypto from 'crypto';
 
-console.log(api);
-
 const authData = {
     headers: {
         Accept: 'application/json',
