@@ -1,0 +1,7 @@
+erreurs 400
+buckless_server  | {"walletId":"","date":"2019-04-21T01:34:01.875Z","basket":[{"price_id":"e429d7b8-8742-481f-a060-72e7a95a2c65","promotion_id":null,"name":"Eau","articles":[{"id":"889582a7-f025-4877-a751-2126e31f712c"}],"alcohol":0,"cost":200,"type":"purchase"}],"seller":"f9882f52-c493-416c-9e0a-bac3cc5d36e5","localId":"transaction-id-1555807433558-1555810441875","isCancellation":false,"clientTime":"2019-04-21T01:34:01.875Z"}
+
+buckless_server  | {"walletId":"","date":"2019-04-20T22:40:54.176Z","basket":[{"price_id":"0f1f37a0-3b9c-42b5-91e2-8ee62ca4a7bc","promotion_id":null,"name":"Support NFC","articles":[{"id":"44d07229-ff52-4afb-91dc-d84eddbd8248"}],"alcohol":0,"cost":100,"type":"purchase","uncancellable":true},{"credit":2000,"trace":"","type":"card"}],"seller":"f9882f52-c493-416c-9e0a-bac3cc5d36e5","localId":"transaction-id-1555799914699-1555800054177","isCancellation":false,"clientTime":"2019-04-20T22:40:54.177Z"}
+-> 5f67bb83-9d07-4240-a867-07cb027e4865 -> OK
+
+buckless_server  | {"walletId":"","date":"2019-04-20T01:06:26.454Z","basket":[{"price_id":"e1c41eb1-8a1c-4585-9f27-1cbcfc812fec","promotion_id":null,"name":"T-shirts 2019","articles":[{"id":"22820325-dea9-419c-9e7e-95465762299b"}],"alcohol":0,"cost":2000,"type":"purchase"}],"seller":"f9882f52-c493-416c-9e0a-bac3cc5d36e5","localId":"transaction-id-1555716329750-1555722386454","isCancellation":false,"clientTime":"2019-04-20T01:06:26.454Z"}

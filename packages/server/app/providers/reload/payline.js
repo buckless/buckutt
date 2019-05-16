@@ -1,4 +1,4 @@
-const Payline = require('flav-payline');
+const Payline = require('payline');
 const path = require('path');
 const moment = require('moment');
 const config = require('server/app/config');
