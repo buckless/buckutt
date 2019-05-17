@@ -5,11 +5,15 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import Instascan from 'instascan';
 
 export default {
     methods: mapActions(['sendRequest']),
+
+    computed: mapState({
+        useCardData: state => state.auth.device.event.config.useCardData
+    }),
 
     mounted() {
         this.scanner = new Instascan.Scanner({
@@ -23,12 +27,13 @@ export default {
             return this.sendRequest({
                 url: `auth/assigner?ticketNumber=${qrcode}`,
                 noQueue: true,
+                forceOffline: this.useCardData,
                 offlineAnswer: window.database.findByBarcode(qrcode).then(tickets => {
-                    tickets;
+                    data: tickets
                 })
             })
                 .then(res => {
-                    const ticket = res.data;
+                    const ticket = res.data[0];
 
                     this.$emit(
                         'assign',
@@ -43,6 +48,7 @@ export default {
                 })
                 .catch(err => {
                     this.$store.commit('SET_DATA_LOADED', true);
+                    console.log(err);
                     this.$store.commit('ERROR', { message: err.response.data });
                 });
         };
