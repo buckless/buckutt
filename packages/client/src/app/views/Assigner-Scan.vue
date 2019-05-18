@@ -28,9 +28,9 @@ export default {
                 url: `auth/assigner?ticketNumber=${qrcode}`,
                 noQueue: true,
                 forceOffline: this.useCardData,
-                offlineAnswer: window.database.findByBarcode(qrcode).then(tickets => {
+                offlineAnswer: window.database.findByBarcode(qrcode).then(tickets => ({
                     data: tickets
-                })
+                }))
             })
                 .then(res => {
                     const ticket = res.data[0];
@@ -42,6 +42,7 @@ export default {
                         ticket.id,
                         ticket.currentGroups,
                         ticket.barcode,
+                        ticket.ticketId,
                         ticket.walletId,
                         ticket.validation
                     );

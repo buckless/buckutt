@@ -255,6 +255,7 @@ export default {
     display: flex;
     flex: 1;
     flex-direction: column;
+    height: 100%;
 }
 
 .b-assigner__home {
