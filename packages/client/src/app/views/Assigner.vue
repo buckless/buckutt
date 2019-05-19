@@ -165,7 +165,6 @@ export default {
                 .map(g => g.id);
 
             assignPromise
-                .then(() => this.validateTicket())
                 .then(() => {
                     const data = {
                         walletId: this.assignModal.walletId,
