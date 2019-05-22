@@ -46,7 +46,7 @@ export const postImage = (id, image) => {
             return Promise.reject(res);
         }
 
-        getImage.cache.clear();
+        getImage.cache.delete(id);
 
         return res.json();
     });
