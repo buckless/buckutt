@@ -1,4 +1,4 @@
-image: node:latest
+image: node:11.15.0-stretch
 
 variables:
   POSTGRES_DB: buckless_test
