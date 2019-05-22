@@ -19,10 +19,10 @@ module.exports = {
             .replace('Z', '');
 
         await client.query(
-            `select pg_terminate_backend(pid) from pg_stat_activity where datname = 'buckless'`
+            `select pg_terminate_backend(pid) from pg_stat_activity where datname = '${config.db.connection.database}'`
         );
-        await client.query(`alter database buckless rename to buckless_erased_${timestamp}`);
-        await client.query(`create database buckless`);
+        await client.query(`alter database ${config.db.connection.database} rename to ${config.db.connection.database}_erased_${timestamp}`);
+        await client.query(`create database ${config.db.connection.database}`);
 
         ctx.pub.publish('database-reconnect', JSON.stringify('reconnect'));
         await bookshelf.ready();

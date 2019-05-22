@@ -17,9 +17,15 @@ module.exports = async (ctx, { onlineWallet, cardWallet }) => {
         )
     );
 
+    // TODO: remove the duplicate default group membership.
+
     // Inhibate PCU creation as the cardWallet credit is already written on the card
     await creditWallet(ctx, onlineWallet.id, cardWallet.credit, true);
 
     // Destroy the old wallet
     await new ctx.models.Wallet({ id: cardWallet.id }).destroy();
+
+    const mergedWallet = await ctx.models.Wallet.where({ id: onlineWallet.id }).fetch();
+
+    return mergedWallet.toJSON();
 };

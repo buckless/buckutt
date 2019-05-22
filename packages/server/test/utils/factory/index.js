@@ -8,6 +8,14 @@ module.exports = {
                 ...module.exports,
                 db,
                 clears: []
+            },
+            ctx: {
+                models: db.models,
+                event: t.context.event,
+                pub: {
+                    publish: () => Promise.resolve()
+                },
+                wiket: t.context.adminWiket
             }
         };
 
@@ -39,5 +47,8 @@ module.exports = {
     },
 
     db: require('./db'),
-    user: require('./user')
+    user: require('./user'),
+    wallet: require('./wallet'),
+    ticket: require('./ticket'),
+    device: require('./device')
 };

@@ -31,13 +31,6 @@ module.exports = async (ctx, userToCreate, clientTime) => {
 
     const newUser = await new ctx.models.User(userData).save();
 
-    // Add the created user to the default group
-    new ctx.models.Membership({
-        user_id: newUser.id,
-        group_id: ctx.event.defaultGroup_id,
-        period_id: ctx.event.defaultPeriod_id
-    }).save();
-
     await mailer
         .send({
             name: 'pinAssign',

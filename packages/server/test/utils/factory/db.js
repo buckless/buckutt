@@ -3,18 +3,12 @@ const db = require('server/app/db');
 module.exports = async ctx => {
     await db.ready();
 
-    const databaseSeeded = await db.models.Group.where({ name: 'Défaut' })
-        .count()
-        .then(c => c === '1')
-        .catch(() => false);
-
-    if (!databaseSeeded) {
-        await db.bookshelf.knex.seed.run();
-    }
-
-    // create default period, group and fundation
+    ctx.event = (await db.models.Event.where({ name: 'Défaut' }).fetch()).toJSON();
     ctx.defaultGroup = (await db.models.Group.where({ name: 'Défaut' }).fetch()).toJSON();
     ctx.defaultPeriod = (await db.models.Period.where({ name: 'Défaut' }).fetch()).toJSON();
+
+    const adminDevice = await db.models.Device.where({ name: 'admin' }).fetch();
+    ctx.adminWiket = (await db.models.Wiket.where({ device_id: adminDevice.get('id') })).toJSON();
 
     return db;
 };

@@ -40,7 +40,6 @@ const login = async (ctx, { infos, pin, password }) => {
             q.where(bookshelf.knex.raw('lower(logical_id)'), '=', infos.wallet)
         )
             .fetch({
-                require: true,
                 withRelated: [
                     'user',
                     'user.rights',

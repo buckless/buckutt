@@ -15,7 +15,7 @@ module.exports = async (ctx, { logicalId, user, clientTime }) => {
 
     await assignGroups(ctx, {
         groups: [ctx.event.defaultGroup_id],
-        wallet: createdWallet
+        wallet: createdWallet.toJSON()
     });
 
     return createdWallet.toJSON();
