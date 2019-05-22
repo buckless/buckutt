@@ -45,6 +45,10 @@
                     Requêtes en attente
                 </syncData>
             </template>
+
+            <button class="b-developpers__restart" @click="restart">
+                Restart app
+            </button>
         </div>
     </div>
 </template>
@@ -52,6 +56,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
 import SyncData from '@/components/SyncData';
+import restart from '@/../lib/restart';
 
 export default {
     components: {
@@ -79,7 +84,9 @@ export default {
 
         updateItems() {
             this.updateStoredItems().then(() => this.loadDefaultItems());
-        }
+        },
+
+        restart,
     }
 };
 </script>
@@ -104,6 +111,16 @@ export default {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    & .b-developpers__restart {
+        border: 0;
+        background-color: rgba(230, 126, 34, 0.9);
+        color: #fff;
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: 2px;
+        margin-top: 16px;
     }
 }
 </style>

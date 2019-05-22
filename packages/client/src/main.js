@@ -8,6 +8,7 @@ function createWindow() {
     const isDev = process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'development';
 
     let win = new BrowserWindow({
+        nodeIntegration: true,
         fullscreen: !isDev,
         kiosk: !isDev
     });
