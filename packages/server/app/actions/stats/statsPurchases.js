@@ -1,7 +1,7 @@
 const statsToCSV = require('server/app/helpers/statsToCSV');
 const dateQuery = require('server/app/utils/statsDateQuery');
 
-const relatedCsv = ['seller', 'buyer', 'point'];
+const relatedCsv = ['seller', 'wallet', 'wallet.user', 'point'];
 
 module.exports = async (ctx, { dateIn, dateOut, point, fundation, csv }) => {
     let query = dateQuery(ctx.models.Purchase, dateIn, dateOut);
