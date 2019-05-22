@@ -69,6 +69,7 @@
     "sse-express": "^2.0.2",
     "util-promisifyall": "^1.0.6",
     "uuid": "^3.3.2",
+    "validator": "^10.11.0",
     "winston": "^3.1.0",
     "winston-tcp-graylog": "PymZor/winston-tcp-graylog#refact-native-js"
   },

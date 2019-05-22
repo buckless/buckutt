@@ -30,6 +30,8 @@ export default message => {
             return 'Cette carte est déjà associée à votre compte';
         case 'This mail is already taken':
             return 'Cette adresse e-mail est déjà utilisée';
+        case 'Invalid mail format':
+            return "Le format de l'adresse e-mail est invalide";
         case 'Unauthorized: insufficient rights':
             return 'Droits insuffisants';
         case 'Not enough sender credit':

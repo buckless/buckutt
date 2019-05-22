@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const isEmail = require('validator/lib/isEmail');
 const randomstring = require('randomstring');
 const { padStart } = require('lodash');
 const config = require('server/app/config');
@@ -15,6 +16,10 @@ module.exports = async (ctx, userToCreate, clientTime) => {
 
     if (!userToCreate.mail) {
         throw new APIError(module, 400, 'Mail is missing', { userToCreate });
+    }
+
+    if (!isEmail(userToCreate.mail)) {
+        throw new APIError(module, 400, 'Invalid mail format', { userToCreate });
     }
 
     const userData = {
