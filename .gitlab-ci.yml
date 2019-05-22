@@ -17,7 +17,7 @@ cache:
 before_script:
   - apt-get update && apt-get install git openssh-client openssl make gcc g++ python libpcsclite-dev libpcsclite1 pcscd -y
   - yarn config set cache-folder "$(pwd)/.yarn-cache"
-  - yarn install --no-progress --pure-lockfile --ignore-platform
+  - yarn install --no-progress --pure-lockfile --ignore-platform --network-timeout 1000000
   - cp packages/config/config.json.example packages/config/config.json
   - yarn run config build
 
