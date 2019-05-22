@@ -13,7 +13,7 @@
             <i class="material-icons">{{ icon }}</i>
         </div>
         <div class="mdl-card__title">
-            <h2 class="mdl-card__title-text">{{ label }}</h2>
+            <h4 class="mdl-card__title-text">{{ label }}</h4>
         </div>
         <div class="mdl-card__supporting-text">
             <slot></slot>
