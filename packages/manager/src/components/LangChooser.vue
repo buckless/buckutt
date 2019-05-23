@@ -18,7 +18,10 @@ export default {
 
     computed: {
         currentLang() {
-            return localStorage.getItem('buckless/manager/user/lang') || navigator.language.split('-')[0];
+            return (
+                localStorage.getItem('buckless/manager/user/lang') ||
+                navigator.language.split('-')[0]
+            );
         }
     },
 

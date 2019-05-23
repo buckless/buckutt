@@ -60,6 +60,10 @@ export const setUser = (ctx, user) => {
 };
 
 export const updateCurrentWallet = (ctx, wallet) => {
+    if (ctx.state.currentWallet !== wallet.id) {
+        return;
+    }
+
     ctx.commit('UPDATE_CURRENT_WALLET', wallet);
     localStorage.setItem('buckless/manager/user/user', JSON.stringify(ctx.getters.user));
 };
@@ -69,14 +73,14 @@ export const setCurrentWallet = (ctx, wallet) => {
     ctx.dispatch('load');
 };
 
-export function load(ctx) {
+export const load = ctx => {
     ctx.dispatch('changes/init', localStorage.getItem('buckless/manager/user/token'), {
         root: true
     });
     ctx.dispatch('history/load', null, { root: true });
     ctx.dispatch('loadGiftReloads');
     ctx.dispatch('loadPaymentCosts');
-}
+};
 
 export const loadGiftReloads = async ctx => {
     const result = await ctx.dispatch(

@@ -112,7 +112,11 @@ export const block = async (ctx, logicalId) => {
     );
     await ctx.commit('user/BLOCK_CARD', logicalId, { root: true });
 
-    ctx.dispatch('notifications/send', { message: i18n.t('dashboard.lock.confirmlock') }, { root: true });
+    ctx.dispatch(
+        'notifications/send',
+        { message: i18n.t('dashboard.lock.confirmlock') },
+        { root: true }
+    );
 
     await ctx.dispatch('working/set', false, { root: true });
 };

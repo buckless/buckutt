@@ -37,7 +37,12 @@ export const whyCant = state => {
     }
 
     if (now <= new Date(state.start)) {
-        errors.push(i18n.t('dashboard.refund.errors.start', { value: formatDate(state.start), value2: formatDate(state.end) }));
+        errors.push(
+            i18n.t('dashboard.refund.errors.start', {
+                value: formatDate(state.start),
+                value2: formatDate(state.end)
+            })
+        );
     }
 
     if (now >= new Date(state.end)) {

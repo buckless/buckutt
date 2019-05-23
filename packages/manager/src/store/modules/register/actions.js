@@ -16,22 +16,38 @@ export const register = async (ctx, { firstname, lastname, mail, ticketNumber, c
 
     if (ticketNumber) {
         if (typeof ticketNumber !== 'string' || ticketNumber.length === 0) {
-            ctx.dispatch('notifications/send', { message: i18n.t('register.invalid.ticket') }, { root: true });
+            ctx.dispatch(
+                'notifications/send',
+                { message: i18n.t('register.invalid.ticket') },
+                { root: true }
+            );
             return false;
         }
     } else {
         if (typeof firstname !== 'string' || firstname.length === 0) {
-            ctx.dispatch('notifications/send', { message: i18n.t('register.invalid.firstname') }, { root: true });
+            ctx.dispatch(
+                'notifications/send',
+                { message: i18n.t('register.invalid.firstname') },
+                { root: true }
+            );
             return false;
         }
 
         if (typeof lastname !== 'string' || lastname.length === 0) {
-            ctx.dispatch('notifications/send', { message: i18n.t('register.invalid.lastname') }, { root: true });
+            ctx.dispatch(
+                'notifications/send',
+                { message: i18n.t('register.invalid.lastname') },
+                { root: true }
+            );
             return false;
         }
 
         if (typeof mail !== 'string' || mail.length === 0) {
-            ctx.dispatch('notifications/send', { message: i18n.t('register.invalid.mail') }, { root: true });
+            ctx.dispatch(
+                'notifications/send',
+                { message: i18n.t('register.invalid.mail') },
+                { root: true }
+            );
             return false;
         }
     }
