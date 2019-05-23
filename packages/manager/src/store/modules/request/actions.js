@@ -23,6 +23,10 @@ export const post = async (ctx, opts) => {
     if (res.status >= 400 && res.status < 500) {
         const body = await res.json();
 
+        if (res.status === 401 && body.message === 'Token expired') {
+            ctx.dispatch('user/logout', null, { root: true });
+        }
+
         return ctx.dispatch(
             'notifications/send',
             { message: humanError(body.message) },
@@ -49,6 +53,10 @@ export const get = async (ctx, opts) => {
 
     if (res.status > 400 && res.status < 500) {
         const body = await res.json();
+
+        if (res.status === 401 && body.message === 'Token expired') {
+            ctx.dispatch('user/logout', null, { root: true });
+        }
 
         return ctx.dispatch(
             'notifications/send',
@@ -79,6 +87,10 @@ export const put = async (ctx, opts) => {
 
     if (res.status > 400 && res.status < 500) {
         const body = await res.json();
+
+        if (res.status === 401 && body.message === 'Token expired') {
+            ctx.dispatch('user/logout', null, { root: true });
+        }
 
         return ctx.dispatch(
             'notifications/send',

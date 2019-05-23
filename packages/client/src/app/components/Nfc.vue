@@ -199,10 +199,28 @@ export default {
                             });
                         } else if (err === 'PIN not set') {
                             debug('pin not set');
-                            return this.onCard(0, { assignedCard: false, locked: false, paidCard: false, catering: [] }, 0);
+                            return this.onCard(
+                                0,
+                                {
+                                    assignedCard: false,
+                                    locked: false,
+                                    paidCard: false,
+                                    catering: []
+                                },
+                                0
+                            );
                         } else if (this.disablePinCheck) {
                             debug('pin check disabled');
-                            return this.onCard(0, { assignedCard: false, locked: false, paidCard: false, catering: [] }, 0);
+                            return this.onCard(
+                                0,
+                                {
+                                    assignedCard: false,
+                                    locked: false,
+                                    paidCard: false,
+                                    catering: []
+                                },
+                                0
+                            );
                         } else {
                             debug('invalid card ', err);
                             this.$store.commit('ERROR', {

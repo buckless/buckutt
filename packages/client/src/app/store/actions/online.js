@@ -129,7 +129,7 @@ export const listenHealthAlerts = ({ state, dispatch }) => {
 };
 
 export const logOperator = store => {
-    if (store.getters.tokenHeaders.headers || !store.getters.sellerLogged) {
+    if (!store.getters.sellerLogged || store.state.auth.seller.token) {
         return Promise.resolve();
     }
 
@@ -178,21 +178,30 @@ export const currentTokenAxios = (store, job) => {
     );
 
     // We try to log-in the current seller before any request
-    return store.dispatch('logOperator').then(() =>
-        axios(store.state.device.api)({
-            method,
-            url: job.url,
-            data: job.data,
-            ...merge(
-                {
-                    headers: {
-                        'X-fingerprint': window.fingerprint,
-                        'X-signature': signature
-                    }
-                },
-                store.getters.tokenHeaders,
-                job.params
-            )
-        })
-    );
+    return store
+        .dispatch('logOperator')
+        .then(() =>
+            axios(store.state.device.api)({
+                method,
+                url: job.url,
+                data: job.data,
+                ...merge(
+                    {
+                        headers: {
+                            'X-fingerprint': window.fingerprint,
+                            'X-signature': signature
+                        }
+                    },
+                    store.getters.tokenHeaders,
+                    job.params
+                )
+            })
+        )
+        .catch(err => {
+            if (err.response.data.message === 'Token expired') {
+                store.commit('UPDATE_TOKEN');
+            }
+
+            return Promise.reject(err);
+        });
 };

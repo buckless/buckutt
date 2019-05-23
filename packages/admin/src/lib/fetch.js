@@ -24,6 +24,11 @@ export function updateBearer(token) {
     }
 }
 
+const forceLogout = () => {
+    localStorage.clear();
+    location.reload();
+};
+
 /**
  * Get a ressource from the API
  * @param  {String} url   The base URL
@@ -45,6 +50,10 @@ export function get(url, opts_) {
 
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
+            if (res.status === 401) {
+                return forceLogout();
+            }
+
             return Promise.reject(new Error(res.statusText));
         }
 
@@ -75,6 +84,10 @@ export function post(url, data, opts_) {
 
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
+            if (res.status === 401) {
+                return forceLogout();
+            }
+
             return Promise.reject(new Error(res.statusText));
         }
 
@@ -105,6 +118,10 @@ export function put(url, data, opts_) {
 
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
+            if (res.status === 401) {
+                return forceLogout();
+            }
+
             return Promise.reject(new Error(res.statusText));
         }
 
@@ -133,6 +150,10 @@ export function del(url, opts_) {
 
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
+            if (res.status === 401) {
+                return forceLogout();
+            }
+
             return Promise.reject(new Error(res.statusText));
         }
 
@@ -161,6 +182,10 @@ export function download(url, opts_) {
 
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
+            if (res.status === 401) {
+                return forceLogout();
+            }
+
             return Promise.reject(new Error('Download failed'));
         }
 
