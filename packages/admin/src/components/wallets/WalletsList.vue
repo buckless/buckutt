@@ -16,13 +16,11 @@
 
         <b-table
             :headers="[
-                { title: 'Id physique', field: 'physical_id' },
-                { title: 'Id logique', field: 'logical_id' },
-                { title: 'Utilisateur', field: 'user', class: 'b--capitalized' },
-                { title: 'Ticket', field: 'ticket' }
+                { title: 'Numéro de carte', field: 'support_id', object: true },
+                { title: 'Crédit', field: 'credit', type: 'price' }
             ]"
             :data="displayedWallets"
-            :sort="{ field: 'firstname', order: 'ASC' }"
+            :sort="{ field: 'support_id', order: 'ASC' }"
             :actions="[
                 { action: 'edit', text: 'Modifier', raised: true, colored: true },
                 { action: 'remove', text: 'Supprimer', type: 'confirm' }
@@ -72,13 +70,12 @@ export default {
         }),
 
         displayedWallets() {
-            return this.wallets.map(wallet => ({
-                ...wallet,
-                physical_id: wallet.physical_id || 'Aucun',
-                logical_id: wallet.logical_id || 'Aucun',
-                user: wallet.user ? `${wallet.user.firstname} ${wallet.user.lastname}` : 'Aucun',
-                ticket: wallet.ticket ? wallet.ticket.physical_id : 'Aucun'
-            }));
+            return this.wallets
+                .filter(wallet => wallet.physical_id || wallet.logical_id)
+                .map(wallet => ({
+                    ...wallet,
+                    support_id: wallet.physical_id || wallet.logical_id
+                }));
         }
     },
 
