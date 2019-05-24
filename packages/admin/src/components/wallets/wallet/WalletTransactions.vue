@@ -77,6 +77,9 @@ export default {
                         displayedTransaction.object = transaction.promotion;
                         displayedTransaction.articles = transaction.articles;
                         break;
+                    case 'withdrawal':
+                        displayedTransaction.object = transaction.articles[0];
+                        break;
                     default:
                         break;
                 }
@@ -95,7 +98,8 @@ export default {
                 promotion: 'Achat',
                 purchase: 'Achat',
                 reload: 'Rechargement',
-                transfer: 'Virement'
+                transfer: 'Virement',
+                withdrawal: 'Catering'
             };
 
             return splittedType[1]

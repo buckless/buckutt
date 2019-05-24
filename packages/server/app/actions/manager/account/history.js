@@ -21,6 +21,10 @@ module.exports = async (ctx, { id, limit, offset }) => {
         withRelated: ['creditor', 'creditor.user']
     });
 
+    const withdrawalsQuery = ctx.models.Withdrawal.where({ wallet_id: id }).fetchAll({
+        withRelated: ['seller', 'point']
+    });
+
     const pendingCardUpdatesQuery = ctx.models.PendingCardUpdate.where({
         wallet_id: id
     }).fetchAll();
@@ -34,6 +38,7 @@ module.exports = async (ctx, { id, limit, offset }) => {
         refunds,
         transfersFrom,
         transfersTo,
+        withdrawals,
         pendingCardUpdates
     ] = await Promise.all([
         purchaseQuery,
@@ -41,6 +46,7 @@ module.exports = async (ctx, { id, limit, offset }) => {
         refundQuery,
         transferFromQuery,
         transferToQuery,
+        withdrawalsQuery,
         pendingCardUpdatesQuery
     ]);
 
@@ -125,7 +131,21 @@ module.exports = async (ctx, { id, limit, offset }) => {
         }
     }));
 
-    history = [...purchases, ...reloads, ...refunds, ...transfersFrom, ...transfersTo].sort(
+    withdrawals = withdrawals.toJSON().map(withdrawal => ({
+        id: withdrawal.id,
+        type: 'withdrawal',
+        date: withdrawal.clientTime,
+        amount: 0,
+        point: withdrawal.point.name,
+        mop: '',
+        articles: [withdrawal.name],
+        seller: {
+            lastname: withdrawal.seller.lastname,
+            firstname: withdrawal.seller.firstname
+        }
+    }));
+
+    history = [...purchases, ...reloads, ...refunds, ...transfersFrom, ...transfersTo, ...withdrawals].sort(
         (a, b) => b.date - a.date
     );
 
