@@ -145,9 +145,14 @@ module.exports = async (ctx, { id, limit, offset }) => {
         }
     }));
 
-    history = [...purchases, ...reloads, ...refunds, ...transfersFrom, ...transfersTo, ...withdrawals].sort(
-        (a, b) => b.date - a.date
-    );
+    history = [
+        ...purchases,
+        ...reloads,
+        ...refunds,
+        ...transfersFrom,
+        ...transfersTo,
+        ...withdrawals
+    ].sort((a, b) => b.date - a.date);
 
     if (offset) {
         history = history.slice(offset);

@@ -19,9 +19,15 @@ module.exports = {
             .replace('Z', '');
 
         await client.query(
-            `select pg_terminate_backend(pid) from pg_stat_activity where datname = '${config.db.connection.database}'`
+            `select pg_terminate_backend(pid) from pg_stat_activity where datname = '${
+                config.db.connection.database
+            }'`
         );
-        await client.query(`alter database ${config.db.connection.database} rename to ${config.db.connection.database}_erased_${timestamp}`);
+        await client.query(
+            `alter database ${config.db.connection.database} rename to ${
+                config.db.connection.database
+            }_erased_${timestamp}`
+        );
         await client.query(`create database ${config.db.connection.database}`);
 
         ctx.pub.publish('database-reconnect', JSON.stringify('reconnect'));
