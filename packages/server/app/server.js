@@ -3,7 +3,7 @@ const bodyParser = require('body-parser-with-msgpack');
 const compression = require('compression');
 const cors = require('cors');
 const api = require('server/app/routes');
-const purchasesWebservices = require('server/app/utils/purchasesWebservices');
+const purchasesWebservices = require('server/app/helpers/purchasesWebservices');
 const APIError = require('server/app/utils/APIError');
 
 const app = express();

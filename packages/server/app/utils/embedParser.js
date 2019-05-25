@@ -31,7 +31,6 @@ const embedParser = embed =>
         };
     });
 
-/* eslint no-use-before-define: 0 */
 const propagate = (embed, result) => {
     const subEmbed = removeLevel(embed);
 

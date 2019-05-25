@@ -15,8 +15,8 @@ module.exports = (name, opts = {}) => async ctx => {
 
     const data = device.toJSON();
 
-    ctx.factory.clears.push(
-        ctx => new ctx.factory.db.models.Device({ id: device.id }).destroy({ hardDelete: true })
+    ctx.factory.clears.push(ctx =>
+        new ctx.factory.db.models.Device({ id: device.id }).destroy({ hardDelete: true })
     );
 
     return { name, data };

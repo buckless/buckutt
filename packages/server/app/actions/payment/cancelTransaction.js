@@ -1,7 +1,11 @@
 const { bookshelf } = require('server/app/db');
 const creditWallet = require('server/app/helpers/creditWallet');
-const getPriceAmount = require('server/app/utils/getPriceAmount');
 const APIError = require('server/app/utils/APIError');
+
+const getPriceAmount = (Price, id) =>
+    Price.where({ id })
+        .fetch()
+        .then(price => price.get('amount'));
 
 module.exports = async (ctx, { id, rawType, clientTime }) => {
     const transactionModels = {
