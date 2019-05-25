@@ -2,13 +2,12 @@ const router = require('express').Router();
 
 const pointId = require('server/app/middlewares/pointId');
 const token = require('server/app/middlewares/token');
-const accessRequired = require('server/app/middlewares/accessRequired');
 const query = require('server/app/middlewares/query');
 const idempotency = require('server/app/middlewares/idempotency');
 const exposeResBody = require('server/app/middlewares/exposeResBody');
 
 // api middlewares
-router.use(exposeResBody, pointId, token, accessRequired, query, idempotency);
+router.use(exposeResBody, pointId, token, query, idempotency);
 
 router.get('/', (_, res) => res.json({}).end());
 

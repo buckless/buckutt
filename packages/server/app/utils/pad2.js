@@ -1,5 +1,1 @@
-module.exports = n => {
-    const str = String(n);
-
-    return str.length === 1 ? `0${str}` : str;
-};
+module.exports = n => String(n).padStart(2, '0');

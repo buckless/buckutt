@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const { omit } = require('lodash');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const rightsDetails = require('server/app/utils/rightsDetails');
 const APIError = require('server/app/utils/APIError');
@@ -37,11 +38,7 @@ router.get(
 router.get(
     '/items',
     asyncHandler(async (req, res) => {
-        const userRights = rightsDetails(req.user, req.point.id);
-
-        if (!userRights.operator) {
-            throw new APIError(module, 401, 'No operator right');
-        }
+        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.now);
 
         const { articles, promotions } = await items(ctx(req));
 
@@ -54,6 +51,8 @@ router.get(
 router.get(
     '/usersData',
     asyncHandler(async (req, res) => {
+        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.now);
+
         // TODO: revamp with cardsData, and all tickets table
         const now = new Date();
         const lastUpdate = req.query.lastUpdate ? new Date(req.query.lastUpdate) : new Date(0);

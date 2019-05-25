@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
@@ -31,6 +32,8 @@ const logStr = (route, query) => {
 router.get(
     '/purchases',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const stats = await statsPurchases(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
@@ -50,6 +53,8 @@ router.get(
 router.get(
     '/withdrawals',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const stats = await statsWithdrawals(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
@@ -67,6 +72,8 @@ router.get(
 router.get(
     '/reloads',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const stats = await statsReloads(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
@@ -84,6 +91,8 @@ router.get(
 router.get(
     '/refunds',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const stats = await statsRefunds(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut
@@ -98,6 +107,8 @@ router.get(
 router.get(
     '/purchases/csv',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const csv = await statsPurchases(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
@@ -115,6 +126,8 @@ router.get(
 router.get(
     '/withdrawals/csv',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const csv = await statsWithdrawals(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
@@ -131,6 +144,8 @@ router.get(
 router.get(
     '/reloads/csv',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const csv = await statsReloads(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
@@ -147,6 +162,8 @@ router.get(
 router.get(
     '/refunds/csv',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const csv = await statsRefunds(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
@@ -162,6 +179,8 @@ router.get(
 router.get(
     '/graphs/global',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         const globalData = await graphGlobal(ctx(req));
 
         log.info(logStr('globalGraph', req.query));

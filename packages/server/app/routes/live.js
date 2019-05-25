@@ -1,5 +1,6 @@
 const sseExpress = require('sse-express');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 
 const { alert, healthalert, modelChanges, credit } = require('server/app/actions/live');
 
@@ -7,6 +8,8 @@ const router = require('express').Router();
 
 // alert
 router.get('/alert', sseExpress(), (req, res) => {
+    isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
+
     req.details.sse = true;
 
     const sub = alert().subscribe(data => {
@@ -21,6 +24,8 @@ router.get('/alert', sseExpress(), (req, res) => {
 
 // health alert
 router.get('/healthalert', sseExpress(), (req, res) => {
+    isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
+
     req.details.sse = true;
 
     const sub = healthalert().subscribe(data => {
@@ -39,6 +44,8 @@ router.get('/healthalert', sseExpress(), (req, res) => {
 
 // model changes
 router.get('/listenForModelChanges', sseExpress(), (req, res) => {
+    isUser.admin.orThrow(req.user, req.point, req.date);
+
     req.details.sse = true;
 
     const sub = modelChanges().subscribe(data => {
@@ -51,6 +58,8 @@ router.get('/listenForModelChanges', sseExpress(), (req, res) => {
 
 // user credit update
 router.get('/credit', sseExpress(), (req, res) => {
+    isUser.loggedIn.orThrow(req.user);
+
     req.details.sse = true;
 
     const sub = credit(req.query.wallet).subscribe(data => {

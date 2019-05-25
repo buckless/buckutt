@@ -34,7 +34,7 @@ module.exports = moduleToUse => {
 
     if (config.log.console !== 'none') {
         const consoleTransport = new transports.Console({
-            level: config.log.console.level,
+            level: config.log.console,
             name: 'console',
             format: combine(
                 splat(),
@@ -56,7 +56,7 @@ module.exports = moduleToUse => {
         const fileTransport = new transports.File({
             timestamp,
             name: 'file',
-            level: config.log.file.level,
+            level: config.log.file,
             filename: './log/server.log',
             maxsize: MAX_LOG_FILE_SIZE,
             label: path,

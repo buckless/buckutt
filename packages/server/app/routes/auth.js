@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const sanitizeUser = require('server/app/utils/sanitizeUser');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
@@ -39,6 +40,8 @@ router.post(
 router.get(
     '/assigner',
     asyncHandler(async (req, res) => {
+        isUser.assignerOrAdmin.orThrow(req.user, req.point, req.date);
+
         const ticketNumber = req.query.ticketNumber;
 
         if (!ticketNumber || ticketNumber.length === 0) {
@@ -55,6 +58,8 @@ router.get(
 router.post(
     '/assigner',
     asyncHandler(async (req, res) => {
+        isUser.assignerOrAdmin.orThrow(req.user, req.point, req.date);
+
         const wallet = await assigner(ctx(req), req.body);
 
         log.info(`assign a card to a ticket`, req.details);
@@ -66,6 +71,8 @@ router.post(
 router.post(
     '/validateTicket',
     asyncHandler(async (req, res) => {
+        isUser.assignerOrAdmin.orThrow(req.user, req.point, req.date);
+
         const ticket = await validateTicket(ctx(req), req.body);
 
         log.info(`validate a ticket`, req.details);

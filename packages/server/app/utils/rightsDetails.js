@@ -1,7 +1,4 @@
-const config = require('server/app/config');
-
-module.exports = (user, pointId) => {
-    const now = new Date();
+module.exports = (user, pointId, date = new Date()) => {
     const result = {
         sell: false,
         reload: false,
@@ -18,26 +15,24 @@ module.exports = (user, pointId) => {
 
     for (const right of user.rights) {
         if (!(right.point_id && right.point_id !== pointId)) {
-            if (right.period.start <= now && right.period.end > now) {
+            if (right.period.start <= date && right.period.end > date) {
                 if (right.name === 'admin') {
                     result.admin = true;
                 }
 
-                const configRight = config.rights[right.name];
-
-                if (configRight && configRight.canSell) {
+                if (right.name === 'seller') {
                     result.sell = true;
                 }
 
-                if (configRight && configRight.canReload) {
+                if (right.name === 'reloader') {
                     result.reload = true;
                 }
 
-                if (configRight && configRight.canAssign) {
+                if (right.name === 'assigner') {
                     result.assign = true;
                 }
 
-                if (configRight && configRight.canControl) {
+                if (right.name === 'controller') {
                     result.control = true;
                 }
             }

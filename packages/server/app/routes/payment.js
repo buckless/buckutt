@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const sanitizeUser = require('server/app/utils/sanitizeUser');
 const APIError = require('server/app/utils/APIError');
@@ -11,6 +12,8 @@ const router = require('express').Router();
 router.post(
     '/basket',
     asyncHandler(async (req, res) => {
+        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
+
         if (!req.body.walletId || !Array.isArray(req.body.basket)) {
             throw new APIError(module, 400, 'Invalid basket');
         }
@@ -50,6 +53,8 @@ router.post(
 router.post(
     '/cancelTransaction',
     asyncHandler(async (req, res) => {
+        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
+
         req.details.rawType = req.body.rawType;
         req.details.objectId = req.body.id;
         req.details.clientTime = req.body.clientTime;
@@ -67,6 +72,8 @@ router.post(
 router.post(
     '/catering',
     asyncHandler(async (req, res) => {
+        isUser.sellerOrAdmin.orThrow(req.user, req.point, req.date);
+
         if (!req.body.walletId || !Number.isInteger(req.body.cateringId) || !req.body.name) {
             throw new APIError(module, 400, 'Invalid catering');
         }

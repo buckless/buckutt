@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const getAmountToReload = require('server/app/utils/getAmountToReload');
 const APIError = require('server/app/utils/APIError');
@@ -18,6 +19,8 @@ const router = require('express').Router();
 router.post(
     '/cardRegister',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         log.info(`register card for ${req.body.walletId}`);
 
         const wallet = await req.app.locals.models.Wallet.where({
@@ -45,6 +48,8 @@ router.post(
 router.post(
     '/reload',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         if (!req.body.amount || !parseInt(req.body.amount, 10)) {
             throw new APIError(module, 400, 'Invalid amount', req.body);
         }
@@ -90,6 +95,8 @@ router.post(
 router.post(
     '/transfer',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const debitorWallet = await getWallet(ctx(req), { id: req.body.debitor_id });
 
         if (!debitorWallet || req.user.id !== debitorWallet.user_id) {
@@ -132,6 +139,8 @@ router.post(
 router.get(
     '/accountRefund',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const wallet = await getWallet(ctx(req), { id: req.query.wallet_id });
 
         if (!wallet || req.user.id !== wallet.user_id) {
@@ -154,6 +163,8 @@ router.get(
 router.post(
     '/accountRefund',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const wallet = await getWallet(ctx(req), { id: req.body.wallet_id });
 
         if (!wallet || req.user.id !== wallet.user_id) {
@@ -187,6 +198,8 @@ router.post(
 router.get(
     '/giftReloads',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const giftReloads = await listGiftReloads(ctx(req));
 
         res.json(giftReloads);
@@ -196,6 +209,8 @@ router.get(
 router.get(
     '/costs',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const costs = await paymentCosts(ctx(req));
 
         res.json(costs);

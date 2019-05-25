@@ -1,7 +1,7 @@
 {
     "merchantName": "Buckless",
     "log": {
-        "console": "debug",
+        "console": "warning",
         "file": "none",
         "morganStyle": "dev"
     },

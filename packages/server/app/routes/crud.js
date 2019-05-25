@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const modelParser = require('server/app/utils/modelParser');
 const idParser = require('server/app/utils/idParser');
@@ -19,6 +20,8 @@ router.use(require('server/app/middlewares/crud'));
 router.post(
     '/:model',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         req.details.body = req.body;
 
         const insts = Array.isArray(req.body)
@@ -37,6 +40,8 @@ router.post(
 router.get(
     '/:model/:id?',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         req.details.query = req.query;
         req.details.params = req.params;
 
@@ -57,6 +62,8 @@ router.get(
 router.put(
     '/:model/:id',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         req.details.model = req.params.model;
         req.details.modelId = req.params.id;
         req.details.body = req.body;
@@ -81,6 +88,8 @@ router.put(
 router.delete(
     '/:model/:id',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         log.info(`delete ${req.params.model} ${req.params.id}`, req.details);
 
         await del(ctx(req), req.params.id);
@@ -93,6 +102,8 @@ router.delete(
 router.get(
     '/:model/:id/:submodel',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         req.details.query = req.query;
         req.details.model = req.params.model;
         req.details.modelId = req.params.id;
@@ -120,6 +131,8 @@ router.get(
 router.post(
     '/:model/:id/:submodel/:subId',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         req.details.query = req.query;
         req.details.model = req.params.model;
         req.details.modelId = req.params.id;
@@ -143,6 +156,8 @@ router.post(
 router.delete(
     '/:model/:id/:submodel/:subId',
     asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
         req.details.query = req.query;
         req.details.model = req.params.model;
         req.details.modelId = req.params.id;

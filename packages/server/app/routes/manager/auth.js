@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
@@ -15,6 +16,8 @@ const router = require('express').Router();
 router.post(
     '/assignCard',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const wallet = await assignCard(ctx(req), req.body);
 
         log.info(`assign a user, a card or a ticket to a wallet`, req.details);
@@ -26,6 +29,8 @@ router.post(
 router.post(
     '/assignWallet',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const wallet = await assignWallet(ctx(req), req.body);
 
         log.info(`assign a wallet to a card or a ticket`, req.details);
@@ -55,6 +60,8 @@ router.post(
 router.put(
     '/changepin',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const { currentPin, pin } = req.body;
 
         log.info(`change pin for user ${req.user.id}`, req.details);

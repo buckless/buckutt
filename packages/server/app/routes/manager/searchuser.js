@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const rightsDetails = require('server/app/utils/rightsDetails');
 
@@ -10,6 +11,8 @@ const router = require('express').Router();
 router.get(
     '/',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         log.info(`Search user ${req.query.name}`, req.details);
 
         const name = req.query.name;

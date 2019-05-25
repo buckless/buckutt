@@ -6,4 +6,4 @@ if (process.env.GITLAB_CI) {
     module.exports = require('config/server');
 }
 
-module.exports = Object.assign({}, module.exports, require('../config/rights'));
+module.exports = Object.assign({}, module.exports);

@@ -3,6 +3,20 @@ const jwt = promisifyAll(require('jsonwebtoken'));
 const config = require('server/app/config');
 const APIError = require('server/app/utils/APIError');
 
+const pinLoggingAllowed = ['seller', 'reloader', 'assigner', 'controller'];
+const openUrls = [
+    '/',
+    '/auth/login',
+    '/auth/checkDevice',
+    '/auth/registerDevice',
+    '/manager/auth/askpin',
+    '/manager/auth/generatepin',
+    '/manager/auth/register',
+    '/polling/eventEssentials',
+    '/live/status',
+    '/provider/callback'
+];
+
 /**
  * Parses the client token
  */
@@ -10,7 +24,7 @@ module.exports = async (req, res, next) => {
     const secret = config.app.secret;
 
     // openUrls : no token required
-    const needToken = !(config.rights.openUrls.indexOf(req.path) > -1);
+    const needToken = !(openUrls.indexOf(req.path) > -1);
 
     const authorization = req.headers.authorization || req.query.authorization;
 
@@ -18,13 +32,7 @@ module.exports = async (req, res, next) => {
         return next();
     }
 
-    // skip token at login
-    if (req.path === '/auth/login') {
-        return next();
-    }
-
     // config is invalid
-    /* istanbul ignore if */
     if (!secret) {
         throw new Error('config.app.secret must be set');
     }
@@ -67,7 +75,6 @@ module.exports = async (req, res, next) => {
 
     let connectType;
 
-    const pinLoggingAllowed = config.rights.pinLoggingAllowed;
     const now = req.date;
 
     let decoded;

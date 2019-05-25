@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
@@ -15,18 +16,18 @@ const router = require('express').Router();
 router.put(
     '/block',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const target = await req.app.locals.models.Wallet.where({ id: req.query.wallet })
             .fetch()
             .then(wallet => (wallet ? wallet.toJSON() : null));
 
         if (req.user.id !== target.user_id) {
-            return Promise.reject(
-                new APIError(
-                    module,
-                    401,
-                    `This wallet doesn't belong to the logged user`,
-                    req.query.wallet
-                )
+            throw new APIError(
+                module,
+                401,
+                `This wallet doesn't belong to the logged user`,
+                req.query.wallet
             );
         }
 
@@ -40,7 +41,7 @@ router.put(
 router.get(
     '/groups',
     asyncHandler(async (req, res) => {
-        if (!req.user) {
+        if (!isUser.loggedIn(req.user)) {
             return res.json({});
         }
 
@@ -53,23 +54,14 @@ router.get(
 router.get(
     '/history',
     asyncHandler(async (req, res) => {
-        const adminRight = req.user.rights.find(
-            right => right.name === 'admin' && right.period.end > new Date()
-        );
+        isUser.loggedIn.orThrow(req.user);
 
         const target = await req.app.locals.models.Wallet.where({ id: req.query.wallet })
             .fetch()
             .then(wallet => (wallet ? wallet.toJSON() : null));
 
-        if (!adminRight && req.user.id !== target.user_id) {
-            return Promise.reject(
-                new APIError(
-                    module,
-                    401,
-                    `This wallet doesn't belong to the logged user`,
-                    req.query.wallet
-                )
-            );
+        if (req.user.id !== target.user_id) {
+            isUser.admin.orThrow(req.user, req.point, req.date);
         }
 
         log.info(`get history for wallet ${target.id}`, req.details);
@@ -95,6 +87,8 @@ router.get(
 router.post(
     '/invoice-number',
     asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
         const invoiceNumber = await invoice(ctx(req));
 
         res.json({ invoiceNumber });

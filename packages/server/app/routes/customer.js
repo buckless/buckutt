@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const log = require('server/app/log')(module);
+const isUser = require('server/app/helpers/isUser');
 const rightsDetails = require('server/app/utils/rightsDetails');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
@@ -16,6 +17,8 @@ const router = require('express').Router();
 router.get(
     '/controller',
     asyncHandler(async (req, res) => {
+        isUser.controllerOrAdmin.orThrow(req.user, req.point, req.date);
+
         if (!req.query.walletId) {
             throw new APIError(module, 400, 'Invalid wallet');
         }
@@ -31,6 +34,8 @@ router.get(
 router.post(
     '/controller',
     asyncHandler(async (req, res) => {
+        isUser.controllerOrAdmin.orThrow(req.user, req.point, req.date);
+
         const walletId = req.body.walletId.toLowerCase().trim();
 
         req.details.wallet = walletId;
@@ -55,11 +60,7 @@ router.post(
 router.get(
     '/buyer',
     asyncHandler(async (req, res) => {
-        const userRights = rightsDetails(req.user, req.point.id);
-
-        if (!userRights.operator) {
-            throw new APIError(module, 401, 'No operator right');
-        }
+        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
 
         if (!req.query.walletId) {
             throw new APIError(module, 401, 'Missing wallet id');
@@ -76,6 +77,8 @@ router.get(
 router.post(
     '/pendingCardUpdate',
     asyncHandler(async (req, res) => {
+        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
+
         if (!req.body.id) {
             throw new APIError(module, 400, 'Missing id');
         }
