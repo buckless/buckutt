@@ -9,7 +9,8 @@ export default {
 
     props: {
         chartData: Object,
-        unit: String
+        unit: String,
+        additive: Boolean
     },
 
     mounted() {
@@ -71,8 +72,9 @@ export default {
                                 labelString: 'Quantité'
                             },
                             ticks: {
-                                beginAtZero: true,
-                                stepSize: () => (this.unit === 'amount' ? 0.5 : 1),
+                                beginAtZero: !this.additive,
+                                maxTicksLimit: 10,
+                                stepSize: 1,
                                 callback: value => (this.unit === 'amount' ? `${value} €` : value)
                             }
                         }
