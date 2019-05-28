@@ -118,6 +118,7 @@ export default {
     margin-bottom: 10px;
 
     & > .b-divisions-graph {
+        z-index: 0;
         margin: 10px;
         width: 400px;
         height: auto;
