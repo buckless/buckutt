@@ -92,12 +92,12 @@ module.exports = async (ctx, { now, lastUpdate }) => {
                 memberships[i].user.wallets[j].deleted_at ||
                 memberships[i].user.wallets[j].blocked
             ) {
-                accesses.delete.push({ id: memberships[i].id });
+                accesses.delete.push({ id: `${memberships[i].id}_${memberships[i].user.wallets[j].id}` });
                 continue;
             }
 
             accesses.insert.push({
-                id: memberships[i].id,
+                id: `${memberships[i].id}_${memberships[i].user.wallets[j].id}`,
                 walletId: memberships[i].user.wallets[j].id,
                 cardId: memberships[i].user.wallets[j].logical_id,
                 groupId: memberships[i].group_id,
