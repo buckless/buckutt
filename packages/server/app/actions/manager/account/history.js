@@ -67,7 +67,8 @@ module.exports = async (ctx, { id, limit, offset }) => {
             ? 'purchase-cancellation'
             : 'purchase',
         date: purchase.clientTime,
-        amount: purchase.isCancellation ? purchase.price.amount : -1 * purchase.price.amount,
+        amount: purchase.isCancellation ? purchase.amount : -1 * purchase.amount,
+        fullAmount: purchase.isCancellation ? purchase.price.amount : -1 * purchase.price.amount,
         point: purchase.point.name,
         seller: {
             lastname: purchase.seller.lastname,

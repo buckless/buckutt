@@ -156,7 +156,7 @@ export default {
                 .filter(e => typeof e.cost === 'number')
                 .map(e => ({
                     name: e.name,
-                    cost: e.cost
+                    cost: e.paidPrice || e.cost
                 }));
 
             const cost = items.map(e => e.cost).reduce((a, b) => a + b, 0);

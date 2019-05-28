@@ -16,6 +16,7 @@ import Treasury from '@/views/Treasury';
 import Catering from '@/views/Catering';
 import Developpers from '@/views/Developpers';
 import Health from '@/views/Health';
+import PriceChooser from '@/views/PriceChooser';
 
 Vue.use(VueRouter);
 
@@ -31,6 +32,11 @@ const routes = [
                 path: 'reload',
                 component: Reload,
                 beforeEnter: (_, __, next) => next(reloadNotOnly() || '/')
+            },
+            {
+                path: 'chooser/:item',
+                component: PriceChooser,
+                beforeEnter: (_, __, next) => next(getters.isSellerMode || '/'),
             }
         ]
     },

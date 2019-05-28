@@ -16,6 +16,14 @@
                     <i class="b-icon">delete_forever</i>
                     Vider le panier
                 </div>
+                <div
+                    v-if="isSellerMode"
+                    class="b-menu__actions__action"
+                    @click="close(freePriceMode)"
+                >
+                    <i class="b-icon">create</i>
+                    Prix libres
+                </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
                     v-if="isReloaderMode || isSellerMode"
@@ -181,7 +189,7 @@ export default {
             this.$router.push('/items/reload');
         },
 
-        ...mapActions(['clearBasket', 'logout', 'startChangeApi'])
+        ...mapActions(['clearBasket', 'logout', 'startChangeApi', 'freePriceMode'])
     }
 };
 </script>

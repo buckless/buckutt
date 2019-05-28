@@ -58,7 +58,8 @@ module.exports = async ctx => {
                                 amount: price.amount,
                                 group: price.group_id,
                                 start: price.period.start,
-                                end: price.period.end
+                                end: price.period.end,
+                                freePrice: price.freePrice
                             },
                             category: {
                                 id: category.id,

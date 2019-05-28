@@ -38,6 +38,7 @@ export const setWiketItems = ({ state, getters, commit }) => {
                     new Date(item.price.end) >= Date.now() &&
                     groupsToKeep.indexOf(item.price.group) > -1
             )
+            // check if one of the prices is editable
 
             // keep the lowest price (by category) for each object1
             .sort((a, b) => a.price.amount - b.price.amount)
@@ -53,6 +54,11 @@ export const setWiketItems = ({ state, getters, commit }) => {
             .filter(item => item.price.amount >= 0)
     );
 
+    const items = res[0].map(item => ({
+        ...item,
+        freePrice: defaultItems.some(i => i.id === item.id && i.price.freePrice)
+    }));
+
     const promotions = res[1].map(promotion => ({
         ...promotion,
         sets: promotion.sets.map(set => ({
@@ -63,5 +69,5 @@ export const setWiketItems = ({ state, getters, commit }) => {
         }))
     }));
 
-    return commit('SET_WIKETITEMS', { items: res[0], promotions });
+    return commit('SET_WIKETITEMS', { items, promotions });
 };

@@ -284,15 +284,12 @@ export default {
     }
 
     .b-reload__modal {
+        max-width: 310px;
         padding: 10px 20px;
     }
 
     .b-reload__modal__topbar {
         display: none;
-    }
-
-    .b-reload__modal {
-        max-width: 310px;
     }
 
     .b-reload__modal__methods {

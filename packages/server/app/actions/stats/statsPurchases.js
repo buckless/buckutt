@@ -33,18 +33,18 @@ module.exports = async (ctx, { dateIn, dateOut, point, fundation, csv }) => {
             knex.select(
                 'articles.name as article_name',
                 'promotions.name as promotion_name',
-                'prices.amount as amount',
+                'purchases.amount as amount',
                 'purchases.isCancellation as isCancellation'
             );
-            knex.count('prices.amount as count');
-            knex.sum('prices.amount as total');
+            knex.count('purchases.amount as count');
+            knex.sum('purchases.amount as total');
             knex.leftJoin('prices', 'prices.id', 'purchases.price_id');
             knex.leftJoin('articles', 'articles.id', 'prices.article_id');
             knex.leftJoin('promotions', 'promotions.id', 'prices.promotion_id');
             price.price(knex);
             knex.groupBy(
                 'purchases.isCancellation',
-                'prices.amount',
+                'purchases.amount',
                 'articles.name',
                 'promotions.name'
             );

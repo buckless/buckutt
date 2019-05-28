@@ -1,4 +1,5 @@
 const initialState = {
+    freePriceMode: false,
     dataLoaded: null,
     inputStream: [],
     tabs: [],
@@ -61,6 +62,10 @@ const mutations = {
         for (let [key, value] of Object.entries(initialState)) {
             state[key] = value;
         }
+    },
+
+    SWITCH_FREE_PRICE_MODE(state) {
+        state.freePriceMode = !state.freePriceMode;
     }
 };
 

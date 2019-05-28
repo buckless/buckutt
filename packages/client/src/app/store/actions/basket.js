@@ -11,6 +11,10 @@ export const clearBasket = ({ commit }) => {
     commit('REMOVE_RELOADS');
 };
 
+export const freePriceMode = ({ commit }) => {
+    commit('SWITCH_FREE_PRICE_MODE');
+};
+
 export const removeUnavailableItemsFromBasket = store => {
     const removals = store.getters.sidebar.catering
         .concat(store.getters.sidebar.items)
@@ -209,6 +213,7 @@ export const sendBasket = (store, payload = {}) => {
             alcohol: article.alcohol,
             cost: article.price.amount,
             type: 'purchase',
+            paidPrice: article.paidPrice,
             uncancellable: article.uncancellable
         });
     });

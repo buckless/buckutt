@@ -5,6 +5,7 @@
         </div>
         <div class="b-item__price">
             <currency :value="item.price.amount"></currency>
+            <i v-if="isPriceEditable" class="b-icon">create</i>
         </div>
         <div class="b-item__count" v-if="selectedItem > 0">{{ selectedItem }}</div>
         <div class="b-item__minus" v-if="selectedItem > 0" @click.stop="remove(item)"></div>
@@ -13,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 import textSize from '@/utils/textSize';
 
@@ -29,19 +30,35 @@ export default {
     },
 
     computed: {
+        ...mapState({
+            freePriceMode: state => state.ui.freePriceMode
+        }),
+
         selectedItem() {
             return this.$store.state.items.basket.itemList.filter(
                 article => article.id === this.item.id
             ).length;
+        },
+
+        isPriceEditable() {
+            return this.item.freePrice && (this.item.price.amount === 0 || this.freePriceMode);
         }
     },
 
     methods: {
         ...mapActions({
-            add: 'addItemToBasket',
+            addToBasket: 'addItemToBasket',
             remove: 'removeItemFromBasket',
             getImage: 'getImage'
-        })
+        }),
+
+        add(item) {
+            if (this.isPriceEditable) {
+                return this.$router.push(`items/chooser/${item.id}`);
+            }
+
+            this.addToBasket(item);
+        }
     },
 
     mounted() {
@@ -167,6 +184,11 @@ export default {
     padding: 5px;
     position: absolute;
     top: 0;
+
+    & > i {
+        font-size: 14px;
+        margin-left: 2px;
+    }
 }
 
 @media (max-width: 768px) {

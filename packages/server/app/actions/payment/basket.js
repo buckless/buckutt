@@ -5,10 +5,10 @@ const creditWallet = require('server/app/helpers/creditWallet');
 const rightsDetails = require('server/app/utils/rightsDetails');
 const APIError = require('server/app/utils/APIError');
 
-const getPriceAmount = (Price, id) =>
+const getPrice = (Price, id) =>
     Price.where({ id })
         .fetch()
-        .then(price => price.get('amount'));
+        .then(price => price.toJSON());
 
 module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) => {
     let wallet = await ctx.models.Wallet.where({
@@ -27,22 +27,27 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
 
     let purchases = basket.filter(item => typeof item.cost === 'number');
 
-    const getArticleCosts = purchases.map(purchase =>
-        getPriceAmount(ctx.models.Price, purchase.price_id)
+    const getArticlePrices = purchases.map(purchase =>
+        getPrice(ctx.models.Price, purchase.price_id)
     );
 
-    const articleCosts = await Promise.all(getArticleCosts);
+    const articlePrices = await Promise.all(getArticlePrices);
 
     purchases = purchases.map((purchase, i) => ({
         ...purchase,
-        cost: articleCosts[i]
+        cost: purchase.paidPrice && purchase.paidPrice < articlePrices[i].amount && articlePrices[i].freePrice
+            ? purchase.paidPrice
+            : articlePrices[i].amount
     }));
+
+    const reloads = basket.filter(item => typeof item.cost !== 'number');
+    const computedBasket = reloads.concat(purchases);
 
     const purchasesInsts = [];
     const reloadsInsts = [];
 
     // If it's a cancellation: credit credit is becoming a cost, cost is becoming a credit
-    const totalCost = basket
+    const totalCost = computedBasket
         .map(item => {
             if (typeof item.cost === 'number') {
                 return isCancellation ? -1 * item.cost : item.cost;
@@ -54,7 +59,7 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         })
         .reduce((a, b) => a + b);
 
-    const reloadOnly = basket
+    const reloadOnly = computedBasket
         .filter(item =>
             isCancellation ? typeof item.cost === 'number' : typeof item.credit === 'number'
         )
@@ -91,16 +96,16 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
     // allow purchase of NFC supports only if the operator is reloader or assigner
     const onlyNfcDevice =
         (userRights.reload || userRights.assign) &&
-        !basket.find(
+        !computedBasket.find(
             item =>
                 typeof item.cost === 'number' &&
                 item.articles.find(article => article.id !== ctx.event.nfc_id)
         );
 
     const unallowedPurchase =
-        basket.find(item => typeof item.cost === 'number') && !userRights.sell && !onlyNfcDevice;
+        computedBasket.find(item => typeof item.cost === 'number') && !userRights.sell && !onlyNfcDevice;
     const unallowedReload =
-        basket.find(item => typeof item.credit === 'number') && !userRights.reload;
+        computedBasket.find(item => typeof item.credit === 'number') && !userRights.reload;
 
     // allow purchase if it's a nfc card and the operator is a reloader
     if (unallowedPurchase || unallowedReload) {
@@ -111,7 +116,7 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         });
     }
 
-    basket.forEach(item => {
+    computedBasket.forEach(item => {
         if (typeof item.cost === 'number') {
             // purchases
             const articlesIds = item.articles.map(article => article.id);
@@ -124,6 +129,7 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
                 promotion_id: item.promotion_id || null,
                 seller_id: ctx.user.id,
                 alcohol: item.alcohol,
+                amount: item.cost,
                 clientTime,
                 isCancellation
             });

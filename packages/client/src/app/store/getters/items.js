@@ -29,7 +29,7 @@ export const basketAmount = (_, getters) => {
     }
 
     const items = (basket.items || [])
-        .map(item => item.price.amount || 0)
+        .map(item => item.paidPrice || item.price.amount || 0)
         .reduce((a, b) => a + b, 0);
 
     const promotions = (basket.promotions || [])
@@ -74,8 +74,14 @@ export const sidebar = (state, getters) => {
             updatedItem = item;
         }
 
+        // if a custom price is given, take it in account only if the price were editable & if the amount is < the fixed price
+        const paidPrice = item.paidPrice && updatedItem.price.freePrice && (item.paidPrice < updatedItem.price.amount || item.price.amount === 0)
+            ? item.paidPrice
+            : undefined;
+
         return {
             ...item,
+            paidPrice,
             price: updatedItem.price
         };
     });

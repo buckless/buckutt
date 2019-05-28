@@ -47,8 +47,7 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
     delete cancellationData.wallet;
 
     if (currentModel === 'Purchase') {
-        const amount = await getPriceAmount(ctx.models.Price, transaction.price_id);
-        const pending = isAlreadyACancellation ? -1 * amount : amount;
+        const pending = isAlreadyACancellation ? -1 * transaction.amount : transaction.amount;
 
         if (wallet.credit + pending < 0 && checkApiCredit) {
             throw new APIError(module, 403, "Wallet doesn't have enough credit");

@@ -56,17 +56,18 @@ module.exports = async (ctx, { dateIn, dateOut, additive, filters }) => {
             pricesFilters['prices.promotion_id'] = bookshelf.knex.raw('?', filter.promotion);
         }
 
+        // TODO: find a way to do a inner join on prices and still getting a generated "0" field if no match is found
         return ctx.models.Purchase.query(knex => {
             knex.select(
                 bookshelf.knex.raw(
                     'greatest(sum(case when ?? is null then 0 when ?? = false then 1 else -1 end), 0) as count',
-                    ['prices.amount', 'purchases.isCancellation']
+                    ['prices.id', 'purchases.isCancellation']
                 )
             );
             knex.select(
                 bookshelf.knex.raw(
-                    'greatest(coalesce(sum(case when ?? = false then ?? else -1 * ?? end), 0), 0) as amount',
-                    ['purchases.isCancellation', 'prices.amount', 'prices.amount']
+                    'greatest(sum(case when ?? is null then 0 when ?? = false then ?? else -1 * ?? end), 0) as amount',
+                    ['prices.id', 'purchases.isCancellation', 'purchases.amount', 'purchases.amount']
                 )
             );
             knex.from(

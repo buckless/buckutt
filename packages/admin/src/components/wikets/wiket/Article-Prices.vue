@@ -14,7 +14,8 @@
             >
             <div v-for="(price, index) in displayedPrices" :key="index">
                 <span>
-                    <i class="material-icons">attach_money</i> {{ price.amount | price(true) }} TTC
+                    <i class="material-icons">attach_money</i> {{ price.amount | price(true) }}
+                    <i class="material-icons b-pricesEditor__free" v-if="price.freePrice">create</i>
                 </span>
                 <span v-if="event.usePeriods">
                     <i class="material-icons">alarm</i> {{ price.period.name }}
@@ -38,13 +39,16 @@
                 </template>
             </div>
             <form @submit.prevent="createPrice(newPrice)">
-                <mdl-textfield
-                    floating-label="Montant TTC (centimes)"
-                    v-model="newPrice.amount"
-                    required="required"
-                    pattern="^[+-]?[0-9]+"
-                    error="Le montant doit être un entier"
-                ></mdl-textfield>
+                <div>
+                    <mdl-textfield
+                        floating-label="Montant (centimes)"
+                        v-model="newPrice.amount"
+                        required="required"
+                        pattern="^[+-]?[0-9]+"
+                        error="Le montant doit être un entier"
+                    ></mdl-textfield>
+                    <mdl-icon-toggle v-model="newPrice.freePrice" icon="create" id="fp"></mdl-icon-toggle>
+                </div>
                 <b-inputselect
                     label="Période"
                     id="period-select"
@@ -85,7 +89,8 @@ const pricePattern = {
     period: null,
     group: null,
     fundation: null,
-    point: null
+    point: null,
+    freePrice: false
 };
 
 export default {
@@ -184,6 +189,7 @@ export default {
         createPrice(price) {
             const priceToCreate = {
                 amount: price.amount,
+                freePrice: price.freePrice,
                 point_id: this.point.id,
                 fundation_id: this.event.useFundations
                     ? price.fundation.id
@@ -267,6 +273,11 @@ export default {
                     margin-right: 5px;
                     font-size: 25px;
                 }
+
+                & > .b-pricesEditor__free {
+                    font-size: 16px;
+                    margin-left: 5px;
+                }
             }
         }
 
@@ -275,7 +286,20 @@ export default {
             align-items: center;
             margin-top: 15px;
 
-            & > .mdl-textfield {
+            & > div:first-child {
+                display: flex;
+                align-items: center;
+
+                & > .mdl-textfield {
+                    width: 140px;
+
+                    & > div {
+                        width: 140px;
+                    }
+                }
+            }
+
+            & > .mdl-textfield, div {
                 width: 180px;
                 margin-right: 10px;
             }
