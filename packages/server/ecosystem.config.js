@@ -2,7 +2,8 @@ module.exports = {
     apps: [
         {
             name: 'buckless-server',
-            script: 'app/index.js',
+            script: 'app/index.ts',
+            interpreter: './node_modules/.bin/ts-node',
             instances: 'max',
             exec_mode: 'cluster',
             kill_timeout: 3000,

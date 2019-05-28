@@ -60,8 +60,8 @@ module.exports = (name, opts = {}) => async ctx => {
 
         data.ticket = ticket.toJSON();
 
-        ctx.factory.clears.push(
-            ctx => new ctx.factory.db.models.Ticket({ id: ticket.id }).destroy({ hardDelete: true })
+        ctx.factory.clears.push(ctx =>
+            new ctx.factory.db.models.Ticket({ id: ticket.id }).destroy({ hardDelete: true })
         );
     }
 

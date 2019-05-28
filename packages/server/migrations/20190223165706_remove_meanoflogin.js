@@ -84,7 +84,17 @@ exports.down = function(knex) {
             t.uuid('sender_id').references('users.id');
             t.uuid('reciever_id').references('users.id');
         })
-        .then(() => knex.raw('CREATE INDEX meansoflogin_lower_case_data_index ON meansoflogin(lower(data))'))
-        .then(() => knex.raw(`CREATE UNIQUE INDEX meansoflogin_type_data_active_unique ON meansoflogin (type, data, active) WHERE type != 'mail'`))
-        .then(() => knex.raw(`CREATE UNIQUE INDEX meansoflogin_unique_cardId_per_user_index ON meansoflogin (user_id) WHERE type = 'cardId' AND active = true AND blocked = false`))
+        .then(() =>
+            knex.raw('CREATE INDEX meansoflogin_lower_case_data_index ON meansoflogin(lower(data))')
+        )
+        .then(() =>
+            knex.raw(
+                `CREATE UNIQUE INDEX meansoflogin_type_data_active_unique ON meansoflogin (type, data, active) WHERE type != 'mail'`
+            )
+        )
+        .then(() =>
+            knex.raw(
+                `CREATE UNIQUE INDEX meansoflogin_unique_cardId_per_user_index ON meansoflogin (user_id) WHERE type = 'cardId' AND active = true AND blocked = false`
+            )
+        );
 };

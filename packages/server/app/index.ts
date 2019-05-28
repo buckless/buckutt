@@ -1,5 +1,5 @@
-const http = require('http');
-const { promisify } = require('util');
+import { createServer } from 'http';
+import { promisify } from 'util';
 const config = require('server/app/config');
 const bookshelf = require('server/app/db');
 const redis = require('server/app/cache');
@@ -25,7 +25,7 @@ const main = async () => {
         await bookshelf.knex.seed.run();
     }
 
-    const server = http.createServer(app);
+    const server = createServer(app);
     server.listen = promisify(server.listen).bind(server);
     app.locals.server = server;
 
@@ -74,10 +74,8 @@ const main = async () => {
 module.exports = main;
 
 // Start the application
-/* istanbul ignore if */
 if (require.main === module) {
     main().catch(err => {
-        // eslint-disable-next-line no-console
         console.error(err);
         process.exit(-1);
     });

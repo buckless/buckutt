@@ -7,7 +7,7 @@ const packages = {
     client: 'dev:calm',
     'image-server': 'dev',
     manager: 'dev:calm',
-    server: 'dev:pm2'
+    server: 'dev'
 };
 
 const colors = {
