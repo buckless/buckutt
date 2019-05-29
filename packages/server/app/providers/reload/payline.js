@@ -10,11 +10,11 @@ const providerConfig = config.provider.payline;
 
 const wsdl =
     process.env.NODE_ENV !== 'dev'
-        ? path.join(__dirname, 'utils', 'WebPaymentAPI.v4.44.wsdl')
+        ? path.join(__dirname, 'utils', 'WebPaymentAPI.v4.55.wsdl')
         : null;
 const ns = type => ({ xsi_type: { type, xmlns: 'http://obj.ws.payline.experian.com' } });
 const currencies = { eur: 978 };
-const actions = { authorization: 100, payment: 101, refund: 421, credit: 422 };
+const actions = { authorization: 100, payment: 101, information: 108, refund: 421, credit: 422 };
 const modes = { full: 'CPT', differed: 'DIF', nInstalments: 'NX', recurring: 'REC' };
 const dateFormat = 'DD/MM/YYYY HH:mm';
 
@@ -33,11 +33,12 @@ const onlinePayment = async (ctx, data) => {
     await transaction.save();
 
     const order = {
+        version: 20,
         payment: {
             attributes: ns('payment'),
-            amount: data.amount,
+            amount: type === 'refund' ? '' : data.amount,
             currency: currencies.eur,
-            action: type === 'refund' ? actions.authorization : actions.payment,
+            action: type === 'refund' ? actions.information : actions.payment,
             mode: modes.full,
             contractNumber: providerConfig.contractNumber
         },
@@ -52,7 +53,10 @@ const onlinePayment = async (ctx, data) => {
             date: moment().format(dateFormat)
         },
         notificationURL: `${config.urls.managerUrl}/api/provider/callback`,
-        selectedContractList: providerConfig.contractNumber,
+        selectedContractList: {
+            attributes: ns('selectedContractList'),
+            selectedContract: providerConfig.contractNumber
+        },
         buyer: {
             attributes: ns('buyer'),
             firstName: data.buyer.firstname,
