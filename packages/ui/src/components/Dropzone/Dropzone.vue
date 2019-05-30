@@ -77,6 +77,7 @@ export default {
     border-radius: var(--radius);
     background-image: url('../../assets/dashed.png');
     background-size: 100%;
+    color: var(--foreground-dark-300);
 }
 
 .dropzone.active {

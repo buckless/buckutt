@@ -61,6 +61,7 @@ export default {
     flex-direction: column;
     border: 1px solid var(--grey-600);
     border-radius: calc(var(--radius) / 2);
+    color: var(--foreground-dark-300);
 }
 
 .row {

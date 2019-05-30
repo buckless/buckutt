@@ -272,6 +272,7 @@ export default {
 <style scoped>
 .datetime-input {
     font-size: var(--typography-body-2-size);
+    color: var(--foreground-dark-300);
 }
 
 .picker {

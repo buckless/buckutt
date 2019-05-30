@@ -4,6 +4,7 @@
             <div
                 class="tab"
                 v-for="(title, i) in titles"
+                :style="{ minWidth: `${minWidth}px` }"
                 :key="i"
                 :active="i === selected"
                 @click="select(i)"
@@ -39,7 +40,13 @@ export default {
          * @model
          * Controls the checked prop and state
          */
-        selected: { type: Number, default: 0 }
+        selected: { type: Number, default: 0 },
+
+        /**
+         * Sets the minimum width for each tab. Should be a bit more than the biggest
+         * tab so that activating a tab does not moves the others (because of the font-weight)
+         */
+        minWidth: { type: Number, default: 80 }
     },
 
     data: () => ({
@@ -90,6 +97,7 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: column;
+    color: var(--foreground-dark-300);
 }
 
 .tabs {
@@ -109,6 +117,7 @@ export default {
     display: flex;
     align-items: center;
     padding: 0 16px;
+    min-width: 80px;
     cursor: pointer;
 }
 

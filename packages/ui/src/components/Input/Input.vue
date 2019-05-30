@@ -103,9 +103,10 @@ export default {
 .label {
     display: inline-block;
     margin-bottom: 4px;
+    color: var(--foreground-dark-300);
     font-size: var(--typography-body-2-size);
     letter-spacing: var(--typography-body-2-spacing);
-    font-weight: 600;
+    font-weight: var(--typography-h6-weight);
 }
 
 .input {

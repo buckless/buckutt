@@ -2,7 +2,7 @@
     <Card :to="to" :active="active">
         <Icon :name="icon" :size="32" />
         <div class="text">
-            <h3>{{ title }}</h3>
+            <h6>{{ title }}</h6>
             <p>{{ subtitle }}</p>
         </div>
         <Icon name="keyboard_arrow_right" :size="32" />
@@ -53,8 +53,9 @@ export default {
 .card {
     display: flex;
     align-items: center;
-    height: 90px;
+    height: 100px;
     padding: 0 24px;
+    color: var(--foreground-dark-300);
 }
 
 .icon {
@@ -66,7 +67,13 @@ export default {
     flex: 1;
 }
 
-h3,
+h6 {
+    font-family: var(--typography-family);
+    font-size: var(--typography-h6-size);
+    font-weight: var(--typography-h6-weight);
+}
+
+h6,
 p {
     margin: 8px 0;
 }

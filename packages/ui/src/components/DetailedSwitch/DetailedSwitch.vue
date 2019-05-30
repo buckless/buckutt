@@ -4,7 +4,7 @@
             <Icon :name="icon" :size="32" />
         </div>
         <div class="content">
-            <h5>{{ label }}</h5>
+            <h6>{{ label }}</h6>
             <p>
                 <slot />
             </p>
@@ -80,21 +80,23 @@ export default {
 }
 
 .icon {
-    padding: 0 32px 0 16px;
+    padding: 0 24px 0 16px;
     color: var(--foreground-dark-200);
 }
 
-h5 {
+h6 {
     margin-top: 0;
-    margin-bottom: 12px;
-    font-size: var(--typography-h5-size);
-    letter-spacing: var(--typography-h5-spacin);
-    font-weight: var(--typography-h5-weight);
+    margin-bottom: 4px;
+    color: var(--foreground-dark-300);
+    font-size: var(--typography-h6-size);
+    letter-spacing: var(--typography-h6-spacing);
+    font-weight: var(--typography-h6-weight);
 }
 
 p {
     margin: 0;
     max-width: 80%;
+    color: var(--foreground-dark-300);
     font-size: var(--typography-body-1-size);
     letter-spacing: var(--typography-body-1-spacing);
     font-weight: var(--typography-body-1-weight);

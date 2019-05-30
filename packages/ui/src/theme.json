@@ -1,5 +1,5 @@
 {
-    "radius": "6px",
+    "radius": "4px",
     "transition": {
         "fast-in": ".1s",
         "fast-out": ".075s",
@@ -71,40 +71,40 @@
     },
 
     "typography": {
-        "family": "'Oxygen', 'Roboto', 'Open-Sans', sans-serif",
+        "family": "'Open-Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
         "h1": {
-            "size": "92px",
-            "spacing": "-1.5px",
-            "weight": "bold"
+            "size": "40px",
+            "spacing": "0.5px",
+            "weight": "500"
         },
         "h2": {
-            "size": "58px",
-            "spacing": "-0.5px",
-            "weight": "bold"
+            "size": "32px",
+            "spacing": "0",
+            "weight": "500"
         },
         "h3": {
-            "size": "47px",
-            "spacing": "0px",
-            "weight": "bold"
+            "size": "28px",
+            "spacing": "0",
+            "weight": "500"
         },
         "h4": {
-            "size": "33px",
-            "spacing": "0.25px",
-            "weight": "bold"
+            "size": "24px",
+            "spacing": "0",
+            "weight": "500"
         },
         "h5": {
-            "size": "23px",
-            "spacing": "0px",
-            "weight": "bold"
+            "size": "20px",
+            "spacing": "0",
+            "weight": "500"
         },
         "h6": {
-            "size": "19px",
-            "spacing": "0.25px",
-            "weight": "bold"
+            "size": "16px",
+            "spacing": "0",
+            "weight": "500"
         },
         "body-1": {
             "size": "16px",
-            "spacing": "0.5px",
+            "spacing": "0",
             "weight": "normal"
         },
         "body-2": {
@@ -115,7 +115,7 @@
         "button": {
             "size": "14px",
             "spacing": "1.25px",
-            "weight": "bold"
+            "weight": "500"
         }
     },
 

@@ -65,6 +65,7 @@ export default {
 
     border: 0;
     border-radius: var(--radius);
+    color: var(--foreground-dark-300);
     cursor: pointer;
     font-family: var(--typography-family);
     font-weight: var(--typography-button-weight);
@@ -108,7 +109,6 @@ export default {
 .button[raised] {
     background-color: var(--primary-300);
     box-shadow: var(--elevation-2dp);
-    color: var(--primary-foreground-300);
 }
 
 .button[raised]:hover {
@@ -125,7 +125,6 @@ export default {
 
 .button[accent][raised] {
     background-color: var(--accent-300);
-    color: var(--accent-foreground-300);
 }
 
 .button[accent][raised]:hover {

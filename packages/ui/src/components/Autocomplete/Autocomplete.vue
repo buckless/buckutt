@@ -98,7 +98,6 @@ export default {
     },
 
     data() {
-        console.log(this);
         return {
             id: uniqueId('@buckless/ui/autocomplete/'),
             mutableSuggestions: this.suggestions,
@@ -257,6 +256,7 @@ export default {
     height: 30px;
     display: flex;
     align-items: center;
+    color: var(--foreground-dark-300);
     cursor: pointer;
     padding-left: 8px;
     background-color: transparent;

@@ -64,6 +64,7 @@ export default {
     align-items: center;
     position: relative;
     cursor: pointer;
+    color: var(--accent-foreground-300);
     user-select: none;
 }
 
@@ -81,9 +82,9 @@ export default {
     justify-content: center;
     height: 16px;
     width: 16px;
-    margin-right: 10px;
+    margin-right: 8px;
     border: 2px solid var(--foreground-dark-100);
-    border-radius: var(--radius);
+    border-radius: calc(var(--radius) / 2);
     background-color: var(--grey-100);
     transition: background-color var(--transition-fast-out) var(--transition-easing),
         border-color var(--transition-fast-out) var(--transition-easing);
@@ -91,7 +92,7 @@ export default {
 
 [right] .checkmark {
     margin-right: 0;
-    margin-left: 10px;
+    margin-left: 8px;
 }
 
 .mark {

@@ -2,18 +2,31 @@
 
 ### Font families
 
-We're only using one font family, [Oxygen](https://fonts.google.com/specimen/Oxygen).
+We're only using one font family, [Open Sans](https://fonts.google.com/specimen/Open+Sans).
 
 The variable is defined usable like this:
 
 ```js noeditor
 <FontSize
-    inside="'Oxygen', 'Roboto', 'Open-Sans', sans-serif"
+    inside="'Open-Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
 />
 ```
 
 ```css
---typography-family: 'Oxygen', 'Roboto', 'Open-Sans', sans-serif;
+/* https://getbootstrap.com/docs/4.3/content/reboot/#native-font-stack */
+--typography-family:
+    /* our font-family */
+    'Open-Sans',
+    /* Apple */
+    -apple-system, BlinkMacSystemFont,
+    /* Microsoft */
+    'Segoe UI',
+    /* Android */
+    Roboto,
+    /* Web */
+    'Helvetica Neue', Arial, sans-serif,
+    /* Emojis */
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 ```
 
 ### Body
@@ -31,9 +44,9 @@ The variable is defined usable like this:
 
 ```css
 body, p {
-    font-size: var(--typography-body-1-size); /* 16px */
-    letter-spacing: var(--typography-body-1-spacing); /* 0.5px */
-    font-weight: var(--typography-body-1-weight); /* normal */
+    font-size: var(--typography-body-1-size);
+    letter-spacing: var(--typography-body-1-spacing);
+    font-weight: var(--typography-body-1-weight);
 }
 ```
 
@@ -50,9 +63,9 @@ body, p {
 
 ```css
 small {
-    font-size: var(--typography-body-2-size); /* 14px */
-    letter-spacing: var(--typography-body-2-spacing); /* 0.25px */
-    font-weight: var(--typography-body-2-weight); /* normal */
+    font-size: var(--typography-body-2-size);
+    letter-spacing: var(--typography-body-2-spacing);
+    font-weight: var(--typography-body-2-weight);
 }
 ```
 
@@ -69,9 +82,9 @@ small {
 
 ```css
 button {
-    font-size: var(--typography-button-size); /* 14px */
-    letter-spacing: var(--typography-button-spacing); /* 1.25px */
-    font-weight: var(--typography-button-weight); /* bold */
+    font-size: var(--typography-button-size);
+    letter-spacing: var(--typography-button-spacing);
+    font-weight: var(--typography-button-weight);
 }
 ```
 
@@ -90,9 +103,9 @@ button {
 
 ```css
 h1 {
-    font-size: var(--typography-h1-size); /* 92px */
-    letter-spacing: var(--typography-h1-spacing); /* -1.5px */
-    font-weight: var(--typography-h1-weight); /* bold */
+    font-size: var(--typography-h1-size);
+    letter-spacing: var(--typography-h1-spacing);
+    font-weight: var(--typography-h1-weight);
 }
 ```
 
@@ -109,9 +122,9 @@ h1 {
 
 ```css
 h2 {
-    font-size: var(--typography-h2-size); /* 58px */
-    letter-spacing: var(--typography-h2-spacing); /* -0.5px */
-    font-weight: var(--typography-h2-weight); /* bold */
+    font-size: var(--typography-h2-size);
+    letter-spacing: var(--typography-h2-spacing);
+    font-weight: var(--typography-h2-weight);
 }
 ```
 
@@ -128,9 +141,9 @@ h2 {
 
 ```css
 h3 {
-    font-size: var(--typography-h3-size); /* 47px */
-    letter-spacing: var(--typography-h3-spac); /* 0px */
-    font-weight: var(--typography-h3-weight); /* bold */
+    font-size: var(--typography-h3-size);
+    letter-spacing: var(--typography-h3-spac);
+    font-weight: var(--typography-h3-weight);
 }
 ```
 
@@ -147,9 +160,9 @@ h3 {
 
 ```css
 h4 {
-    font-size: var(--typography-h4-size); /* 33px */
-    letter-spacing: var(--typography-h4-spacin); /* 0.25px */
-    font-weight: var(--typography-h4-weight); /* bold */
+    font-size: var(--typography-h4-size);
+    letter-spacing: var(--typography-h4-spacin);
+    font-weight: var(--typography-h4-weight);
 }
 ```
 
@@ -166,9 +179,9 @@ h4 {
 
 ```css
 h5 {
-    font-size: var(--typography-h5-size); /* 23px */
-    letter-spacing: var(--typography-h5-spac); /* 0px */
-    font-weight: var(--typography-h5-weight); /* bold */
+    font-size: var(--typography-h5-size);
+    letter-spacing: var(--typography-h5-spac);
+    font-weight: var(--typography-h5-weight);
 }
 ```
 
@@ -185,8 +198,8 @@ h5 {
 
 ```css
 h6 {
-    font-size: var(--typography-h6-size); /* 19px */
-    letter-spacing: var(--typography-h6-spacing); /* 0.25px */
-    font-weight: var(--typography-h6-weight); /* bold */
+    font-size: var(--typography-h6-size);
+    letter-spacing: var(--typography-h6-spacing);
+    font-weight: var(--typography-h6-weight);
 }
 ```
