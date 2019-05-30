@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
     plugins: [
         require('postcss-import'),
@@ -5,7 +7,9 @@ module.exports = {
         require('postcss-custom-properties'),
         require('postcss-simple-vars'),
         require('postcss-calc'),
-        require('postcss-color-function'),
+        require('postcss-color-mod-function')({
+            importFrom: path.resolve(__dirname, './packages/ui/src/theme.css')
+        }),
         require('postcss-custom-media'),
         require('postcss-nested'),
         require('postcss-url'),

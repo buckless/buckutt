@@ -67,7 +67,8 @@ export default {
     border-radius: var(--radius);
     padding: 16px;
     margin: 16px;
-    background-color: var(--grey-0);
+    overflow: hidden;
+    background-color: var(--grey-50);
 }
 
 .card[to] {

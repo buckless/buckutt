@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- @slot Portal content -->
         <slot />
     </div>
 </template>

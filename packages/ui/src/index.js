@@ -13,6 +13,10 @@ style.innerHTML = `
 
     * { box-sizing: border-box; }
 
+    body {
+        font-family: var(--typography-family) !important;
+    }
+
     [data-preview] {
         font-family: var(--typography-family) !important;
     }

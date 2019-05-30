@@ -40,6 +40,7 @@ export default {
     display: flex;
     align-items: center;
     height: 100px;
+    max-width: 600px;
     padding: 0 24px;
     color: var(--foreground-dark-300);
 }

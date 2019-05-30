@@ -196,13 +196,13 @@ export default {
 .input:focus {
     border-color: var(--primary-300);
     outline: 0;
-    box-shadow: 0 0 0 3px color(var(--primary-300) a(0.2));
+    box-shadow: 0 0 0 3px color-mod(var(--primary-300) a(0.2));
 }
 
 .input:invalid {
     border-color: var(--error-300);
     outline: 0;
-    box-shadow: 0 0 0 3px color(var(--error-300) a(0.2));
+    box-shadow: 0 0 0 3px color-mod(var(--error-300) a(0.2));
 }
 
 .input[elevation] {
@@ -212,7 +212,7 @@ export default {
 
 .input[elevation]:focus {
     border: 1px solid var(--primary-300);
-    box-shadow: 0 0 0 3px color(var(--primary-300) a(0.2));
+    box-shadow: 0 0 0 3px color-mod(var(--primary-300) a(0.2));
 }
 </style>
 

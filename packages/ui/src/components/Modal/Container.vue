@@ -1,0 +1,67 @@
+<template>
+    <Portal>
+        <div class="container">
+            <div class="drop-shadow" v-if="dropShadow" @click="onClose" />
+            <!-- @slot Modal container content -->
+
+            <div class="wrapper">
+                <slot />
+            </div>
+        </div>
+    </Portal>
+</template>
+
+<script>
+import Portal from '../Portal/Portal';
+import Icon from '../Icon/Icon';
+
+/**
+ * Modal container component.
+ */
+export default {
+    name: 'ModalContainer',
+
+    props: {
+        /**
+         * Adds a drop shadow around the modal
+         */
+        dropShadow: { type: Boolean, default: true }
+    },
+
+    methods: {
+        onClose() {
+            /**
+             * Close event (initied by drop shadow)
+             *
+             * @event close
+             */
+            this.$emit('close');
+        }
+    }
+};
+</script>
+
+<style scoped>
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.drop-shadow {
+    background-color: color-mod(var(--black) a(0.3));
+    height: 100%;
+    pointer-events: all;
+}
+
+.wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+</style>
