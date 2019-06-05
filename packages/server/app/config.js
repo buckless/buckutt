@@ -5,5 +5,3 @@ if (process.env.GITLAB_CI) {
 } else {
     module.exports = require('config/server');
 }
-
-module.exports = Object.assign({}, module.exports);
