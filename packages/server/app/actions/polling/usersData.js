@@ -92,7 +92,9 @@ module.exports = async (ctx, { now, lastUpdate }) => {
                 memberships[i].user.wallets[j].deleted_at ||
                 memberships[i].user.wallets[j].blocked
             ) {
-                accesses.delete.push({ id: `${memberships[i].id}_${memberships[i].user.wallets[j].id}` });
+                accesses.delete.push({
+                    id: `${memberships[i].id}_${memberships[i].user.wallets[j].id}`
+                });
                 continue;
             }
 

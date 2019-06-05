@@ -2,7 +2,7 @@ const APIError = require('server/app/utils/APIError');
 const rightsDetails = require('server/app/utils/rightsDetails');
 
 const buildIsUser = right => (user, point, date) =>
-    Boolean(rightsDetails(user, point, date)[right]);
+    Boolean(rightsDetails(user, point.id, date)[right]);
 
 const buildIsUserOr = (...conditions) => (user, point, date) =>
     conditions.reduce((left, right) => left || right(user, point, date), false);

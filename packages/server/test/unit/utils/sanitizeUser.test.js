@@ -20,7 +20,7 @@ const user = {
             period: { start: Date.now() - oneDay, end: Date.now() + oneDay }
         }
     ]
-}
+};
 
 test('sanitizeUser()', t => {
     const u = sanitizeUser(user, 'foo');

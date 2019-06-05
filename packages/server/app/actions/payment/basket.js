@@ -35,9 +35,12 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
 
     purchases = purchases.map((purchase, i) => ({
         ...purchase,
-        cost: purchase.paidPrice && purchase.paidPrice < articlePrices[i].amount && articlePrices[i].freePrice
-            ? purchase.paidPrice
-            : articlePrices[i].amount
+        cost:
+            purchase.paidPrice &&
+            purchase.paidPrice < articlePrices[i].amount &&
+            articlePrices[i].freePrice
+                ? purchase.paidPrice
+                : articlePrices[i].amount
     }));
 
     const reloads = basket.filter(item => typeof item.cost !== 'number');
@@ -103,7 +106,9 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         );
 
     const unallowedPurchase =
-        computedBasket.find(item => typeof item.cost === 'number') && !userRights.sell && !onlyNfcDevice;
+        computedBasket.find(item => typeof item.cost === 'number') &&
+        !userRights.sell &&
+        !onlyNfcDevice;
     const unallowedReload =
         computedBasket.find(item => typeof item.credit === 'number') && !userRights.reload;
 

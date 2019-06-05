@@ -67,7 +67,12 @@ module.exports = async (ctx, { dateIn, dateOut, additive, filters }) => {
             knex.select(
                 bookshelf.knex.raw(
                     'greatest(sum(case when ?? is null then 0 when ?? = false then ?? else -1 * ?? end), 0) as amount',
-                    ['prices.id', 'purchases.isCancellation', 'purchases.amount', 'purchases.amount']
+                    [
+                        'prices.id',
+                        'purchases.isCancellation',
+                        'purchases.amount',
+                        'purchases.amount'
+                    ]
                 )
             );
             knex.from(

@@ -22,10 +22,11 @@ module.exports = async ctx => {
 
     const purchases = ctx.models.Purchase.query(knex => {
         knex.select(
-            bookshelf.knex.raw(
-                'sum(case when ?? = false then ?? else -1 * ?? end)',
-                ['purchases.isCancellation', 'purchases.amount', 'purchases.amount']
-            )
+            bookshelf.knex.raw('sum(case when ?? = false then ?? else -1 * ?? end)', [
+                'purchases.isCancellation',
+                'purchases.amount',
+                'purchases.amount'
+            ])
         );
     }).fetch();
 
