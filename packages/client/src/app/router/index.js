@@ -36,7 +36,7 @@ const routes = [
             {
                 path: 'chooser/:item',
                 component: PriceChooser,
-                beforeEnter: (_, __, next) => next(getters.isSellerMode || '/'),
+                beforeEnter: (_, __, next) => next(getters.isSellerMode || '/')
             }
         ]
     },

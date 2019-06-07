@@ -86,7 +86,7 @@ export default {
             this.updateStoredItems().then(() => this.loadDefaultItems());
         },
 
-        restart,
+        restart
     }
 };
 </script>

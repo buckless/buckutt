@@ -12,7 +12,7 @@
             :sort="{ field: 'name', order: 'ASC' }"
             :actions="[
                 { action: 'edit', text: 'Modifier' },
-                { action: 'remove', text: 'Supprimer' }
+                { action: 'remove', text: 'Supprimer', type: 'confirm' }
             ]"
             route="giftreloads"
             :paging="10"

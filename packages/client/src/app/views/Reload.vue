@@ -16,11 +16,15 @@
                     <div
                         @click="isRefund = !isRefund"
                         class="b-reload__modal__currency__refund"
-                        :class="{ 'b-reload__modal__currency__refund--active': isRefund }">
+                        :class="{ 'b-reload__modal__currency__refund--active': isRefund }"
+                    >
                         -
                     </div>
                 </div>
-                <currency :value="reloadAmount" class="b-reload__modal__currency__amount"></currency>
+                <currency
+                    :value="reloadAmount"
+                    class="b-reload__modal__currency__amount"
+                ></currency>
                 <span class="b-reload__modal__currency__gift" v-if="reloadGiftAmount > 0">
                     +<currency :value="reloadGiftAmount"></currency>
                 </span>
@@ -29,10 +33,11 @@
             <div>
                 <div class="b-reload__modal__numerical-input">
                     <unit-input
-                        v-if="meanOfPayment === 'returned'"
+                        v-if="meanOfPaymentDetails.type === 'unit'"
                         v-model="reloadAmount"
                         @validate="confirmReloadModal"
                         ref="input"
+                        :unitPrice="meanOfPaymentDetails.step"
                     ></unit-input>
                     <numerical-input
                         v-else
@@ -93,7 +98,8 @@ export default {
             isWaiting: state => state.basket.basketStatus === 'WAITING',
             isWriting: state => state.basket.writing,
             giftReloads: state => state.items.giftReloads,
-            meanOfPayment: state => state.reload.meanOfPayment
+            meanOfPayment: state => state.reload.meanOfPayment,
+            meansOfPayment: state => state.reload.meansOfPayment
         }),
 
         ...mapGetters(['reloadSum', 'buyerLogged']),
@@ -107,6 +113,10 @@ export default {
                     return timesEveryAmount * gr.amount;
                 })
                 .reduce((a, b) => a + b, 0);
+        },
+
+        meanOfPaymentDetails() {
+            return this.meansOfPayment.find(mop => mop.slug === this.meanOfPayment);
         }
     },
 

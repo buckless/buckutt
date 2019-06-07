@@ -5,7 +5,11 @@
                 <h2 class="mdl-card__title-text">Suivi des achats</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <b-purchaseschart :chartData="chartData" :unit="unit" :additive="additive"></b-purchaseschart>
+                <b-purchaseschart
+                    :chartData="chartData"
+                    :unit="unit"
+                    :additive="additive"
+                ></b-purchaseschart>
             </div>
             <div class="mdl-card__menu">
                 <mdl-switch v-model="additive" @input="updateData">Graphe croissant</mdl-switch>

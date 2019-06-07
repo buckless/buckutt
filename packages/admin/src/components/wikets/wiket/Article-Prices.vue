@@ -47,7 +47,11 @@
                         pattern="^[+-]?[0-9]+"
                         error="Le montant doit être un entier"
                     ></mdl-textfield>
-                    <mdl-icon-toggle v-model="newPrice.freePrice" icon="create" id="fp"></mdl-icon-toggle>
+                    <mdl-icon-toggle
+                        v-model="newPrice.freePrice"
+                        icon="create"
+                        id="fp"
+                    ></mdl-icon-toggle>
                 </div>
                 <b-inputselect
                     label="Période"
@@ -299,7 +303,8 @@ export default {
                 }
             }
 
-            & > .mdl-textfield, div {
+            & > .mdl-textfield,
+            div {
                 width: 180px;
                 margin-right: 10px;
             }

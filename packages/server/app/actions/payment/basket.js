@@ -36,22 +36,23 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
     purchases = purchases.map((purchase, i) => ({
         ...purchase,
         // Apply the custom price only if it's allowed for this price and lower than the fixed price
-        amount: ctx.event.useCardData || (purchase.amount < articlePrices[i].amount && articlePrices[i].freePrice)
-            ? purchase.amount
-            : articlePrices[i].amount
+        amount:
+            ctx.event.useCardData ||
+            (purchase.amount < articlePrices[i].amount && articlePrices[i].freePrice)
+                ? purchase.amount
+                : articlePrices[i].amount
     }));
 
     const reloads = basket.filter(item => item.itemType === 'reload');
     const refunds = basket.filter(item => item.itemType === 'refund');
     const computedBasket = reloads.concat(refunds, purchases);
 
-    const totalCost = computedBasket
-        .reduce((a, b) => {
-            let amount = isCancellation ? -1 * b.amount : b.amount;
-            amount = b.itemType === 'reload' ? -1 * amount : amount;
+    const totalCost = computedBasket.reduce((a, b) => {
+        let amount = isCancellation ? -1 * b.amount : b.amount;
+        amount = b.itemType === 'reload' ? -1 * amount : amount;
 
-            return a + amount;
-        }, 0);
+        return a + amount;
+    }, 0);
 
     if (wallet.credit < totalCost && !ctx.event.useCardData) {
         throw new APIError(module, 400, 'Not enough credit');
@@ -59,7 +60,11 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
 
     // The maximum credit has to be calculated on all possible credits
     const creditOnly = computedBasket
-        .filter(item => (isCancellation && item.itemType !== 'reload') || (!isCancellation && item.itemType === 'reload'))
+        .filter(
+            item =>
+                (isCancellation && item.itemType !== 'reload') ||
+                (!isCancellation && item.itemType === 'reload')
+        )
         .reduce((a, b) => a + b.amount, 0);
 
     if (
@@ -100,7 +105,9 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         );
 
     const unallowedPurchase =
-        computedBasket.find(item => item.itemType === 'purchase') && !userRights.sell && !onlyNfcDevice;
+        computedBasket.find(item => item.itemType === 'purchase') &&
+        !userRights.sell &&
+        !onlyNfcDevice;
     const unallowedReload =
         computedBasket.find(item => item.itemType !== 'purchase') && !userRights.reload;
 
@@ -113,7 +120,7 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         });
     }
 
-    const basketInsts = [];;
+    const basketInsts = [];
 
     computedBasket.forEach(item => {
         if (item.itemType === 'purchase') {

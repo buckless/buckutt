@@ -6,6 +6,7 @@ const translation = {
     fundation: 'fundations',
     giftreload: 'giftreloads',
     group: 'groups',
+    meanofpayment: 'meansofpayment',
     period: 'periods',
     point: 'points',
     promotion: 'promotions',

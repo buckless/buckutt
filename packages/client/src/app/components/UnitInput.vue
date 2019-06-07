@@ -15,12 +15,9 @@
 
 <script>
 export default {
-    data() {
-        return { unitPrice: 100 };
-    },
-
     props: {
-        value: { type: Number, default: 0 }
+        value: { type: Number, default: 0 },
+        unitPrice: { type: Number, default: 100 }
     },
 
     methods: {

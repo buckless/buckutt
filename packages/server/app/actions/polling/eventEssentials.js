@@ -21,7 +21,7 @@ module.exports = async ctx => {
 
     // step 3: fetch meansOfPayment
     meansOfPayment = await ctx.models.MeanOfPayment.fetchAll().then(mop => mop.toJSON());
-    meansOfPayment = meansOfPayment.map(mop => pick(mop, ['name', 'slug']));
+    meansOfPayment = meansOfPayment.map(mop => pick(mop, ['name', 'slug', 'step', 'type']));
 
     // step 4: fetch nfcCosts
     const embedPrices = { embed: 'period', filters: [['end', '>', now]], required: true };

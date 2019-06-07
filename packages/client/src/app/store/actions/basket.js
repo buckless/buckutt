@@ -109,7 +109,9 @@ export const generateOptions = store => ({
 export const validateBasket = async (store, { cardNumber, credit, options, version }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
-        (store.getters.refundAmount === 0 && store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0)
+        (store.getters.refundAmount === 0 &&
+            store.getters.reloadAmount === 0 &&
+            store.state.items.basket.itemList.length === 0)
     ) {
         return;
     }
@@ -322,7 +324,11 @@ export const sendBasket = (store, payload = {}) => {
 };
 
 export const basketClickValidation = store => {
-    if (store.getters.refundAmount === 0 && store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0) {
+    if (
+        store.getters.refundAmount === 0 &&
+        store.getters.reloadAmount === 0 &&
+        store.state.items.basket.itemList.length === 0
+    ) {
         return;
     }
 

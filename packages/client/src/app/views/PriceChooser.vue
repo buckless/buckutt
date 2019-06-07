@@ -75,7 +75,9 @@ export default {
     },
 
     mounted() {
-        this.item = this.wiketItems.items.find(item => item.id === this.$router.currentRoute.params.item);
+        this.item = this.wiketItems.items.find(
+            item => item.id === this.$router.currentRoute.params.item
+        );
 
         if (!this.item || !this.item.freePrice) {
             return this.closeChooser();

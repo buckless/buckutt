@@ -39,6 +39,15 @@
                 </li>
                 <li>
                     <router-link
+                        to="/meansofpayment"
+                        class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
+                    >
+                        <i class="material-icons">credit_card</i>
+                        Moyens paiement
+                    </router-link>
+                </li>
+                <li>
+                    <router-link
                         to="/giftreloads"
                         class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect"
                     >
