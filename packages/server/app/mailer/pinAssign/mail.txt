@@ -6,5 +6,5 @@ Cliquez ici pour vous connecter : {{=it.link}}.
 
 {{=it.brandname}} — Cashless.
 
-Buckless — Studio Async © 2018
+Buckless — Studio Async © 2018-2019
 

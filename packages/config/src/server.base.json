@@ -40,6 +40,9 @@
         "maxmemory": "1gb"
     },
     "urls": {},
+    "refund": {
+      "subject": "Demande de remboursement cashless"
+    },
     "askpin": {
         "subject": "Code PIN oublié"
     },

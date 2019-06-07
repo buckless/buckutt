@@ -1,0 +1,10 @@
+Bonjour,
+
+Vous avez demandé le remboursement de votre solde cashless {{=it.brandname}}.
+
+Cette demande a bien été prise en compte et le montant de {{=it.amount}}€ vous sera recrédité sous peu.
+
+{{=it.brandname}} — Cashless.
+
+Buckless — Studio Async © 2018-2019
+

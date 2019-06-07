@@ -5,3 +5,5 @@ Vous avez demandé à réinitialiser votre mot de passe cashless {{=it.brandname
 Cliquez ici pour réinitialiser votre mot de passe : {{=it.link}}.
 
 {{=it.brandname}} — Cashless.
+
+Buckless — Studio Async © 2018-2019
