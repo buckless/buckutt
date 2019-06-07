@@ -10,8 +10,7 @@
             Les groupes d'utilisateurs permettent d'associer des tarifs différents selon
             l'appartenance d'un client à un groupe.<br />
             <strong>Exemple:</strong> Ils peuvent être pratiques pour interdire la vente d'alcool
-            aux mineurs, ou proposer des prix plus bas aux membres de votre équipe.<br />
-            <strong>Note:</strong> Les groupes peuvent-être ré-utilisés d'un événement sur l'autre.
+            aux mineurs, ou proposer des prix plus bas aux membres de votre équipe.
         </b-detailedswitch>
 
         <b-detailedswitch
@@ -25,9 +24,7 @@
             <strong>Exemple:</strong> Si vous avez deux associations sur un même stand, et qu'elles
             souhaitent toutes les deux vendre leurs articles sur une même borne de vente, il est
             possible d'assigner les ventes d'une partie des articles à une association, et le reste
-            à l'autre.<br />
-            <strong>Note:</strong> Les fondations peuvent-être ré-utilisées d'un événement sur
-            l'autre.
+            à l'autre.
         </b-detailedswitch>
 
         <b-detailedswitch
@@ -39,8 +36,7 @@
             Les périodes permettent d'établir des droits, ou des prix sur des laps de temps
             donnés.<br />
             <strong>Exemple:</strong> Mettre en place des happy hours sur une certaine durée, donner
-            les droits de vente sur une certaine durée.<br />
-            <strong>Note:</strong> Une période est propre à un événement.
+            les droits de vente sur une certaine durée.
         </b-detailedswitch>
 
         <b-detailedswitch
@@ -51,11 +47,7 @@
         >
             Le mode autonome permet à votre événement de pouvoir continuer à utiliser la solution
             lors d'une perte de réseau, en écrivant sur les cartes ou bracelets de vos utilisateurs.
-            Lors du retour de la connectivité, le système repasse automatiquement en mode normal.<br />
-            <strong>Note 1:</strong> Certaines fonctionnalités, comme les tarifs adaptés aux
-            périodes ou aux groupes, ne seront plus disponible en mode dégradé.<br />
-            <strong>Note 2:</strong> Il vous faut impérativement avoir les droits d'écriture sur les
-            cartes ou bracelets de votre événement.
+            Lors du retour de la connectivité, le système repasse automatiquement en mode normal.
         </b-detailedswitch>
     </div>
 </template>
