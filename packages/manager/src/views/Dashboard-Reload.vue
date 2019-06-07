@@ -77,7 +77,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { reload } from 'config/manager';
 import Card from '@/components/Card';
 import Icon from '@/components/Icon';
 import TextInput from '@/components/TextInput';
@@ -95,8 +94,7 @@ export default {
 
     data: () => ({
         buttonsInputs: true,
-        amount: '10',
-        isCheckout: reload.name === 'checkout'
+        amount: '10'
     }),
 
     computed: {
@@ -131,29 +129,7 @@ export default {
                 intAmount * (1 + this.costs.variableCostsReload / 100) +
                 this.costs.fixedCostsReload / 100;
 
-            if (reload.name === 'checkout') {
-                Checkout.configure({
-                    publicKey: reload.checkout.publicKey,
-                    customerEmail: this.user.mail,
-                    value: fullAmount * 100,
-                    currency: 'EUR',
-                    cardFormMode: 'cardTokenisation',
-                    paymentMode: 'cards'
-                });
-
-                Checkout.addEventHandler(Checkout.Events.CARD_TOKENISED, event => {
-                    this.reloadAction({ amount: fullAmount, cardToken: event.data.cardToken });
-                });
-
-                Checkout.addEventHandler(Checkout.Events.LIGHTBOX_DEACTIVATED, () => {
-                    Checkout.removeAllEventHandlers(Checkout.Events.CARD_TOKENISED);
-                    Checkout.removeAllEventHandlers(Checkout.Events.LIGHTBOX_DEACTIVATED);
-                });
-
-                Checkout.open();
-            } else {
-                this.reloadAction({ amount: fullAmount });
-            }
+            this.reloadAction({ amount: fullAmount });
         }
     }
 };

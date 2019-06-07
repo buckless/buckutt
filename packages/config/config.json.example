@@ -130,12 +130,6 @@
             "url": "https://etupay.utt.fr/initiate",
             "key": ""
         },
-        "checkout": {
-            "privateKey": "",
-            "publicKey": "",
-            "scriptLocation": "https://cdn.checkout.com/sandbox/js/checkout.js",
-            "api": "https://api.sandbox.checkout.com"
-        },
         "payline": {
             "id": "",
             "password": "",
