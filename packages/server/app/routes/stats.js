@@ -82,7 +82,7 @@ router.get(
 
         req.details.queryPoint = req.query.point;
 
-        log.info(logStr('withdrawals', req.query));
+        log.info(logStr('reloads', req.query));
 
         res.json(stats);
     })
@@ -95,7 +95,8 @@ router.get(
 
         const stats = await statsRefunds(ctx(req), {
             dateIn: req.query.dateIn,
-            dateOut: req.query.dateOut
+            dateOut: req.query.dateOut,
+            point: req.query.point
         });
 
         log.info(logStr('refunds', req.query));
@@ -167,6 +168,7 @@ router.get(
         const csv = await statsRefunds(ctx(req), {
             dateIn: req.query.dateIn,
             dateOut: req.query.dateOut,
+            point: req.query.point,
             csv: true
         });
 

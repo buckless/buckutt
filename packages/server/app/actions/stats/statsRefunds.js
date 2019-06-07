@@ -1,10 +1,15 @@
 const statsToCSV = require('server/app/helpers/statsToCSV');
+const { isUUID } = require('server/app/utils/idParser');
 const dateQuery = require('server/app/utils/statsDateQuery');
 
 const relatedCsv = ['seller', 'wallet', 'wallet.user', 'point'];
 
-module.exports = async (ctx, { dateIn, dateOut, csv }) => {
+module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
     let query = dateQuery(ctx.models.Refund, dateIn, dateOut);
+
+    if (point && isUUID(point)) {
+        query = query.where({ point_id: point });
+    }
 
     if (csv) {
         const refunds = await query.fetchAll({ withRelated: relatedCsv });

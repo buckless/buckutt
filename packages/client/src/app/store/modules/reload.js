@@ -2,7 +2,8 @@ const initialState = {
     reloadState: 'closed',
     meanOfPayment: 'card',
     meansOfPayment: [],
-    reloads: []
+    reloads: [],
+    refunds: []
 };
 
 const mutations = {
@@ -30,8 +31,16 @@ const mutations = {
         state.reloads.push(payload);
     },
 
+    ADD_REFUND(state, payload) {
+        state.refunds.push(payload);
+    },
+
     REMOVE_RELOADS(state) {
         state.reloads = [];
+    },
+
+    REMOVE_REFUNDS(state) {
+        state.refunds = [];
     },
 
     LOGOUT_BUYER(state) {

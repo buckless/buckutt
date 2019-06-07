@@ -10,7 +10,7 @@ module.exports = async (ctx, { id, limit, offset }) => {
     });
 
     const refundQuery = ctx.models.Refund.where({ wallet_id: id }).fetchAll({
-        withRelated: ['seller']
+        withRelated: ['seller', 'point']
     });
 
     const transferFromQuery = ctx.models.Transfer.where({ creditor_id: id }).fetchAll({
@@ -95,10 +95,10 @@ module.exports = async (ctx, { id, limit, offset }) => {
 
     refunds = refunds.toJSON().map(refund => ({
         id: refund.id,
-        type: 'refund',
+        type: refund.isCancellation ? 'refund-cancellation' : 'refund',
         date: refund.clientTime,
-        amount: -1 * refund.amount,
-        point: 'Internet',
+        amount: refund.isCancellation ? refund.amount : -1 * refund.amount,
+        point: refund.point.name,
         mop: refund.type,
         seller: {
             lastname: refund.seller.lastname,

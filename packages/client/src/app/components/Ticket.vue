@@ -21,6 +21,11 @@
 
             <br />
 
+            Remboursement :
+            <strong><currency :value="user.refund || 0"></currency></strong>
+
+            <br />
+
             Nouveau crédit :
             <strong><currency :value="user.credit || 0"></currency></strong>
         </div>

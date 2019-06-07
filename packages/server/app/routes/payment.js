@@ -53,7 +53,7 @@ router.post(
 router.post(
     '/cancelTransaction',
     asyncHandler(async (req, res) => {
-        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
+        isUser.admin.orThrow(req.user, req.point, req.date);
 
         req.details.rawType = req.body.rawType;
         req.details.objectId = req.body.id;

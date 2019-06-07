@@ -151,19 +151,14 @@ export default {
 
         resume(entry) {
             const basketToSend = entry.basketToSend.filter(e => !e.uncancellable);
-
-            const items = basketToSend
-                .filter(e => typeof e.cost === 'number')
-                .map(e => ({
-                    name: e.name,
-                    cost: e.paidPrice || e.cost
-                }));
-
-            const cost = items.map(e => e.cost).reduce((a, b) => a + b, 0);
+            const items = basketToSend.filter(e => e.itemType === 'purchase');
+            const refund = basketToSend
+                .filter(e => e.itemType === 'refund')
+                .reduce((a, b) => a + b.amount, 0);
+            const cost = items.reduce((a, b) => a + b.amount, 0) + refund;
             const reload = basketToSend
-                .filter(e => e.credit)
-                .map(e => e.credit)
-                .reduce((a, b) => a + b, 0);
+                .filter(e => e.itemType === 'reload')
+                .reduce((a, b) => a + b.amount, 0);
 
             return {
                 cost,

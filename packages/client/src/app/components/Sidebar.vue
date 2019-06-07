@@ -2,6 +2,7 @@
     <div class="b-sidebar">
         <div class="b-sidebar__items">
             <sidebar-reload v-if="reloadAmount > 0" :amount="reloadAmount"></sidebar-reload>
+            <sidebar-refund v-if="refundAmount > 0" :amount="refundAmount"></sidebar-refund>
             <sidebar-item
                 v-for="item in sidebarCatering"
                 :key="`catering_${item.id}`"
@@ -36,11 +37,12 @@ import { mapGetters } from 'vuex';
 import SidebarItem from './Sidebar-Item';
 import SidebarPromotion from './Sidebar-Promotion';
 import SidebarReload from './Sidebar-Reload';
+import SidebarRefund from './Sidebar-Refund';
 import SidebarValidate from './Sidebar-Validate';
 
 export default {
     computed: {
-        ...mapGetters(['reloadAmount', 'sidebar']),
+        ...mapGetters(['reloadAmount', 'refundAmount', 'sidebar']),
 
         sidebarItems() {
             const counts = countBy(this.sidebar.items.map(item => item.id));
@@ -73,6 +75,7 @@ export default {
         SidebarItem,
         SidebarPromotion,
         SidebarReload,
+        SidebarRefund,
         SidebarValidate
     }
 };

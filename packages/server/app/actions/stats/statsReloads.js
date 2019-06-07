@@ -17,7 +17,7 @@ module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
         return statsToCSV.generate(reloads.toJSON(), statsToCSV.reloadFields);
     }
 
-    let credits = await query
+    const credits = await query
         .query(q =>
             q
                 .select('type', 'isCancellation')

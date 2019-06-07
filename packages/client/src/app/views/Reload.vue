@@ -12,10 +12,19 @@
                 <methods :disabled="reloadState === 'confirm'"></methods>
             </div>
             <div class="b-reload__modal__currency">
-                <currency :value="reloadAmount"></currency>
+                <div class="b-reload__modal__currency__spacer">
+                    <div
+                        @click="isRefund = !isRefund"
+                        class="b-reload__modal__currency__refund"
+                        :class="{ 'b-reload__modal__currency__refund--active': isRefund }">
+                        -
+                    </div>
+                </div>
+                <currency :value="reloadAmount" class="b-reload__modal__currency__amount"></currency>
                 <span class="b-reload__modal__currency__gift" v-if="reloadGiftAmount > 0">
                     +<currency :value="reloadGiftAmount"></currency>
                 </span>
+                <div class="b-reload__modal__currency__spacer"></div>
             </div>
             <div>
                 <div class="b-reload__modal__numerical-input">
@@ -73,7 +82,8 @@ export default {
 
     data() {
         return {
-            reloadAmount: 0
+            reloadAmount: 0,
+            isRefund: false
         };
     },
 
@@ -118,17 +128,25 @@ export default {
         },
 
         reload() {
-            this.addReload({
-                amount: this.reloadAmount,
-                type: this.meanOfPayment,
-                trace: ''
-            });
-
-            if (this.reloadGiftAmount) {
+            if (!this.isRefund) {
                 this.addReload({
-                    amount: this.reloadGiftAmount,
-                    type: 'gift',
-                    trace: `${this.meanOfPayment}-${this.reloadAmount}`
+                    amount: this.reloadAmount,
+                    type: this.meanOfPayment,
+                    trace: ''
+                });
+
+                if (this.reloadGiftAmount) {
+                    this.addReload({
+                        amount: this.reloadGiftAmount,
+                        type: 'gift',
+                        trace: `${this.meanOfPayment}-${this.reloadAmount}`
+                    });
+                }
+            } else {
+                this.addRefund({
+                    amount: this.reloadAmount,
+                    type: this.meanOfPayment,
+                    trace: ''
                 });
             }
 
@@ -171,6 +189,7 @@ export default {
             'confirmReloadModal',
             'closeReloadModal',
             'addReload',
+            'addRefund',
             'clearBasket',
             'cancelReloadModal',
             'validateBasket',
@@ -235,14 +254,38 @@ export default {
 }
 
 .b-reload__modal__currency {
-    color: color($black a(0.65));
     font-size: 25px;
     margin-bottom: 15px;
+    display: flex;
+}
+
+.b-reload__modal__currency__amount {
+    color: color($black a(0.65));
+}
+
+.b-reload__modal__currency__refund {
+    border-radius: 2px;
+    color: $lightblue;
+    cursor: pointer;
+    height: 25px;
+    line-height: 25px;
+    width: 35px;
     text-align: center;
+    margin-right: 5px;
+    float: right;
+
+    &--active {
+        color: #fff;
+        background-color: $lightblue;
+    }
 }
 
 .b-reload__modal__currency__gift {
     font-size: 75%;
+}
+
+.b-reload__modal__currency__spacer {
+    flex: 1;
 }
 
 .b-reload__modal__numerical-input {

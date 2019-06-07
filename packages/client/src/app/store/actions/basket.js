@@ -9,6 +9,7 @@ export const removeItemFromBasket = ({ commit }, item) => {
 export const clearBasket = ({ commit }) => {
     commit('CLEAR_BASKET');
     commit('REMOVE_RELOADS');
+    commit('REMOVE_REFUNDS');
 };
 
 export const freePriceMode = ({ commit }) => {
@@ -108,7 +109,7 @@ export const generateOptions = store => ({
 export const validateBasket = async (store, { cardNumber, credit, options, version }) => {
     if (
         store.state.basket.basketStatus === 'DOING' ||
-        (store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0)
+        (store.getters.refundAmount === 0 && store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0)
     ) {
         return;
     }
@@ -197,6 +198,7 @@ export const sendBasket = (store, payload = {}) => {
 
     const basket = store.getters.sidebar;
     const reloads = store.state.reload.reloads;
+    const refunds = store.state.reload.refunds;
 
     const basketToSend = [];
 
@@ -211,9 +213,8 @@ export const sendBasket = (store, payload = {}) => {
                 }
             ],
             alcohol: article.alcohol,
-            cost: article.price.amount,
-            type: 'purchase',
-            paidPrice: article.paidPrice,
+            amount: article.amount,
+            itemType: 'purchase',
             uncancellable: article.uncancellable
         });
     });
@@ -235,17 +236,27 @@ export const sendBasket = (store, payload = {}) => {
             promotion_id: promotion.id,
             name: promotion.name,
             articles: articlesInside,
-            cost: promotion.price.amount,
-            type: 'purchase',
+            amount: promotion.price.amount,
+            itemType: 'purchase',
             alcohol
         });
     });
 
     reloads.forEach(reload => {
         basketToSend.push({
-            credit: reload.amount,
+            amount: reload.amount,
             trace: reload.trace,
-            type: reload.type
+            type: reload.type,
+            itemType: 'reload'
+        });
+    });
+
+    refunds.forEach(reload => {
+        basketToSend.push({
+            amount: reload.amount,
+            trace: reload.trace,
+            type: reload.type,
+            itemType: 'refund'
         });
     });
 
@@ -295,6 +306,7 @@ export const sendBasket = (store, payload = {}) => {
                     : null,
                 credit: lastWallet.data.credit,
                 reload: store.getters.reloadAmount,
+                refund: store.getters.refundAmount,
                 bought: store.getters.basketAmount,
                 localId
             });
@@ -310,7 +322,7 @@ export const sendBasket = (store, payload = {}) => {
 };
 
 export const basketClickValidation = store => {
-    if (store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0) {
+    if (store.getters.refundAmount === 0 && store.getters.reloadAmount === 0 && store.state.items.basket.itemList.length === 0) {
         return;
     }
 

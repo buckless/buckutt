@@ -20,6 +20,13 @@
             type="price"
         ></b-global-tile>
         <b-global-tile
+            icon="money_off"
+            title="Remboursements totaux"
+            :value="globalData.refunds"
+            color="#9e5eba"
+            type="price"
+        ></b-global-tile>
+        <b-global-tile
             icon="shopping_cart"
             title="Achats totaux"
             :value="globalData.purchases"

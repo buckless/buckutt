@@ -6,6 +6,10 @@ module.exports = bookshelf => {
         uuid: true,
         softDelete: true,
 
+        point() {
+            return this.belongsTo('Point');
+        },
+
         wallet() {
             return this.belongsTo('Wallet');
         },

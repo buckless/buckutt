@@ -29,7 +29,7 @@ export const basketAmount = (_, getters) => {
     }
 
     const items = (basket.items || [])
-        .map(item => item.paidPrice || item.price.amount || 0)
+        .map(item => item.amount || 0)
         .reduce((a, b) => a + b, 0);
 
     const promotions = (basket.promotions || [])
@@ -39,17 +39,20 @@ export const basketAmount = (_, getters) => {
     return items + promotions;
 };
 
-export const reloadAmount = state => {
-    return state.reload.reloads.map(reload => reload.amount).reduce((a, b) => a + b, 0);
-};
+export const reloadAmount = state =>
+    state.reload.reloads.map(reload => reload.amount).reduce((a, b) => a + b, 0);
+
+export const refundAmount = state =>
+    state.reload.refunds.map(refund => refund.amount).reduce((a, b) => a + b, 0);
 
 // Credit to write after a purchase
 export const credit = (state, getters) => {
     const initialCredit = state.auth.buyer.credit;
     const reloads = getters.reloadAmount;
+    const refunds = getters.refundAmount;
     const basketCost = getters.basketAmount;
 
-    return initialCredit + reloads - basketCost;
+    return initialCredit + reloads - basketCost - refunds;
 };
 
 // Catering to write after a purchase
@@ -75,13 +78,13 @@ export const sidebar = (state, getters) => {
         }
 
         // if a custom price is given, take it in account only if the price were editable & if the amount is < the fixed price
-        const paidPrice = item.paidPrice && updatedItem.price.freePrice && (item.paidPrice < updatedItem.price.amount || item.price.amount === 0)
+        const amount = item.paidPrice && updatedItem.price.freePrice && (item.paidPrice < updatedItem.price.amount || item.price.amount === 0)
             ? item.paidPrice
-            : undefined;
+            : updatedItem.price.amount;
 
         return {
             ...item,
-            paidPrice,
+            amount,
             price: updatedItem.price
         };
     });

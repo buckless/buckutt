@@ -81,16 +81,16 @@ export default {
 
             this.history.forEach(entry => {
                 entry.basketToSend.forEach(transaction => {
-                    if (transaction.credit) {
+                    if (transaction.itemType === 'reload') {
                         singleReloads.push({
                             name: this.meansOfPayment.find(mop => mop.slug === transaction.type)
                                 .name,
-                            amount: transaction.credit
+                            amount: transaction.amount
                         });
                     } else {
                         singlePurchases.push({
                             name: transaction.name,
-                            amount: transaction.cost
+                            amount: transaction.amount
                         });
                     }
                 });

@@ -2,14 +2,10 @@ const { bookshelf } = require('server/app/db');
 const creditWallet = require('server/app/helpers/creditWallet');
 const APIError = require('server/app/utils/APIError');
 
-const getPriceAmount = (Price, id) =>
-    Price.where({ id })
-        .fetch()
-        .then(price => price.get('amount'));
-
 module.exports = async (ctx, { id, rawType, clientTime }) => {
     const transactionModels = {
         reload: 'Reload',
+        refund: 'Refund',
         purchase: 'Purchase',
         promotion: 'Purchase'
     };
@@ -27,15 +23,13 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
         .fetch({ require: true, withRelated })
         .then(transaction => (transaction ? transaction.toJSON() : null));
 
-    // don't check if from client and card data are used
-    const checkApiCredit = ctx.point.name === 'Internet' || !ctx.event.useCardData;
-
     const isAlreadyACancellation = transaction.isCancellation;
     const wallet = transaction.wallet;
 
     const cancellationData = {
         ...transaction,
         seller_id: ctx.user.id,
+        point_id: ctx.point.id,
         isCancellation: !isAlreadyACancellation,
         clientTime: clientTime || new Date()
     };
@@ -46,14 +40,20 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
     delete cancellationData.articles;
     delete cancellationData.wallet;
 
+    let pending;
+    if (currentModel === 'Reload') {
+        pending = isAlreadyACancellation ? transaction.credit : -1 * transaction.credit;
+    } else {
+        pending = isAlreadyACancellation ? -1 * transaction.amount : transaction.amount;
+    }
+
+    if (wallet.credit + pending < 0 && !ctx.event.useCardData) {
+        throw new APIError(module, 403, "Wallet doesn't have enough credit");
+    }
+
+    await creditWallet(ctx, wallet.id, pending);
+
     if (currentModel === 'Purchase') {
-        const pending = isAlreadyACancellation ? -1 * transaction.amount : transaction.amount;
-
-        if (wallet.credit + pending < 0 && checkApiCredit) {
-            throw new APIError(module, 403, "Wallet doesn't have enough credit");
-        }
-
-        await creditWallet(ctx, wallet.id, pending);
         const newTransaction = await new ctx.models.Purchase(cancellationData).save();
 
         await Promise.all(
@@ -67,13 +67,8 @@ module.exports = async (ctx, { id, rawType, clientTime }) => {
             )
         );
     } else if (currentModel === 'Reload') {
-        const pending = isAlreadyACancellation ? transaction.credit : -1 * transaction.credit;
-
-        if (wallet.credit + pending < 0 && checkApiCredit) {
-            throw new APIError(module, 403, "Wallet doesn't have enough credit");
-        }
-
-        await creditWallet(ctx, wallet.id, pending);
         await new ctx.models.Reload(cancellationData).save();
+    } else if (currentModel === 'Refund') {
+        await new ctx.models.Refund(cancellationData).save();
     }
 };

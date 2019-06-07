@@ -19,7 +19,7 @@
                     condition: {
                         field: 'rawType',
                         statement: 'isIn',
-                        value: ['purchase', 'reload', 'promotion']
+                        value: ['purchase', 'reload', 'promotion', 'refund']
                     }
                 }
             ]"

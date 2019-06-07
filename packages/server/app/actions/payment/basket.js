@@ -25,7 +25,7 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         });
     }
 
-    let purchases = basket.filter(item => typeof item.cost === 'number');
+    let purchases = basket.filter(item => item.itemType === 'purchase');
 
     const getArticlePrices = purchases.map(purchase =>
         getPrice(ctx.models.Price, purchase.price_id)
@@ -35,53 +35,47 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
 
     purchases = purchases.map((purchase, i) => ({
         ...purchase,
-        cost:
-            purchase.paidPrice &&
-            purchase.paidPrice < articlePrices[i].amount &&
-            articlePrices[i].freePrice
-                ? purchase.paidPrice
-                : articlePrices[i].amount
+        // Apply the custom price only if it's allowed for this price and lower than the fixed price
+        amount: ctx.event.useCardData || (purchase.amount < articlePrices[i].amount && articlePrices[i].freePrice)
+            ? purchase.amount
+            : articlePrices[i].amount
     }));
 
-    const reloads = basket.filter(item => typeof item.cost !== 'number');
-    const computedBasket = reloads.concat(purchases);
+    const reloads = basket.filter(item => item.itemType === 'reload');
+    const refunds = basket.filter(item => item.itemType === 'refund');
+    const computedBasket = reloads.concat(refunds, purchases);
 
-    const purchasesInsts = [];
-    const reloadsInsts = [];
-
-    // If it's a cancellation: credit credit is becoming a cost, cost is becoming a credit
     const totalCost = computedBasket
-        .map(item => {
-            if (typeof item.cost === 'number') {
-                return isCancellation ? -1 * item.cost : item.cost;
-            } else if (typeof item.credit === 'number') {
-                return isCancellation ? item.credit : -1 * item.credit;
-            }
+        .reduce((a, b) => {
+            let amount = isCancellation ? -1 * b.amount : b.amount;
+            amount = b.itemType === 'reload' ? -1 * amount : amount;
 
-            return 0;
-        })
-        .reduce((a, b) => a + b);
-
-    const reloadOnly = computedBasket
-        .filter(item =>
-            isCancellation ? typeof item.cost === 'number' : typeof item.credit === 'number'
-        )
-        .map(item => (isCancellation ? item.cost : item.credit))
-        .reduce((a, b) => a + b, 0);
+            return a + amount;
+        }, 0);
 
     if (wallet.credit < totalCost && !ctx.event.useCardData) {
         throw new APIError(module, 400, 'Not enough credit');
     }
 
+    // The maximum credit has to be calculated on all possible credits
+    const creditOnly = computedBasket
+        .filter(item => (isCancellation && item.itemType !== 'reload') || (!isCancellation && item.itemType === 'reload'))
+        .reduce((a, b) => a + b.amount, 0);
+
     if (
         ctx.event.maxPerAccount &&
         wallet.credit - totalCost > ctx.event.maxPerAccount &&
-        reloadOnly > 0 &&
+        creditOnly > 0 &&
         !ctx.event.useCardData
     ) {
         const max = (ctx.event.maxPerAccount / 100).toFixed(2);
         throw new APIError(module, 400, `Maximum exceeded : ${max}€`, { user: ctx.user.id });
     }
+
+    // The minimum reload has to be calculated only on a true reload, not on cancellations
+    const reloadOnly = computedBasket
+        .filter(item => !isCancellation && item.itemType === 'reload')
+        .reduce((a, b) => a + b.amount, 0);
 
     if (ctx.event.minReload && reloadOnly < ctx.event.minReload && reloadOnly > 0) {
         const min = (ctx.event.minReload / 100).toFixed(2);
@@ -101,16 +95,14 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         (userRights.reload || userRights.assign) &&
         !computedBasket.find(
             item =>
-                typeof item.cost === 'number' &&
+                item.itemType === 'purchase' &&
                 item.articles.find(article => article.id !== ctx.event.nfc_id)
         );
 
     const unallowedPurchase =
-        computedBasket.find(item => typeof item.cost === 'number') &&
-        !userRights.sell &&
-        !onlyNfcDevice;
+        computedBasket.find(item => item.itemType === 'purchase') && !userRights.sell && !onlyNfcDevice;
     const unallowedReload =
-        computedBasket.find(item => typeof item.credit === 'number') && !userRights.reload;
+        computedBasket.find(item => item.itemType !== 'purchase') && !userRights.reload;
 
     // allow purchase if it's a nfc card and the operator is a reloader
     if (unallowedPurchase || unallowedReload) {
@@ -121,8 +113,10 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
         });
     }
 
+    const basketInsts = [];;
+
     computedBasket.forEach(item => {
-        if (typeof item.cost === 'number') {
+        if (item.itemType === 'purchase') {
             // purchases
             const articlesIds = item.articles.map(article => article.id);
             const countIds = countBy(articlesIds);
@@ -134,7 +128,7 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
                 promotion_id: item.promotion_id || null,
                 seller_id: ctx.user.id,
                 alcohol: item.alcohol,
-                amount: item.cost,
+                amount: item.amount,
                 clientTime,
                 isCancellation
             });
@@ -154,11 +148,11 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
                 )
             );
 
-            purchasesInsts.push(savePurchase);
-        } else if (typeof item.credit === 'number') {
+            basketInsts.push(savePurchase);
+        } else if (item.itemType === 'reload') {
             // reloads
             const reload = new ctx.models.Reload({
-                credit: item.credit,
+                credit: item.amount,
                 type: item.type,
                 trace: item.trace || '',
                 point_id: ctx.point.id,
@@ -168,14 +162,28 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
                 isCancellation
             });
 
-            reloadsInsts.push(reload.save());
+            basketInsts.push(reload.save());
+        } else if (item.itemType === 'refund') {
+            // refunds
+            const refund = new ctx.models.Refund({
+                amount: item.amount,
+                type: item.type,
+                trace: item.trace || '',
+                point_id: ctx.point.id,
+                wallet_id: wallet.id,
+                seller_id: ctx.user.id,
+                clientTime,
+                isCancellation
+            });
+
+            basketInsts.push(refund.save());
         }
     });
 
     const updateCredit = creditWallet(ctx, wallet.id, -1 * totalCost);
     wallet.credit = newCredit;
 
-    await Promise.all([updateCredit].concat(purchasesInsts).concat(reloadsInsts));
+    await Promise.all([updateCredit].concat(basketInsts));
 
     return {
         updatedWallet: wallet

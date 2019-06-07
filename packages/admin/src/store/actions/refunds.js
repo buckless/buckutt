@@ -22,7 +22,8 @@ export function refundWallet({ state, dispatch }, refundData) {
                 trace: refundData.refund.trace,
                 type: refundData.refund.type,
                 seller_id: state.app.loggedUser.id,
-                wallet_id: refundedWallet.id
+                wallet_id: refundedWallet.id,
+                point_id: state.objects.points.find(point => point.name === 'Internet').id
             };
 
             return dispatch('createObject', {

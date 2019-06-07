@@ -19,8 +19,16 @@ export const addReload = ({ commit }, reload) => {
     commit('ADD_RELOAD', reload);
 };
 
+export const addRefund = ({ commit }, refund) => {
+    commit('ADD_REFUND', refund);
+};
+
 export const removeReloads = ({ commit }) => {
     commit('REMOVE_RELOADS');
+};
+
+export const removeRefunds = ({ commit }) => {
+    commit('REMOVE_REFUNDS');
 };
 
 export const setMeansOfPayment = ({ commit }, meansOfPayment) => {
