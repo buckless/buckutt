@@ -51,7 +51,7 @@
                             >Tous</template
                         >
                     </span>
-                    <span>
+                    <span v-if="event.useFundations">
                         <i class="material-icons">local_atm</i>
                         <template v-if="curve.fundation">{{ curve.fundation.name }}</template>
                         <template v-else
