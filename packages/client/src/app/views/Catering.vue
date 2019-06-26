@@ -108,11 +108,11 @@ export default {
                     if (!article.start && !article.end) {
                         return true;
                     } else if (article.start && !article.end) {
-                        return article.start <= now;
+                        return new Date(article.start) <= now;
                     } else if (!article.start && article.end) {
-                        return article.end >= now;
+                        return new Date(article.end) >= now;
                     }
-                    return article.start <= now && article.end >= now;
+                    return new Date(article.start) <= now && new Date(article.end) >= now;
                 })
                 .sort((a, b) => a.name - b.name);
         },
