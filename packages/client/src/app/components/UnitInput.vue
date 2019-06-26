@@ -60,7 +60,7 @@ export default {
 
     & > button {
         border-radius: 2px;
-        box-shadow: 0 2px 4px color($black a(0.25));
+        box-shadow: 0 2px 4px color-mod($black a(0.25));
         border: 0;
         width: 45px;
         height: 45px;

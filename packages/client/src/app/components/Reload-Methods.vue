@@ -58,7 +58,7 @@ export default {
 
     &--disabled {
         box-shadow: none;
-        color: color($black a(0.35));
+        color: color-mod($black a(0.35));
         pointer-events: none;
     }
 
@@ -70,8 +70,8 @@ export default {
 }
 
 .b-reload-methods__method--active.b-reload-methods__method--disabled {
-    background-color: color($black a(0.2));
-    color: color($black a(0.35));
+    background-color: color-mod($black a(0.2));
+    color: color-mod($black a(0.35));
 }
 
 @media (max-width: 768px) {

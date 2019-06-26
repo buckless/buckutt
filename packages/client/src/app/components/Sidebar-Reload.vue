@@ -31,7 +31,7 @@ export default {
 .b-sidebar-reload {
     background: #fff;
     border-radius: 2px;
-    box-shadow: 0 3px 2px color($black a(0.25));
+    box-shadow: 0 3px 2px color-mod($black a(0.25));
     display: flex;
     font-size: 18px;
     margin: 10px;

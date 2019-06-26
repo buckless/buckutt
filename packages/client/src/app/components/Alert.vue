@@ -100,7 +100,7 @@ export default {
     &:active,
     &:focus,
     &:hover {
-        background-color: color(#e74c3c a(0.9));
+        background-color: color-mod(#e74c3c a(0.9));
     }
 }
 </style>

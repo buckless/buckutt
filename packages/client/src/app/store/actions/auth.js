@@ -70,10 +70,12 @@ export const login = ({ commit, dispatch, state }, { wallet, pin }) => {
 
             if (err.message === 'Network Error') {
                 commit('ERROR', { message: 'Server not reacheable' });
-                return;
+                return Promise.reject();
             }
 
             commit('ERROR', err.response.data);
+
+            return Promise.reject();
         });
 };
 

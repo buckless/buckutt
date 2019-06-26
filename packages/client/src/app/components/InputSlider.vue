@@ -44,23 +44,23 @@ export default {
 
     &[active] {
         &:nth-child(1) {
-            background-color: color($lightorange blend($red 0%));
+            background-color: color-mod($lightorange blend($red 0%));
         }
 
         &:nth-child(2) {
-            background-color: color($lightorange blend($red 25%));
+            background-color: color-mod($lightorange blend($red 25%));
         }
 
         &:nth-child(3) {
-            background-color: color($lightorange blend($red 50%));
+            background-color: color-mod($lightorange blend($red 50%));
         }
 
         &:nth-child(4) {
-            background-color: color($lightorange blend($red 75%));
+            background-color: color-mod($lightorange blend($red 75%));
         }
 
         &:nth-child(5) {
-            background-color: color($lightorange blend($red 100%));
+            background-color: color-mod($lightorange blend($red 100%));
         }
     }
 }

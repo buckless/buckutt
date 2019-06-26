@@ -79,7 +79,7 @@ export default {
     &:active,
     &:focus,
     &:hover {
-        background-color: color($black a(0.075));
+        background-color: color-mod($black a(0.075));
     }
 }
 

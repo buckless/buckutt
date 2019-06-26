@@ -29,7 +29,7 @@ export default {
 @import '../main.css';
 
 .b-offline {
-    background-color: color($red a(0.9));
+    background-color: color-mod($red a(0.9));
     border-radius: 3px;
     height: 20px;
     text-align: center;
@@ -37,7 +37,7 @@ export default {
 }
 
 .b-offline-syncing {
-    background-color: color($orange a(0.9));
+    background-color: color-mod($orange a(0.9));
 }
 
 .b-offline__icon {

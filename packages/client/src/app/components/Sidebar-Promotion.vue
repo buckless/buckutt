@@ -58,7 +58,7 @@ export default {
 .b-sidebar-promotion {
     background-color: #fff;
     border-radius: 2px;
-    box-shadow: 0 3px 2px color($black a(0.25));
+    box-shadow: 0 3px 2px color-mod($black a(0.25));
     font-size: 18px;
     margin: 10px;
     padding: 10px;
@@ -79,7 +79,7 @@ export default {
 
 .b-sidebar-promotion__row__show-details {
     align-items: center;
-    background-color: color($orange a(0.75));
+    background-color: color-mod($orange a(0.75));
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -113,6 +113,6 @@ export default {
 
 .b-sidebar-promotion__row__details__item {
     padding-top: 10px;
-    color: color($black a(0.8));
+    color: color-mod($black a(0.8));
 }
 </style>

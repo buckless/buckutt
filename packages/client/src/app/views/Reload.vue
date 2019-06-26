@@ -270,7 +270,7 @@ export default {
 }
 
 .b-reload__modal__currency__amount {
-    color: color($black a(0.65));
+    color: color-mod($black a(0.65));
 }
 
 .b-reload__modal__currency__refund {
@@ -311,7 +311,7 @@ export default {
         border: 0;
         background-color: $green;
         border-radius: 2px;
-        box-shadow: 0 2px 4px color($black a(0.25));
+        box-shadow: 0 2px 4px color-mod($black a(0.25));
         color: #fff;
         cursor: pointer;
         height: 45px;

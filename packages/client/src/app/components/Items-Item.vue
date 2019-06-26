@@ -96,7 +96,7 @@ export default {
 @import '../main.css';
 
 .b-item {
-    box-shadow: 0 0 2px color($black a(0.25)), 0 2px 3px color($black a(0.25));
+    box-shadow: 0 0 2px color-mod($black a(0.25)), 0 2px 3px color-mod($black a(0.25));
     border-radius: 2px;
     cursor: pointer;
     height: 150px;

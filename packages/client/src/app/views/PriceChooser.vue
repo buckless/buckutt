@@ -127,7 +127,7 @@ export default {
 }
 
 .b-pricechooser__modal__currency {
-    color: color($black a(0.65));
+    color: color-mod($black a(0.65));
     font-size: 25px;
     margin-bottom: 15px;
     text-align: center;

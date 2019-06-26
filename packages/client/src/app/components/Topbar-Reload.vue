@@ -32,7 +32,7 @@ export default {
 
 .b-lower-bar__reload {
     align-items: center;
-    border-top: 1px solid color(#fff a(0.1));
+    border-top: 1px solid color-mod(#fff a(0.1));
     display: flex;
     justify-content: center;
     height: 40px;
@@ -43,7 +43,7 @@ export default {
     align-items: center;
     background-color: $green;
     border-radius: 2px;
-    box-shadow: 0 3px 2px color($black a(0.25));
+    box-shadow: 0 3px 2px color-mod($black a(0.25));
     color: #000;
     display: flex;
     height: 30px;
