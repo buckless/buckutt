@@ -81,8 +81,7 @@ export default () => {
             },
             decode: data => {
                 const binaryOptions = parseInt(data, 16).toString(2)
-                    .padStart(optionsLength, '0')
-                    .substr(-usefulDataLength);
+                    .padStart(optionsLength, '0');
 
                 const options = {
                     assignedCard: binaryOptions.charAt(0) === '1',
