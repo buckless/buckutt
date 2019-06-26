@@ -31,9 +31,6 @@ const fakeCallback = async (ctx, id, data) => {
 
     const { Transaction } = ctx.models;
 
-    const useCardData = ctx.event.useCardData;
-    const fakeCtx = { ...ctx, event: { useCardData }, point: { name: 'Internet' } };
-
     const transaction = await Transaction.where({ id }).fetch();
 
     transaction.set('transactionId', uuid());
@@ -42,7 +39,7 @@ const fakeCallback = async (ctx, id, data) => {
     await transaction.save();
 
     if (transaction.get('state') === 'ACCEPTED') {
-        await processReload(fakeCtx, { transaction: transaction.toJSON() });
+        await processReload(ctx, { transaction: transaction.toJSON() });
     }
 };
 
