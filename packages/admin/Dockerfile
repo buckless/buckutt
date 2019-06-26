@@ -8,6 +8,7 @@ RUN apk update && \
     apk add --no-cache git openssh make gcc g++ python && \
     mkdir -p /usr/src/buckless-admin/packages/admin && \
     mkdir -p /usr/src/buckless-admin/packages/config && \
+    mkdir -p /usr/src/buckless-admin/packages/ui && \
     mkdir -p /usr/src/buckless-admin/packages/vue-cli-plugin-calm-serve
 
 COPY ./packages/admin/package.json \
@@ -25,6 +26,7 @@ COPY .browserlistrc \
      /usr/src/buckless-admin/
 
 COPY ./packages/config /usr/src/buckless-admin/packages/config
+COPY ./packages/ui /usr/src/buckless-admin/packages/ui
 COPY ./packages/vue-cli-plugin-calm-serve /usr/src/buckless-admin/packages/vue-cli-plugin-calm-serve
 
 RUN yarn install --ignore-engines --ignore-optional --frozen-lockfile
