@@ -100,9 +100,9 @@ export const checkSidebar = store => {
     return Promise.resolve();
 };
 
-export const generateOptions = store => ({
+export const generateOptions = (store, paidCard, shouldPayCard) => ({
     assignedCard: true,
-    paidCard: true,
+    paidCard: shouldPayCard || paidCard,
     catering: store.getters.catering
 });
 
@@ -135,7 +135,7 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
         return store.commit('ERROR', err);
     }
 
-    const shouldPayCard = !options.paidCard && store.state.auth.device.event.config.useCardData;
+    const shouldPayCard = !options.paidCard && !store.getters.isOnlyCatering && store.state.auth.device.event.config.useCardData;
 
     // If the support hasn't been paid yet, add it to the basket
     if (shouldPayCard) {
@@ -152,7 +152,7 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
 
     // If we use card data, write new data on it
     if (store.state.auth.device.event.config.useCardData) {
-        const newOptions = await store.dispatch('generateOptions');
+        const newOptions = await store.dispatch('generateOptions', options.paidCard, shouldPayCard);
         const newCardVersion = store.state.auth.buyer.pendingData.version;
 
         await new Promise(resolve => {

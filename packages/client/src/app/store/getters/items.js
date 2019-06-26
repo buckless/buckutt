@@ -111,3 +111,11 @@ export const sidebar = (state, getters) => {
 
     return { ...initialSidebar, catering };
 };
+
+export const isOnlyCatering = (state, getters) => {
+    const basket = getters.sidebar;
+    const reloads = state.reload.reloads;
+    const refunds = state.reload.refunds;
+
+    return (basket.catering.length > 0 && basket.items.length === 0 && basket.promotions.length === 0 && reloads.length === 0 && refunds.length === 0);
+};
