@@ -77,10 +77,12 @@ export default () => {
                     }
                 });
 
-                return parseInt(data.padEnd(usefulDataLength, '0'), 2).toString(16);
+                return parseInt(data.padEnd(optionsLength, '0'), 2).toString(16);
             },
             decode: data => {
-                const binaryOptions = parseInt(data, 16).toString(2);
+                const binaryOptions = parseInt(data, 16).toString(2)
+                    .padStart(optionsLength, '0')
+                    .substr(-usefulDataLength);
 
                 const options = {
                     assignedCard: binaryOptions.charAt(0) === '1',
