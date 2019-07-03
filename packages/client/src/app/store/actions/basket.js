@@ -100,7 +100,7 @@ export const checkSidebar = store => {
     return Promise.resolve();
 };
 
-export const generateOptions = (store, paidCard, shouldPayCard) => ({
+export const generateOptions = (store, { paidCard, shouldPayCard }) => ({
     assignedCard: true,
     paidCard: shouldPayCard || paidCard,
     catering: store.getters.catering
@@ -152,7 +152,7 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
 
     // If we use card data, write new data on it
     if (store.state.auth.device.event.config.useCardData) {
-        const newOptions = await store.dispatch('generateOptions', options.paidCard, shouldPayCard);
+        const newOptions = await store.dispatch('generateOptions', { paidCard: options.paidCard, shouldPayCard });
         const newCardVersion = store.state.auth.buyer.pendingData.version;
 
         await new Promise(resolve => {
