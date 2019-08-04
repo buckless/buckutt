@@ -39,6 +39,25 @@
             </table>
             <p v-else>Aucun rechargement à afficher.</p>
 
+            <h3>Remboursements</h3>
+            <table class="b-treasury__table" v-if="treasury.refunds.length > 0">
+                <thead>
+                    <tr>
+                        <th class="b-treasury__table__cell--non-numeric">Moyen de paiement</th>
+                        <th>Quantité</th>
+                        <th>Total TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="refund in treasury.refunds" :key="refund.id">
+                        <td class="b-treasury__table__cell--non-numeric">{{ refund.name }}</td>
+                        <td>{{ refund.count }}</td>
+                        <td><currency :value="refund.amount" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p v-else>Aucun remboursement à afficher.</p>
+
             <h3>Catering</h3>
             <table class="b-treasury__table" v-if="displayedCatering.length > 0">
                 <thead>
@@ -76,15 +95,22 @@ export default {
 
     computed: {
         treasury() {
+            const singleRefunds = [];
             const singleReloads = [];
             const singlePurchases = [];
 
             this.history.forEach(entry => {
                 entry.basketToSend.forEach(transaction => {
                     if (transaction.itemType === 'reload') {
+                        const mop = this.meansOfPayment.find(mop => mop.slug === transaction.type) || { name: transaction.type };
                         singleReloads.push({
-                            name: this.meansOfPayment.find(mop => mop.slug === transaction.type)
-                                .name,
+                            name: mop.name,
+                            amount: transaction.amount
+                        });
+                    } else if (transaction.itemType === 'refund') {
+                        const mop = this.meansOfPayment.find(mop => mop.slug === transaction.type) || { name: transaction.type };
+                        singleRefunds.push({
+                            name: mop.name,
                             amount: transaction.amount
                         });
                     } else {
@@ -97,8 +123,10 @@ export default {
             });
 
             const groupedReloads = groupBy(singleReloads, 'name');
+            const groupedRefunds = groupBy(singleRefunds, 'name');
             const groupedPurchases = groupBy(singlePurchases, 'name');
             const reloads = [];
+            const refunds = [];
             const purchases = [];
 
             Object.keys(groupedReloads).forEach(group => {
@@ -106,6 +134,14 @@ export default {
                     name: group,
                     amount: sumBy(groupedReloads[group], 'amount'),
                     count: groupedReloads[group].length
+                });
+            });
+
+            Object.keys(groupedRefunds).forEach(group => {
+                refunds.push({
+                    name: group,
+                    amount: sumBy(groupedRefunds[group], 'amount'),
+                    count: groupedRefunds[group].length
                 });
             });
 
@@ -119,6 +155,7 @@ export default {
 
             return {
                 reloads,
+                refunds,
                 purchases
             };
         },

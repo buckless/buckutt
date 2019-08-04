@@ -40,6 +40,9 @@
                         <template v-if="entry.items.length === 0 && entry.reload > 0"
                             >Rechargement</template
                         >
+                        <template v-if="entry.items.length === 0 && entry.refund > 0"
+                            >Remboursement</template
+                        >
                     </div>
                 </div>
             </div>
@@ -163,6 +166,7 @@ export default {
             return {
                 cost,
                 reload,
+                refund,
                 date: shortDate(entry.date),
                 items,
                 basketToSend,
