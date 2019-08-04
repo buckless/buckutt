@@ -27,7 +27,11 @@
                 </div>
             </List>
         </Card>
-        <Card to="/dashboard/assign" v-if="showRegistration">
+        <Card to="/dashboard/support" v-if="showCard && !hasCard">
+            <h3>{{ $t('dashboard.menu.link') }}</h3>
+            <p>{{ $t('dashboard.menu.linkinfo') }}</p>
+        </Card>
+        <Card to="/dashboard/assign" v-else-if="showRegistration">
             <h3>{{ $t('dashboard.account.create') }}</h3>
             <p>{{ $t('dashboard.account.createinfo') }}</p>
         </Card>
@@ -41,7 +45,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { allowRegistration } from 'config/manager';
+import { allowRegistration, menu } from 'config/manager';
 import Card from '@/components/Card';
 import List from '@/components/List';
 import Button from '@/components/Button';
@@ -56,6 +60,7 @@ export default {
     },
 
     data: () => ({
+        showCard: menu.showCard,
         showRegistration: allowRegistration
     }),
 
@@ -63,7 +68,8 @@ export default {
         ...mapGetters({
             currentUser: 'user/user',
             wallets: 'user/wallets',
-            currentWallet: 'user/currentWallet'
+            currentWallet: 'user/currentWallet',
+            hasCard: 'user/hasCard'
         })
     },
 
