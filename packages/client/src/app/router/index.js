@@ -13,7 +13,6 @@ import AssignerScan from '@/views/Assigner-Scan';
 import Controller from '@/views/Controller';
 import History from '@/views/History';
 import Treasury from '@/views/Treasury';
-import Catering from '@/views/Catering';
 import Developpers from '@/views/Developpers';
 import Health from '@/views/Health';
 import PriceChooser from '@/views/PriceChooser';
@@ -54,11 +53,6 @@ const routes = [
         path: '/treasury',
         component: Treasury,
         beforeEnter: (_, __, next) => next(getters.isCashMode || '/')
-    },
-    {
-        path: '/catering',
-        component: Catering,
-        beforeEnter: (_, __, next) => next(getters.isSellerMode || '/')
     },
     {
         path: '/developpers',

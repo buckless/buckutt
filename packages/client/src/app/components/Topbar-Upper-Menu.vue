@@ -35,15 +35,6 @@
                 </div>
                 <div class="b-menu__actions__separator"></div>
                 <div
-                    v-if="isSellerMode && useCardData && displayCatering"
-                    class="b-menu__actions__action"
-                    @click="close(toggleCatering)"
-                >
-                    <i class="b-icon">shopping_basket</i>
-                    Catering
-                </div>
-                <div class="b-menu__actions__separator"></div>
-                <div
                     v-if="isReloaderMode && isSellerMode"
                     class="b-menu__actions__action"
                     @click="close(openReloadModal)"
@@ -120,18 +111,8 @@ export default {
                 return true;
             }
 
-            const closingPath = ['/history', '/catering', '/treasury', '/developpers', '/health'];
+            const closingPath = ['/history', '/treasury', '/developpers', '/health'];
             return closingPath.indexOf(this.$route.path) > -1;
-        },
-
-        displayCatering() {
-            if (!window.config) {
-                return false;
-            }
-
-            const articles = Object.values(window.config.catering.articles);
-
-            return articles.length > 0;
         },
 
         ...mapState({
@@ -171,10 +152,6 @@ export default {
 
         toggleTreasury() {
             this.$router.push('treasury');
-        },
-
-        toggleCatering() {
-            this.$router.push('catering');
         },
 
         toogleDeveloppers() {

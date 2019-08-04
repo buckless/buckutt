@@ -70,14 +70,6 @@ export default (state, getters, error) => {
         );
     }
 
-    if (error.message === 'Catering not available today') {
-        return "Aucun catering disponible aujourd'hui.";
-    }
-
-    if (error.message === 'Insufficient balance for today') {
-        return "Le solde de cet article est épuisé pour aujourd'hui.";
-    }
-
     if (error.message === 'User unallowed to buy this') {
         if (state.basket.unallowedItemsNames.length === 1) {
             return `Cet utilisateur n'a pas le droit d'acheter l'article suivant: ${
