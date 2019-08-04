@@ -1,10 +1,7 @@
 const createWallet = require('server/app/helpers/createWallet');
 
 module.exports = async (ctx, { walletId, name, cateringId, clientTime }) => {
-    let wallet = await ctx.models.Wallet.where({
-        logical_id: walletId,
-        blocked: false
-    })
+    let wallet = await ctx.models.Wallet.where({ logical_id: walletId })
         .fetch()
         .then(wallet => (wallet ? wallet.toJSON() : null));
 

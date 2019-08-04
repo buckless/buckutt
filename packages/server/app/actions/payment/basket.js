@@ -11,10 +11,7 @@ const getPrice = (Price, id) =>
         .then(price => price.toJSON());
 
 module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) => {
-    let wallet = await ctx.models.Wallet.where({
-        logical_id: walletId,
-        blocked: false
-    })
+    let wallet = await ctx.models.Wallet.where({ logical_id: walletId })
         .fetch({ withRelated: ['user'] })
         .then(wallet => (wallet ? wallet.toJSON() : null));
 
