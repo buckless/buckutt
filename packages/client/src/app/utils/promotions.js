@@ -13,8 +13,10 @@ export default (basket, promotions) => {
             // Get sets that have one item in basket
             const matchSets = promotion.sets.map(set => container.pickSet(set.articles));
 
+            const promotionPrice = promotion.price.amount;
+
             // If promotion match
-            if (allMatch(matchSets)) {
+            if (allMatch(matchSets) && container.getContentPrice() > promotionPrice) {
                 // remove content from basket
                 basket = container.database;
 
@@ -52,6 +54,10 @@ class Container {
         }
 
         return false;
+    }
+
+    getContentPrice() {
+        return this.content.map(item => item.amount).reduce((a, b) => a + b, 0);
     }
 }
 
