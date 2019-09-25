@@ -144,7 +144,7 @@ test('create a user with a ticket number provided', async t => {
 
     t.is(user.firstname, firstname);
     t.is(user.lastname, lastname);
-    t.is(user.mail, mail);
+    t.is(user.mail, mail.toLowerCase());
 
     t.truthy(user.wallet.id);
     t.falsy(user.wallet.logical_id);
@@ -173,7 +173,7 @@ test('create a user with an anonymous wallet related to the ticket number', asyn
 
     t.is(user.firstname, ticket.firstname);
     t.is(user.lastname, ticket.lastname);
-    t.is(user.mail, ticket.mail);
+    t.is(user.mail, ticket.mail.toLowerCase());
 
     t.truthy(user.wallet.id);
     t.is(user.wallet.logical_id, logical_id);
@@ -202,7 +202,7 @@ test('create a user with a provided anonymous wallet related to the ticket numbe
 
     t.is(user.firstname, ticket.firstname);
     t.is(user.lastname, ticket.lastname);
-    t.is(user.mail, ticket.mail);
+    t.is(user.mail, ticket.mail.toLowerCase());
 
     t.truthy(user.wallet.id);
     t.is(user.wallet.logical_id, logical_id);
@@ -246,7 +246,7 @@ test('create a user with a card and a ticket number provided', async t => {
 
     t.is(user.firstname, firstname);
     t.is(user.lastname, lastname);
-    t.is(user.mail, mail);
+    t.is(user.mail, mail.toLowerCase());
 
     t.truthy(user.wallet.id);
     t.is(user.wallet.logical_id, 'L2');

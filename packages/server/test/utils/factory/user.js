@@ -9,7 +9,7 @@ module.exports = (name, opts = {}) => async ctx => {
     // register DELETE commands on ctx.clears
     const firstname = faker.name.firstName();
     const lastname = faker.name.lastName();
-    const mail = faker.internet.email();
+    const mail = faker.internet.email().toLowerCase();
 
     const now = new Date();
 

@@ -28,9 +28,7 @@ const validateLoginBody = body => {
 const login = async (ctx, { infos, pin, password }) => {
     let user;
     if (infos.mail) {
-        user = await ctx.models.User.query(q =>
-            q.where(bookshelf.knex.raw('trim(lower(mail))'), '=', infos.mail)
-        )
+        user = await ctx.models.User.where('mail', infos.mail.trim().toLowerCase())
             .fetch({
                 withRelated: ['rights', 'rights.period', 'wallets', 'wallets.ticket']
             })

@@ -7,7 +7,7 @@ test.before(t => factory(t, user('testUser', { card: true })));
 test('login with mail and pin', async t => {
     const { mail } = t.context.testUser;
     const result = await login(t.context.ctx, {
-        infos: { connectType: 'pin', mail: mail.toLowerCase() },
+        infos: { connectType: 'pin', mail },
         pin: 1234
     });
 
@@ -19,7 +19,7 @@ test('login with mail and pin', async t => {
 test('login with mail and password', async t => {
     const { mail } = t.context.testUser;
     const result = await login(t.context.ctx, {
-        infos: { connectType: 'password', mail: mail.toLowerCase() },
+        infos: { connectType: 'password', mail },
         password: 'abcd'
     });
 
@@ -65,7 +65,7 @@ test('deny if connect type is missing', async t => {
 test('deny if pin is wrong', async t => {
     const { mail } = t.context.testUser;
     const error = await t.throwsAsync(
-        login(t.context.ctx, { infos: { connectType: 'pin', mail: mail.toLowerCase() }, pin: 1235 })
+        login(t.context.ctx, { infos: { connectType: 'pin', mail }, pin: 1235 })
     );
 
     t.is(error.message, 'Login error: Wrong credentials');
@@ -76,7 +76,7 @@ test('deny if password is wrong', async t => {
     const { mail } = t.context.testUser;
     const error = await t.throwsAsync(
         login(t.context.ctx, {
-            infos: { connectType: 'password', mail: mail.toLowerCase() },
+            infos: { connectType: 'password', mail },
             password: 'abce'
         })
     );
@@ -88,7 +88,7 @@ test('deny if password is wrong', async t => {
 test('deny if password is missing', async t => {
     const { mail } = t.context.testUser;
     const error = await t.throwsAsync(
-        login(t.context.ctx, { infos: { connectType: 'password', mail: mail.toLowerCase() } })
+        login(t.context.ctx, { infos: { connectType: 'password', mail } })
     );
 
     t.is(error.message, 'Login error: Wrong credentials');
@@ -98,7 +98,7 @@ test('deny if password is missing', async t => {
 test('deny if pin is missing', async t => {
     const { mail } = t.context.testUser;
     const error = await t.throwsAsync(
-        login(t.context.ctx, { infos: { connectType: 'pin', mail: mail.toLowerCase() } })
+        login(t.context.ctx, { infos: { connectType: 'pin', mail } })
     );
 
     t.is(error.message, 'Login error: Wrong credentials');

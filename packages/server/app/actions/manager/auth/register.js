@@ -30,7 +30,8 @@ const register = async (
         return Promise.reject(new APIError(module, 400, 'Ticket or user informations are needed'));
     }
 
-    const userCheck = await ctx.models.User.where({ mail: mail || ticket.mail })
+    const loweredMail = (mail || ticket.mail).trim().toLowerCase();
+    const userCheck = await ctx.models.User.where({ mail: loweredMail })
         .fetch()
         .then(user => (user ? user.toJSON() : null));
 
@@ -71,7 +72,7 @@ const register = async (
     const userToCreate = {
         firstname: firstname || ticket.firstname,
         lastname: lastname || ticket.lastname,
-        mail: mail || ticket.mail
+        mail: loweredMail
     };
 
     const user = await createUser(ctx, userToCreate, clientTime);
