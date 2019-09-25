@@ -19,6 +19,7 @@
 
 <script>
 import Input from '../Input/Input';
+import Icon from '../Icon/Icon';
 import InputMixin from '../../mixins/Input';
 
 /**
@@ -29,7 +30,7 @@ export default {
 
     mixins: [InputMixin],
 
-    components: { Input },
+    components: { Input, Icon },
 
     data() {
         return {
@@ -104,6 +105,7 @@ export default {
 <style module>
 .searchWrapper {
     position: relative;
+    height: 40px;
 }
 
 .icon {

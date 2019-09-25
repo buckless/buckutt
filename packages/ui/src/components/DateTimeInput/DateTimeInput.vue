@@ -50,7 +50,7 @@
                     :max="24"
                     v-model="hours"
                     small
-                    @input="updateInputValue"
+                    @input="onSelectTime(activeDate)"
                     @focus="onSelfSelect"
                     @blur="onBlur"
                 />
@@ -59,10 +59,10 @@
                     type="number"
                     placeholder="00"
                     :min="0"
-                    :max="60"
+                    :max="59"
                     v-model="minutes"
                     small
-                    @input="updateInputValue"
+                    @input="onSelectTime(activeDate)"
                     @focus="onSelfSelect"
                     @blur="onBlur"
                 />
@@ -81,18 +81,28 @@ import {
     isSameDay,
     parse,
     getMinutes,
-    getHours
+    getHours,
+    setMinutes,
+    setHours
 } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Popper from 'popper.js';
 
 import { getWeekDays, getDays } from './dateUtils';
 
+import Icon from '../Icon/Icon';
+import Input from '../Input/Input';
+
 /**
  * Date Time input
  */
 export default {
     name: 'DateTimeInput',
+
+    components: {
+        Icon,
+        Input
+    },
 
     model: {
         prop: 'value',
@@ -139,7 +149,7 @@ export default {
     data() {
         return {
             opened: false,
-            inputValue: this.value && this.value.toLocaleDateString(),
+            inputValue: '',
             hours: this.value ? getHours(this.value).toString() : '12',
             minutes: this.value ? getMinutes(this.value).toString() : '00',
             activeDate: this.value,
@@ -148,6 +158,10 @@ export default {
     },
 
     mounted() {
+        if (this.value) {
+            this.updateInputValue();
+        }
+
         const reference = this.$el.querySelector('.input');
         const popper = this.$el.querySelector('.picker');
         this.popper = new Popper(reference, popper, {
@@ -223,10 +237,14 @@ export default {
         },
 
         onSelectDate(date) {
-            this.activeDate = date;
-            this.updateInputValue();
-            this.$emit('input', date);
+            this.onSelectTime(date);
             this.$refs.input.$el.querySelector('input').focus();
+        },
+
+        onSelectTime(date) {
+            this.activeDate = setHours(setMinutes(date, this.minutes), this.hours);
+            this.updateInputValue();
+            this.$emit('input', this.activeDate);
         },
 
         isActive(date) {

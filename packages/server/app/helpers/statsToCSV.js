@@ -88,7 +88,8 @@ const refundFields = [
             r.wallet.user ? `${r.wallet.user.firstname} ${r.wallet.user.lastname}` : 'Anonyme'
     },
     { title: 'Moyen de paiement', reducer: r => r.type },
-    { title: 'Montant', reducer: r => r.amount / 100 }
+    { title: 'Montant', reducer: r => r.amount / 100 },
+    { title: 'Type', reducer: r => (r.isCancellation ? 'Annulation' : 'Remboursement') }
 ];
 
 module.exports = {

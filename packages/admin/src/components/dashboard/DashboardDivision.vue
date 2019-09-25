@@ -1,10 +1,8 @@
 <template>
     <div class="b-dashboard-divisions">
-        <div class="b-divisions-graph mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Répartition des achats</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
+        <b-card class="b-divisions-graph">
+            <h5>Répartition des achats</h5>
+            <div class="b-divisions-graph-content">
                 <b-donutchart
                     :chartData="purchasesData"
                     :unit="unit"
@@ -12,13 +10,11 @@
                 ></b-donutchart>
                 <span v-else>Aucun achat n'a été effectué sur cette période.</span>
             </div>
-        </div>
+        </b-card>
 
-        <div class="b-divisions-graph mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Répartition des rechargements</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
+        <b-card class="b-divisions-graph">
+            <h5>Répartition des rechargements</h5>
+            <div class="b-divisions-graph-content">
                 <b-donutchart
                     :chartData="reloadsData"
                     :unit="unit"
@@ -26,7 +22,7 @@
                 ></b-donutchart>
                 <span v-else>Aucun rechargement n'a été effectué sur cette période.</span>
             </div>
-        </div>
+        </b-card>
     </div>
 </template>
 
@@ -123,7 +119,11 @@ export default {
         width: 400px;
         height: auto;
 
-        & > div.mdl-card__supporting-text {
+        & > h5 {
+            margin-top: 5px;
+        }
+
+        & > .b-divisions-graph-content {
             width: 300px;
             margin: auto;
         }

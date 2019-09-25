@@ -71,7 +71,7 @@ export default {
 
                     for (let i = accesses.length - 1; i >= 0; i--) {
                         // check if group matches one of currentGroups
-                        if (!this.currentGroups.find(group => group.id === accesses[i].groupId)) {
+                        if (!this.currentGroups.find(group => group.id === accesses[i].group)) {
                             console.log('not one of current groups');
                             continue;
                         }

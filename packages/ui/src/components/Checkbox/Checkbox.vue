@@ -5,6 +5,7 @@
             <div class="mark" />
         </span>
 
+        <!-- @slot Checkbox label -->
         <slot />
 
         <input v-if="right" type="checkbox" class="input" :checked="checked" @change="onChange" />

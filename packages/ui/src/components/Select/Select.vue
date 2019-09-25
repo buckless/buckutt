@@ -1,5 +1,5 @@
 <template>
-    <label>
+    <label class="select-wrapper">
         <div class="label" v-if="label">{{ label }}</div>
         <div class="select">
             <select :value="normalizedValue" @change="onChange">
@@ -58,10 +58,14 @@ export default {
          * @model
          * Controls the select value
          */
-        value: { type: String, default: '' }
+        value: { type: [String, Number], default: '' }
     },
 
     data() {
+        if (!Array.isArray(this.options)) {
+            return {};
+        }
+
         const normalizedOptions = normalize(this.options);
 
         return {

@@ -1,5 +1,6 @@
 <template>
     <div class="notification">
+        <!-- @slot Notification content -->
         <slot />
         <div class="space"></div>
         <Button v-if="action" @click="onAction">

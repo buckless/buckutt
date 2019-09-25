@@ -1,102 +1,93 @@
 <template>
     <div class="b-dashboard-purchases">
-        <div class="b-purchases-chart mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Suivi des achats</h2>
+        <b-card class="b-purchases-chart">
+            <div class="b-purchases-title">
+                <h5>Suivi des achats</h5>
+                <div class="b--flexspacer"></div>
+                <div class="b-purchases-title-options">
+                    <b-toggle v-model="additive" @change="updateData">Graphe croissant</b-toggle>
+                    <b-button @click="displayCurves = true" v-if="!displayCurves">
+                        <b-icon name="settings" />
+                    </b-button>
+                </div>
             </div>
-            <div class="mdl-card__supporting-text">
+            <div class="b-purchases-chart-canvas">
                 <b-purchaseschart
                     :chartData="chartData"
                     :unit="unit"
                     :additive="additive"
                 ></b-purchaseschart>
             </div>
-            <div class="mdl-card__menu">
-                <mdl-switch v-model="additive" @input="updateData">Graphe croissant</mdl-switch>
-                <button
-                    class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
-                    @click="displayCurves = true"
-                    v-if="!displayCurves"
-                >
-                    <i class="material-icons">settings</i>
-                </button>
-            </div>
-        </div>
+        </b-card>
 
-        <div class="b-purchases-curves mdl-card mdl-shadow--2dp" v-if="displayCurves">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Légende</h2>
+        <b-card class="b-purchases-curves" v-if="displayCurves">
+            <div class="b-purchases-title">
+                <h5>Légende</h5>
+                <div class="b--flexspacer"></div>
+                <div class="b-purchases-title-options">
+                    <b-button @click="displayCurves = false">
+                        <b-icon name="close" />
+                    </b-button>
+                </div>
             </div>
-            <div class="mdl-card__supporting-text">
+            <div class="b-purchases-curves-legend">
                 <div v-for="(curve, index) in curves" :key="index">
                     <span>
                         {{ index + 1 }}.
-                        <i class="material-icons" :style="{ color: colorsPattern[index] }">lens</i>
+                        <b-icon name="lens" :style="{ color: colorsPattern[index] }" />
                     </span>
                     <span v-if="curve.article || (!curve.article && !curve.promotion)">
-                        <i class="material-icons">free_breakfast</i>
-                        <template v-if="curve.article">{{ curve.article.name }}</template>
+                        <b-icon name="free_breakfast" />
+                        <template v-if="curve.article">{{ curve.article.label }}</template>
                         <template v-else
                             >Tous</template
                         >
                     </span>
                     <span v-if="curve.promotion">
-                        <i class="material-icons">stars</i>
-                        <template>{{ curve.promotion.name }}</template>
+                        <b-icon name="stars" />
+                        <template>{{ curve.promotion.label }}</template>
                     </span>
                     <span>
-                        <i class="material-icons">view_comfy</i>
-                        <template v-if="curve.point">{{ curve.point.name }}</template>
+                        <b-icon name="view_comfy" />
+                        <template v-if="curve.point">{{ curve.point.label }}</template>
                         <template v-else
                             >Tous</template
                         >
                     </span>
                     <span v-if="event.useFundations">
-                        <i class="material-icons">local_atm</i>
-                        <template v-if="curve.fundation">{{ curve.fundation.name }}</template>
+                        <b-icon name="local_atm" />
+                        <template v-if="curve.fundation">{{ curve.fundation.label }}</template>
                         <template v-else
                             >Toutes</template
                         >
                     </span>
                     <b-confirm @confirm="deleteCurve(index)">
-                        <mdl-button icon="delete"></mdl-button>
+                        <b-button><b-icon name="delete"/></b-button>
                     </b-confirm>
                 </div>
             </div>
-            <div class="mdl-card__actions mdl-card--border">
+            <div class="b-purchases-curves-actions">
                 <form @submit.prevent="createCurve()">
-                    <b-inputselect
+                    <b-autocomplete
                         label="Produit"
-                        id="product-select"
-                        :options="productOptionsAll"
                         v-model="fields.product"
-                    ></b-inputselect>
-                    <b-inputselect
-                        label="Guichet"
-                        id="point-select"
-                        :options="pointOptionsAll"
+                        :suggestions="productOptionsAll"
+                    ></b-autocomplete>
+                    <b-autocomplete
+                        label="Point"
                         v-model="fields.point"
-                    ></b-inputselect
-                    ><br />
-                    <b-inputselect
+                        :suggestions="pointOptionsAll"
+                    ></b-autocomplete>
+                    <b-autocomplete
                         label="Fondation"
-                        id="fundation-select"
-                        :options="fundationOptionsAll"
                         v-model="fields.fundation"
+                        :suggestions="fundationOptionsAll"
                         v-if="event.useFundations"
-                    ></b-inputselect>
-                    <mdl-button icon="add" colored></mdl-button>
+                    ></b-autocomplete>
+                    <b-button><b-icon name="add"/></b-button>
                 </form>
             </div>
-            <div class="mdl-card__menu">
-                <button
-                    class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
-                    @click="displayCurves = false"
-                >
-                    <i class="material-icons">close</i>
-                </button>
-            </div>
-        </div>
+        </b-card>
     </div>
 </template>
 
@@ -165,34 +156,39 @@ export default {
         }),
 
         ...mapGetters([
-            'articleOptions',
-            'promotionOptions',
-            'pointOptions',
-            'fundationOptions',
+            'articlesOptions',
+            'promotionsOptions',
+            'pointsOptions',
+            'fundationsOptions',
             'event'
         ]),
 
         productOptionsAll() {
-            const products = this.promotionOptions
-                .map(p => ({ name: p.name, value: { ...p.value, typeField: 'promotion' } }))
-                .concat(this.articleOptions);
-            products.unshift({ name: 'Tous', value: null });
-
-            return products;
+            return [
+                { name: 'common', label: 'Commun', data: [{ label: 'Tous', id: 'all' }] },
+                { name: 'articles', label: 'Articles', data: this.articlesOptions },
+                { name: 'promotions', label: 'Formules', data: this.promotionsOptions }
+            ];
         },
 
         pointOptionsAll() {
-            const points = Object.assign([], this.pointOptions);
-            points.unshift({ name: 'Tous', value: null });
-
-            return points;
+            return [
+                {
+                    name: 'points',
+                    label: 'Point',
+                    data: [{ label: 'Tous', id: 'all' }].concat(this.pointsOptions)
+                }
+            ];
         },
 
         fundationOptionsAll() {
-            const fundations = Object.assign([], this.fundationOptions);
-            fundations.unshift({ name: 'Toutes', value: null });
-
-            return fundations;
+            return [
+                {
+                    name: 'fundations',
+                    label: 'Fondation',
+                    data: [{ label: 'Toutes', id: 'all' }].concat(this.fundationsOptions)
+                }
+            ];
         },
 
         chartData() {
@@ -219,13 +215,18 @@ export default {
         },
 
         createCurve() {
-            if (this.fields.product && this.fields.product.typeField === 'promotion') {
-                this.fields.promotion = this.fields.product;
-            } else {
-                this.fields.article = this.fields.product;
-            }
+            const article = this.articlesOptions.find(
+                article => article.id === this.fields.product
+            );
+            const promotion = this.promotionsOptions.find(
+                promotion => promotion.id === this.fields.promotion
+            );
+            const point = this.pointsOptions.find(point => point.id === this.fields.point);
+            const fundation = this.fundationsOptions.find(
+                fundation => fundation.id === this.fields.fundation
+            );
 
-            this.addCurve(this.fields);
+            this.addCurve({ article, promotion, point, fundation });
             this.updateData();
             this.fields = Object.assign({}, fieldsPattern);
         },
@@ -277,71 +278,83 @@ export default {
         margin: 10px;
         min-width: 500px;
 
-        & > div.mdl-card__supporting-text {
-            width: 100%;
-        }
-
-        & > div.mdl-card__menu {
-            display: flex;
-            align-items: center;
-
-            & > label {
-                width: 190px;
-            }
+        & > .b-purchases-chart-canvas {
+            position: relative;
         }
     }
 
     & > .b-purchases-curves {
         flex: 2;
-        margin: 10px;
+        padding: 10px;
         min-width: 500px;
+        overflow: visible !important;
 
-        & > div.mdl-card__supporting-text {
-            width: 100%;
+        & > .b-purchases-curves-legend {
             overflow-y: auto;
-            flex-grow: 1;
-            max-height: 330px;
+            height: 330px;
 
             & > div {
                 display: flex;
                 margin-bottom: 5px;
 
-                & > i {
-                    margin-right: 15px;
-                }
-
                 & > span {
                     display: flex;
                     align-items: center;
                     width: 200px;
+                    margin-right: 5px;
 
-                    & > i {
+                    & > span.icon {
                         margin-right: 5px;
-                        font-size: 25px;
                     }
                 }
 
                 & > span:first-child {
                     width: 50px;
 
-                    & > i {
+                    & > span.icon {
                         margin-left: 5px;
                     }
                 }
             }
         }
 
-        & > div.mdl-card__actions {
-            padding: 15px;
+        & > .b-purchases-curves-actions {
+            border-top: 1px solid #f2f1f3;
+            width: calc(100% + 30px);
+            margin: 0 -15px;
+            padding: 10px 15px;
+
             & > form {
                 display: flex;
-                align-items: center;
+                align-items: flex-end;
 
-                & > div {
-                    width: 200px;
+                & > label {
+                    flex: 1;
                     margin-right: 5px;
                 }
+
+                & > button {
+                    margin-bottom: 3px;
+                }
             }
+        }
+    }
+}
+
+.b-purchases-title {
+    display: flex;
+
+    & > h5 {
+        margin-top: 5px;
+    }
+
+    & > .b-purchases-title-options {
+        display: flex;
+        align-items: center;
+        margin-top: -7px;
+
+        & > label {
+            margin-right: 10px;
         }
     }
 }

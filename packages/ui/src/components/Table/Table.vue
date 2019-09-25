@@ -1,12 +1,13 @@
 <template>
     <div class="table">
         <div class="row" v-for="row in rows" :key="row.id" @click="onClick(row.id)">
-            <Icon v-if="row.icon" name="shopping_cart" />
+            <Icon v-if="row.icon" :name="row.icon" />
             <div class="content">
-                <div class="header">Header</div>
-                <div class="subtitle" v-if="row.subtitle">Subtitle</div>
+                <div class="header">{{ row.title }}</div>
+                <div class="subtitle" v-if="row.subtitle">{{ row.subtitle }}</div>
             </div>
-            <div class="right" v-if="row.right">+50.00€</div>
+            <div class="right" v-if="row.right">{{ row.right }}</div>
+            <Icon class="right" v-if="row.rightIcon" :name="row.rightIcon" @click.native="onAction($event, row.id)" />
         </div>
     </div>
 </template>
@@ -35,6 +36,7 @@ export default {
          *   subtitle?: string,
          *   icon?: string
          *   right?: string
+         *   rightIcon?: string
          * }
          * ```
          */
@@ -50,6 +52,18 @@ export default {
              * @type {any}
              */
             this.$emit('click', id);
+        },
+
+        onAction(e, id) {
+            e.stopPropagation();
+
+            /**
+             * Row action clicked (the parameter will be the row id)
+             *
+             * @event click
+             * @type {any}
+             */
+            this.$emit('action', id);
         }
     }
 };
@@ -85,6 +99,11 @@ export default {
 
 .row .icon {
     color: var(--primary-300);
+    max-width: 24px;
+}
+
+.row .icon.right {
+    color: var(--foreground-dark-200);
 }
 
 .content {

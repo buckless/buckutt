@@ -1,26 +1,36 @@
-import Articles from './Articles.vue';
-import ArticlesCreate from './ArticlesCreate.vue';
-import ArticlesList from './ArticlesList.vue';
+import Base from '../base/Base.vue';
+import Show from '../base/Show.vue';
+import Details from '../base/Details.vue';
+import Create from '../base/Create.vue';
+import Protip from '../base/Protip.vue';
 
-import ArticleShow from './article/ArticleShow.vue';
-import ArticleShowDetails from './article/ArticleShowDetails.vue';
-import ArticleEditObject from './article/ArticleEditObject.vue';
+import config from './config';
+import addCreate from '../../lib/addCreate';
 
 export default [
     {
         path: '/articles',
-        component: Articles,
+        props: config,
+        component: Base,
         children: [
-            { path: '', component: ArticlesList },
-            { path: 'create', component: ArticlesCreate }
-        ]
-    },
-    {
-        path: '/articles/:article',
-        component: ArticleShow,
-        children: [
-            { path: '', component: ArticleShowDetails },
-            { path: 'edit', component: ArticleEditObject }
+            {
+                path: '',
+                props: config,
+                component: Protip,
+                children: [
+                    {
+                        path: 'create',
+                        props: { default: config, create: config },
+                        components: { create: Create }
+                    }
+                ]
+            },
+            {
+                path: ':article',
+                props: config,
+                component: Show,
+                children: addCreate(Create, [{ path: '', props: config, component: Details }])
+            }
         ]
     }
 ];

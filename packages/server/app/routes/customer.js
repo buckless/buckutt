@@ -44,12 +44,12 @@ router.post(
 
         await logAccess(ctx(req), {
             walletId,
-            wiketId: req.wiket_id,
+            wiketId: req.wiket.id,
             clientTime: req.body.clientTime
         });
 
         log.info(
-            `Create access for ${req.details.walletId} on wiket ${req.body.wiket_id}`,
+            `Create access for ${req.details.wallet} on wiket ${req.wiket.id}`,
             req.details
         );
 

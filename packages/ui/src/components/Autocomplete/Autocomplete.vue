@@ -2,6 +2,7 @@
     <label>
         <div class="label" v-if="label">{{ label }}</div>
         <vue-autosuggest
+            class="results"
             :suggestions="mutableSuggestions"
             :inputProps="inputProps"
             :sectionConfigs="sections"
@@ -16,6 +17,7 @@
 
 <script>
 import { VueAutosuggest } from 'vue-autosuggest';
+import Popper from 'popper.js';
 import uniqueId from 'lodash.uniqueid';
 
 import {
@@ -129,6 +131,18 @@ export default {
         }
     },
 
+    mounted() {
+        const reference = this.$el.querySelector('.input');
+        const popper = this.$el.querySelector('.autosuggest__results-container');
+        this.popper = new Popper(reference, popper, {
+            placement: 'bottom-start'
+        });
+    },
+
+    beforeDestroy() {
+        this.popper.destroy();
+    },
+
     methods: {
         onInputChange(input) {
             if (input === null) return;
@@ -214,6 +228,10 @@ export default {
     border: 1px solid var(--primary-300);
     box-shadow: 0 0 0 3px color-mod(var(--primary-300) a(0.2));
 }
+
+.results {
+    position: relative;
+}
 </style>
 
 <style>
@@ -228,6 +246,9 @@ export default {
 
 .autosuggest__results-container {
     display: none;
+    width: 100%;
+    z-index: 10;
+    background-color: var(--grey-50);
     box-shadow: var(--elevation-1dp);
     padding: 16px;
     border-bottom-left-radius: var(--radius);

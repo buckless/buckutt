@@ -1,9 +1,19 @@
 Default example:
 
 ```js
+import Icon from '../Icon/Icon';
+
 <div>
     <Button>
         Hello
+    </Button>
+
+    <Button raised>
+        Hello
+    </Button>
+
+    <Button raised>
+        <Icon name="favorite" />
     </Button>
 
     <Button accent>
@@ -11,6 +21,28 @@ Default example:
     </Button>
 
     <Button raised accent>
+        Accent and Raised
+    </Button>
+</div>
+```
+
+Disabled state:
+
+```js
+<div>
+    <Button disabled>
+        Hello
+    </Button>
+
+    <Button raised disabled>
+        Hello
+    </Button>
+
+    <Button disabled accent>
+        Accent
+    </Button>
+
+    <Button disabled raised accent>
         Accent and Raised
     </Button>
 </div>

@@ -6,6 +6,7 @@
         <div class="content">
             <h6>{{ label }}</h6>
             <p>
+                <!-- @slot Switch description -->
                 <slot />
             </p>
         </div>

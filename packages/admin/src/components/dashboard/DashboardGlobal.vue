@@ -2,33 +2,33 @@
     <div class="b-dashboard-global">
         <b-global-tile
             icon="nfc"
-            title="Supports NFC actifs"
+            title="Supports"
             :value="globalData.activeCards"
             color="#ff7f0e"
         ></b-global-tile>
         <b-global-tile
             icon="map"
-            title="Billets validés"
+            title="Billets"
             :value="globalData.validatedTickets"
             color="#98df8a"
         ></b-global-tile>
         <b-global-tile
             icon="attach_money"
-            title="Rechargements totaux"
+            title="Rechargements"
             :value="globalData.reloads"
             color="#c7c7c7"
             type="price"
         ></b-global-tile>
         <b-global-tile
             icon="money_off"
-            title="Remboursements totaux"
+            title="Remboursements"
             :value="globalData.refunds"
             color="#9e5eba"
             type="price"
         ></b-global-tile>
         <b-global-tile
             icon="shopping_cart"
-            title="Achats totaux"
+            title="Achats"
             :value="globalData.purchases"
             color="#1f77b4"
             type="price"
@@ -64,9 +64,11 @@ export default {
         updateData() {
             clearTimeout(this.nextUpdateRef);
 
-            return this.fetchGlobalData().then(() => {
-                this.nextUpdateRef = setTimeout(this.updateData, 10000);
-            });
+            return this.fetchGlobalData()
+                .then(() => {
+                    this.nextUpdateRef = setTimeout(this.updateData, 10000);
+                })
+                .catch(() => this.updateData());
         }
     },
 
@@ -82,11 +84,9 @@ export default {
 
 <style>
 .b-dashboard-global {
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    flex-wrap: wrap;
-    width: 100%;
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-left: 20px;
 }
 </style>

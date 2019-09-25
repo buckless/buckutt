@@ -2,10 +2,10 @@
  * Notifications actions
  */
 
-export function notify({ commit }, message) {
-    commit('UPDATENOTIFY', message);
-}
+export function notify({ state, commit }, message) {
+    commit('NOTIFY', message);
 
-export function notifyError({ commit }, error) {
-    commit('UPDATEERROR', error);
+    const id = state.notifications.currentId - 1;
+
+    setTimeout(() => commit('REMOVE_NOTIFICATION', id), 4000);
 }

@@ -53,7 +53,7 @@ export default {
 .card {
     display: flex;
     align-items: center;
-    height: 100px;
+    height: 80px;
     padding: 0 24px;
     color: var(--foreground-dark-300);
 }

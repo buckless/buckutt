@@ -4,13 +4,15 @@
             <slot></slot>
         </span>
 
-        <mdl-dialog ref="confirm" title="Suppression">
-            <p>Êtes-vous sûr de vouloir effectuer cette action ?</p>
-            <template slot="actions">
-                <mdl-button primary @click.native="validate">Valider</mdl-button>
-                <mdl-button @click.native="$refs.confirm.close">Annuler</mdl-button>
-            </template>
-        </mdl-dialog>
+        <b-container dropShadow @close="close" v-if="opened">
+            <b-modal title="Suppression" @close="close">
+                <p>Êtes-vous sûr de vouloir effectuer cette action ?</p>
+                <template slot="actions">
+                    <b-button @click="close">Annuler</b-button>
+                    <b-button raised @click="validate">Valider</b-button>
+                </template>
+            </b-modal>
+        </b-container>
     </div>
 </template>
 
@@ -20,10 +22,16 @@ export default {
         disabled: Boolean
     },
 
+    data() {
+        return {
+            opened: false
+        };
+    },
+
     methods: {
         interceptEvent(e) {
             if (!this.disabled) {
-                this.$refs.confirm.open();
+                this.opened = true;
             }
 
             e.preventDefault();
@@ -33,16 +41,12 @@ export default {
 
         validate() {
             this.$emit('confirm');
-            this.$refs.confirm.close();
+            this.close();
+        },
+
+        close() {
+            this.opened = false;
         }
-    },
-
-    beforeDestroy() {
-        document.body.removeChild(this.$refs.confirm.$el);
-    },
-
-    mounted() {
-        document.body.appendChild(this.$refs.confirm.$el);
     }
 };
 </script>

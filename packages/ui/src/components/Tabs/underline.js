@@ -6,17 +6,14 @@ export const styles = position => {
     };
 };
 
-export const positions = tabs => {
+export const positions = sizes => {
     let left = 0;
 
-    return Array.from(tabs.children)
-        .filter(child => child.classList.contains('tab'))
-        .map(child => {
-            const width = child.getBoundingClientRect().width;
-            const pos = { left, width };
+    return sizes.map(width => {
+        const pos = { left, width };
 
-            left += width;
+        left += width;
 
-            return pos;
-        });
+        return pos;
+    });
 };

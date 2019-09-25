@@ -1,70 +1,52 @@
 <template>
     <div class="b-dashboard">
-        <b-global></b-global>
-
-        <div class="b-timebar mdl-card">
-            <div class="mdl-card__supporting-text">
-                <b-datetime-picker
-                    v-model="timefilter.dateIn"
-                    locale="fr"
-                    header-format="DD MMM"
-                    cancel="Annuler"
-                    next="Suivant"
-                    back="Retour"
-                    pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
-                    error="Le début n'est pas une date"
-                    label="Début"
-                    class="b--limitsize"
-                ></b-datetime-picker>
-                <b-datetime-picker
+        <div class="b-timebar">
+            <div class="b-timebar-dates">
+                <b-datetimeinput v-model="timefilter.dateIn" label="Début"></b-datetimeinput>
+                <b-icon name="arrow_right_alt" :size="34" class="b-timebar-dates-arrow"></b-icon>
+                <b-datetimeinput
                     v-model="timefilter.dateOut"
-                    locale="fr"
-                    header-format="DD MMM"
-                    cancel="Annuler"
-                    next="Suivant"
-                    back="Retour"
-                    pattern="\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}"
-                    error="La fin n'est pas une date"
                     label="Fin"
-                    v-if="!realtime"
-                    class="b--limitsize"
-                ></b-datetime-picker>
-                <mdl-textfield
-                    floating-label="Fin"
+                    v-show="!realtime"
+                ></b-datetimeinput>
+                <b-datetimeinput
+                    placeholder="Maintenant"
                     disabled
-                    v-else
-                    value=" Maintenant"
-                ></mdl-textfield>
-                <mdl-switch v-model="realtime" @input="timefilter.dateOut = new Date()"
-                    >Temps réel</mdl-switch
+                    label="Fin"
+                    v-show="realtime"
+                ></b-datetimeinput>
+            </div>
+            <div class="b-timebar-options">
+                <b-toggle v-model="realtime" @change="timefilter.dateOut = new Date()"
+                    >Temps réel</b-toggle
                 >
-                <mdl-switch v-model="isAmount">Sommes en euros</mdl-switch>
+                <b-toggle v-model="isAmount">Somme en euros</b-toggle>
             </div>
         </div>
 
-        <b-purchases
-            :start="timefilter.dateIn"
-            :end="timefilter.dateOut"
-            :unit="unit"
-            :realtime="realtime"
-        ></b-purchases>
-        <b-division
-            :start="timefilter.dateIn"
-            :end="timefilter.dateOut"
-            :unit="unit"
-            :realtime="realtime"
-        ></b-division>
+        <div class="b-graphs">
+            <b-purchases
+                :start="timefilter.dateIn"
+                :end="timefilter.dateOut"
+                :unit="unit"
+                :realtime="realtime"
+            ></b-purchases>
+            <b-division
+                :start="timefilter.dateIn"
+                :end="timefilter.dateOut"
+                :unit="unit"
+                :realtime="realtime"
+            ></b-division>
+        </div>
     </div>
 </template>
 
 <script>
-import DashboardGlobal from './DashboardGlobal';
 import DashboardPurchases from './DashboardPurchases';
 import DashboardDivision from './DashboardDivision';
 
 export default {
     components: {
-        'b-global': DashboardGlobal,
         'b-purchases': DashboardPurchases,
         'b-division': DashboardDivision
     },
@@ -78,7 +60,7 @@ export default {
                 dateOut: new Date()
             },
             realtime: true,
-            isAmount: false
+            isAmount: true
         };
     },
 
@@ -90,35 +72,8 @@ export default {
 };
 </script>
 
-<style>
-.b-dashboard {
-    margin-top: 110px;
-    padding-left: 30px;
-    padding-right: 30px;
-}
-
-.b-timebar {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    min-height: 0;
-    margin-bottom: 20px;
-
-    & > div {
-        display: flex;
-        align-items: center;
-        width: 100%;
-
-        & > div {
-            margin-left: 15px;
-            margin-right: 15px;
-            width: 250px;
-        }
-
-        & > label {
-            margin-left: 15px;
-            margin-right: 15px;
-            width: 250px;
-        }
-    }
+<style scoped>
+.b-graphs {
+    margin: 30px;
 }
 </style>

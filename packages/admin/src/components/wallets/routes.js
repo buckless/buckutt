@@ -1,28 +1,47 @@
-import Wallets from './Wallets.vue';
-import WalletsList from './WalletsList.vue';
+import Base from '../base/Base.vue';
+import Show from '../base/Show.vue';
+import Details from '../base/Details.vue';
+import Protip from '../base/Protip.vue';
 
-import WalletShow from './wallet/WalletShow.vue';
-import WalletShowDetails from './wallet/WalletShowDetails.vue';
-import WalletEditObject from './wallet/WalletEditObject.vue';
-import WalletEditRefund from './wallet/WalletEditRefund.vue';
-import WalletEditGroups from './wallet/WalletEditGroups.vue';
-import WalletTransactions from './wallet/WalletTransactions.vue';
+import Transactions from './Transactions.vue';
+import Refund from './Refund.vue';
+import Groups from '../users/Groups.vue';
+import Add from '../users/AddGroups.vue';
+import User from './User.vue';
+
+import config from './config';
 
 export default [
     {
         path: '/wallets',
-        component: Wallets,
-        children: [{ path: '', component: WalletsList }]
-    },
-    {
-        path: '/wallets/:wallet',
-        component: WalletShow,
+        props: config,
+        component: Base,
         children: [
-            { path: '', component: WalletShowDetails },
-            { path: 'edit', component: WalletEditObject },
-            { path: 'refund', component: WalletEditRefund },
-            { path: 'groups', component: WalletEditGroups },
-            { path: 'transactions', component: WalletTransactions }
+            {
+                path: '',
+                props: config,
+                component: Protip
+            },
+            {
+                path: ':wallet',
+                props: config,
+                component: Show,
+                children: [
+                    { path: '', props: config, component: Details },
+                    {
+                        path: 'transactions',
+                        component: Transactions,
+                        children: [{ path: 'refund', component: Refund }]
+                    },
+                    {
+                        path: 'groups',
+                        props: config,
+                        component: Groups,
+                        children: [{ path: 'add', props: config, component: Add }]
+                    },
+                    { path: 'user', component: User }
+                ]
+            }
         ]
     }
 ];

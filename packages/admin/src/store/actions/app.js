@@ -6,10 +6,6 @@ export function updateLoggedUser({ commit }, loggedUser) {
     commit('UPDATELOGGEDUSER', loggedUser);
 }
 
-export function updateCreationData({ commit }, creationData) {
-    commit('UPDATECREATIONDATA', creationData);
-}
-
 export function load({ dispatch }) {
     const routes = [
         'points',
@@ -25,36 +21,24 @@ export function load({ dispatch }) {
         'meansofpayment',
         'webservices',
         'alerts',
-        'accesses',
         'giftreloads'
     ];
 
     dispatch('initSocket', localStorage.getItem('token'));
 
-    const objectsToFetch = routes.map(route => dispatch('fetchObjects', { route }));
-
-    Promise.all(objectsToFetch).then(() =>
-        dispatch('fetchObjectsAndRelations', { route: 'events' })
-    );
+    return Promise.all(routes.map(route => dispatch('fetchObjects', { route })));
 }
 
-export function checkAndCreateNeededRouterData({ state, commit, dispatch }) {
+export const checkAndCreateNeededRouterData = async ({ state, commit, dispatch }, route) => {
     if (state.app.firstLoad) {
         return Promise.resolve();
     }
 
-    const actions = [];
-
     if (localStorage.hasOwnProperty('token')) {
         commit('UPDATELOGGEDUSER', JSON.parse(localStorage.getItem('user')));
         dispatch('setToken', localStorage.getItem('token'));
-        dispatch('load');
+        await dispatch('load');
     }
 
-    return Promise.all(actions)
-        .then(() => {
-            commit('UPDATEFIRSTLOAD', true);
-            return Promise.resolve();
-        })
-        .catch(() => Promise.reject());
-}
+    return dispatch('loadFocusedElements', route.params);
+};

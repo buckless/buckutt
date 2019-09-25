@@ -4,7 +4,8 @@
             <div
                 class="tab"
                 v-for="(title, i) in titles"
-                :style="{ minWidth: `${minWidth}px` }"
+                ref="tab"
+                :style="{ width: `${sizes[i]}px` }"
                 :key="i"
                 :active="i === selected"
                 @click="select(i)"
@@ -14,6 +15,7 @@
             <div class="underline" v-if="positions" :style="underlineStyles" />
         </div>
         <div class="contents">
+            <!-- @slot Tabs container -->
             <slot />
         </div>
     </div>
@@ -40,18 +42,13 @@ export default {
          * @model
          * Controls the checked prop and state
          */
-        selected: { type: Number, default: 0 },
-
-        /**
-         * Sets the minimum width for each tab. Should be a bit more than the biggest
-         * tab so that activating a tab does not moves the others (because of the font-weight)
-         */
-        minWidth: { type: Number, default: 80 }
+        selected: { type: Number, default: 0 }
     },
 
     data: () => ({
         titles: [],
-        positions: []
+        positions: [],
+        sizes: []
     }),
 
     mounted() {
@@ -86,7 +83,14 @@ export default {
         },
 
         setPositions() {
-            this.positions = positions(this.$refs.tabs);
+            // force width in bold state so tabs don't get bigger when active
+            for (const tab of this.$refs.tab) {
+                tab.style.fontWeight = 'bold';
+                this.sizes.push(tab.getBoundingClientRect().width);
+                tab.style.fontWeight = '';
+            }
+
+            this.positions = positions(this.sizes);
         }
     }
 };

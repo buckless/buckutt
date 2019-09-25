@@ -1,42 +1,17 @@
 <template>
-    <div class="b-topbar" v-show="logged">
-        <nav class="b-topbar__menu mdl-navigation">
-            <template>
-                <router-link to="/devices" class="mdl-navigation__link">
-                    <i class="material-icons">devices</i><br />
-                    Équipements
-                </router-link>
-                <router-link to="/periods" class="mdl-navigation__link" v-if="event.usePeriods">
-                    <i class="material-icons">alarm</i><br />
-                    Périodes
-                </router-link>
-                <router-link
-                    to="/fundations"
-                    class="mdl-navigation__link"
-                    v-if="event.useFundations"
-                >
-                    <i class="material-icons">local_atm</i><br />
-                    Fondations
-                </router-link>
-                <router-link to="/articles" class="mdl-navigation__link">
-                    <i class="material-icons">free_breakfast</i><br />
-                    Articles
-                </router-link>
-                <router-link to="/promotions" class="mdl-navigation__link">
-                    <i class="material-icons">stars</i><br />
-                    Formules
-                </router-link>
-            </template>
-        </nav>
+    <div class="b-topbar" v-if="logged">
+        <div class="b--flexspacer">
+            <b-global></b-global>
+        </div>
         <div class="b-topbar__account">
             <div class="b-topbar__admin">
-                <router-link to="/account" class="mdl-navigation__link">
-                    <i class="material-icons">account_circle</i>
+                <router-link :to="`/users/${loggedUser.id}`">
+                    <b-icon name="account_circle" :size="36" />
                 </router-link>
                 <span class="b--capitalized" v-if="logged">{{ loggedUser.firstname }}</span>
             </div>
-            <router-link to="/logout" class="mdl-navigation__link">
-                <i class="material-icons">power_settings_new</i>
+            <router-link to="/logout">
+                <b-icon name="power_settings_new" :size="36" />
             </router-link>
         </div>
     </div>
@@ -44,8 +19,13 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import Global from './dashboard/DashboardGlobal.vue';
 
 export default {
+    components: {
+        'b-global': Global
+    },
+
     computed: {
         ...mapState({
             loggedUser: state => state.app.loggedUser
@@ -56,50 +36,31 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import '../variables.css';
 
 .b-topbar {
     z-index: 9;
-    position: fixed;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    position: sticky;
+    top: 0;
     background-color: white;
-    height: 86px;
+    height: 100px;
     width: 100%;
-    padding-left: var(--sidebarWidth);
-
-    & > .b-topbar__menu {
-        flex: 1;
-        margin-left: 15px;
-        text-align: center;
-
-        & > a:hover {
-            color: black;
-        }
-
-        & > a {
-            width: 90px;
-            font-size: 14px;
-
-            & > i {
-                font-size: 35px;
-            }
-        }
-    }
+    display: flex;
+    box-shadow: var(--elevation-4dp);
 
     & > .b-topbar__account {
+        height: 100px;
         margin-left: 15px;
         padding-right: 23px;
         min-width: 170px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
 
         & > .b-topbar__admin {
             display: flex;
             align-items: center;
+            margin-right: 20px;
 
             & > span {
                 font-size: 14px;
@@ -110,16 +71,12 @@ export default {
 
         & > a,
         & > .b-topbar__admin > a {
-            color: #222;
-
-            & > i {
-                font-size: 40px;
-            }
+            color: #747474;
         }
 
         & > a:hover,
         & > .b-topbar__admin > a:hover {
-            color: black;
+            color: #222;
         }
     }
 }

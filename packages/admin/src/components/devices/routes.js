@@ -1,28 +1,30 @@
-import Devices from './Devices.vue';
-import DevicesCreate from './DevicesCreate.vue';
-import DevicesList from './DevicesList.vue';
+import Base from '../base/Base.vue';
+import Show from '../base/Show.vue';
+import Details from '../base/Details.vue';
+import Protip from '../base/Protip.vue';
+import Options from './Options.vue';
+import Assign from './Assign.vue';
+import Add from './AddAssign.vue';
 
-import DeviceShow from './device/DeviceShow.vue';
-import DeviceShowDetails from './device/DeviceShowDetails.vue';
-import DeviceEditObject from './device/DeviceEditObject.vue';
-import DeviceEditConfig from './device/DeviceEditConfig.vue';
+import config from './config';
 
 export default [
     {
         path: '/devices',
-        component: Devices,
+        props: config,
+        component: Base,
         children: [
-            { path: '', component: DevicesList },
-            { path: 'create', component: DevicesCreate }
-        ]
-    },
-    {
-        path: '/devices/:device',
-        component: DeviceShow,
-        children: [
-            { path: '', component: DeviceShowDetails },
-            { path: 'edit', component: DeviceEditObject },
-            { path: 'config', component: DeviceEditConfig }
+            { path: '', props: config, component: Protip },
+            {
+                path: ':device',
+                props: config,
+                component: Show,
+                children: [
+                    { path: '', props: config, component: Details },
+                    { path: 'options', component: Options },
+                    { path: 'assign', props: config, component: Assign, children: [{ path: 'add', props: config, component: Add }] }
+                ]
+            }
         ]
     }
 ];

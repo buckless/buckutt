@@ -1,33 +1,21 @@
 <template>
-    <div>
-        <!-- @slot Portal content -->
-        <slot />
-    </div>
+  <MountingPortal mountTo="body" append>
+    <!-- @slot Portal content -->
+    <slot/>
+  </MountingPortal>
 </template>
 
 <script>
+import { MountingPortal } from 'portal-vue';
+
 /**
  * Renders the content in <body>
  */
 export default {
     name: 'Portal',
 
-    mounted() {
-        this.renderPortal();
-    },
-
-    updated() {
-        this.renderPortal();
-    },
-
-    beforeDestroy() {
-        document.body.removeChild(this.$el);
-    },
-
-    methods: {
-        renderPortal() {
-            document.body.appendChild(this.$el);
-        }
+    components: {
+        MountingPortal
     }
 };
 </script>

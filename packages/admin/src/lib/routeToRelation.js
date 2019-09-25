@@ -2,7 +2,6 @@ export default route => {
     const now = new Date();
 
     const relations = {
-        accesses: ['wallet', 'wallet.user', 'operator', 'wiket', 'wiket.period', 'wiket.point'],
         articles: [
             'prices',
             {
@@ -16,10 +15,6 @@ export default route => {
             {
                 embed: 'prices.period',
                 filters: [['end', '>', now]],
-                required: true
-            },
-            {
-                embed: 'prices.point',
                 required: true
             }
         ],
@@ -38,11 +33,20 @@ export default route => {
                 embed: 'articles.prices.period',
                 filters: [['end', '>', now]],
                 required: true
+            }
+        ],
+        devices: [
+            'wikets',
+            {
+                embed: 'wikets.point',
+                required: true
             },
             {
-                embed: 'articles.prices.point',
+                embed: 'wikets.period',
+                filters: [['end', '>', now]],
                 required: true
-            }
+            },
+            'wikets.defaultGroup'
         ],
         events: ['defaultFundation', 'defaultGroup', 'defaultPeriod'],
         memberships: [
@@ -58,48 +62,17 @@ export default route => {
         ],
         points: [
             'categories',
-            'categories.articles',
-            'categories.articles.prices',
-            {
-                embed: 'categories.articles.prices.period',
-                filters: [['end', '>', now]],
-                required: true
-            },
-            {
-                embed: 'categories.articles.prices.point',
-                required: true
-            },
             'defaultGroup',
             'wikets',
-            {
-                embed: 'wikets.device',
-                required: true
-            },
-            {
-                embed: 'wikets.period',
-                filters: [['end', '>', now]],
-                required: true
-            },
-            'wikets.defaultGroup'
+            'wikets.accesses',
+            'wikets.accesses.wallet',
+            'wikets.accesses.wallet.user',
+            'wikets.accesses.operator'
         ],
         prices: [
-            {
-                embed: 'fundation',
-                required: true
-            },
-            {
-                embed: 'group',
-                required: true
-            },
-            {
-                embed: 'period',
-                filters: [['end', '>', now]],
-                required: true
-            },
-            {
-                embed: 'point',
-                required: true
-            }
+            'period',
+            'fundation',
+            'group'
         ],
         promotions: [
             'sets',
@@ -156,9 +129,8 @@ export default route => {
             }
         ],
         wallets: [
-            'pendingCardUpdates',
             'user',
-            'ticket',
+            //            'ticket',
             'memberships',
             {
                 embed: 'memberships.period',
@@ -172,7 +144,7 @@ export default route => {
         ],
         wikets: [
             {
-                embed: 'device',
+                embed: 'point',
                 required: true
             },
             {

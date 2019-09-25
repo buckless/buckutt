@@ -20,9 +20,9 @@ module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
     const amounts = await query
         .query(q =>
             q
-                .select('type')
+                .select('type', 'isCancellation')
                 .sum('amount as amount')
-                .groupBy('type')
+                .groupBy('type', 'isCancellation')
         )
         .fetchAll();
 

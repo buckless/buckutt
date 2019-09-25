@@ -12,9 +12,7 @@ const translation = {
     promotion: 'promotions',
     user: 'users',
     webservice: 'webservices',
-    wallet: 'wallets',
-    // Special case
-    wiket: 'points'
+    wallet: 'wallets'
 };
 
 export default path => translation[path];

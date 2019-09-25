@@ -1,72 +1,30 @@
-import { get } from '../../lib/fetch';
-import queryString from '../../lib/queryString';
-import treasuryQueryString from '../../lib/treasuryQueryString';
+import { saveAs } from 'file-saver';
+import { get, download } from '@/lib/fetch';
+import treasuryQueryString from '@/lib/treasuryQueryString';
 
-/**
- * Purchases actions
- */
-
-export function getPurchases({ commit, dispatch }, fields) {
+export const getTreasury = async ({ commit, dispatch }, fields) => {
     const qString = treasuryQueryString(fields);
 
-    return get(`stats/purchases?${qString}`)
-        .then(purchases => {
-            commit('CLEAROBJECT', 'purchases');
-            dispatch('checkAndAddObjects', {
-                route: 'purchases',
-                objects: purchases
-            });
+    const purchases = await get(`stats/purchases?${qString}`);
+    const withdrawals = await get(`stats/withdrawals?${qString}`);
+    const reloads = await get(`stats/reloads?${qString}`);
+    const refunds = await get(`stats/refunds?${qString}`);
 
-            return get(`stats/withdrawals?${qString}`);
-        })
-        .then(withdrawals => {
-            commit('CLEAROBJECT', 'withdrawals');
-            dispatch('checkAndAddObjects', {
-                route: 'withdrawals',
-                objects: withdrawals
-            });
-        });
-}
+    commit('CLEAROBJECT', 'purchases');
+    commit('CLEAROBJECT', 'withdrawals');
+    commit('CLEAROBJECT', 'reloads');
+    commit('CLEAROBJECT', 'refunds');
 
-/**
- * Treasury actions
- */
+    dispatch('normalizeAndSet', { route: 'purchases', results: purchases });
+    dispatch('normalizeAndSet', { route: 'withdrawals', results: withdrawals });
+    dispatch('normalizeAndSet', { route: 'reloads', results: reloads });
+    dispatch('normalizeAndSet', { route: 'refunds', results: refunds });
+};
 
-export function getTreasury({ commit, dispatch }, fields) {
-    const qt = [];
-
-    if (fields.dateIn) {
-        qt.push({
-            field: 'clientTime',
-            ge: fields.dateIn,
-            date: true
-        });
-    }
-
-    if (fields.dateOut) {
-        qt.push({
-            field: 'clientTime',
-            le: fields.dateOut,
-            date: true
-        });
-    }
-
+export const downloadTreasury = async (_, { fields, route }) => {
     const qString = treasuryQueryString(fields);
-    let orQt = queryString(qt);
+    const currentTime = Math.floor(Date.now() / 1000);
 
-    if (orQt) {
-        orQt = `&q=${orQt}`;
-    }
-
-    return get(`stats/reloads?${qString}`)
-        .then(reloads => {
-            commit('CLEAROBJECT', 'reloads');
-            dispatch('checkAndAddObjects', { route: 'reloads', objects: reloads });
-
-            return get(`stats/refunds?${qString}`);
-        })
-        .then(refunds => {
-            commit('CLEAROBJECT', 'refunds');
-            dispatch('checkAndAddObjects', { route: 'refunds', objects: refunds });
-        });
-}
+    const data = await download(`stats/${route}/csv?${qString}`);
+    saveAs(data, `treasury-${route}-${currentTime}.csv`);
+};

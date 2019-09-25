@@ -2,9 +2,9 @@
     <Portal>
         <div class="container">
             <div class="drop-shadow" v-if="dropShadow" @click="onClose" />
-            <!-- @slot Modal container content -->
 
             <div class="wrapper">
+                <!-- @slot Modal slot -->
                 <slot />
             </div>
         </div>
@@ -20,6 +20,11 @@ import Icon from '../Icon/Icon';
  */
 export default {
     name: 'ModalContainer',
+
+    components: {
+        Portal,
+        Icon
+    },
 
     props: {
         /**

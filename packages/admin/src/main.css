@@ -1,16 +1,14 @@
+@import 'ui/src/theme.css';
 @import './variables.css';
 @import './mixins.css';
 @import './spinner.css';
-@import './styles/c3.css';
-@import './styles/select.css';
-@import './styles/modal.css';
 
 * {
     box-sizing: border-box;
 }
 
 html, body, main {
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--typography-family);
     font-size: 16px;
     height: 100%;
     margin: 0;
@@ -22,96 +20,56 @@ html, body, main {
     height: 100%;
 }
 
-.material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-feature-settings: 'liga';
+.b-container {
+    width: 100%;
+    height: calc(100% - 100px);
+    overflow: auto;
+    background-color: #FAFAFA;
 }
 
-.mdl-card {
-    overflow: visible !important;
+.b-base-right {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    overflow: auto;
 }
 
-.anytime-picker { display: none; position: absolute; top: 0; left: 0; }
-.anytime-picker--is-visible { display: block; }
-.anytime-picker__dates { width: 200px; }
-.anytime-picker__dates > * { box-sizing: border-box; width: 14.28%; display: inline-block; }
+.b-timebar {
+    width: 100%;
+    height: 120px;
+    background: var(--grey-100);
+    box-shadow: var(--elevation-2dp);
+    display: flex;
+    padding: 20px;
+    z-index: 5;
+    position: sticky;
+    top: 0;
 
-.b-page {
-    & > div {
-        min-height: calc(100% - 40px);
-        margin-top: 110px;
-        margin-bottom: 20px;
-        margin-right: calc((100% - var(--cardSize)) / 2);
-        margin-left: calc((100% - var(--cardSize)) / 2);
-        padding: 20px;
-        width: var(--cardSize);
+    & > .b-timebar-dates {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
 
-        & > h3 {
-            margin: 0;
+        & > * {
+            margin-left: 10px;
+            margin-right: 10px;
         }
 
-        & > select {
-            display: inline-block;
-            max-width: 150px;
+        & > .b-timebar-dates-arrow {
+            margin-top: 20px;
         }
+    }
 
-        & button {
-            max-width: 300px;
-        }
+    & > .b-timebar-options {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
     }
 }
 
 .b--spaces {
     margin-left: 5px;
     margin-right: 5px;
-}
-
-.b-table-search {
-    display: flex;
-    align-items: center;
-
-    & > i {
-        color: #34495E;
-    }
-
-    & > div {
-        margin-left: 10px;
-        margin-right: 5px;
-    }
-}
-
-.b-responsive-table {
-    overflow-x: auto;
-    padding-bottom: 150px;
-    margin-bottom: -150px;
-
-    & > table {
-        width: 100%;
-    }
-}
-
-.b-responsive-table--nofullwidth {
-    overflow-x: auto;
-
-    & > table {
-        max-width: 100%;
-    }
-}
-
-.b-actions-cell {
-    min-width: 10px;
 }
 
 .b--capitalized {
@@ -138,7 +96,6 @@ html, body, main {
     display: inline-block;
 }
 
-
 .b--unclickable {
     pointer-events: none;
 }
@@ -151,14 +108,6 @@ html, body, main {
     color: #e74c3c !important;
 }
 
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .4s ease;
-}
-
-.fade-enter {
-    opacity: 0;
-}
-
-.fade-leave-active {
-    display: none;
+.b--flexspacer {
+    flex: 1;
 }

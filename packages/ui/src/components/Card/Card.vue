@@ -2,7 +2,7 @@
     <router-link
         v-if="to"
         tag="div"
-        class="card"
+        class="card is-link"
         :to="to"
         :active="active"
         :accent="accent"
@@ -71,12 +71,13 @@ export default {
     background-color: var(--grey-50);
 }
 
-.card[to] {
+.card[to], .card.is-link {
     cursor: pointer;
     transition: box-shadow var(--transition-medium-out) var(--transition-easing);
 }
 
-.card[to]:not([active]):hover {
+.card[to]:not([active]):hover,
+.card.is-link:not([active]):hover {
     box-shadow: var(--elevation-3dp);
     transition: box-shadow var(--transition-medium-in) var(--transition-easing);
 }

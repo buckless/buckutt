@@ -1,15 +1,24 @@
 const state = {
-    error: null,
-    notify: null
+    currentId: 0,
+    messages: []
 };
 
 const mutations = {
-    UPDATEERROR(state_, error) {
-        state_.error = error;
+    NOTIFY(state_, notification) {
+        state_.messages.push({
+            id: state_.currentId,
+            content: notification
+        });
+
+        state_.currentId++;
+
+        if (state_.messages.length > 10) {
+            state_.messages.splice(0, state_.messages.length - 10);
+        }
     },
 
-    UPDATENOTIFY(state_, notify) {
-        state_.notify = notify;
+    REMOVE_NOTIFICATION(state_, id) {
+        state_.messages = state_.messages.filter(message => message.id !== id);
     }
 };
 

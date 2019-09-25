@@ -19,7 +19,7 @@ The "root" color for primary and accent is 400.
 
 **Foreground rule for primary**
 
-On primary background, foreground is dark from `--primary-50` to `--primary-400`, and light from `--primary-500` to `--primary-900`.
+On primary background, foreground is dark from `--primary-50` to `--primary-200`, and light from `--primary-300` to `--primary-900`.
 
 **Foreground rule for accent**
 
@@ -31,9 +31,9 @@ On accent background, foreground is dark from `--accent-50` to `--accent-800`, a
     <Color fg="--foreground-light-200" bg="--primary-500" main="fg" />
     <Color fg="--foreground-light-300" bg="--primary-500" main="fg" />
 
-    <Color fg="--foreground-dark-100" bg="--primary-400" main="fg" />
-    <Color fg="--foreground-dark-200" bg="--primary-400" main="fg" />
-    <Color fg="--foreground-dark-300" bg="--primary-400" main="fg" />
+    <Color fg="--foreground-dark-100" bg="--primary-200" main="fg" />
+    <Color fg="--foreground-dark-200" bg="--primary-200" main="fg" />
+    <Color fg="--foreground-dark-300" bg="--primary-200" main="fg" />
 </div>
 ```
 
@@ -78,13 +78,10 @@ On accent background, foreground is dark from `--accent-50` to `--accent-800`, a
     <Color fg="--foreground-dark-300" bg="--primary-50" main="bg" />
     <Color fg="--foreground-dark-300" bg="--primary-100" main="bg" />
     <Color fg="--foreground-dark-300" bg="--primary-200" main="bg" />
-    <Color fg="--foreground-dark-300" bg="--primary-300" main="bg" />
-    <Color fg="--foreground-dark-300" bg="--primary-400" main="bg" />
+    <Color fg="--foreground-light-300" bg="--primary-300" main="bg" />
+    <Color fg="--foreground-light-300" bg="--primary-400" main="bg" />
     <Color fg="--foreground-light-300" bg="--primary-500" main="bg" />
     <Color fg="--foreground-light-300" bg="--primary-600" main="bg" />
-    <Color fg="--foreground-light-300" bg="--primary-700" main="bg" />
-    <Color fg="--foreground-light-300" bg="--primary-800" main="bg" />
-    <Color fg="--foreground-light-300" bg="--primary-900" main="bg" />
 </div>
 ```
 
@@ -93,12 +90,9 @@ On accent background, foreground is dark from `--accent-50` to `--accent-800`, a
 --primary-100: #c4cdf6;
 --primary-200: #9cadf0;
 --primary-300: #708cea;
---primary-400: #4a71e5;
---primary-500: #1e58da;
---primary-600: #154fd0;
---primary-700: #0045c3;
---primary-800: #003ab6;
---primary-900: #00279f;
+--primary-400: #5469af;
+--primary-500: #384675;
+--primary-600: #1c233b;
 ```
 
 #### Accent

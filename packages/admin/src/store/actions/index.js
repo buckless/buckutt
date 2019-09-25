@@ -7,9 +7,7 @@ export * from './stats';
 export * from './treasury';
 export * from './users';
 
-// Objects management
-export * from './objects/changes';
-export * from './objects/fetching';
-export * from './objects/focusedElements';
-export * from './objects/management';
-export * from './objects/relatives';
+export * from './api/management';
+export * from './api/fetching';
+export * from './api/changes';
+export * from './api/relatives';

@@ -1,32 +1,55 @@
-import Users from './Users.vue';
-import UsersCreate from './UsersCreate.vue';
-import UsersList from './UsersList.vue';
-import UsersStaff from './UsersStaff.vue';
+import Base from '../base/Base.vue';
+import Show from '../base/Show.vue';
+import Details from '../base/Details.vue';
+import Create from '../base/Create.vue';
+import Protip from '../base/Protip.vue';
 
-import UserShow from './user/UserShow.vue';
-import UserShowDetails from './user/UserShowDetails.vue';
-import UserEditObject from './user/UserEditObject.vue';
-import UserEditGroups from './user/UserEditGroups.vue';
-import UserEditRights from './user/UserEditRights.vue';
+import Groups from './Groups.vue';
+import Add from './AddGroups.vue';
+import Rights from './Rights.vue';
+import AddRights from './AddRights.vue';
+
+import config from './config';
+import addCreate from '../../lib/addCreate';
 
 export default [
     {
         path: '/users',
-        component: Users,
+        props: config,
+        component: Base,
         children: [
-            { path: '', component: UsersList },
-            { path: 'create', component: UsersCreate },
-            { path: 'staff', component: UsersStaff }
-        ]
-    },
-    {
-        path: '/users/:user',
-        component: UserShow,
-        children: [
-            { path: '', component: UserShowDetails },
-            { path: 'edit', component: UserEditObject },
-            { path: 'groups', component: UserEditGroups },
-            { path: 'rights', component: UserEditRights }
+            {
+                path: '',
+                props: config,
+                component: Protip,
+                children: [
+                    {
+                        path: 'create',
+                        props: { default: config, create: config },
+                        components: { create: Create }
+                    }
+                ]
+            },
+            {
+                path: ':user',
+                props: config,
+                component: Show,
+                children: addCreate(Create, [
+                    { path: '', props: config, component: Details },
+                    {
+                        path: 'groups',
+                        props: config,
+                        component: Groups,
+                        children: [{ path: 'add', props: config, component: Add }]
+                    },
+                    {
+                        path: 'rights',
+                        props: config,
+                        component: Rights,
+                        children: [{ path: 'add', props: config, component: AddRights }]
+                    }
+                ])
+            }
         ]
     }
 ];

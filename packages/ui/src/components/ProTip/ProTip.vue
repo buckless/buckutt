@@ -10,6 +10,7 @@
 
 <script>
 import Card from '../Card/Card';
+import Icon from '../Icon/Icon';
 
 /**
  * ProTip empty state helper
@@ -31,6 +32,7 @@ export default {
 
     components: {
         Card,
+        Icon
     }
 };
 </script>

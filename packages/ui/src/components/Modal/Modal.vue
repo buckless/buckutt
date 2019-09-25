@@ -16,6 +16,7 @@
         <div class="space" />
 
         <div class="actions">
+            <!-- @slot Modal actions buttons -->
             <slot name="actions" />
         </div>
     </Card>
@@ -23,6 +24,7 @@
 
 <script>
 import Card from '../Card/Card';
+import Icon from '../Icon/Icon';
 
 /**
  * Modal component.
@@ -31,7 +33,8 @@ export default {
     name: 'Modal',
 
     components: {
-        Card
+        Card,
+        Icon
     },
 
     props: {
@@ -65,6 +68,7 @@ export default {
     flex-direction: column;
     position: relative;
     padding: 0;
+    margin: 0;
     min-height: 300px;
     max-width: 500px;
     pointer-events: all;

@@ -1,14 +1,22 @@
-import Treasury from './Treasury.vue';
-import TreasuryExport from './TreasuryExport.vue';
-import TreasuryShow from './TreasuryShow.vue';
+import Base from './Base.vue';
+import Reloads from './Reloads.vue';
+import Purchases from './Purchases.vue';
+import Refunds from './Refunds.vue';
+import Withdrawals from './Withdrawals.vue';
+import Protip from '../base/Protip.vue';
+
+import config from './config';
 
 export default [
     {
         path: '/treasury',
-        component: Treasury,
+        component: Base,
         children: [
-            { path: '', component: TreasuryShow },
-            { path: 'export', component: TreasuryExport }
+            { path: '', props: config, component: Protip },
+            { path: 'reloads', component: Reloads },
+            { path: 'purchases', component: Purchases },
+            { path: 'refunds', component: Refunds },
+            { path: 'withdrawals', component: Withdrawals }
         ]
     }
 ];

@@ -6,8 +6,8 @@ import * as getters from './getters';
 
 import app from './modules/app';
 import notifications from './modules/notifications';
-import objects from './modules/objects';
 import stats from './modules/stats';
+import api from './modules/api';
 
 Vue.use(Vuex);
 
@@ -17,7 +17,7 @@ export default new Vuex.Store({
     modules: {
         app,
         notifications,
-        objects,
-        stats
+        stats,
+        api
     }
 });

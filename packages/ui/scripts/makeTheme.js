@@ -42,8 +42,6 @@ async function main() {
     content.push(makeElevations(), '');
 
     const themeFile = [
-        '@import "./mixins.css";',
-        '',
         ':root {',
         content
             .flat()

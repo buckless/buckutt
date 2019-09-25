@@ -6,90 +6,76 @@ import routeToRelation from '../../lib/routeToRelation';
  * Users actions
  */
 
-export function createUserWithMembership({ dispatch, getters }, user) {
-    let createdUser;
+export const createUser = async ({ dispatch, getters }, user) => {
+    const newUser = await post('crud/users', user);
+    await dispatch('createObject', {
+        route: 'memberships',
+        value: {
+            user_id: newUser.id,
+            group_id: getters.event.defaultGroup_id,
+            period_id: getters.event.defaultPeriod_id
+        }
+    });
 
-    return post('crud/users', user)
-        .then(newUser => {
-            createdUser = newUser;
+    await dispatch('createObject', {
+        route: 'wallets',
+        value: { user_id: newUser.id }
+    });
 
-            return dispatch('createObject', {
-                route: 'memberships',
-                value: {
-                    user_id: createdUser.id,
-                    group_id: getters.event.defaultGroup_id,
-                    period_id: getters.event.defaultPeriod_id
-                }
-            });
-        })
-        .then(() => createdUser);
-}
+    return newUser;
+};
 
-export function searchUsers({ dispatch }, { name, min }) {
+export const searchUsers = async ({ commit }, { input, min }) => {
     let limit = '&limit=1000';
 
     if (name.length <= 2) {
         limit = `&limit=${min || 10}`;
     }
 
-    return get(`manager/searchuser?name=${name}${limit}`).then(results => {
-        dispatch('clearObject', 'users');
+    const results = await get(`manager/searchuser?name=${input}${limit}`);
 
-        if (results.length > 0) {
-            dispatch('checkAndAddObjects', { route: 'users', objects: results });
-        }
+    if (results.length > 0) {
+        commit('SETOBJECTS', { route: 'users', objects: results });
+    }
 
-        return [];
-    });
-}
+    return [];
+};
 
-export function loadWalletHistory({ state, dispatch }, wallet) {
-    return get(`manager/account/history?wallet=${wallet.id}`).then(results => {
-        dispatch('clearObject', 'history');
-        if (results.history.length > 0) {
-            const depth = state.app.focusedElements.findIndex(element => wallet.id === element.id);
+export const loadWalletHistory = async ({ commit }, wallet) => {
+    const results = await get(`manager/account/history?wallet=${wallet.id}`);
+    commit('CLEARHISTORY');
+    if (results.history.length > 0) {
+        commit('SETHISTORY', results.history);
+    }
+    return results;
+};
 
-            dispatch('updateFocusedElement', {
-                depth,
-                field: 'credit',
-                value: results.credit
-            });
-            dispatch('checkAndAddObjects', {
-                route: 'history',
-                objects: results.history
-            });
-        }
-        return [];
-    });
-}
-
-export function cancelTransaction({ state, dispatch }, payload) {
+export const cancelTransaction = async ({ commit }, payload) => {
     const transaction = payload.transaction;
     const wallet = payload.wallet;
 
-    return post('payment/cancelTransaction', transaction).then(() => {
-        const currentTransaction = state.objects.history.find(h => h.id === transaction.id);
+    await post('payment/cancelTransaction', transaction);
 
-        const newWalletCredit = wallet.credit - currentTransaction.amount;
-        const depth = state.app.focusedElements.findIndex(element => wallet.id === element.id);
-
-        dispatch('updateFocusedElement', {
-            depth,
-            field: 'credit',
-            value: newWalletCredit
-        });
+    commit('SETOBJECTS', {
+        route: 'wallets',
+        objects: [
+            {
+                ...wallet,
+                credit: wallet.credit - transaction.amount
+            }
+        ]
     });
-}
+};
 
-export function searchWallets({ dispatch }, { wallet, min }) {
-    const limit = wallet.length <= 2 ? `&limit=${min || 10}` : '';
+export const searchWallets = async ({ commit }, { input, min }) => {
+    const limit = input.length <= 2 ? `&limit=${min || 10}` : '';
 
     let orQt = '';
-    if (wallet) {
+    if (input) {
         const qt = [
             {
                 field: 'physical_id',
-                eq: wallet
+                eq: input
             }
         ];
 
@@ -97,17 +83,14 @@ export function searchWallets({ dispatch }, { wallet, min }) {
     }
 
     const relEmbed = routeToRelation('wallets');
+    const results = await get(`crud/wallets?embed=${relEmbed}${orQt}${limit}`);
 
-    return get(`crud/wallets?embed=${relEmbed}${orQt}${limit}`).then(results => {
-        dispatch('clearObject', 'wallets');
+    if (results.length > 0) {
+        commit('SETOBJECTS', {
+            route: 'wallets',
+            objects: results
+        });
+    }
 
-        if (results.length > 0) {
-            dispatch('checkAndAddObjects', {
-                route: 'wallets',
-                objects: results
-            });
-        }
-
-        return [];
-    });
-}
+    return [];
+};

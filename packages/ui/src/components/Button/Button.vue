@@ -1,9 +1,23 @@
 <template>
-    <button v-if="!to" class="button" :raised="raised" :accent="accent" @click="click">
+    <button
+        v-if="!to"
+        class="button"
+        :raised="raised"
+        :accent="accent"
+        :disabled="disabled"
+        @click="click"
+    >
         <!-- @slot Button text slot -->
         <slot />
     </button>
-    <router-link v-else class="button" :raised="raised" :accent="accent" :to="to">
+    <router-link
+        v-else
+        class="button"
+        :raised="raised"
+        :accent="accent"
+        :disabled="disabled"
+        :to="to"
+    >
         <!-- @slot Button text slot -->
         <slot />
     </router-link>
@@ -39,6 +53,14 @@ export default {
         accent: {
             type: Boolean,
             default: false
+        },
+
+        /**
+         * Sets the button disabled
+         */
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -63,6 +85,7 @@ export default {
     line-height: 36px;
     padding: 0 16px;
 
+    background-color: transparent;
     border: 0;
     border-radius: var(--radius);
     color: var(--foreground-dark-300);
@@ -72,8 +95,14 @@ export default {
     font-size: var(--typography-button-size);
     letter-spacing: var(--typography-button-spacing);
     text-transform: uppercase;
+    text-decoration: none;
 
     transition: background-color var(--transition-medium-out) var(--transition-easing);
+}
+
+/* Icon-only button, do not alter inline line height */
+.button > .icon {
+    transform: translateY(6px);
 }
 
 .button:active,
@@ -107,6 +136,7 @@ export default {
 }
 
 .button[raised] {
+    color: var(--foreground-light-300);
     background-color: var(--primary-300);
     box-shadow: var(--elevation-2dp);
 }
@@ -137,5 +167,21 @@ export default {
 
 .button[accent][raised]:active {
     background-color: var(--accent-400);
+}
+
+.button[disabled],
+.button[disabled]:hover,
+.button[disabled]:focus,
+.button[disabled]:active {
+    color: var(--foreground-dark-100);
+    background-color: transparent;
+}
+
+.button[disabled][raised],
+.button[disabled][raised]:hover,
+.button[disabled][raised]:focus,
+.button[disabled][raised]:active {
+    color: var(--foreground-dark-100);
+    background-color: var(--grey-400);
 }
 </style>

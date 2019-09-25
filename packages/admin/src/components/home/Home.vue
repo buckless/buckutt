@@ -1,27 +1,17 @@
 <template>
-    <div class="b-container" :class="{ 'b-container__display': !logged }">
-        <div class="b-container__login">
-            <div class="mdl-card mdl-shadow--2dp">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">Connexion</h2>
-                </div>
-                <form @submit.prevent="log(mail, password)">
-                    <div class="mdl-card__supporting-text">
-                        <mdl-textfield floating-label="Mail" v-model="mail" required></mdl-textfield
-                        ><br />
-                        <mdl-textfield
-                            type="password"
-                            floating-label="Mot de passe"
-                            v-model="password"
-                            required
-                        ></mdl-textfield>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <mdl-button colored>Connexion</mdl-button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div class="b-login">
+        <img src="../../assets/logo.full.black.transparent.png" alt="Logo Buckless" />
+        <b-modal title="Connexion" :closeButton="false" class="b-login-form">
+            <form @submit.prevent="log(mail, password)" class="b-modal-form">
+                <b-input label="Mail" v-model="mail" />
+                <b-input label="Mot de passe" v-model="password" type="password" />
+                <b-button v-show="false"></b-button>
+            </form>
+            <template slot="actions">
+                <div class="b--flexspacer"></div>
+                <b-button raised @click="log(mail, password)">Connexion</b-button>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -37,7 +27,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['login', 'notifyError']),
+        ...mapActions(['login', 'notify']),
 
         log(mail, password) {
             this.login({ mail, password })
@@ -58,7 +48,7 @@ export default {
                             message = 'Erreur inconnue';
                     }
 
-                    this.notifyError({ message, full: err });
+                    this.notify(message);
                 });
         }
     },
@@ -79,28 +69,33 @@ export default {
 };
 </script>
 
-<style>
-@import '../../variables.css';
+<style scoped>
+.b-login {
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 
-.b-container {
-    &.b-container__display {
-        margin-left: 0 !important;
-        width: 100% !important;
+    & > img {
+        margin-top: -255px;
+        width: 300px;
+        height: 135px;
+        margin-bottom: 20px;
     }
 
-    & .mdl-snackbar {
-        margin-left: calc(var(--sidebarWidth) / 2);
+    & > .b-login-form {
+        width: 100%;
+        max-width: 400px;
     }
 }
 
-.b-container__login {
-    & > div {
-        width: 500px;
-        margin: 50px auto -50px auto;
-
-        & .mdl-textfield {
-            width: 100%;
-        }
+.b-modal-form {
+    & > label {
+        margin-top: 15px;
+        display: block;
     }
 }
 </style>

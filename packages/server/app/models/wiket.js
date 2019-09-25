@@ -20,6 +20,10 @@ module.exports = bookshelf => {
 
         defaultGroup() {
             return this.belongsTo('Group', 'defaultGroup_id');
+        },
+
+        accesses() {
+            return this.hasMany('Access');
         }
     });
 

@@ -1,5 +1,6 @@
 <template>
     <div v-show="isActive">
+        <!-- @slot Tab content -->
         <slot />
     </div>
 </template>
