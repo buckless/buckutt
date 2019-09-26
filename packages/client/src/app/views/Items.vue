@@ -61,7 +61,7 @@ export default {
     },
 
     methods: {
-        ...mapActions(['buyerLogin', 'validateBasket']),
+        ...mapActions(['buyerLogin', 'validateBasket', 'initiateBasket']),
 
         logBuyer(cardNumber, credit, options, version) {
             console.log('items-buyer-login', cardNumber, credit, options, version);
@@ -84,7 +84,11 @@ export default {
             });
         },
 
-        cancelBuy() {
+        cancelBuy(isRewrite) {
+            if (isRewrite) {
+                return this.initiateBasket();
+            }
+
             this.$store.commit('SET_WRITING', false);
             this.$store.commit('SET_BASKET_STATUS', 'WAITING');
         }

@@ -119,7 +119,7 @@ export default {
         cancel() {
             debug('cancel');
             if (!this.rewrite || this.timer === 0) {
-                this.$emit('cancel');
+                this.$emit('cancel', this.rewrite);
             }
         },
 
