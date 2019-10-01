@@ -3,6 +3,7 @@ const path = require('path');
 const dot = require('dot');
 const nodemailer = require('nodemailer');
 const config = require('server/app/config');
+const log = require('server/app/log')(module);
 
 const smtpConfig = Object.assign({}, config.mailer.smtp, { connectionTimeout: 1000 });
 const transporter = nodemailer.createTransport(smtpConfig);
@@ -42,6 +43,14 @@ const generateContent = (name, data) => {
 
 const send = ({ name, data, from, to, subject }) => {
     const { html, text } = generateContent(name, data);
+
+    log.info(`Sending mail from:${from} to:${to} subject:${subject}`, {
+        from,
+        to,
+        subject,
+        html,
+        text
+    });
 
     return transporter.sendMail({
         from,

@@ -4,6 +4,14 @@ Voici vos identifiants pour votre espace cashless {{=it.brandname}}. Il vous per
 
 Cliquez ici pour vous connecter : {{=it.link}}.
 
+---
+
+Hello,
+
+Here is your login to your {{=it.brandname}} cashless account. This will allow you to connect to your administration interface. Your login is {{=it.email}} and your PIN code is: {{=it.pin}}. You will be able to change it once logged in.
+
+Click here to connect: {{=it.link}}
+
 {{=it.brandname}} — Cashless.
 
 Buckless — Studio Async © 2018-2019

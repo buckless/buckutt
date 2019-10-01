@@ -6,4 +6,12 @@ Cliquez ici pour réinitialiser votre mot de passe : {{=it.link}}.
 
 {{=it.brandname}} — Cashless.
 
+---
+
+Hello,
+
+You recently requested to reset your password from {{=it.brandname}} cashless.
+
+Click here to reset your password: {{=it.link}}
+
 Buckless — Studio Async © 2018-2019

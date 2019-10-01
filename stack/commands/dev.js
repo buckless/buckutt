@@ -63,13 +63,15 @@ module.exports = async () => {
         const reg = new RegExp(`rs (${Object.keys(packages).join('|')})`, 'g');
         const match = reg.exec(str);
 
-        if (match.length === 2) {
+        if (match && match.length === 2) {
             const name = match[1];
             const cmd = packages[name];
 
-            children[match[1]].kill();
+            children[match[1]].kill('SIGKILL');
 
-            children[match[1]] = start(name, cmd);
+            setTimeout(() => {
+                children[match[1]] = start(name, cmd);
+            }, 100);
         }
     });
 

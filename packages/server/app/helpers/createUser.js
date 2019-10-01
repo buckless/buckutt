@@ -50,7 +50,7 @@ module.exports = async (ctx, userToCreate, clientTime) => {
             subject: `${config.merchantName} — ${config.assigner.subject}`
         })
         .catch(err => {
-            const error = new Error('sendMail failed');
+            const error = new APIError(module, 500, 'Could not send mail');
             error.stack += `\nCaused by:\n${err.stack}`;
 
             log.error(error);

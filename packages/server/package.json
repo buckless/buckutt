@@ -15,7 +15,7 @@
     "start:pm2": "cross-env TS_NODE_TRANSPILE_ONLY=true pm2-runtime start ecosystem.config.js --env production",
     "pretest": "cross-env NODE_ENV=test node test/utils/prepareDatabase",
     "test": "cross-env NODE_ENV=test nyc ava **/*.test.js --verbose -s",
-    "dev": "cross-env NODE_ENV=development onchange -i 'app/**/*.ts' 'app/**/*.js' -- ts-node app",
+    "dev": "cross-env NODE_ENV=development ts-node-dev app",
     "dev:pm2": "cross-env NODE_ENV=development pm2 start ecosystem.config.js --no-daemon",
     "lint": "prettier --write \"{app,migrations,scripts,seeds,test}/**/*.{ts,js}\"",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
@@ -23,10 +23,10 @@
   "ava": {
     "compileEnhancements": false,
     "extensions": [
-        "ts"
+      "ts"
     ],
     "require": [
-        "ts-node/register"
+      "ts-node/register"
     ]
   },
   "dependencies": {
@@ -96,6 +96,7 @@
     "pm2": "^3.5.0",
     "prettier": "1.17.1",
     "ts-node": "^8.2.0",
+    "ts-node-dev": "^1.0.0-pre.43",
     "typescript": "^3.4.5"
   }
 }
