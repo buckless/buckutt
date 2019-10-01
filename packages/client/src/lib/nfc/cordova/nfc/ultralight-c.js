@@ -7,7 +7,6 @@ export class UltralightC extends EventEmitter {
         super();
 
         this.shouldLock = false;
-        this.shouldUnlock = false;
 
         document.addEventListener('mifareTagDiscovered', tag => {
             debug('tag discovered', tag);
@@ -33,22 +32,38 @@ export class UltralightC extends EventEmitter {
                     const pages = chunk(data.split(''), 8);
                     debug('read succeeded', pages);
 
-                    this.emit('locked', pages[12][7] === '4');
-                    this.emit('data', data);
+                    const shouldUnlock = pages[12][7] === '4';
+                    const pin = parseInt(window.config.ultralight.pin, 16);
+                    const oldPins = window.config.ultralight.oldPins || [];
+                    let useCurrentPin = false;
+
+                    let sequence = Promise.resolve();
+
+                    if (shouldUnlock) {
+                        sequence = sequence.then(() => this.unlock(pin)).then(() => { useCurrentPin = true });
+                        oldPins.forEach(pinToTry => {
+                            sequence = sequence
+                                .catch(() => 
+                                    this.disconnect()
+                                        .then(() => this.connect())
+                                        .then(() => this.unlock(parseInt(pinToTry, 16)))
+                                );
+                        });
+                    }
+                    
+                    return sequence
+                        .then(() => {
+                            this.shouldLock = (!useCurrentPin && shouldUnlock) || !shouldUnlock;
+                            debug('should lock card', this.shouldLock);
+                            this.emit('shouldResetCard', this.shouldLock);
+                            this.emit('data', data);
+                        });
                 })
                 .catch(err => {
                     debug('connect/read/emit error', err);
                     this.emit('error', err);
                 });
         });
-    }
-
-    setLock(lock) {
-        this.shouldLock = lock;
-    }
-
-    setUnlock(unlock) {
-        this.shouldUnlock = unlock;
     }
 
     disconnect() {
@@ -129,9 +144,6 @@ export class UltralightC extends EventEmitter {
         } while (i <= buf.length);
 
         let sequence = Promise.resolve();
-        if (this.shouldUnlock && pin) {
-            sequence = this.unlock(pin);
-        }
 
         // Write in sequence
         i = 0;

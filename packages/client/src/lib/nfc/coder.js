@@ -80,7 +80,8 @@ export default () => {
                 return parseInt(data.padEnd(optionsLength, '0'), 2).toString(16);
             },
             decode: data => {
-                const binaryOptions = parseInt(data, 16).toString(2)
+                const binaryOptions = parseInt(data, 16)
+                    .toString(2)
                     .padStart(optionsLength, '0');
 
                 const options = {

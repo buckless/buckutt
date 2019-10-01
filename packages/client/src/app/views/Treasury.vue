@@ -102,13 +102,17 @@ export default {
             this.history.forEach(entry => {
                 entry.basketToSend.forEach(transaction => {
                     if (transaction.itemType === 'reload') {
-                        const mop = this.meansOfPayment.find(mop => mop.slug === transaction.type) || { name: transaction.type };
+                        const mop = this.meansOfPayment.find(
+                            mop => mop.slug === transaction.type
+                        ) || { name: transaction.type };
                         singleReloads.push({
                             name: mop.name,
                             amount: transaction.amount
                         });
                     } else if (transaction.itemType === 'refund') {
-                        const mop = this.meansOfPayment.find(mop => mop.slug === transaction.type) || { name: transaction.type };
+                        const mop = this.meansOfPayment.find(
+                            mop => mop.slug === transaction.type
+                        ) || { name: transaction.type };
                         singleRefunds.push({
                             name: mop.name,
                             amount: transaction.amount

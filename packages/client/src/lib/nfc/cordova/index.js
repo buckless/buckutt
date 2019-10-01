@@ -15,19 +15,13 @@ class NFC extends EventEmitter {
         this.nfc.on('uid', uid => this.emit('uid', uid));
         this.nfc.on('atr', atr => this.emit('atr', atr));
         this.nfc.on('cardType', cardType => this.emit('cardType', cardType));
-        this.nfc.on('locked', locked => this.emit('locked', locked));
+        this.nfc.on('shouldResetCard', shouldResetCard =>
+            this.emit('shouldResetCard', shouldResetCard)
+        );
         this.nfc.on('data', data => {
             debug('data event', data);
             this.emit('data', data);
         });
-    }
-
-    shouldLock(lock) {
-        this.nfc.shouldLock(lock);
-    }
-
-    shouldUnlock(unlock) {
-        this.nfc.shouldUnlock(unlock);
     }
 
     write(data) {

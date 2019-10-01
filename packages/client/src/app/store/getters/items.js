@@ -117,5 +117,11 @@ export const isOnlyCatering = (state, getters) => {
     const reloads = state.reload.reloads;
     const refunds = state.reload.refunds;
 
-    return (basket.catering.length > 0 && basket.items.length === 0 && basket.promotions.length === 0 && reloads.length === 0 && refunds.length === 0);
+    return (
+        basket.catering.length > 0 &&
+        basket.items.length === 0 &&
+        basket.promotions.length === 0 &&
+        reloads.length === 0 &&
+        refunds.length === 0
+    );
 };

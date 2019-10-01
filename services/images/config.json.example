@@ -48,7 +48,8 @@
         "ultralight": {
             "cardLength": 68,
             "firstWritablePage": 4,
-            "pin": "0x11223344"
+            "pin": "0x11223344",
+            "oldPins": ["0x55667788"]
         }
     },
     "eventOrCompany": {

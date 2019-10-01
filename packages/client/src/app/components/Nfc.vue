@@ -74,8 +74,7 @@ export default {
             },
             timer: 15,
             currentTimer: null,
-            cardLocked: false,
-            lockEventCalled: false
+            cardShouldBeReseted: true
         };
     },
 
@@ -140,21 +139,11 @@ export default {
                     this.inputValue = data.toString();
                 });
 
-                nfc.on('locked', locked => {
-                    debug('on locked');
+                nfc.on('shouldResetCard', shouldResetCard => {
+                    debug('should reset card', shouldResetCard);
                     console.log('mifareTagDiscovered', performance.now());
-                    this.lockEventCalled = true;
-                    this.cardLocked = locked;
 
-                    if (nfc.shouldUnlock) {
-                        debug('should unlock');
-                        nfc.shouldUnlock(locked);
-                    }
-
-                    if (nfc.shouldLock) {
-                        debug('should lock');
-                        nfc.shouldLock(!locked);
-                    }
+                    this.cardShouldBeReseted = shouldResetCard;
                 });
 
                 nfc.on('data', data => {
@@ -169,8 +158,8 @@ export default {
 
                         debug('card ', card);
 
-                        if (this.lockEventCalled && !this.cardLocked) {
-                            throw 'PIN not set';
+                        if (this.cardShouldBeReseted || this.disablePinCheck) {
+                            throw 'Reset card';
                         }
 
                         let cardToLock = false;
@@ -197,20 +186,8 @@ export default {
                             this.$store.commit('ERROR', {
                                 message: 'Locked card'
                             });
-                        } else if (err === 'PIN not set') {
-                            debug('pin not set');
-                            return this.onCard(
-                                0,
-                                {
-                                    assignedCard: false,
-                                    locked: false,
-                                    paidCard: false,
-                                    catering: []
-                                },
-                                0
-                            );
-                        } else if (this.disablePinCheck) {
-                            debug('pin check disabled');
+                        } else if (err === 'Reset card') {
+                            debug('card reset');
                             return this.onCard(
                                 0,
                                 {
@@ -307,7 +284,6 @@ export default {
         destroyListeners() {
             debug('destroy listeners');
             window.app.$root.$off('readyToWrite');
-            window.app.$root.$off('writeCompleted');
 
             debug('remove all listeners');
             nfc.removeAllListeners('data');
@@ -326,8 +302,7 @@ export default {
                 credit: null,
                 options: null
             };
-            this.cardLocked = false;
-            this.lockEventCalled = false;
+            this.cardShouldBeReseted = false;
         }
     },
 

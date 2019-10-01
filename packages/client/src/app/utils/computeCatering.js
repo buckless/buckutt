@@ -25,7 +25,10 @@ export default (items, configCatering, buyerCatering) => {
             };
         });
 
-    const orderedItems = items.slice().sort((a, b) => b.price.amount - a.price.amount).filter(item => item.price.amount > 0);
+    const orderedItems = items
+        .slice()
+        .sort((a, b) => b.price.amount - a.price.amount)
+        .filter(item => item.price.amount > 0);
     const newItems = [];
 
     orderedItems.forEach(entry => {
