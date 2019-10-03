@@ -1,9 +1,7 @@
 <template>
     <Portal>
-        <div class="container">
-            <div class="drop-shadow" v-if="dropShadow" @click="onClose" />
-
-            <div class="wrapper">
+        <div class="container" @click="onClose">
+            <div class="wrapper" @click.stop>
                 <!-- @slot Modal slot -->
                 <slot />
             </div>
@@ -53,20 +51,12 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    pointer-events: none;
-    z-index: 1000;
-}
-
-.drop-shadow {
     background-color: color-mod(var(--black) a(0.3));
     height: 100%;
     pointer-events: all;
-}
-
-.wrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
