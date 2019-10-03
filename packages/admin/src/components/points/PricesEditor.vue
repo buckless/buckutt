@@ -7,7 +7,7 @@
             <div v-for="(price, index) in displayedPrices" :key="index" class="b-price">
                 <span class="b-price-entry">
                     <b-icon name="attach_money" /> {{ price.amount | price(true) }}
-                    <i class="material-icons b-free" v-if="price.freePrice">create</i>
+                    <b-icon name="create" class="b-free" v-if="price.freePrice"/>
                 </span>
                 <span v-if="event.usePeriods" class="b-price-entry">
                     <b-icon name="alarm" /> {{ price.period.name }}
@@ -34,12 +34,6 @@
         <form @submit.prevent="createPrice(newPrice)" class="b-prices-form">
             <div class="b-prices-form-amount b-prices-form-entry">
                 <b-input placeholder="Montant (centimes)" v-model="newPrice.amount" small />
-                <!--                 <mdl-icon-toggle
-                    v-if="isArticle"
-                    v-model="newPrice.freePrice"
-                    icon="create"
-                    id="fp"
-                ></mdl-icon-toggle> -->
             </div>
             <b-autocomplete
                 placeholder="Période"
@@ -65,6 +59,7 @@
                 v-if="event.useGroups"
                 class="b-prices-form-entry"
             />
+            <b-checkbox v-model="newPrice.freePrice" v-if="isArticle"><b-icon name="edit"/></b-checkbox>
             <b-button :disabled="disabledAdd" class="b-prices-form-add"
                 ><b-icon name="add"
             /></b-button>
