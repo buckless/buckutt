@@ -42,6 +42,5 @@ export default {
 
 .b-app-content {
     flex: 1;
-    max-width: calc(100vw - var(--sidebarWidth));
 }
 </style>
