@@ -88,7 +88,7 @@ export default {
     border-radius: 10px;
     transform: translateX(0);
     transition: background-color var(--transition-fast-in) var(--transition-easing),
-                transform var(--transition-fast-in) var(--transition-easing);
+        transform var(--transition-fast-in) var(--transition-easing);
 }
 
 .input:checked + .slider {

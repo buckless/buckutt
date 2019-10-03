@@ -44,7 +44,7 @@
             <b-autocomplete
                 placeholder="Période"
                 v-model="newPrice.period"
-                :suggestions="[{ name: 'groups', data: currentPeriodsOptions }]"
+                :suggestions="currentPeriodsOptions"
                 small
                 v-if="event.usePeriods"
                 class="b-prices-form-entry"
@@ -52,7 +52,7 @@
             <b-autocomplete
                 placeholder="Fondation"
                 v-model="newPrice.fundation"
-                :suggestions="[{ name: 'fundations', data: fundationsOptions }]"
+                :suggestions="fundationsOptions"
                 small
                 v-if="event.useFundations"
                 class="b-prices-form-entry"
@@ -60,7 +60,7 @@
             <b-autocomplete
                 placeholder="Groupe"
                 v-model="newPrice.group"
-                :suggestions="[{ name: 'groups', data: groupsOptions }]"
+                :suggestions="groupsOptions"
                 small
                 v-if="event.useGroups"
                 class="b-prices-form-entry"

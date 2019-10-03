@@ -35,15 +35,10 @@ export default {
             type: null
         },
         typesOptions: [
-            {
-                name: 'types',
-                data: [
-                    { label: 'Chèque', id: 'check' },
-                    { label: 'Espèces', id: 'cash' },
-                    { label: 'Annulation CB', id: 'card' },
-                    { label: 'Virement', id: 'wire' }
-                ]
-            }
+            { label: 'Chèque', id: 'check' },
+            { label: 'Espèces', id: 'cash' },
+            { label: 'Annulation CB', id: 'card' },
+            { label: 'Virement', id: 'wire' }
         ]
     }),
 

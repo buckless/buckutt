@@ -6,20 +6,20 @@
                     v-model="wiket.point_id"
                     label="Guichet"
                     class="b-create-field"
-                    :suggestions="[{ name: 'points', data: pointsOptions }]"
+                    :suggestions="pointsOptions"
                 ></b-autocomplete>
                 <b-autocomplete
                     v-model="wiket.period_id"
                     label="Période"
                     class="b-create-field"
-                    :suggestions="[{ name: 'periods', data: currentPeriodsOptions }]"
+                    :suggestions="currentPeriodsOptions"
                     v-if="event.usePeriods"
                 ></b-autocomplete>
                 <b-autocomplete
                     v-model="wiket.defaultGroup_id"
                     label="Groupe par défaut"
                     class="b-create-field"
-                    :suggestions="[{ name: 'groups', data: groupsOptions }]"
+                    :suggestions="groupsOptions"
                     v-if="event.useGroups"
                 ></b-autocomplete>
                 <b-button v-show="false"></b-button>

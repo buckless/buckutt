@@ -13,6 +13,7 @@
             :max="max"
             :small="small"
             :elevation="elevation"
+            :readonly="readonly"
             class="input"
             @input="onInput"
             @keydown="onKeydown"

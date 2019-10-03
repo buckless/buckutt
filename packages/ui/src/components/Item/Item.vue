@@ -2,7 +2,7 @@
     <div class="item" :active="isActive" @click="increase">
         <div class="image">
             <!-- @slot Item background image -->
-            <slot/>
+            <slot />
         </div>
         <div class="content">
             <div class="price">{{ priceAsString }}</div>
@@ -33,11 +33,11 @@ export default {
         /**
          * Item price in cents
          */
-        price: { type: Number, required: true },
+        price: { type: Number, required: true }
     },
 
     data: () => ({
-        count: 0,
+        count: 0
     }),
 
     computed: {

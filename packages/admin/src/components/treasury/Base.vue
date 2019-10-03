@@ -15,13 +15,13 @@
                 ></b-datetimeinput>
                 <b-autocomplete
                     label="Point"
-                    :suggestions="[{ name: 'points', data: pointsOptions }]"
+                    :suggestions="pointsOptions"
                     v-model="filters.point"
                     @input="computeTreasury"
                 ></b-autocomplete>
                 <b-autocomplete
                     label="Fondation"
-                    :suggestions="[{ name: 'fundations', data: fundationsOptions }]"
+                    :suggestions="fundationsOptions"
                     v-model="filters.fundation"
                     @input="computeTreasury"
                     v-if="event.useFundations"

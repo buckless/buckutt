@@ -10,7 +10,7 @@
 
         <div class="content">
             <!-- @slot Modal content -->
-            <slot/>
+            <slot />
         </div>
 
         <div class="space" />

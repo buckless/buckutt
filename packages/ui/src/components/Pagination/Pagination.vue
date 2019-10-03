@@ -3,7 +3,11 @@
         <div class="header">
             <div class="left">
                 <SearchInput placeholder="Filtrer" v-model="filter" />
-                <span class="results">{{ filteredRows.length }} résultat<template v-if="filteredRows.length > 1">s</template></span>
+                <span class="results"
+                    >{{ filteredRows.length }} résultat<template v-if="filteredRows.length > 1"
+                        >s</template
+                    ></span
+                >
             </div>
             <div class="space"></div>
             <div class="resultsPerPage">
@@ -24,25 +28,20 @@
             </slot>
         </div>
         <div class="buttons">
-            <Button
-                :disabled="pagesNumber === 0 || shownPage === 0"
-                @click="goTo(shownPage - 1)"
-            >
+            <Button :disabled="pagesNumber === 0 || shownPage === 0" @click="goTo(shownPage - 1)">
                 <Icon name="chevron_left" />
             </Button>
 
             <div class="space" />
 
-            <template
-                v-for="(paginationButton, i) in paginationButtons"
-            >
+            <template v-for="(paginationButton, i) in paginationButtons">
                 <Button
                     :key="i"
                     v-if="paginationButton.isLink"
                     @click="goTo(paginationButton.page - 1)"
                     :raised="shownPage === paginationButton.page - 1"
                 >
-                    {{paginationButton.page}}
+                    {{ paginationButton.page }}
                 </Button>
 
                 <span :key="i" class="dots" v-else>...</span>
@@ -109,7 +108,7 @@ export default {
             { value: 5, name: '5' },
             { value: 10, name: '10' },
             { value: 25, name: '25' },
-            { value: 50, name: '50' },
+            { value: 50, name: '50' }
         ]
     }),
 
@@ -198,7 +197,8 @@ export default {
     letter-spacing: var(--typography-button-spacing);
 }
 
-.button, .dots {
+.button,
+.dots {
     margin: 0 4px;
 }
 </style>

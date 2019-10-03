@@ -6,13 +6,13 @@
                     v-model="membership.group_id"
                     label="Groupe"
                     class="b-create-field"
-                    :suggestions="[{ name: 'groups', data: groupsOptions }]"
+                    :suggestions="groupsOptions"
                 ></b-autocomplete>
                 <b-autocomplete
                     v-model="membership.period_id"
                     label="Période"
                     class="b-create-field"
-                    :suggestions="[{ name: 'periods', data: currentPeriodsOptions }]"
+                    :suggestions="currentPeriodsOptions"
                     v-if="event.usePeriods"
                 ></b-autocomplete>
                 <b-button v-show="false"></b-button>

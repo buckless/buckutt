@@ -178,14 +178,9 @@ export default {
         },
 
         displayedArticlesOptions() {
-            return [
-                {
-                    name: 'articles',
-                    data: this.articlesOptions.filter(
-                        article => this.alreadyInArticles.indexOf(article.id) === -1
-                    )
-                }
-            ];
+            return this.articlesOptions.filter(
+                article => this.alreadyInArticles.indexOf(article.id) === -1
+            );
         }
     }
 };

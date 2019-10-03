@@ -1,8 +1,8 @@
 <template>
-  <MountingPortal mountTo="body" append>
-    <!-- @slot Portal content -->
-    <slot/>
-  </MountingPortal>
+    <MountingPortal mountTo="body" append>
+        <!-- @slot Portal content -->
+        <slot />
+    </MountingPortal>
 </template>
 
 <script>

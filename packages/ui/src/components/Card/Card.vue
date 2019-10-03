@@ -71,7 +71,8 @@ export default {
     background-color: var(--grey-50);
 }
 
-.card[to], .card.is-link {
+.card[to],
+.card.is-link {
     cursor: pointer;
     transition: box-shadow var(--transition-medium-out) var(--transition-easing);
 }

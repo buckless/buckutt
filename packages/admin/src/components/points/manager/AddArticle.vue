@@ -75,17 +75,13 @@ export default {
         },
 
         remainingArticlesOptions() {
-            return [
-                {
-                    name: 'articles',
-                    data: this.articlesOptions.filter(
-                        option =>
-                            !(this.focusedCategory.articles || []).some(
-                                article => article.id === option.id
-                            )
-                    )
-                }
-            ];
+            return this.articlesOptions
+                .filter(
+                    option =>
+                        !(this.focusedCategory.articles || []).some(
+                            article => article.id === option.id
+                        )
+                );
         }
     }
 };

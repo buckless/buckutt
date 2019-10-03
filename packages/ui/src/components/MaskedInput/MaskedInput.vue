@@ -41,7 +41,7 @@ export default {
         this.input = this.$el.querySelector('input');
         this.cleave = new Cleave(this.input, {
             ...this.options,
-            onValueChanged: (e) => {
+            onValueChanged: e => {
                 /**
                  * Change input value (used by v-model)
                  *

@@ -11,10 +11,10 @@ const config = require('../../packages/config/src/build');
 const set = promisify(hostile.set);
 
 module.exports = async () => {
-    if (!isRoot()) {
-        log('You need to be root to run yarn stack setup');
-        process.exit(1);
-    }
+    // if (!isRoot()) {
+    //     log('You need to be root to run yarn stack setup');
+    //     process.exit(1);
+    // }
 
     log('Adding *.inst.buckless.com to /etc/hosts...');
 

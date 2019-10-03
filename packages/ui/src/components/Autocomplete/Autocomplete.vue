@@ -1,35 +1,77 @@
 <template>
-    <label>
-        <div class="label" v-if="label">{{ label }}</div>
-        <vue-autosuggest
-            class="results"
-            :suggestions="mutableSuggestions"
-            :inputProps="inputProps"
-            :sectionConfigs="sections"
-            :getSuggestionValue="getSuggestionValue"
-        >
-            <template slot-scope="{ suggestion }">
-                <span class="my-suggestion-item">{{ suggestion.item.label }}</span>
-            </template>
-        </vue-autosuggest>
-    </label>
+    <div class="autocomplete" :opened="opened">
+        <div class="handler">
+            <Input
+                class="value"
+                ref="input"
+                :value="valueLabel"
+                :label="label"
+                :placeholder="placeholder"
+                :small="small"
+                @focus="open"
+                @blur="close"
+                readonly="readonly"
+            />
+        </div>
+        <Card class="menu" v-show="opened">
+            <Input
+                class="search"
+                ref="input"
+                v-model="search"
+                :small="small"
+                @input="selectFirstResult"
+                @focus="open"
+                @blur="close"
+                @keydown.up.prevent="navigateUp"
+                @keydown.down.prevent="navigateDown"
+                @keydown.enter.prevent.stop="selectCurrent"
+            />
+            <div class="suggestions">
+                <template v-if="activeSections">
+                    <div class="section" v-for="section in activeSections" :key="section.id">
+                        <div class="section-label">{{ section.label }}</div>
+
+                        <div
+                            class="suggestion"
+                            v-for="suggestion in sectionSuggestions(section)"
+                            :key="suggestion.id"
+                            :active="hoveredId === suggestion.id"
+                            @mousedown="select(suggestion)"
+                            @mouseenter="hover(suggestion.id)"
+                        >
+                            {{ suggestion.label }}
+                        </div>
+                    </div>
+                </template>
+                <template v-else>
+                    <div
+                        class="suggestion"
+                        v-for="suggestion in activeSuggestions"
+                        :key="suggestion.id"
+                        :active="hoveredId === suggestion.id"
+                        @mousedown.prevent.stop="select(suggestion)"
+                        @mouseenter="hover(suggestion.id)"
+                    >
+                        {{ suggestion.label }}
+                    </div>
+                </template>
+            </div>
+        </Card>
+    </div>
 </template>
 
 <script>
-import { VueAutosuggest } from 'vue-autosuggest';
 import Popper from 'popper.js';
-import uniqueId from 'lodash.uniqueid';
+
+import Input from '../Input/Input';
+import Card from '../Card/Card';
 
 import {
-    isSuggestion,
     isSuggestions,
-    isSections,
-    matches
+    isSections
 } from './utils';
 
-/**
- * Wrapper around vue-autosuggest
- */
+
 export default {
     name: 'Autocomplete',
 
@@ -39,7 +81,8 @@ export default {
     },
 
     components: {
-        VueAutosuggest
+        Card,
+        Input
     },
 
     props: {
@@ -52,10 +95,18 @@ export default {
         /**
          * Array of sections
          */
+        sections: {
+            type: Array,
+            validator: isSections
+        },
+
+        /**
+         * Array of suggestions
+         */
         suggestions: {
             type: Array,
             required: true,
-            validator: isSections
+            validator: isSuggestions
         },
 
         /**
@@ -63,7 +114,7 @@ export default {
          */
         label: {
             type: String,
-            default: '',
+            default: ''
         },
 
         /**
@@ -99,41 +150,137 @@ export default {
         }
     },
 
-    data() {
-        return {
-            id: uniqueId('@buckless/ui/autocomplete/'),
-            mutableSuggestions: this.suggestions,
-            inputProps: {
-                id: this.id,
-                onInputChange: this.onInputChange,
-                class: 'input',
-                // Add the input to the CSS scope
-                [this.$options._scopeId]: '',
-
-                placeholder: this.placeholder,
-                disabled: this.disabled,
-                initialValue: this.findValueFromId(this.value),
-                small: this.small,
-                elevation: this.elevation
-            }
-        };
-    },
+    data: () => ({
+        opened: false,
+        search: '',
+        hoveredId: null,
+        hoveredIndex: null
+    }),
 
     computed: {
-        sections() {
-            return this.suggestions.reduce((left, right) => ({
-                ...left,
-                [right.name]: {
-                    label: right.label,
-                    onSelected: this.onSelected
+        activeSections() {
+            if (!this.sections) return null;
+            if (!this.search) return this.sections;
+
+            const allActiveSections = this.activeSuggestions.map(suggestion => suggestion.section);
+
+            return this.sections.filter(section => allActiveSections.includes(section.id));
+        },
+
+        activeSuggestions() {
+            if (!this.search) return this.suggestions;
+
+            return this.suggestions.filter(this.match);
+        },
+
+        valueLabel() {
+            const suggestion = this.suggestions.find(suggestion => suggestion.id === this.value);
+
+            if (suggestion) {
+                return suggestion.label;
+            }
+        }
+    },
+
+    methods: {
+        open() {
+            this.opened = true;
+            this.$nextTick(() => {
+                this.$refs.input.$el.querySelector('input').focus();
+            });
+
+            if (this.value) {
+                this.selectValue();
+            } else {
+                this.selectFirstResult();
+            }
+        },
+
+        close() {
+            this.opened = false;
+        },
+
+        sectionSuggestions(section) {
+            return this.suggestions
+                .filter(suggestion => suggestion.section === section.id)
+                .filter(this.match);
+        },
+
+        match(suggestion) {
+            if (!this.search) return true;
+
+            return suggestion.label.toLowerCase().includes(this.search.toLowerCase());
+        },
+
+        select(suggestion) {
+            this.$emit('input', suggestion.id);
+            this.close();
+        },
+
+        hover(suggestionId) {
+            this.hoveredId = suggestionId;
+            this.hoveredIndex = this.activeSuggestions.findIndex(suggestion => suggestion.id === suggestionId);
+        },
+
+        selectFirstResult() {
+            this.$nextTick(() => {
+                if (!this.activeSuggestions) {
+                    return;
                 }
-            }), {});
+
+                this.hoveredIndex = 0;
+                this.hoveredId = this.activeSuggestions[this.hoveredIndex].id;
+            });
+        },
+
+        navigateUp() {
+            if (!this.activeSuggestions.length) {
+                return;
+            }
+
+            if (!this.hoveredId || this.hoveredIndex === 0) {
+                this.hoveredIndex = this.activeSuggestions.length - 1;
+                this.hoveredId = this.activeSuggestions[this.hoveredIndex].id
+                return
+            }
+
+            this.hoveredIndex = this.hoveredIndex - 1;
+            this.hoveredId = this.activeSuggestions[this.hoveredIndex].id;
+        },
+
+        navigateDown() {
+            if (!this.activeSuggestions.length) {
+                return;
+            }
+
+            if (!this.hoveredId || this.hoveredIndex === this.activeSuggestions.length - 1) {
+                this.hoveredIndex = 0;
+                this.hoveredId = this.activeSuggestions[this.hoveredIndex].id
+                return
+            }
+
+            this.hoveredIndex = this.hoveredIndex + 1;
+            this.hoveredId = this.activeSuggestions[this.hoveredIndex].id;
+        },
+
+        selectCurrent() {
+            this.$emit('input', this.activeSuggestions[this.hoveredIndex].id);
+            this.close();
+        },
+
+        selectValue() {
+            const valueSuggestionIndex = this.activeSuggestions.findIndex(
+                suggestion => suggestion.id === this.value
+            );
+
+            this.hoveredIndex =
+                typeof valueSuggestionIndex === 'number' ? valueSuggestionIndex : null;
         }
     },
 
     mounted() {
-        const reference = this.$el.querySelector('.input');
-        const popper = this.$el.querySelector('.autosuggest__results-container');
+        const reference = this.$el.querySelector('.handler');
+        const popper = this.$el.querySelector('.menu');
         this.popper = new Popper(reference, popper, {
             placement: 'bottom-start'
         });
@@ -141,156 +288,50 @@ export default {
 
     beforeDestroy() {
         this.popper.destroy();
-    },
-
-    methods: {
-        onInputChange(input) {
-            if (input === null) return;
-
-            this.mutableSuggestions = this.suggestions
-                .map(section => ({
-                    ...section,
-                    data: section.data.filter(entry => matches(input, entry.label))
-                })
-            )
-        },
-
-        onSelected(e) {
-            this.$emit('input', e.item.id);
-        },
-
-        getSuggestionValue: (suggestion) => suggestion.item.label,
-
-        findValueFromId(id) {
-            const match = this.suggestions
-                .map(section => section.data)
-                .reduce((left, right) => [ ...left, ...right ], [])
-                .find(suggestion => suggestion.id === id)
-
-            return match ? match.label : '';
-        }
     }
 };
 </script>
 
 <style scoped>
-.label {
-    display: inline-block;
-    margin-bottom: 4px;
-    font-size: var(--typography-body-2-size);
-    letter-spacing: var(--typography-body-2-spacing);
-    font-weight: 600;
-}
-
-.input {
-    display: inline-block;
-    width: 100%;
-    height: 40px;
-    padding: 0 16px;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--foreground-dark-200);
-    background-color: var(--grey-50);
-    border: 1px solid var(--grey-600);
-    border-radius: var(--radius);
-    transition: border-color 0.12s ease-in-out, box-shadow 0.12s ease-in-out;
-}
-
-.input[disabled] {
-    background-color: var(--grey-200);
-}
-
-.input[small] {
-    height: 30px;
-    padding: 0 10px;
-    font-size: var(--typography-body-2-size);
-}
-
-.input:focus {
-    border-color: var(--primary-300);
-    outline: 0;
-    box-shadow: 0 0 0 3px color-mod(var(--primary-300) a(0.2));
-}
-
-.input:invalid {
-    border-color: var(--error-300);
-    outline: 0;
-    box-shadow: 0 0 0 3px color-mod(var(--error-300) a(0.2));
-}
-
-.input[elevation] {
-    border: 1px solid transparent;
-    box-shadow: var(--elevation-1dp);
-}
-
-.input[elevation]:focus {
-    border: 1px solid var(--primary-300);
-    box-shadow: 0 0 0 3px color-mod(var(--primary-300) a(0.2));
-}
-
-.results {
+.autocomplete {
     position: relative;
 }
-</style>
 
-<style>
-.autosuggest__input-open.input {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.autosuggest__input-open.input + .autosuggest__results-container {
-    display: block;
-}
-
-.autosuggest__results-container {
-    display: none;
-    width: 100%;
-    z-index: 10;
-    background-color: var(--grey-50);
-    box-shadow: var(--elevation-1dp);
-    padding: 16px;
-    border-bottom-left-radius: var(--radius);
-    border-bottom-right-radius: var(--radius);
-}
-
-.autosuggest__results > ul {
-    padding: 0;
+.menu.card {
     margin: 0;
-    list-style: none;
+    width: 100%;
+
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    z-index: 5;
 }
 
-.autosuggest__results > ul:not(:first-of-type) {
-    margin-top: 16px;
-}
-
-.autosuggest__results_title {
-    font-size: var(--typography-button-size);
-    letter-spacing: var(--typography-button-spacing);
-    font-weight: var(--typography-button-weight);
-    text-transform: uppercase;
-    color: var(--primary-300);
-}
-
-.autosuggest__results_item {
-    height: 30px;
+.search {
     display: flex;
-    align-items: center;
-    color: var(--foreground-dark-300);
+    margin-bottom: 12px;
+}
+
+.suggestions {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.section-label {
+    margin-top: 12px;
+    color: var(--primary-300);
+    font-weight: var(--typography-button-weight);
+}
+
+.suggestion {
+    padding: 4px 0;
+    background-color: var(--grey-50);
     cursor: pointer;
-    padding-left: 8px;
-    background-color: transparent;
-    border-radius: calc(var(--radius) / 2);
-    transition: padding-left var(--transition-fast-out) var(--transition-easing),
-                background-color var(--transition-fast-out) var(--transition-easing);
+    transition: padding var(--transition-fast-out) var(--transition-easing),
+        background-color var(--transition-fast-out) var(--transition-easing);
 }
 
-.autosuggest__results_item-highlighted {
+.suggestion[active] {
     background-color: var(--grey-200);
-    padding-left: 12px;
-    transition: padding-left var(--transition-fast-in) var(--transition-easing),
-                background-color var(--transition-fast-in) var(--transition-easing);
+    padding: 4px 8px;
 }
-
 </style>

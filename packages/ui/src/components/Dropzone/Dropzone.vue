@@ -38,7 +38,7 @@ export default {
 
     mounted() {
         // drop event does not seems to work with vue
-        this.$refs.dropzone.addEventListener('drop', (e) => {
+        this.$refs.dropzone.addEventListener('drop', e => {
             e.preventDefault();
             this.active = false;
 
@@ -46,7 +46,7 @@ export default {
                 return;
             }
 
-            this.$emit('files', e.dataTransfer.files)
+            this.$emit('files', e.dataTransfer.files);
         });
     },
 

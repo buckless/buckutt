@@ -71,17 +71,32 @@
                     <b-autocomplete
                         label="Produit"
                         v-model="fields.product"
-                        :suggestions="productOptionsAll"
+                        :sections="[
+                            { id: 'common', label: 'Commun' },
+                            { id: 'articles', label: 'Articles' },
+                            { id: 'promotions', label: 'Formules' }
+                        ]"
+                        :suggestions="[
+                            { label: 'Tous', id: 'all', section: 'common' },
+                            ...this.articlesOptions.map(option => ({ ...option, section: 'articles' })),
+                            ...this.promotionsOptions.map(option => ({ ...option, section: 'promotions' })),
+                        ]"
                     ></b-autocomplete>
                     <b-autocomplete
                         label="Point"
                         v-model="fields.point"
-                        :suggestions="pointOptionsAll"
+                        :suggestions="[
+                            { label: 'Tous', id: 'all' },
+                            ...this.pointsOptions
+                        ]"
                     ></b-autocomplete>
                     <b-autocomplete
                         label="Fondation"
                         v-model="fields.fundation"
-                        :suggestions="fundationOptionsAll"
+                        :suggestions="[
+                            { label: 'Toutes', id: 'all' },
+                            ...this.fundationsOptions
+                        ]"
                         v-if="event.useFundations"
                     ></b-autocomplete>
                     <b-button><b-icon name="add"/></b-button>
@@ -162,34 +177,6 @@ export default {
             'fundationsOptions',
             'event'
         ]),
-
-        productOptionsAll() {
-            return [
-                { name: 'common', label: 'Commun', data: [{ label: 'Tous', id: 'all' }] },
-                { name: 'articles', label: 'Articles', data: this.articlesOptions },
-                { name: 'promotions', label: 'Formules', data: this.promotionsOptions }
-            ];
-        },
-
-        pointOptionsAll() {
-            return [
-                {
-                    name: 'points',
-                    label: 'Point',
-                    data: [{ label: 'Tous', id: 'all' }].concat(this.pointsOptions)
-                }
-            ];
-        },
-
-        fundationOptionsAll() {
-            return [
-                {
-                    name: 'fundations',
-                    label: 'Fondation',
-                    data: [{ label: 'Toutes', id: 'all' }].concat(this.fundationsOptions)
-                }
-            ];
-        },
 
         chartData() {
             return generateChartData(this.curvesData, this.unit, this.colorsPattern);
@@ -328,7 +315,7 @@ export default {
                 display: flex;
                 align-items: flex-end;
 
-                & > label {
+                & > .autocomplete {
                     flex: 1;
                     margin-right: 5px;
                 }

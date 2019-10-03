@@ -12,7 +12,7 @@
                     v-model="reload.type"
                     label="Moyen de paiement"
                     class="b-create-field"
-                    :suggestions="meansOptions"
+                    :suggestions="meansOfPaymentOptions"
                 ></b-autocomplete>
                 <b-button v-show="false"></b-button>
             </form>
@@ -59,10 +59,6 @@ export default {
 
         focusedWallet() {
             return this.focusedElements[0];
-        },
-
-        meansOptions() {
-            return [{ name: 'types', data: this.meansOfPaymentOptions }];
         }
     }
 };

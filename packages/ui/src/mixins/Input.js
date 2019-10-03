@@ -53,7 +53,11 @@ export default {
         /**
          * Adds elevation to input
          */
-        elevation: { type: Boolean }
+        elevation: { type: Boolean },
+        /**
+         * Adds readonly to input
+         */
+        readonly: { type: String }
     },
 
     mounted() {

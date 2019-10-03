@@ -28,7 +28,7 @@ export default {
 
     components: {
         Card,
-        Icon,
+        Icon
     },
 
     model: {
@@ -51,11 +51,11 @@ export default {
         /**
          * Left icon
          */
-        icon: { type: String, required: true },
+        icon: { type: String, required: true }
     },
 
     methods: {
-        onChange(e) {
+        onChange() {
             /**
              * Change input event (used by v-model)
              *

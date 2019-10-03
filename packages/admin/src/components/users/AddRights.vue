@@ -12,14 +12,14 @@
                     v-model="right.point_id"
                     label="Point"
                     class="b-create-field"
-                    :suggestions="[{ name: 'points', data: pointsOptions }]"
+                    :suggestions="pointsOptions"
                     v-if="event.usePeriods"
                 ></b-autocomplete>
                 <b-autocomplete
                     v-model="right.period_id"
                     label="Période"
                     class="b-create-field"
-                    :suggestions="[{ name: 'periods', data: currentPeriodsOptions }]"
+                    :suggestions="currentPeriodsOptions"
                 ></b-autocomplete>
                 <b-button v-show="false"></b-button>
             </form>
@@ -49,16 +49,11 @@ export default {
             point_id: null
         },
         rightsOptions: [
-            {
-                name: 'rights',
-                data: [
-                    { id: 'admin', label: 'Administrateur' },
-                    { id: 'seller', label: 'Vendeur' },
-                    { id: 'reloader', label: 'Banquier' },
-                    { id: 'assigner', label: 'Opérateur de liaison de billets' },
-                    { id: 'controller', label: 'Opérateur de contrôle' }
-                ]
-            }
+            { id: 'admin', label: 'Administrateur' },
+            { id: 'seller', label: 'Vendeur' },
+            { id: 'reloader', label: 'Banquier' },
+            { id: 'assigner', label: 'Opérateur de liaison de billets' },
+            { id: 'controller', label: 'Opérateur de contrôle' }
         ]
     }),
 
