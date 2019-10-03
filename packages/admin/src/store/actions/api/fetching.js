@@ -7,7 +7,9 @@ export const retrieveObject = async ({ dispatch }, data) => {
     const embed = routeToRelation(data.route) ? `?embed=${routeToRelation(data.route)}` : '';
 
     const result = await get(`crud/${data.route}/${data.id}${embed}`);
-    return dispatch('normalizeAndSet', { route: data.route, results: [result] });
+    await dispatch('normalizeAndSet', { route: data.route, results: [result] });
+
+    return result;
 };
 
 export const fetchObjects = async ({ dispatch }, data) => {

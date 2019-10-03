@@ -10,6 +10,7 @@
                 attente)
             </h6>
             <div class="b--flexspacer"></div>
+            <b-button :to="`/wallets/${focusedWallet.id}/transactions/reload`">Créditer</b-button>
             <b-button :to="`/wallets/${focusedWallet.id}/transactions/refund`">Rembourser</b-button>
         </div>
 

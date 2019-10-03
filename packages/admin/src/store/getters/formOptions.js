@@ -12,6 +12,15 @@ const formOptions_ = objects =>
         label: entry.name
     }));
 
+
+export const meansOfPaymentOptions = state =>
+    state.api.meansofpayment.allIds
+        .map(entry => state.api.meansofpayment.values[entry])
+        .map(entry => ({
+            id: entry.slug,
+            label: entry.name
+        }));
+
 export const articlesOptions = state => formOptions(state.api.articles);
 export const promotionsOptions = state => formOptions(state.api.promotions);
 export const pointsOptions = state => formOptions(state.api.points);

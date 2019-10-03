@@ -5,6 +5,7 @@ import Protip from '../base/Protip.vue';
 
 import Transactions from './Transactions.vue';
 import Refund from './Refund.vue';
+import Reload from './Reload.vue';
 import Groups from '../users/Groups.vue';
 import Add from '../users/AddGroups.vue';
 import User from './User.vue';
@@ -31,7 +32,7 @@ export default [
                     {
                         path: 'transactions',
                         component: Transactions,
-                        children: [{ path: 'refund', component: Refund }]
+                        children: [{ path: 'refund', component: Refund }, { path: 'reload', component: Reload }]
                     },
                     {
                         path: 'groups',

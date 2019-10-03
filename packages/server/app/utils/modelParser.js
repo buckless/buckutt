@@ -14,6 +14,7 @@ const modelsNames = {
     meansofpayment: 'MeanOfPayment',
     accesses: 'Access',
     periods: 'Period',
+    pendingcardupdates: 'PendingCardUpdate',
     wikets: 'Wiket',
     points: 'Point',
     prices: 'Price',
