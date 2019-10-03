@@ -86,3 +86,7 @@ export const removeFocusedElementsRelation = async ({ commit, state, getters }, 
         }
     });
 };
+
+export const clearAppStore = ({ commit }) => {
+    commit('CLEARAPPSTORE');
+};
