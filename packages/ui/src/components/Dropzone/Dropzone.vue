@@ -4,6 +4,7 @@
         @dragenter="onDragenter"
         @dragleave="onDragleave"
         @dragover="onDragover"
+        @drop="onDrop"
         ref="dropzone"
     >
         <div class="preview">
@@ -12,6 +13,7 @@
         <div class="text">
             Déposez votre image sur cette zone
         </div>
+        <input type="file" @change="onBrowse" accept="image/*" class="input" />
     </div>
 </template>
 
@@ -36,20 +38,6 @@ export default {
         }
     },
 
-    mounted() {
-        // drop event does not seems to work with vue
-        this.$refs.dropzone.addEventListener('drop', e => {
-            e.preventDefault();
-            this.active = false;
-
-            if (!e.dataTransfer) {
-                return;
-            }
-
-            this.$emit('files', e.dataTransfer.files);
-        });
-    },
-
     methods: {
         onDragenter() {
             this.active = true;
@@ -61,6 +49,22 @@ export default {
 
         onDragover(e) {
             e.preventDefault();
+        },
+
+        onDrop(e) {
+            this.active = false;
+
+            if (!e.dataTransfer) {
+                return;
+            }
+
+            this.$emit('files', e.dataTransfer.files);
+        },
+
+        onBrowse(e) {
+            this.active = false;
+
+            this.$emit('files', e.target.files);
         }
     }
 };
@@ -68,6 +72,7 @@ export default {
 
 <style scoped>
 .dropzone {
+    position: relative;
     display: flex;
     height: 110px;
     width: 405px;
@@ -104,4 +109,15 @@ export default {
     /* used to disable dragleave to be called when hovering child */
     pointer-events: none;
 }
+
+.input {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
 </style>
