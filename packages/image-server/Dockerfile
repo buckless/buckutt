@@ -14,7 +14,6 @@ RUN apk update && \
 
 
 COPY ./packages/image-server/package.json \
-     ./packages/image-server/yarn.lock \
      /usr/src/buckless-image-server/packages/image-server/
 
 COPY .eslintignore \

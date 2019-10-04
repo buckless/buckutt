@@ -12,7 +12,6 @@ RUN apk update && \
     mkdir -p /usr/src/buckless-admin/packages/vue-cli-plugin-calm-serve
 
 COPY ./packages/admin/package.json \
-     ./packages/admin/yarn.lock \
      /usr/src/buckless-admin/packages/admin/
 
 COPY .browserlistrc \

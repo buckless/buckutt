@@ -12,7 +12,6 @@ RUN apk update && \
     mkdir -p /usr/src/buckless-server/packages/config
 
 COPY ./packages/server/package.json \
-     ./packages/server/yarn.lock \
      /usr/src/buckless-server/packages/server/
 
 COPY .eslintignore \
