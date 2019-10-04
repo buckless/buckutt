@@ -29,7 +29,8 @@ module.exports = async function etupay() {
             mail: ticket.mail,
             amount: getCredit(ticket),
             logical_id: ticket.qrcode,
-            physical_id: ticket.uuid
+            physical_id: ticket.uuid,
+            clientTime: ticket.created_at
         }))
     );
 };
