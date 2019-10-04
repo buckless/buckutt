@@ -39,7 +39,7 @@ export default (basket, promotions) => {
 
 class Container {
     constructor(database) {
-        this.database = database.slice();
+        this.database = database.slice().sort((a, b) => b.amount - a.amount);
         this.content = [];
     }
 
@@ -47,8 +47,9 @@ class Container {
         const articleMatched = hasSet(this.database, set);
 
         if (articleMatched) {
+            const articleToPush = this.database.find(article => article.id === articleMatched.id);
             this.database = removeFromBasket(this.database, articleMatched);
-            this.content.push(articleMatched);
+            this.content.push(articleToPush);
 
             return true;
         }
