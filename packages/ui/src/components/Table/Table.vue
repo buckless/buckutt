@@ -6,7 +6,7 @@
                 <div class="header">{{ row.title }}</div>
                 <div class="subtitle" v-if="row.subtitle">{{ row.subtitle }}</div>
             </div>
-            <div class="right" v-if="row.right">+50.00€</div>
+            <div class="right" v-if="row.right">{{ row.right }}</div>
             <Icon
                 class="right"
                 v-if="row.rightIcon"
