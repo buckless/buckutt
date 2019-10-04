@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import bcrypt from 'bcryptjs';
+
 export default {
     props: {
         list: {
@@ -74,6 +76,14 @@ export default {
 
     methods: {
         create() {
+            this.list
+                .filter(entry => entry.type === 'password' && !entry.lockEdition)
+                .forEach(password => {
+                    this.newData[password.field] = this.newData[password.field]
+                        ? bcrypt.hashSync(this.newData[password.field], 10)
+                        : undefined;
+                });
+
             this.list
                 .filter(entry => entry.compute && !entry.lockCreation)
                 .forEach(entry => {

@@ -177,7 +177,7 @@ export default {
                 });
 
             this.list
-                .filter(entry => entry.type === 'computed' && !entry.lockEdition)
+                .filter(entry => entry.compute && !entry.lockEdition)
                 .forEach(entry => {
                     this.cloneData[entry.field] = entry.compute(this.cloneData);
                 });
