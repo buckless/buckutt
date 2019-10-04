@@ -1,8 +1,8 @@
 const axios = require('axios');
 
-const config = require('server/app/config').assigner.billetweb;
+const config = require('server/app/config').assigner.etupay;
 
-const url = `${config.url}/${config.key}/billets`;
+const url = `${config.url}/billets?api_key=${config.key}`;
 
 const getCredit = ticket => {
     return ticket.options
