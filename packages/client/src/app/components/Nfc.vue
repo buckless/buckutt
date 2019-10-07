@@ -102,6 +102,8 @@ export default {
         },
 
         onCard(credit = null, options = {}, version = null) {
+            this.$store.commit('SET_DATA_LOADED', true);
+
             if (this.rewrite) {
                 debug('onCard rewrite');
                 this.write();
@@ -136,12 +138,14 @@ export default {
 
                 nfc.on('uid', data => {
                     debug('on uid');
+                    console.log('mifareTagDiscovered', performance.now());
+                    this.$store.commit('SET_DATA_LOADED', false);
+
                     this.inputValue = data.toString();
                 });
 
                 nfc.on('shouldResetCard', shouldResetCard => {
                     debug('should reset card', shouldResetCard);
-                    console.log('mifareTagDiscovered', performance.now());
 
                     this.cardShouldBeReseted = shouldResetCard;
                 });
@@ -183,6 +187,7 @@ export default {
                     } catch (err) {
                         if (err === 'Locked card') {
                             debug('locked card');
+                            this.$store.commit('SET_DATA_LOADED', true);
                             this.$store.commit('ERROR', {
                                 message: 'Locked card'
                             });
@@ -200,6 +205,7 @@ export default {
                             );
                         } else {
                             debug('invalid card ', err);
+                            this.$store.commit('SET_DATA_LOADED', true);
                             this.$store.commit('ERROR', {
                                 message: 'Invalid card'
                             });
@@ -219,6 +225,8 @@ export default {
 
             nfc.on('error', err => {
                 debug('on error ', err);
+                this.$store.commit('SET_DATA_LOADED', true);
+                this.$store.commit('ERROR', { message: err });
                 console.error(err);
             });
 
