@@ -32,8 +32,6 @@
                         }}</strong
                         >.
                     </template>
-                    <br />
-                    <i>{{ $t('dashboard.refund.registerinfo') }}</i>
                 </template>
                 <template v-else>
                     <div v-for="(error, i) in whyCantRefund" :key="i">
@@ -48,14 +46,14 @@
                     v-if="refundData.allowed && refundData.cardRegistered"
                     :disabled="working"
                     raised
-                    >Remboursement</Button
+                    >{{ $t('dashboard.refund.refund') }}</Button
                 >
                 <Button
                     v-if="refundData.allowed && !refundData.cardRegistered"
                     :disabled="working"
                     raised
                     @click.prevent="registerCard"
-                    >Enregistrer une carte</Button
+                    >{{ $t('dashboard.refund.newcard') }}</Button
                 >
             </form>
         </Card>

@@ -160,9 +160,10 @@
             "amount": "Vous pouvez demander le remboursement de {amount} jusqu'au {end}.",
             "bankfee": "Des frais bancaires d'une valeur de {amount} seront retenus, {refunded} seront virés sur votre compte.",
             "cardinfo": "Le remboursement sera effectué par défaut <strong>sur la dernière carte que vous avez utiliser pour créditer votre compte</strong>.",
-            "registerinfo": "L'enregistrement d'une carte bleue à rembourser se fait par une demande d'autorisation de débit de 1 euro, qui ne sera pas débitée de votre compte bancaire.",
             "new": "Pour enregistrer une autre carte, cliquez",
             "here": "ici",
+            "refund": "Remboursement",
+            "newcard": "Enregistrer une carte",
             "status": {
                 "title": "Enregistrement de carte",
                 "success": "La carte a bien été enregistrée. Vous pouvez maintenant demander votre remboursement.",

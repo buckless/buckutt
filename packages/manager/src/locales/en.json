@@ -158,9 +158,10 @@
             "amount": "The amount of {amount} can be refunded until {end}.",
             "bankfee": "A bank fee of {amount} will be substracted, {refunded} will be refunded on your bank account.",
             "cardinfo": "By default, the refund will be sent <strong>to the last card you used to refill your cashless account</strong>.",
-            "registerinfo": "The registration of a new bank card to be refunded is processed by a debit authorization of 1 euro, which will never be debited of your bank account.",
             "new": "You can register a new card by clicking",
             "here": "here",
+            "refund": "Refund",
+            "newcard": "Register a card",
             "status": {
                 "title": "Register a new card",
                 "success": "The card has been successfuly registered. You can now ask for a refund.",

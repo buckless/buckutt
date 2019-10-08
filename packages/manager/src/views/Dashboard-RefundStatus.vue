@@ -35,13 +35,15 @@ export default {
     data() {
         return {
             status: this.$route.params.status,
-            token: this.$route.query.token
+            token: this.$route.query.token,
+            paylinetoken: this.$route.query.paylinetoken
         };
     },
 
     mounted() {
-        if (this.token) {
-            this.callback({ token: this.token });
+        const token = this.token || this.paylinetoken;
+        if (token) {
+            this.callback({ token });
         }
     }
 };
