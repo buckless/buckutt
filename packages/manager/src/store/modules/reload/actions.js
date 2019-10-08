@@ -27,3 +27,18 @@ export const callback = async (ctx, { token }) => {
         { root: true }
     );
 };
+
+export const canReload = async ctx => {
+    const infos = await ctx.dispatch(
+        'request/get',
+        { url: `payment/infos?wallet_id=${ctx.rootState.user.currentWallet}` },
+        { root: true }
+    );
+
+    if (!infos) {
+        return;
+    }
+
+    ctx.commit('SET_START', infos.reloads.start);
+    ctx.commit('SET_END', infos.reloads.end);
+};

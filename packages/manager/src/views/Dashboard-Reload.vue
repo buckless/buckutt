@@ -13,7 +13,7 @@
                 {{ $t('dashboard.reload.infopending') }}
             </p>
         </Card>
-        <div class="reload-buttons">
+        <div class="reload-buttons" v-if="displayReload">
             <h3>{{ $t('dashboard.reload.reload') }}</h3>
             <div v-if="buttonsInputs" class="amounts">
                 <Button :disabled="working" small raised class="amount" @click="reload(10)"
@@ -47,8 +47,6 @@
                 />
                 <Button raised>{{ $t('ui.confirm') }}</Button>
             </form>
-
-            <form v-if="isCheckout" class="payment-form" method="POST"></form>
 
             <p class="info">
                 <span v-html="$t('dashboard.reload.security')"></span><br />
@@ -104,7 +102,8 @@ export default {
             giftReloads: 'user/giftReloads',
             costs: 'user/costs',
             working: 'working/working',
-            user: 'user/user'
+            user: 'user/user',
+            reloadData: 'reload/reload'
         }),
 
         localeToDisplay() {
@@ -115,12 +114,21 @@ export default {
             }
 
             return 'dashboard.reload.bankcost2';
+        },
+
+        displayReload() {
+            return this.reloadData.start <= new Date() && this.reloadData.end >= new Date();
         }
+    },
+
+    mounted() {
+        this.refreshCanReload();
     },
 
     methods: {
         ...mapActions({
-            reloadAction: 'reload/reload'
+            reloadAction: 'reload/reload',
+            refreshCanReload: 'reload/canReload'
         }),
 
         reload(amount) {

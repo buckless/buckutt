@@ -102,6 +102,18 @@ export const eventsReload = {
             field: 'maxPerAccount',
             label: 'Solde maximal autorisé',
             type: 'price'
+        },
+        {
+            icon: 'calendar_today',
+            field: 'accountReloadStart',
+            label: 'Ouverture',
+            type: 'date'
+        },
+        {
+            icon: 'calendar_today',
+            field: 'accountReloadEnd',
+            label: 'Fermeture',
+            type: 'date'
         }
     ],
     removable: false,

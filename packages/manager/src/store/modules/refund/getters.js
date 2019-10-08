@@ -7,8 +7,8 @@ export const refund = state => ({
     alreadyAsked: state.alreadyAsked,
     minimum: state.minimum,
     refundable: state.refundable,
-    start: state.start,
-    end: state.end,
+    start: new Date(state.start),
+    end: new Date(state.end),
     cardRegistered: state.cardRegistered
 });
 

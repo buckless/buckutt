@@ -17,23 +17,23 @@ export const registerCard = async ctx => {
 };
 
 export const canRefund = async ctx => {
-    const refundable = await ctx.dispatch(
+    const infos = await ctx.dispatch(
         'request/get',
-        { url: `payment/accountRefund?wallet_id=${ctx.rootState.user.currentWallet}` },
+        { url: `payment/infos?wallet_id=${ctx.rootState.user.currentWallet}` },
         { root: true }
     );
 
-    if (!refundable) {
+    if (!infos) {
         return;
     }
 
-    ctx.commit('SET_ALLOWED', refundable.allowed);
-    ctx.commit('SET_ALREADY_ASKED', refundable.alreadyAsked);
-    ctx.commit('SET_REFUNDABLE', refundable.refundable);
-    ctx.commit('SET_START', refundable.start);
-    ctx.commit('SET_END', refundable.end);
-    ctx.commit('SET_MINIMUM', refundable.minimum);
-    ctx.commit('SET_CARD_REGISTERED', refundable.cardRegistered);
+    ctx.commit('SET_ALLOWED', infos.refunds.allowed);
+    ctx.commit('SET_ALREADY_ASKED', infos.refunds.alreadyAsked);
+    ctx.commit('SET_REFUNDABLE', infos.refunds.refundable);
+    ctx.commit('SET_START', infos.refunds.start);
+    ctx.commit('SET_END', infos.refunds.end);
+    ctx.commit('SET_MINIMUM', infos.refunds.minimum);
+    ctx.commit('SET_CARD_REGISTERED', infos.refunds.cardRegistered);
 };
 
 export const refund = async ctx => {

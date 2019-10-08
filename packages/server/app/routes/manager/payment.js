@@ -6,11 +6,9 @@ const getAmountToReload = require('server/app/utils/getAmountToReload');
 const APIError = require('server/app/utils/APIError');
 
 const {
-    listGiftReloads,
-    paymentCosts,
     getWallet,
     transfer,
-    canRefund,
+    infos,
     accountRefund
 } = require('server/app/actions/manager/payment');
 
@@ -137,7 +135,7 @@ router.post(
 );
 
 router.get(
-    '/accountRefund',
+    '/infos',
     asyncHandler(async (req, res) => {
         isUser.loggedIn.orThrow(req.user);
 
@@ -154,9 +152,9 @@ router.get(
             );
         }
 
-        const refund = await canRefund(ctx(req), { wallet });
+        const result = await infos(ctx(req), { wallet });
 
-        res.json(refund);
+        res.json(result);
     })
 );
 
@@ -178,7 +176,7 @@ router.post(
             );
         }
 
-        const refundData = await canRefund(ctx(req), { wallet });
+        const refundData = (await infos(ctx(req), { wallet })).refunds;
 
         if (!refundData.allowed || !refundData.cardRegistered) {
             throw new APIError(module, 403, 'Not authorized to refund');
@@ -192,28 +190,6 @@ router.post(
             alreadyAsked: refund,
             minimum: req.event.minimumAccountRefund
         });
-    })
-);
-
-router.get(
-    '/giftReloads',
-    asyncHandler(async (req, res) => {
-        isUser.loggedIn.orThrow(req.user);
-
-        const giftReloads = await listGiftReloads(ctx(req));
-
-        res.json(giftReloads);
-    })
-);
-
-router.get(
-    '/costs',
-    asyncHandler(async (req, res) => {
-        isUser.loggedIn.orThrow(req.user);
-
-        const costs = await paymentCosts(ctx(req));
-
-        res.json(costs);
     })
 );
 

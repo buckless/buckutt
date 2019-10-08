@@ -1,8 +1,6 @@
 module.exports = {
     accountRefund: require('./accountRefund'),
-    canRefund: require('./canRefund'),
+    infos: require('./infos'),
     getWallet: require('./getWallet'),
-    listGiftReloads: require('./listGiftReloads'),
-    paymentCosts: require('./paymentCosts'),
     transfer: require('./transfer')
 };

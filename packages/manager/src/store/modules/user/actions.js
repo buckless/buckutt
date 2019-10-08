@@ -78,22 +78,16 @@ export const load = ctx => {
         root: true
     });
     ctx.dispatch('history/load', null, { root: true });
-    ctx.dispatch('loadGiftReloads');
-    ctx.dispatch('loadPaymentCosts');
+    ctx.dispatch('loadPaymentInfos');
 };
 
-export const loadGiftReloads = async ctx => {
-    const result = await ctx.dispatch(
+export const loadPaymentInfos = async ctx => {
+    const data = await ctx.dispatch(
         'request/get',
-        { url: 'payment/giftReloads' },
+        { url: `payment/infos?wallet_id=${ctx.rootState.user.currentWallet}` },
         { root: true }
     );
 
-    ctx.commit('SET_GIFT_RELOADS', result);
-};
-
-export const loadPaymentCosts = async ctx => {
-    const result = await ctx.dispatch('request/get', { url: 'payment/costs' }, { root: true });
-
-    ctx.commit('SET_PAYMENT_COSTS', result);
+    ctx.commit('SET_GIFT_RELOADS', data.giftReloads);
+    ctx.commit('SET_PAYMENT_COSTS', data.paymentCosts);
 };
