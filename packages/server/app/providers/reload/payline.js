@@ -10,7 +10,7 @@ const providerConfig = config.provider.payline;
 
 const wsdl =
     process.env.NODE_ENV !== 'dev'
-        ? path.join(__dirname, 'utils', 'WebPaymentAPI.v4.55.wsdl')
+        ? path.join(__dirname, 'utils', 'WebPaymentAPI.v4.60.wsdl')
         : null;
 const ns = type => ({ xsi_type: { type, xmlns: 'http://obj.ws.payline.experian.com' } });
 const currencies = { eur: 978 };
@@ -33,7 +33,7 @@ const onlinePayment = async (ctx, data) => {
     await transaction.save();
 
     const order = {
-        version: 20,
+        version: 21,
         payment: {
             attributes: ns('payment'),
             amount: type === 'refund' ? '' : data.amount,
