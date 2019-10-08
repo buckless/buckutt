@@ -17,6 +17,14 @@ export default (state, getters, error) => {
         return 'Carte invalide';
     }
 
+    if (error.message === 'Read failed') {
+        return 'La carte a été retirée trop tôt';
+    }
+
+    if (error.message === 'Read error') {
+        return 'Une erreur a eu lieu lors de la lecture de la carte';
+    }
+
     if (error.message === 'Locked card') {
         return 'Carte bloquée par son propriétaire ou un administrateur';
     }

@@ -40,24 +40,26 @@ export class UltralightC extends EventEmitter {
                     let sequence = Promise.resolve();
 
                     if (shouldUnlock) {
-                        sequence = sequence.then(() => this.unlock(pin)).then(() => { useCurrentPin = true });
+                        sequence = sequence
+                            .then(() => this.unlock(pin))
+                            .then(() => {
+                                useCurrentPin = true;
+                            });
                         oldPins.forEach(pinToTry => {
-                            sequence = sequence
-                                .catch(() => 
-                                    this.disconnect()
-                                        .then(() => this.connect())
-                                        .then(() => this.unlock(parseInt(pinToTry, 16)))
-                                );
+                            sequence = sequence.catch(() =>
+                                this.disconnect()
+                                    .then(() => this.connect())
+                                    .then(() => this.unlock(parseInt(pinToTry, 16)))
+                            );
                         });
                     }
-                    
-                    return sequence
-                        .then(() => {
-                            this.shouldLock = (!useCurrentPin && shouldUnlock) || !shouldUnlock;
-                            debug('should lock card', this.shouldLock);
-                            this.emit('shouldResetCard', this.shouldLock);
-                            this.emit('data', data);
-                        });
+
+                    return sequence.then(() => {
+                        this.shouldLock = (!useCurrentPin && shouldUnlock) || !shouldUnlock;
+                        debug('should lock card', this.shouldLock);
+                        this.emit('shouldResetCard', this.shouldLock);
+                        this.emit('data', data);
+                    });
                 })
                 .catch(err => {
                     debug('connect/read/emit error', err);

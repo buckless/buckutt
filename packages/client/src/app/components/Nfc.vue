@@ -226,7 +226,19 @@ export default {
             nfc.on('error', err => {
                 debug('on error ', err);
                 this.$store.commit('SET_DATA_LOADED', true);
-                this.$store.commit('ERROR', { message: err });
+                let message = 'Card reading error';
+                switch (err) {
+                    case 'Error: Error: java.io.IOException':
+                        message = 'Read failed';
+                        break;
+                    case 'Error: Error: android.nfc.TagLostException: Tag was lost.':
+                        message = 'Invalid card';
+                        break;
+                    default:
+                        message = 'Read error';
+                }
+
+                this.$store.commit('ERROR', { message });
                 console.error(err);
             });
 
