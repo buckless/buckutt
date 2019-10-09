@@ -36,7 +36,11 @@ export default {
     },
     extraTabs: [
         {
-            title: 'Transactions',
+            title: 'Historique',
+            route: 'history'
+        },
+        {
+            title: 'Transactions bancaires',
             route: 'transactions'
         },
         {

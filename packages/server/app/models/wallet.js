@@ -24,6 +24,10 @@ module.exports = bookshelf => {
 
         purchases() {
             return this.hasMany('Purchase', 'wallet_id');
+        },
+
+        transactions() {
+            return this.hasMany('Transaction');
         }
     });
 

@@ -5,6 +5,7 @@ const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const modelParser = require('server/app/utils/modelParser');
 const idParser = require('server/app/utils/idParser');
+const sanitizeCrud = require('server/app/utils/sanitizeCrud');
 
 const { create, read, update, del } = require('server/app/actions/crud');
 const {
@@ -31,8 +32,9 @@ router.post(
         log.info(`create ${req.params.model}`, req.details);
 
         const results = await create(ctx(req), insts, req.crud);
+        const sanitizedResults = sanitizeCrud(req.params.model, results);
 
-        res.json(results.length === 1 ? results[0] : results);
+        res.json(sanitizedResults.length === 1 ? sanitizedResults[0] : sanitizedResults);
     })
 );
 
@@ -53,8 +55,9 @@ router.get(
             id,
             ...req.crud
         });
+        const sanitizedResults = sanitizeCrud(req.params.model, results);
 
-        res.json(id ? results[0] : results);
+        res.json(id ? sanitizedResults[0] : sanitizedResults);
     })
 );
 
@@ -79,8 +82,9 @@ router.put(
             data,
             ...req.crud
         });
+        const sanitizedResults = sanitizeCrud(req.params.model, results);
 
-        res.json(results);
+        res.json(sanitizedResults);
     })
 );
 

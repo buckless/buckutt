@@ -57,6 +57,10 @@ export default {
         {
             title: 'Droits',
             route: 'rights'
+        },
+        {
+            title: 'Transactions bancaires',
+            route: 'transactions'
         }
     ],
     debounce: 'searchUsers',

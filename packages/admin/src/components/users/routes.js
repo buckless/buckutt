@@ -8,6 +8,7 @@ import Groups from './Groups.vue';
 import Add from './AddGroups.vue';
 import Rights from './Rights.vue';
 import AddRights from './AddRights.vue';
+import Transactions from './Transactions.vue';
 
 import config from './config';
 import addCreate from '../../lib/addCreate';
@@ -47,7 +48,8 @@ export default [
                         props: config,
                         component: Rights,
                         children: [{ path: 'add', props: config, component: AddRights }]
-                    }
+                    },
+                    { path: 'transactions', component: Transactions }
                 ])
             }
         ]

@@ -126,7 +126,8 @@ export default route => {
             {
                 embed: 'memberships.group',
                 required: true
-            }
+            },
+            'transactions'
         ],
         wallets: [
             'user',
@@ -140,7 +141,8 @@ export default route => {
             {
                 embed: 'memberships.group',
                 required: true
-            }
+            },
+            'transactions'
         ],
         wikets: [
             {

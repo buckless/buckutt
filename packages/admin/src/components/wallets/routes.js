@@ -3,7 +3,8 @@ import Show from '../base/Show.vue';
 import Details from '../base/Details.vue';
 import Protip from '../base/Protip.vue';
 
-import Transactions from './Transactions.vue';
+import Transactions from '../users/Transactions.vue';
+import History from './History.vue';
 import Refund from './Refund.vue';
 import Reload from './Reload.vue';
 import Groups from '../users/Groups.vue';
@@ -30,8 +31,8 @@ export default [
                 children: [
                     { path: '', props: config, component: Details },
                     {
-                        path: 'transactions',
-                        component: Transactions,
+                        path: 'history',
+                        component: History,
                         children: [{ path: 'refund', component: Refund }, { path: 'reload', component: Reload }]
                     },
                     {
@@ -40,7 +41,8 @@ export default [
                         component: Groups,
                         children: [{ path: 'add', props: config, component: Add }]
                     },
-                    { path: 'user', component: User }
+                    { path: 'user', component: User },
+                    { path: 'transactions', component: Transactions }
                 ]
             }
         ]
