@@ -69,22 +69,21 @@ export default {
 
     data() {
         return {
-            selectedEntry: null
+            selectedEntry: null,
+            history: []
         };
     },
 
     computed: {
         entries() {
             return this.history
-                .filter(e => e.cardNumber === this.loggedBuyer.wallet)
                 .sort((a, b) => b.date - a.date)
                 .map(e => this.resume(e));
         },
 
         ...mapState({
             useCardData: state => state.auth.device.event.config.useCardData,
-            loggedBuyer: state => state.auth.buyer,
-            history: state => state.history.history
+            loggedBuyer: state => state.auth.buyer
         }),
 
         ...mapGetters(['buyerLogged'])
@@ -95,6 +94,7 @@ export default {
             if (!this.buyerLogged) {
                 this.$store.commit('SET_DATA_LOADED', false);
                 return this.buyerLogin({ cardNumber: value, credit, options, version })
+                    .then(() => this.loadHistory())
                     .then(() => {
                         this.$store.commit('SET_DATA_LOADED', true);
                     })
@@ -135,11 +135,9 @@ export default {
             initialPromise
                 .then(() => this.cancelEntry(this.selectedEntry))
                 .then(() => this.removeFromHistory(this.selectedEntry))
+                .then(() => this.loadHistory())
                 .then(() => {
-                    if (this.buyerLogged) {
-                        this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
-                    }
-
+                    this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
                     this.$store.commit('SET_DATA_LOADED', true);
 
                     setTimeout(() => {
@@ -183,7 +181,17 @@ export default {
             this.$router.push('items');
         },
 
+        async loadHistory() {
+            this.history = await window.database.getHistory(this.loggedBuyer.wallet);
+        },
+
         ...mapActions(['cancelEntry', 'removeFromHistory', 'buyerLogin'])
+    },
+
+    mounted() {
+        if (this.buyerLogged) {
+            this.loadHistory();
+        }
     }
 };
 </script>

@@ -93,6 +93,12 @@ export default {
         Currency
     },
 
+    data() {
+        return {
+            history: []
+        };
+    },
+
     computed: {
         treasury() {
             const singleRefunds = [];
@@ -173,7 +179,6 @@ export default {
         },
 
         ...mapState({
-            history: state => state.history.history,
             catering: state => state.history.catering,
             meansOfPayment: state => state.reload.meansOfPayment
         })
@@ -194,6 +199,10 @@ export default {
             });
             saveAs(dataToSave, `history-${currentTime}.json`);
         }
+    },
+
+    async mounted() {
+        this.history = await window.database.getFullHistory();
     }
 };
 </script>

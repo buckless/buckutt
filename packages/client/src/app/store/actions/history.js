@@ -1,13 +1,9 @@
-export const setHistory = ({ commit }, payload) => {
-    commit('SET_HISTORY', payload);
+export const addToHistory = (_, payload) => {
+    return window.database.insert('history', payload);
 };
 
-export const addToHistory = ({ commit }, payload) => {
-    commit('ADD_HISTORY_TRANSACTION', payload);
-};
-
-export const removeFromHistory = ({ commit }, payload) => {
-    commit('REMOVE_FROM_HISTORY', payload);
+export const removeFromHistory = (_, payload) => {
+    return window.database.delete('history', payload.localId);
 };
 
 export const updateOfflineEntry = (store, payload) => {

@@ -321,7 +321,7 @@ export const sendBasket = (store, payload = {}) => {
 
             // store last buyer
             return store.dispatch('addToHistory', {
-                cardNumber,
+                cardId: cardNumber,
                 basketToSend,
                 date: new Date(),
                 localId

@@ -12,7 +12,8 @@ class OfflineData {
             tickets: 'id,walletId,ticketId,barcode,name,credit,physicalId,validation',
             accesses: 'id,walletId,cardId,groupId,start,end',
             pendingCardUpdates: 'id,incrId,cardId,amount',
-            images: 'id,blob'
+            images: 'id,blob',
+            history: 'localId,cardId,date,basketToSend'
         });
 
         return Promise.resolve();
@@ -23,7 +24,8 @@ class OfflineData {
             this.db.tickets.clear(),
             this.db.accesses.clear(),
             this.db.pendingCardUpdates.clear(),
-            this.db.images.clear()
+            this.db.images.clear(),
+            this.db.history.clear()
         ]);
     }
 
@@ -89,6 +91,15 @@ class OfflineData {
 
     validateTicket(key) {
         return this.db.tickets.update(key, { validation: new Date().toISOString() });
+    }
+
+    // TODO: aggregate history results at this moment
+    getFullHistory() {
+        return this.db.history.toArray();
+    }
+
+    getHistory(cardId) {
+        return this.db.history.filter(history => history.cardId === cardId).toArray();
     }
 
     insert(table, data) {
