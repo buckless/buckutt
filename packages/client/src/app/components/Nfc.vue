@@ -304,10 +304,11 @@ export default {
         destroyListeners() {
             debug('destroy listeners');
             window.app.$root.$off('readyToWrite');
+            window.app.$root.$off('writeCompleted');
 
             debug('remove all listeners');
             nfc.removeAllListeners('data');
-            nfc.removeAllListeners('locked');
+            nfc.removeAllListeners('shouldResetCard');
             nfc.removeAllListeners('uid');
             nfc.removeAllListeners('error');
         },
