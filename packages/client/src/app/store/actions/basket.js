@@ -1,3 +1,5 @@
+import { countBy } from 'lodash/collection';
+
 export const addItemToBasket = ({ commit }, item) => {
     commit('ADD_ITEM', item);
 };
@@ -176,6 +178,7 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
         // Send the basket
         await store.dispatch('sendBasket', { cardNumber });
     } catch (err) {
+        console.log(err);
         if (err.message === 'Network Error') {
             return store.commit('ERROR', { message: 'Server not reacheable' });
         }
@@ -277,8 +280,8 @@ export const sendBasket = (store, payload = {}) => {
         localId
     };
 
-    basket.catering.forEach(cat =>
-        store
+    basket.catering.forEach(cat => {
+        return store
             .dispatch('sendRequest', {
                 method: 'post',
                 url: 'payment/catering',
@@ -289,7 +292,7 @@ export const sendBasket = (store, payload = {}) => {
                 }
             })
             .then(() => store.dispatch('incrementCatering', cat.cateringId))
-    );
+    });
 
     return store
         .dispatch('sendRequest', {
@@ -307,6 +310,12 @@ export const sendBasket = (store, payload = {}) => {
             }
         })
         .then(lastWallet => {
+            const usedCatering = Object.entries(countBy(basket.catering.map(cat => cat.cateringId)))
+                .map(([key, value]) => ({
+                    id: parseInt(key, 10),
+                    count: value
+                }));
+
             store.commit('SET_LAST_USER', {
                 display: true,
                 name: lastWallet.data.user.firstname
@@ -316,7 +325,8 @@ export const sendBasket = (store, payload = {}) => {
                 reload: store.getters.reloadAmount,
                 refund: store.getters.refundAmount,
                 bought: store.getters.basketAmount,
-                localId
+                localId,
+                usedCatering
             });
 
             // store last buyer

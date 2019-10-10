@@ -16,6 +16,7 @@ import Treasury from '@/views/Treasury';
 import Developpers from '@/views/Developpers';
 import Health from '@/views/Health';
 import PriceChooser from '@/views/PriceChooser';
+import CardDetails from '@/views/CardDetails';
 
 Vue.use(VueRouter);
 
@@ -57,6 +58,10 @@ const routes = [
     {
         path: '/developpers',
         component: Developpers
+    },
+    {
+        path: '/details',
+        component: CardDetails
     },
     {
         path: '/controller',

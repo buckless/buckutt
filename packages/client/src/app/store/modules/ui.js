@@ -11,7 +11,8 @@ const initialState = {
         bought: 0,
         reload: 0,
         credit: 0,
-        cardPaid: 0
+        cardPaid: 0,
+        usedCatering: []
     },
     error: null
 };
@@ -41,7 +42,8 @@ const mutations = {
             bought: 0,
             reload: 0,
             credit: 0,
-            cardPaid: 0
+            cardPaid: 0,
+            usedCatering: []
         };
     },
 

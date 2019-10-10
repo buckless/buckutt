@@ -5,7 +5,7 @@
         </div>
         <upper />
         <div class="b-header__buyer-credit" v-if="buyerLogged">
-            <span :class="{ 'b-header__buyer__credit--negative': buyer.credit < 0 }">
+            <span :class="{ 'b-header__buyer__credit--negative': buyer.credit < 0 }" @click="toCardDetails">
                 <currency :value="buyer.credit"></currency>
             </span>
         </div>
@@ -43,6 +43,12 @@ export default {
         }),
 
         ...mapGetters(['buyerLogged'])
+    },
+
+    methods: {
+        toCardDetails() {
+            this.$router.push('details');
+        }
     }
 };
 </script>

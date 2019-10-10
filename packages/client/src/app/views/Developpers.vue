@@ -63,13 +63,17 @@ export default {
         SyncData
     },
 
-    computed: mapState({
-        usersSync: state => state.online.offline.usersData,
-        eventSync: state => state.online.offline.eventEssentials,
-        itemsSync: state => state.online.offline.items,
-        queueSync: state => state.online.offline.queue,
-        name: state => state.auth.device.name
-    }),
+    computed: {
+        ...mapState({
+            usersSync: state => state.online.offline.usersData,
+            eventSync: state => state.online.offline.eventEssentials,
+            itemsSync: state => state.online.offline.items,
+            queueSync: state => state.online.offline.queue,
+            name: state => state.auth.device.name
+        }),
+
+        ...mapGetters(['sellerLogged']),
+    },
 
     methods: {
         ...mapActions([
@@ -79,8 +83,6 @@ export default {
             'syncQueue',
             'loadDefaultItems'
         ]),
-
-        ...mapGetters(['sellerLogged']),
 
         updateItems() {
             this.updateStoredItems().then(() => this.loadDefaultItems());

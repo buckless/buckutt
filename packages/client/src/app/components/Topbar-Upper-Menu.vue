@@ -111,7 +111,7 @@ export default {
                 return true;
             }
 
-            const closingPath = ['/history', '/treasury', '/developpers', '/health'];
+            const closingPath = ['/history', '/treasury', '/developpers', '/health', '/details'];
             return closingPath.indexOf(this.$route.path) > -1;
         },
 

@@ -28,12 +28,21 @@
 
             Nouveau crédit :
             <strong><currency :value="user.credit || 0"></currency></strong>
+
+            <template v-if="user.usedCatering.length > 0">
+                <br />
+                Tickets utilisés:
+                <div v-for="catering in user.usedCatering" class="b-ticket__catering">
+                    {{ getCateringName(catering.id) }} : {{ catering.count }}
+                </div>
+            </template>
         </div>
         <div class="b-ticket__drop" @click="close"></div>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Currency from './Currency';
 
 export default {
@@ -49,7 +58,20 @@ export default {
         Currency
     },
 
+    computed: mapState({
+        articles: state => state.device.config.catering.articles
+    }),
+
     methods: {
+        getCateringName(id) {
+            try {
+                return this.articles.find(entry => entry.id === id).name;
+            } catch (err) {
+                console.log('couldnt find id', id, err);
+                return 'Inconnu';
+            }
+        },
+
         close() {
             this.$store.commit('EMPTY_TICKET');
         }
@@ -73,6 +95,10 @@ export default {
         top: -35px;
         width: 50px;
     }
+}
+
+.b-ticket__catering {
+    font-size: 16px;
 }
 
 .b-ticket--modal {
