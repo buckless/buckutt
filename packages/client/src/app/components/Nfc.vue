@@ -120,7 +120,11 @@ export default {
         cancel() {
             debug('cancel');
             if (!this.rewrite || this.timer === 0) {
-                this.$emit('cancel', this.rewrite);
+                if (this.rewrite) {
+                    this.$root.$emit('rewriteCancelled');
+                }
+
+                this.$emit('cancel');
             }
         },
 
@@ -305,6 +309,7 @@ export default {
             debug('destroy listeners');
             window.app.$root.$off('readyToWrite');
             window.app.$root.$off('writeCompleted');
+            window.app.$root.$off('rewriteCancelled');
 
             debug('remove all listeners');
             nfc.removeAllListeners('data');

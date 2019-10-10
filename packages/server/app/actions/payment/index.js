@@ -1,5 +1,6 @@
 module.exports = {
     basket: require('./basket'),
     cancelTransaction: require('./cancelTransaction'),
-    catering: require('./catering')
+    catering: require('./catering'),
+    failedBasket: require('./failedBasket')
 };

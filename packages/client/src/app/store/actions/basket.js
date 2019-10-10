@@ -171,6 +171,7 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
                 newCardVersion
             );
             window.app.$root.$on('writeCompleted', () => resolve());
+            window.app.$root.$on('rewriteCancelled', () => store.dispatch('sendBasket', { cardNumber, isFailed: true }));
         });
     }
 
@@ -279,6 +280,14 @@ export const sendBasket = (store, payload = {}) => {
         seller: store.state.auth.seller.id,
         localId
     };
+
+    if (payload.isFailed) {
+        return store.dispatch('sendRequest', {
+            method: 'post',
+            url: 'payment/failedBasket',
+            data: transactionToSend
+        });
+    }
 
     basket.catering.forEach(cat => {
         return store

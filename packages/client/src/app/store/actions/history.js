@@ -28,6 +28,14 @@ export const cancelEntry = (store, payload) => {
         isCancellation: true
     };
 
+    if (payload.failed) {
+        return store.dispatch('sendRequest', {
+            method: 'post',
+            url: 'payment/failedBasket',
+            data: transactionToSend
+        });
+    }
+
     return store.dispatch('sendRequest', {
         method: 'post',
         url: 'payment/basket',

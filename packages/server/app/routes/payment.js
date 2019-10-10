@@ -5,7 +5,7 @@ const ctx = require('server/app/utils/ctx');
 const sanitizeUser = require('server/app/utils/sanitizeUser');
 const APIError = require('server/app/utils/APIError');
 
-const { basket, cancelTransaction, catering } = require('server/app/actions/payment');
+const { basket, failedBasket, cancelTransaction, catering } = require('server/app/actions/payment');
 
 const router = require('express').Router();
 
@@ -47,6 +47,23 @@ router.post(
                 user: sanitizeUser(updatedWallet.user, req.wiket.point.id)
             })
             .end();
+    })
+);
+
+router.post(
+    '/failedBasket',
+    asyncHandler(async (req, res) => {
+        isUser.operatorOrAdmin.orThrow(req.user, req.point, req.date);
+
+        if (!req.body.walletId || !Array.isArray(req.body.basket)) {
+            throw new APIError(module, 400, 'Invalid basket');
+        }
+
+        await failedBasket(ctx(req), { body: req.body })
+
+        log.info(`processing failed basket by ${req.user.id}`);
+
+        return res.status(200).json({}).end();
     })
 );
 

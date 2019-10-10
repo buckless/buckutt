@@ -128,6 +128,10 @@ export default {
                 initialPromise = new Promise(resolve => {
                     window.app.$root.$emit('readyToWrite', newCredit, options);
                     window.app.$root.$on('writeCompleted', () => resolve());
+                    window.app.$root.$on('rewriteCancelled', () => this.cancelEntry({
+                        ...this.selectedEntry,
+                        failed: true
+                    }));
                 });
             }
 
@@ -169,7 +173,7 @@ export default {
                 items,
                 basketToSend,
                 localId: entry.localId,
-                cardNumber: entry.cardNumber
+                cardNumber: entry.cardId
             };
         },
 
