@@ -27,8 +27,7 @@ export default (items, configCatering, buyerCatering) => {
 
     const orderedItems = items
         .slice()
-        .sort((a, b) => b.price.amount - a.price.amount)
-        .filter(item => item.price.amount > 0);
+        .sort((a, b) => b.price.amount - a.price.amount);
     const newItems = [];
 
     orderedItems.forEach(entry => {

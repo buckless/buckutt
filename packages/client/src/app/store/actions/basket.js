@@ -131,7 +131,7 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
     try {
         await store.dispatch('checkSidebar');
     } catch (err) {
-        await store.dispatch('removeUnavailableItemsFromBasket');
+        await store.dispatch('initiateBasket');
         return store.commit('ERROR', err);
     }
 
