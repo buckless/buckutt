@@ -50,7 +50,7 @@ export default {
             if (this.model === 'wallets') {
                 this.membership.wallet_id = this.focusedElement.id;
             } else {
-                this.membership.group_id = this.focusedElement.id;
+                this.membership.user_id = this.focusedElement.id;
             }
 
             this.membership.period_id = this.event.usePeriods
