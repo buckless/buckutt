@@ -85,17 +85,13 @@ export default {
         },
 
         remainingCategoriesOptions() {
-            return [
-                {
-                    name: 'categories',
-                    data: this.categoriesOptions.filter(
-                        option =>
-                            !(this.focusedPoint.categories || []).some(
-                                category => category.id === option.id
-                            )
+            console.log(this.categoriesOptions);
+            return this.categoriesOptions.filter(
+                option =>
+                    !(this.focusedPoint.categories || []).some(
+                        category => category.id === option.id
                     )
-                }
-            ];
+            );
         }
     }
 };
