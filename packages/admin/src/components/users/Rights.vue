@@ -43,11 +43,11 @@ export default {
                 icon: 'assignment_turned_in',
                 title: translateRight[right.name],
                 subtitle:
-                    right.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods
-                        ? 'Point: ${right.point.name} • Attention: une période autre que la période par défaut est utilisée'
+                        right.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods
+                        ? `Point: ${this.pointName(right.point)} • Attention: une période autre que la période par défaut est utilisée`
                         : this.event.usePeriods
-                        ? `Point: ${right.point.name} • Période: ${right.period.name}`
-                        : `Point: ${right.point.name}`,
+                        ? `Point: ${this.pointName(right.point)} • Période: ${right.period.name}`
+                        : `Point: ${this.pointName(right.point)}`,
                 rightIcon: 'delete'
             }));
         }
@@ -63,6 +63,10 @@ export default {
 
         remove() {
             this.removeObject({ route: 'rights', value: { id: this.rightId } });
+        },
+
+        pointName(point) {
+            return point ? point.name : 'Aucun';
         }
     }
 };

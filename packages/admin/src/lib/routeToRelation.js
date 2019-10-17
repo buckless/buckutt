@@ -116,7 +116,10 @@ export default route => {
                 filters: [['end', '>', now]],
                 required: true
             },
-            'rights.point',
+            { 
+                embed: 'rights.point',
+                required: true
+            },
             'memberships',
             {
                 embed: 'memberships.period',
