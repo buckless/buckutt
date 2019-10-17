@@ -85,7 +85,6 @@ export default {
         },
 
         remainingCategoriesOptions() {
-            console.log(this.categoriesOptions);
             return this.categoriesOptions.filter(
                 option =>
                     !(this.focusedPoint.categories || []).some(

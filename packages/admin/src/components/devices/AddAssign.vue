@@ -58,11 +58,11 @@ export default {
 
             this.wiket.period_id = this.event.usePeriods
                 ? this.wiket.period_id
-                : this.event.defaultPeriod;
+                : this.event.defaultPeriod.id;
 
             this.wiket.defaultGroup_id = this.event.useGroups
                 ? this.wiket.defaultGroup_id
-                : this.event.defaultGroup;
+                : this.event.defaultGroup.id;
 
             try {
                 await this.createObject({
