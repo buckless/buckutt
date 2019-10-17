@@ -183,7 +183,13 @@ export default {
                         immediate: true
                     });
                 })
-                .then(() => window.database.delete('tickets', this.assignModal.id))
+                .then(() => {
+                    if (!this.assignModal.id) {
+                        return Promise.resolve();
+                    }
+
+                    return window.database.delete('tickets', this.assignModal.id)
+                })
                 .then(() => this.validateTicket())
                 .catch(err => {
                     console.log(err);
