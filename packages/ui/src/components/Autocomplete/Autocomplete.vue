@@ -1,18 +1,15 @@
 <template>
-    <div class="autocomplete" :opened="opened">
-        <div class="handler">
-            <Input
-                class="value"
-                ref="input"
-                :value="valueLabel"
-                :label="label"
-                :placeholder="placeholder"
-                :small="small"
-                @focus="open"
-                @blur="close"
-                readonly="readonly"
-            />
-        </div>
+    <div class="autocomplete">
+        <Input
+            class="value"
+            ref="input"
+            :value="valueLabel"
+            :label="label"
+            :placeholder="placeholder"
+            :small="small"
+            @focus="open"
+            readonly="readonly"
+        />
         <Card class="menu" v-show="opened">
             <Input
                 class="search"
@@ -20,8 +17,7 @@
                 v-model="search"
                 :small="small"
                 @input="selectFirstResult"
-                @focus="open"
-                @blur="close"
+                @blur="onBlur"
                 @keydown.up.prevent="navigateUp"
                 @keydown.down.prevent="navigateDown"
                 @keydown.enter.prevent.stop="selectCurrent"
@@ -36,7 +32,8 @@
                             v-for="suggestion in sectionSuggestions(section)"
                             :key="suggestion.id"
                             :active="hoveredId === suggestion.id"
-                            @mousedown="select(suggestion)"
+                            @click.prevent.stop="select(suggestion)"
+                            @mousedown="stopBlur"
                             @mouseenter="hover(suggestion.id)"
                         >
                             {{ suggestion.label }}
@@ -49,7 +46,8 @@
                         v-for="suggestion in activeSuggestions"
                         :key="suggestion.id"
                         :active="hoveredId === suggestion.id"
-                        @mousedown.prevent.stop="select(suggestion)"
+                        @click.prevent.stop="select(suggestion)"
+                        @mousedown="stopBlur"
                         @mouseenter="hover(suggestion.id)"
                     >
                         {{ suggestion.label }}
@@ -154,7 +152,8 @@ export default {
         opened: false,
         search: '',
         hoveredId: null,
-        hoveredIndex: null
+        hoveredIndex: null,
+        dontCloseOnBlur: false
     }),
 
     computed: {
@@ -198,6 +197,15 @@ export default {
 
         close() {
             this.opened = false;
+        },
+
+        onBlur() {
+            if (this.dontCloseOnBlur) {
+                this.dontCloseOnBlur = false;
+                return;
+            }
+
+            this.close();
         },
 
         sectionSuggestions(section) {
@@ -275,11 +283,15 @@ export default {
 
             this.hoveredIndex =
                 typeof valueSuggestionIndex === 'number' ? valueSuggestionIndex : null;
+        },
+
+        stopBlur() {
+            this.dontCloseOnBlur = true;
         }
     },
 
     mounted() {
-        const reference = this.$el.querySelector('.handler');
+        const reference = this.$el.querySelector('.input');
         const popper = this.$el.querySelector('.menu');
         this.popper = new Popper(reference, popper, {
             placement: 'bottom-start'
