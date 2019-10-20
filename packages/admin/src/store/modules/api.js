@@ -5,6 +5,7 @@ const models = [
     'alerts',
     'articles',
     'categories',
+    'coupons',
     'devices',
     'events',
     'fundations',

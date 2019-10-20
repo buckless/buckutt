@@ -76,6 +76,10 @@ const user = new schema.Entity('users', {
     rights: [right]
 });
 
+const coupon = new schema.Entity('coupons', {
+    couponSet: set
+});
+
 wallet.define({ user });
 price.define({ point });
 device.define({ wikets: [wiket] });
@@ -105,7 +109,8 @@ export const models = {
     promotions: promotion,
     rights: right,
     wallets: wallet,
-    users: user
+    users: user,
+    coupons: coupon
 };
 
 export default (data, route) => normalize(data, models[route]);

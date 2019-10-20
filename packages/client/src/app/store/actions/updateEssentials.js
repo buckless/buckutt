@@ -201,6 +201,10 @@ export const updateEssentials = (store, force) => {
                 promises.push(store.dispatch('setNfcCosts', res.data.nfcCosts));
             }
 
+            if (res.data.coupons) {
+                promises.push(store.dispatch('setCoupons', res.data.coupons))
+            }
+
             return Promise.all(promises);
         })
         .then(() => console.log('Event data updated'))

@@ -35,6 +35,7 @@ export default route => {
                 required: true
             }
         ],
+        coupons: [ 'couponSet', 'couponSet.articles' ],
         devices: [
             'wikets',
             {

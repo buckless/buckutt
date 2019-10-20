@@ -4,6 +4,7 @@ const modelsNames = {
     alerts: 'Alert',
     articles: 'Article',
     categories: 'Category',
+    coupons: 'Coupon',
     devices: 'Device',
     events: 'Event',
     fundations: 'Fundation',

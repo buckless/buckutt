@@ -2,6 +2,7 @@ export * from './app';
 export * from './login';
 export * from './notifications';
 export * from './promotions';
+export * from './sets';
 export * from './stats';
 export * from './treasury';
 export * from './users';

@@ -3,6 +3,5 @@
     "sentry": "urls.sentry.client",
     "desfire": "nfc.desfire",
     "classic": "nfc.classic",
-    "ultralight": "nfc.ultralight",
-    "catering": "catering"
+    "ultralight": "nfc.ultralight"
 }

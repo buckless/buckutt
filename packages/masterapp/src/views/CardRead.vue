@@ -75,7 +75,7 @@ export default {
 
         getCateringName(id) {
             try {
-                return JSON.parse(process.env.VUE_APP_ARTICLES).find(entry => entry.id === id).name;
+                return JSON.parse(localStorage.getItem('masterapp-coupons')).find(entry => entry.id === id).name;
             } catch (err) {
                 console.log('couldnt find id', id, err);
                 return 'Inconnu';

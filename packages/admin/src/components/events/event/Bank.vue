@@ -1,5 +1,5 @@
 <template>
-    <div class="b-periods">
+    <div class="b-bank">
         <b-dswitch
             :label="dswitch.title"
             :icon="dswitch.icon"
@@ -12,7 +12,7 @@
 
         <template v-if="!this.eventField || event[this.eventField]">
             <b-pagination :rows="displayedObjects" v-slot="{ rows }">
-                <b-table :rows="rows" @click="editBank" @action="startRemoveBank" />
+                <b-table :rows="rows" @click="editBank" @action="action" />
             </b-pagination>
 
             <div class="b-actions" v-if="createButton">
@@ -62,6 +62,13 @@ export default {
             default: {
                 error: 'Erreur inconnue'
             }
+        },
+        removable: {
+            type: Boolean,
+            default: true
+        },
+        right: {
+            type: Object
         }
     },
 
@@ -75,9 +82,12 @@ export default {
         ...mapGetters(['event']),
 
         displayedObjects() {
+            const rightIcon = this.right ?
+                this.right.icon : (this.removable ? 'delete' : undefined);
+
             return this.display(this.objectsRaw).map(object => ({
                 ...object,
-                rightIcon: 'delete'
+                rightIcon
             }));
         }
     },
@@ -93,6 +103,14 @@ export default {
 
         editBank(id) {
             this.$router.push(`/events/${this.category}/${this.model}/${id}`);
+        },
+
+        action(id) {
+            if (this.right && this.right.action === 'redirect') {
+                return this.$router.push(`/events/${this.category}/${this.model}/${id}/${this.right.link}`);
+            }
+
+            return this.startRemoveBank(id);
         },
 
         startRemoveBank(id) {

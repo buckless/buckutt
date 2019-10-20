@@ -16,7 +16,7 @@ router.get(
         // TODO: operators
         log.info('get eventEssentials', req.details);
 
-        const { giftReloads, groups, meansOfPayment, nfcCosts, operators } = await eventEssentials(
+        const { giftReloads, groups, meansOfPayment, nfcCosts, operators, coupons } = await eventEssentials(
             ctx(req)
         );
 
@@ -27,6 +27,7 @@ router.get(
                 meansOfPayment,
                 nfcCosts,
                 operators,
+                coupons,
                 device: omit(req.device, 'wikets'),
                 wiket: omit(req.wiket, 'period'),
                 event: req.event

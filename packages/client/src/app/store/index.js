@@ -14,7 +14,6 @@ import reload from './modules/reload';
 import ui from './modules/ui';
 import basket from './modules/basket';
 import online from './modules/online';
-import history from './modules/history';
 import device from './modules/device';
 import healthAlerts from './modules/healthAlerts';
 
@@ -57,7 +56,6 @@ const store = new Vuex.Store({
         ui,
         basket,
         online,
-        history,
         device,
         healthAlerts
     },
@@ -79,7 +77,6 @@ if (module.hot) {
         [
             './modules/auth',
             './modules/basket',
-            './modules/history',
             './modules/items',
             './modules/online',
             './modules/reload',
@@ -90,7 +87,6 @@ if (module.hot) {
         () => {
             const newAuth = require('./modules/auth').default;
             const newBasket = require('./modules/basket').default;
-            const newHistory = require('./modules/history').default;
             const newItems = require('./modules/items').default;
             const newOnline = require('./modules/online').default;
             const newReload = require('./modules/reload').default;
@@ -102,7 +98,6 @@ if (module.hot) {
                 modules: {
                     auth: newAuth,
                     basket: newBasket,
-                    history: newHistory,
                     items: newItems,
                     online: newOnline,
                     reload: newReload,

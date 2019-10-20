@@ -1,8 +1,8 @@
-export default (items, configCatering, buyerCatering) => {
+export default (items, coupons, buyerCatering) => {
     const catering = [];
     const now = new Date();
 
-    const validCatering = configCatering.articles.filter(article => {
+    const validCatering = coupons.filter(article => {
         if (!article.start && !article.end) {
             return true;
         } else if (article.start && !article.end) {
@@ -39,7 +39,7 @@ export default (items, configCatering, buyerCatering) => {
             matchingCatering.balance -= 1;
             catering.push({
                 ...entry,
-                cateringId: matchingCatering.id
+                couponId: matchingCatering.id
             });
         } else {
             newItems.push(entry);

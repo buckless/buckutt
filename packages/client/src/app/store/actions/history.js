@@ -49,7 +49,3 @@ export const cancelEntry = (store, payload) => {
         }
     });
 };
-
-export const incrementCatering = (store, id) => {
-    store.commit('INCREMENT_CATERING', id);
-};

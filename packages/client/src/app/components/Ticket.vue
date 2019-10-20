@@ -59,13 +59,13 @@ export default {
     },
 
     computed: mapState({
-        articles: state => state.device.config.catering.articles
+        coupons: state => state.device.coupons
     }),
 
     methods: {
         getCateringName(id) {
             try {
-                return this.articles.find(entry => entry.id === id).name;
+                return this.coupons.find(entry => entry.id === id).name;
             } catch (err) {
                 console.log('couldnt find id', id, err);
                 return 'Inconnu';

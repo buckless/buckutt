@@ -1,14 +1,22 @@
 import DataCoder from './dataCoder';
 
 let dataCoder;
+let lastCoupons;
 
 export default () => {
-    if (dataCoder) {
+    const coupons = localStorage.getItem('masterapp-coupons');
+    if (!coupons) {
+        return;
+    }
+
+    if (dataCoder && lastCoupons !== coupons) {
         return dataCoder;
     }
 
-    const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
-        (a, b) => a.id - b.id
+    lastCoupons = coupons;
+
+    const articles = Object.values(JSON.parse(coupons)).sort(
+        (a, b) => a.created_at - b.created_at
     );
 
     // The first bit is used by assignedCard parameter, the second by the lock state, the third by the paid state

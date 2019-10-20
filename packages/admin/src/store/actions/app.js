@@ -21,7 +21,8 @@ export function load({ dispatch }) {
         'meansofpayment',
         'webservices',
         'alerts',
-        'giftreloads'
+        'giftreloads',
+        'coupons'
     ];
 
     dispatch('initSocket', localStorage.getItem('token'));

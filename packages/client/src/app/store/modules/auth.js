@@ -131,6 +131,10 @@ const mutations = {
         state.buyer.credit = credit;
     },
 
+    OVERRIDE_BUYER_CATERING(state, catering) {
+        state.buyer.catering = catering;
+    },
+
     LOGOUT_SELLER(state) {
         state.seller = {
             ...initialState.seller

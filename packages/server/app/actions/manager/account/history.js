@@ -22,7 +22,7 @@ module.exports = async (ctx, { id, limit, offset }) => {
     });
 
     const withdrawalsQuery = ctx.models.Withdrawal.where({ wallet_id: id }).fetchAll({
-        withRelated: ['seller', 'point']
+        withRelated: ['seller', 'point', 'article']
     });
 
     const pendingCardUpdatesQuery = ctx.models.PendingCardUpdate.where({
@@ -134,12 +134,12 @@ module.exports = async (ctx, { id, limit, offset }) => {
 
     withdrawals = withdrawals.toJSON().map(withdrawal => ({
         id: withdrawal.id,
-        type: 'withdrawal',
+        type: withdrawal.isCancellation ? 'withdrawal-cancellation' : 'withdrawal',
         date: withdrawal.clientTime,
         amount: 0,
         point: withdrawal.point.name,
-        mop: '',
-        articles: [withdrawal.name],
+        mop: 'coupon',
+        articles: [withdrawal.point.name],
         seller: {
             lastname: withdrawal.seller.lastname,
             firstname: withdrawal.seller.firstname

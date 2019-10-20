@@ -40,9 +40,8 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
                 : articlePrices[i].amount
     }));
 
-    const reloads = basket.filter(item => item.itemType === 'reload');
-    const refunds = basket.filter(item => item.itemType === 'refund');
-    const computedBasket = reloads.concat(refunds, purchases);
+    const otherTypes = basket.filter(item => item.itemType !== 'purchase');
+    const computedBasket = purchases.concat(otherTypes);
 
     const totalCost = computedBasket.reduce((a, b) => {
         let amount = isCancellation ? -1 * b.amount : b.amount;
@@ -181,6 +180,19 @@ module.exports = async (ctx, { walletId, basket, clientTime, isCancellation }) =
             });
 
             basketInsts.push(refund.save());
+        } else if (item.itemType === 'catering') {
+            // withdrawals
+            const withdrawal = new ctx.models.Withdrawal({
+                coupon_id: item.coupon_id,
+                article_id: item.article_id,
+                point_id: ctx.point.id,
+                wallet_id: wallet.id,
+                seller_id: ctx.user.id,
+                clientTime,
+                isCancellation
+            });
+
+            basketInsts.push(withdrawal.save());
         }
     });
 

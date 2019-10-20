@@ -24,6 +24,11 @@ export const setGroups = ({ commit }, payload) => {
     commit('SET_GROUPS', payload);
 };
 
+export const setCoupons = ({ commit }, payload) => {
+    window.coupons = payload;
+    commit('SET_COUPONS', payload);
+};
+
 export const login = ({ commit, dispatch, state }, { wallet, pin }) => {
     commit('SET_DATA_LOADED', false);
     const credentials = { wallet, pin };

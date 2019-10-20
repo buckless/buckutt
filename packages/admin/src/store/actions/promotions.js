@@ -2,11 +2,28 @@
  * Promotions actions
  */
 
-export const addStepToPromotion = ({ dispatch }, data) =>
-    dispatch('createSetWithArticles', {
-        set: {},
+export const addStepToPromotion = async ({ dispatch }, data) => {
+    const set = await dispatch('createSetWithArticles', {
         articles: data.articles,
         promotion: data.promotion
+    });
+
+    return dispatch('addSetToPromotion', {
+        set,
+        promotion: data.promotion
+    });
+};
+
+export const addSetToPromotion = ({ dispatch }, data) =>
+    dispatch('createRelation', {
+        obj1: {
+            route: 'sets',
+            value: data.set
+        },
+        obj2: {
+            route: 'promotions',
+            value: data.promotion
+        }
     });
 
 export const removeSetFromPromotion = async ({ dispatch }, data) => {
@@ -62,54 +79,3 @@ export const removeArticleFromStep = async ({ dispatch }, data) => {
 
     return dispatch('removeSetFromPromotion', { promotion, set: step.set });
 };
-
-/**
- * Sets actions
- */
-
-export const createSetWithArticles = async ({ dispatch }, payload) => {
-    const set = payload.set;
-    const articles = payload.articles;
-    const promotion = payload.promotion;
-
-    const result = await dispatch('createObject', { route: 'sets', value: set });
-
-    await dispatch('createRelation', {
-        obj1: {
-            route: 'sets',
-            value: result
-        },
-        obj2: {
-            route: 'promotions',
-            value: promotion
-        }
-    });
-
-    return Promise.all(
-        articles.map(article => dispatch('addArticleToSet', { set: result, article }))
-    );
-};
-
-export const addArticleToSet = ({ dispatch }, payload) =>
-    dispatch('createRelation', {
-        obj1: {
-            route: 'sets',
-            value: payload.set
-        },
-        obj2: {
-            route: 'articles',
-            value: payload.article
-        }
-    });
-
-export const removeArticleFromSet = ({ dispatch }, payload) =>
-    dispatch('removeRelation', {
-        obj1: {
-            route: 'sets',
-            value: payload.set
-        },
-        obj2: {
-            route: 'articles',
-            value: payload.article
-        }
-    });

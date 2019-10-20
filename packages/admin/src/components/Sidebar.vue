@@ -92,9 +92,7 @@ export default {
         name
     }),
 
-    computed: {
-        ...mapGetters(['logged'])
-    }
+    computed: mapGetters(['logged'])
 };
 </script>
 

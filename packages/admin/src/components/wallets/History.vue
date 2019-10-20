@@ -34,7 +34,8 @@ const icons = {
     'purchase-cancellation': 'remove_shopping_cart',
     promotion: 'shopping_cart',
     'promotion-cancellation': 'remove_shopping_cart',
-    withdrawal: 'shopping_cart'
+    withdrawal: 'shopping_cart',
+    'withdrawal-cancellation': 'remove_shopping_cart'
 };
 
 export default {

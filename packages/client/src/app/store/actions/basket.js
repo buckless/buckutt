@@ -254,6 +254,16 @@ export const sendBasket = (store, payload = {}) => {
         });
     });
 
+    basket.catering.forEach(catering => {
+        basketToSend.push({
+            amount: 0,
+            name: catering.name,
+            coupon_id: catering.couponId,
+            article_id: catering.id,
+            itemType: 'catering'
+        });
+    })
+
     reloads.forEach(reload => {
         basketToSend.push({
             amount: reload.amount,
@@ -289,20 +299,6 @@ export const sendBasket = (store, payload = {}) => {
         });
     }
 
-    basket.catering.forEach(cat => {
-        return store
-            .dispatch('sendRequest', {
-                method: 'post',
-                url: 'payment/catering',
-                data: {
-                    cateringId: cat.cateringId,
-                    name: cat.name,
-                    walletId: cardNumber
-                }
-            })
-            .then(() => store.dispatch('incrementCatering', cat.cateringId))
-    });
-
     return store
         .dispatch('sendRequest', {
             method: 'post',
@@ -319,9 +315,9 @@ export const sendBasket = (store, payload = {}) => {
             }
         })
         .then(lastWallet => {
-            const usedCatering = Object.entries(countBy(basket.catering.map(cat => cat.cateringId)))
+            const usedCatering = Object.entries(countBy(basket.catering.map(cat => cat.couponId)))
                 .map(([key, value]) => ({
-                    id: parseInt(key, 10),
+                    id: key,
                     count: value
                 }));
 

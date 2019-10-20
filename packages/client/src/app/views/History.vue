@@ -59,6 +59,7 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { groupBy } from 'lodash/collection';
 import shortDate from '@/utils/shortDate';
 import Currency from '@/components/Currency';
 
@@ -124,9 +125,11 @@ export default {
 
             let initialPromise = Promise.resolve();
 
+            const newOptions = this.generateOptions(options, this.selectedEntry);
+
             if (this.useCardData) {
                 initialPromise = new Promise(resolve => {
-                    window.app.$root.$emit('readyToWrite', newCredit, options);
+                    window.app.$root.$emit('readyToWrite', newCredit, newOptions);
                     window.app.$root.$on('writeCompleted', () => resolve());
                     window.app.$root.$on('rewriteCancelled', () => this.cancelEntry({
                         ...this.selectedEntry,
@@ -142,6 +145,7 @@ export default {
                 .then(() => this.loadHistory())
                 .then(() => {
                     this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
+                    this.$store.commit('OVERRIDE_BUYER_CATERING', newOptions.catering || [])
                     this.$store.commit('SET_DATA_LOADED', true);
 
                     setTimeout(() => {
@@ -156,7 +160,7 @@ export default {
 
         resume(entry) {
             const basketToSend = entry.basketToSend.filter(e => !e.uncancellable);
-            const items = basketToSend.filter(e => e.itemType === 'purchase');
+            const items = basketToSend.filter(e => e.itemType === 'purchase' || e.itemType === 'catering');
             const refund = basketToSend
                 .filter(e => e.itemType === 'refund')
                 .reduce((a, b) => a + b.amount, 0);
@@ -187,6 +191,19 @@ export default {
 
         async loadHistory() {
             this.history = await window.database.getHistory(this.loggedBuyer.wallet);
+        },
+
+        generateOptions(options, entry) {
+            const catering = entry.basketToSend.filter(e => e.itemType === 'catering');
+            const caterings = groupBy(catering, 'coupon_id');
+
+            return {
+                ...options,
+                catering: options.catering.map(cat => ({
+                    id: cat.id,
+                    balance: caterings[cat.id] ? cat.balance + caterings[cat.id].length : cat.balance
+                }))
+            };
         },
 
         ...mapActions(['cancelEntry', 'removeFromHistory', 'buyerLogin'])

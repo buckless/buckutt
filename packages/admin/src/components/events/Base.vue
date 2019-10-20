@@ -23,10 +23,10 @@
                 :active="isActive('refunds')"
             ></b-listitem>
             <b-listitem
-                icon="call_made"
-                title="Webhooks"
-                to="/events/advanced/webservices"
-                subtitle="Webhooks sur les achats (avancé)"
+                icon="developer_board"
+                title="Paramètres avancés"
+                to="/events/advanced/coupons"
+                subtitle="Webhooks, coupons de consommation..."
                 :active="isActive('advanced')"
             ></b-listitem>
         </div>

@@ -16,6 +16,14 @@ module.exports = bookshelf => {
 
         seller() {
             return this.belongsTo('User', 'seller_id');
+        },
+
+        coupon() {
+            return this.belongsTo('Coupon');
+        },
+
+        article() {
+            return this.belongsTo('Article');
         }
     });
 

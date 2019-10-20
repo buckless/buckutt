@@ -1,6 +1,7 @@
 const translation = {
     article: 'articles',
     category: 'categories',
+    coupon: 'coupons',
     device: 'devices',
     event: 'events',
     fundation: 'fundations',

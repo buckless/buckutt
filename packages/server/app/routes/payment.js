@@ -5,7 +5,7 @@ const ctx = require('server/app/utils/ctx');
 const sanitizeUser = require('server/app/utils/sanitizeUser');
 const APIError = require('server/app/utils/APIError');
 
-const { basket, failedBasket, cancelTransaction, catering } = require('server/app/actions/payment');
+const { basket, failedBasket, cancelTransaction } = require('server/app/actions/payment');
 
 const router = require('express').Router();
 
@@ -81,27 +81,6 @@ router.post(
         log.info(`canceling ${rawType} ${id}`, req.details);
 
         await cancelTransaction(ctx(req), { id, rawType, clientTime });
-
-        res.json({});
-    })
-);
-
-router.post(
-    '/catering',
-    asyncHandler(async (req, res) => {
-        isUser.sellerOrAdmin.orThrow(req.user, req.point, req.date);
-
-        if (!req.body.walletId || !Number.isInteger(req.body.cateringId) || !req.body.name) {
-            throw new APIError(module, 400, 'Invalid catering');
-        }
-
-        req.details.walletId = req.body.walletId;
-
-        const { name, cateringId, clientTime, walletId } = req.body;
-
-        log.info(`processing catering`, req.details);
-
-        await catering(ctx(req), { walletId, name, cateringId, clientTime });
 
         res.json({});
     })

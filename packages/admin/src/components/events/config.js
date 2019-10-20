@@ -31,11 +31,60 @@ export const hooks = {
     }
 };
 
+export const coupons = {
+    category: 'advanced',
+    model: 'coupons',
+    createTitle: 'Créer un coupon',
+    editTitle: 'Modifier un coupon',
+    createButton: 'Créer un coupon',
+    removable: false,
+    right: {
+        icon: 'list',
+        action: 'redirect',
+        link: 'articles'
+    },
+    list: [
+        {
+            field: 'name',
+            label: 'Nom',
+            type: 'text'
+        },
+        {
+            field: 'maxNumber',
+            label: 'Nombre maximal cumulable (non modifiable)',
+            type: 'text',
+            lockEdition: true
+        },
+        {
+            field: 'start',
+            label: 'Début de validité',
+            type: 'date'
+        },
+        {
+            field: 'end',
+            label: 'Fin de validité',
+            type: 'date'
+        }
+    ],
+    display: rows =>
+        rows.map(coupon => ({
+            id: coupon.id,
+            icon: 'money',
+            title: `${coupon.name} (${coupon.maxNumber} coupon maximum par support)`,
+            subtitle: `Utilisable du ${parseDate(coupon.start)} au ${parseDate(coupon.end)}`
+        })),
+    notifications: {
+        create: "Le coupon a bien été créé",
+        edit: "Le coupon a bien été modifié",
+        error: "Il y a eu une erreur pour ce coupon"
+    }
+};
+
 export const advanced = {
     route: 'advanced',
-    title: 'Avancé',
-    icon: 'call_made',
-    tabs: [{ title: 'Webhooks', route: 'webservices' }]
+    title: 'Paramètres avancés',
+    icon: 'developer_board',
+    tabs: [{ title: 'Coupons', route: 'coupons' }, { title: 'Webhooks', route: 'webservices' }]
 };
 
 export const event = {

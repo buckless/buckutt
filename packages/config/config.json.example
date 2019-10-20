@@ -92,13 +92,6 @@
             }
         }
     },
-    "catering": {
-        "dayOne": "2018-06-02T00:00:00.000Z",
-        "duration": 1,
-        "articles": [
-            { "id": 1, "name": "T-shirt", "maxNumber": 1 }
-        ]
-    },
     "assigner": {
         "ticketProviders": [
             "test"

@@ -10,6 +10,7 @@ module.exports = async ctx => {
     let meansOfPayment = [];
     let nfcCosts = [];
     let operators = undefined;
+    let coupons = [];
 
     // step 1: fetch giftReloads
     giftReloads = await ctx.models.GiftReload.fetchAll().then(gr => gr.toJSON());
@@ -78,11 +79,28 @@ module.exports = async ctx => {
         });
     }
 
+    // step 6: fetch coupons
+    const embedCoupons = [
+        { embed: 'couponSet' },
+        { embed: 'couponSet.articles' }
+    ];
+
+    // No need to embedFilter as the relations aren't required
+    coupons = await ctx.models.Coupon
+        .fetchAll({ withRelated: embedParser(embedCoupons) })
+        .then(coupon => coupon.toJSON());
+
+    coupons = coupons.map(coupon => ({
+        ...pick(coupon, ['id', 'maxNumber', 'start', 'end', 'name', 'created_at']),
+        articles: coupon.couponSet ? coupon.couponSet.articles.map(article => article.id) : []
+    }));
+
     return {
         giftReloads,
         groups,
         meansOfPayment,
         nfcCosts,
-        operators
+        operators,
+        coupons
     };
 };

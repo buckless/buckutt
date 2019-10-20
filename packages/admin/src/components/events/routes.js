@@ -5,6 +5,8 @@ import Details from './Details.vue';
 import Bank from './event/Bank.vue';
 import Nfc from './event/Nfc.vue';
 
+import Articles from './advanced/Articles.vue';
+
 import Create from '../base/Create.vue';
 import Edit from '../base/Edit.vue';
 import Protip from '../base/Protip.vue';
@@ -12,6 +14,7 @@ import Protip from '../base/Protip.vue';
 import {
     default as config,
     hooks,
+    coupons,
     event,
     events,
     advanced,
@@ -83,6 +86,16 @@ export default [
                         children: [
                             { path: 'create', props: hooks, component: Create },
                             { path: ':webservice', props: hooks, component: Edit }
+                        ]
+                    },
+                    {
+                        path: 'coupons',
+                        component: Bank,
+                        props: coupons,
+                        children: [
+                            { path: 'create', props: coupons, component: Create },
+                            { path: ':coupon', props: coupons, component: Edit },
+                            { path: ':coupon/articles', component: Articles }
                         ]
                     }
                 ]

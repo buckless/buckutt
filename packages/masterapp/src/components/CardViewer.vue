@@ -26,36 +26,6 @@
 </template>
 
 <script>
-const articles = Object.values(JSON.parse(process.env.VUE_APP_ARTICLES)).sort(
-    (a, b) => a.id - b.id
-);
-
-const usefulDataLength = articles.reduce((a, b) => a + b.maxNumber.toString(2).length, 3);
-const optionsByteNumber = Math.ceil(usefulDataLength / 8);
-
-const bytesOrder = [
-    {
-        type: 'credit',
-        length: 3
-    },
-    {
-        type: 'version',
-        length: 2
-    },
-    {
-        type: 'options',
-        length: optionsByteNumber
-    }
-];
-
-const byteClasses = [];
-
-bytesOrder.forEach(entry => {
-    for (let i = 0; i < entry.length; i++) {
-        byteClasses.push(['byte', entry.type]);
-    }
-});
-
 export default {
     props: {
         pages: {
@@ -66,7 +36,7 @@ export default {
 
     data() {
         return {
-            byteClasses
+            byteClasses: []
         };
     },
 
@@ -74,8 +44,40 @@ export default {
         getClass(i, j) {
             const index = i * 4 + j;
 
-            return byteClasses[index] || ['byte', 'none'];
+            return this.byteClasses[index] || ['byte', 'none'];
         }
+    },
+
+    mounted() {
+        const coupons = localStorage.getItem('masterapp-coupons') ? JSON.parse(localStorage.getItem('masterapp-coupons')) : [];
+
+        const articles = Object.values(coupons).sort(
+            (a, b) => a.created_at - b.created_at
+        );
+
+        const usefulDataLength = articles.reduce((a, b) => a + b.maxNumber.toString(2).length, 3);
+        const optionsByteNumber = Math.ceil(usefulDataLength / 8);
+
+        const bytesOrder = [
+            {
+                type: 'credit',
+                length: 3
+            },
+            {
+                type: 'version',
+                length: 2
+            },
+            {
+                type: 'options',
+                length: optionsByteNumber
+            }
+        ];
+
+        bytesOrder.forEach(entry => {
+            for (let i = 0; i < entry.length; i++) {
+                this.byteClasses.push(['byte', entry.type]);
+            }
+        });
     }
 };
 </script>

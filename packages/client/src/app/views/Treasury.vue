@@ -11,7 +11,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="purchase in treasury.purchases" :key="purchase.id">
+                    <tr v-for="purchase in treasury.purchases" :key="purchase.name">
                         <td class="b-treasury__table__cell--non-numeric">{{ purchase.name }}</td>
                         <td>{{ purchase.count }}</td>
                         <td><currency :value="purchase.amount" /></td>
@@ -30,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="reload in treasury.reloads" :key="reload.id">
+                    <tr v-for="reload in treasury.reloads" :key="reload.name">
                         <td class="b-treasury__table__cell--non-numeric">{{ reload.name }}</td>
                         <td>{{ reload.count }}</td>
                         <td><currency :value="reload.amount" /></td>
@@ -49,7 +49,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="refund in treasury.refunds" :key="refund.id">
+                    <tr v-for="refund in treasury.refunds" :key="refund.name">
                         <td class="b-treasury__table__cell--non-numeric">{{ refund.name }}</td>
                         <td>{{ refund.count }}</td>
                         <td><currency :value="refund.amount" /></td>
@@ -59,7 +59,7 @@
             <p v-else>Aucun remboursement à afficher.</p>
 
             <h3>Catering</h3>
-            <table class="b-treasury__table" v-if="displayedCatering.length > 0">
+            <table class="b-treasury__table" v-if="treasury.catering.length > 0">
                 <thead>
                     <tr>
                         <th class="b-treasury__table__cell--non-numeric">Article</th>
@@ -67,7 +67,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="cat in displayedCatering" :key="cat.id">
+                    <tr v-for="cat in treasury.catering" :key="cat.name">
                         <td class="b-treasury__table__cell--non-numeric">{{ cat.name }}</td>
                         <td>{{ cat.count }}</td>
                     </tr>
@@ -104,6 +104,7 @@ export default {
             const singleRefunds = [];
             const singleReloads = [];
             const singlePurchases = [];
+            const singleCatering = [];
 
             this.history.forEach(entry => {
                 entry.basketToSend.forEach(transaction => {
@@ -123,6 +124,10 @@ export default {
                             name: mop.name,
                             amount: transaction.amount
                         });
+                    } else if (transaction.itemType === 'catering') {
+                        singleCatering.push({
+                            name: transaction.name
+                        });
                     } else {
                         singlePurchases.push({
                             name: transaction.name,
@@ -135,51 +140,40 @@ export default {
             const groupedReloads = groupBy(singleReloads, 'name');
             const groupedRefunds = groupBy(singleRefunds, 'name');
             const groupedPurchases = groupBy(singlePurchases, 'name');
-            const reloads = [];
-            const refunds = [];
-            const purchases = [];
+            const groupedCatering = groupBy(singleCatering, 'name');
 
-            Object.keys(groupedReloads).forEach(group => {
-                reloads.push({
-                    name: group,
-                    amount: sumBy(groupedReloads[group], 'amount'),
-                    count: groupedReloads[group].length
-                });
-            });
+            const reloads = Object.keys(groupedReloads).map(group => ({
+                name: group,
+                amount: sumBy(groupedReloads[group], 'amount'),
+                count: groupedReloads[group].length
+            }));
 
-            Object.keys(groupedRefunds).forEach(group => {
-                refunds.push({
-                    name: group,
-                    amount: sumBy(groupedRefunds[group], 'amount'),
-                    count: groupedRefunds[group].length
-                });
-            });
+            const refunds = Object.keys(groupedRefunds).map(group => ({
+                name: group,
+                amount: sumBy(groupedRefunds[group], 'amount'),
+                count: groupedRefunds[group].length
+            }));
 
-            Object.keys(groupedPurchases).forEach(group => {
-                purchases.push({
-                    name: group,
-                    amount: sumBy(groupedPurchases[group], 'amount'),
-                    count: groupedPurchases[group].length
-                });
-            });
+            const purchases = Object.keys(groupedPurchases).map(group => ({
+                name: group,
+                amount: sumBy(groupedPurchases[group], 'amount'),
+                count: groupedPurchases[group].length
+            }));
+
+            const catering = Object.keys(groupedCatering).map(group => ({
+                name: group,
+                count: groupedCatering[group].length
+            }));
 
             return {
                 reloads,
                 refunds,
-                purchases
+                purchases,
+                catering
             };
         },
 
-        displayedCatering() {
-            const cat = Object.values(config.catering.articles);
-            return Object.keys(this.catering).map(key => ({
-                name: cat.find(article => article.id.toString() === key.toString()).name,
-                count: this.catering[key]
-            }));
-        },
-
         ...mapState({
-            catering: state => state.history.catering,
             meansOfPayment: state => state.reload.meansOfPayment
         })
     },

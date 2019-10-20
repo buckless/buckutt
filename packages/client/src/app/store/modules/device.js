@@ -3,7 +3,8 @@ const initialState = {
     changeApi: false,
     api: null,
     config: null,
-    apis: {}
+    apis: {},
+    coupons: []
 };
 
 const mutations = {
@@ -21,6 +22,10 @@ const mutations = {
 
     SET_DEVICECONFIG(state, payload) {
         state.config = payload;
+    },
+
+    SET_COUPONS(state, payload) {
+        state.coupons = payload;
     },
 
     CHANGE_API(state, payload) {

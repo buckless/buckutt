@@ -65,12 +65,12 @@ const logOperator = force => {
     });
 };
 
-const fetchGroups = () => {
+const fetchEssentials = () => {
     const signature = generateSignature(
         process.env.VUE_APP_PRIVATEKEY,
         process.env.VUE_APP_FINGERPRINT,
         'GET',
-        'manager/account/groups'
+        'polling/eventEssentials'
     );
 
     const options = {
@@ -80,8 +80,9 @@ const fetchGroups = () => {
         }
     };
 
-    return axios.get('manager/account/groups', options).then(res => {
-        localStorage.setItem('masterapp-groups', JSON.stringify(res.data));
+    return axios.get('polling/eventEssentials', options).then(res => {
+        localStorage.setItem('masterapp-groups', JSON.stringify(res.data.groups || []));
+        localStorage.setItem('masterapp-coupons', JSON.stringify(res.data.coupons || []));
     });
 };
 
@@ -118,7 +119,7 @@ window.queue = new Queue({
 
 window.logOperator = logOperator;
 
-logOperator().then(() => fetchGroups());
+logOperator().then(() => fetchEssentials());
 
 // force / as initial URL on cordova
 Vue.nextTick(() => {

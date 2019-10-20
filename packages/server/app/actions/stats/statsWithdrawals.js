@@ -19,12 +19,15 @@ module.exports = async (ctx, { dateIn, dateOut, point, csv }) => {
     const withdrawals = await query
         .query(q =>
             q
-                .select('name')
-                .count('* as count')
-                .groupBy('name')
-                .orderBy('name')
+                .select('articles.name as name', 'withdrawals.isCancellation as isCancellation')
+                .count('withdrawals.* as count')
+                .leftJoin('articles', 'articles.id', 'withdrawals.article_id')
+                .groupBy('withdrawals.isCancellation', 'articles.name')
         )
         .fetchAll();
 
-    return withdrawals.toJSON();
+    return withdrawals.toJSON().map((withdrawal, id) => ({
+        ...withdrawal,
+        id
+    }));
 };

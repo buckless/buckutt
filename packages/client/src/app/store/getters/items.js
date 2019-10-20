@@ -55,7 +55,7 @@ export const credit = (state, getters) => {
 
 // Catering to write after a purchase
 export const catering = (state, getters) => {
-    const caterings = groupBy(getters.sidebar.catering, 'cateringId');
+    const caterings = groupBy(getters.sidebar.catering, 'couponId');
 
     return state.auth.buyer.catering.map(cat => ({
         id: cat.id,
@@ -94,7 +94,7 @@ export const sidebar = (state, getters) => {
     if (state.auth.device.event.config.useCardData) {
         const computedCatering = computeCatering(
             itemList,
-            state.device.config.catering,
+            state.device.coupons,
             state.auth.buyer.catering
         );
 

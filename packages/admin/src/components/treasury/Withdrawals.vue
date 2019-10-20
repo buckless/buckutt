@@ -38,11 +38,16 @@ export default {
         displayedRows() {
             return this.withdrawals
                 .slice()
-                .sort((a, b) => sortOrder(a.name, b.name))
+                .sort(
+                    (a, b) =>
+                        sortOrder(a.name, b.name) || sortOrder(a.isCancellation, b.isCancellation)
+                )
                 .map(withdrawal => ({
                     id: withdrawal.id,
-                    icon: 'kitchen',
-                    title: `${withdrawal.name} x ${withdrawal.count}`
+                    icon: withdrawal.isCancellation ? 'remove_shopping_cart' : 'shopping_cart',
+                    title: withdrawal.isCancellation
+                        ? `Annulation ${withdrawal.name} x ${withdrawal.count}`
+                        : `${withdrawal.name} x ${withdrawal.count}`
                 }));
         }
     },
