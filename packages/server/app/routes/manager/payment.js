@@ -5,12 +5,7 @@ const ctx = require('server/app/utils/ctx');
 const getAmountToReload = require('server/app/utils/getAmountToReload');
 const APIError = require('server/app/utils/APIError');
 
-const {
-    getWallet,
-    transfer,
-    infos,
-    accountRefund
-} = require('server/app/actions/manager/payment');
+const { getWallet, transfer, infos, accountRefund } = require('server/app/actions/manager/payment');
 
 const router = require('express').Router();
 

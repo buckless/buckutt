@@ -1,21 +1,19 @@
 <template>
     <div class="b-dashboard">
         <div class="b-timebar">
-            <div class="b-timebar-dates">
-                <b-datetimeinput v-model="timefilter.dateIn" label="Début"></b-datetimeinput>
-                <b-icon name="arrow_right_alt" :size="34" class="b-timebar-dates-arrow"></b-icon>
-                <b-datetimeinput
-                    v-model="timefilter.dateOut"
-                    label="Fin"
-                    v-show="!realtime"
-                ></b-datetimeinput>
-                <b-datetimeinput
-                    placeholder="Maintenant"
-                    disabled
-                    label="Fin"
-                    v-show="realtime"
-                ></b-datetimeinput>
-            </div>
+            <b-datetimeinput v-model="timefilter.dateIn" label="Début"></b-datetimeinput>
+            <b-icon name="arrow_right_alt" :size="34" class="b-timebar-dates-arrow"></b-icon>
+            <b-datetimeinput
+                v-model="timefilter.dateOut"
+                label="Fin"
+                v-show="!realtime"
+            ></b-datetimeinput>
+            <b-datetimeinput
+                placeholder="Maintenant"
+                disabled
+                label="Fin"
+                v-show="realtime"
+            ></b-datetimeinput>
             <div class="b-timebar-options">
                 <b-toggle v-model="realtime" @change="timefilter.dateOut = new Date()"
                     >Temps réel</b-toggle

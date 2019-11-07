@@ -59,11 +59,14 @@ router.post(
             throw new APIError(module, 400, 'Invalid basket');
         }
 
-        await failedBasket(ctx(req), { body: req.body })
+        await failedBasket(ctx(req), { body: req.body });
 
         log.info(`processing failed basket by ${req.user.id}`);
 
-        return res.status(200).json({}).end();
+        return res
+            .status(200)
+            .json({})
+            .end();
     })
 );
 

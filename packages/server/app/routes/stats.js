@@ -5,6 +5,7 @@ const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
 const {
+    statsReport,
     statsPurchases,
     statsWithdrawals,
     statsReloads,
@@ -175,6 +176,19 @@ router.get(
         log.info(`export ${logStr('refunds', req.query)}`);
 
         res.send(csv);
+    })
+);
+
+router.get(
+    '/report',
+    asyncHandler(async (req, res) => {
+        isUser.admin.orThrow(req.user, req.point, req.date);
+
+        const report = await statsReport(ctx(req), { type: req.query.type });
+
+        log.info(`Get full report sorted by ${req.query.type}`);
+
+        res.send(report);
     })
 );
 

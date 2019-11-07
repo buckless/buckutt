@@ -48,10 +48,7 @@ router.post(
             clientTime: req.body.clientTime
         });
 
-        log.info(
-            `Create access for ${req.details.wallet} on wiket ${req.wiket.id}`,
-            req.details
-        );
+        log.info(`Create access for ${req.details.wallet} on wiket ${req.wiket.id}`, req.details);
 
         res.json({});
     })

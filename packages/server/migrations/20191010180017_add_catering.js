@@ -8,9 +8,9 @@ exports.up = function(knex) {
 
             t.string('name').notNullable();
             t.integer('maxNumber')
-            	.notNullable()
-            	.unsigned()
-            	.defaultTo(1);
+                .notNullable()
+                .unsigned()
+                .defaultTo(1);
             t.dateTime('start').nullable();
             t.dateTime('end').nullable();
 

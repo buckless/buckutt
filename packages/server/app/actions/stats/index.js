@@ -5,5 +5,6 @@ module.exports = {
     statsPurchases: require('./statsPurchases'),
     statsRefunds: require('./statsRefunds'),
     statsReloads: require('./statsReloads'),
+    statsReport: require('./statsReport'),
     statsWithdrawals: require('./statsWithdrawals')
 };

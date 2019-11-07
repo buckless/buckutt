@@ -16,9 +16,14 @@ router.get(
         // TODO: operators
         log.info('get eventEssentials', req.details);
 
-        const { giftReloads, groups, meansOfPayment, nfcCosts, operators, coupons } = await eventEssentials(
-            ctx(req)
-        );
+        const {
+            giftReloads,
+            groups,
+            meansOfPayment,
+            nfcCosts,
+            operators,
+            coupons
+        } = await eventEssentials(ctx(req));
 
         res.status(200)
             .json({

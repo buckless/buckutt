@@ -44,26 +44,23 @@ html, body, main {
     z-index: 5;
     position: sticky;
     top: 0;
+    align-items: center;
 
-    & > .b-timebar-dates {
-        display: flex;
-        align-items: center;
-        margin-right: 20px;
+    & > * {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
 
-        & > * {
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-
-        & > .b-timebar-dates-arrow {
-            margin-top: 20px;
-        }
+    & > .b-timebar-dates-arrow {
+        margin-top: 20px;
     }
 
     & > .b-timebar-options {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
+        height: 60px;
+        margin-top: 15px;
     }
 }
 

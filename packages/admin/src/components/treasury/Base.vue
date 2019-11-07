@@ -1,32 +1,33 @@
 <template>
     <div class="b-treasury">
         <div class="b-timebar">
-            <div class="b-timebar-dates">
-                <b-datetimeinput
-                    label="Début"
-                    v-model="filters.dateIn"
-                    @input="computeTreasury"
-                ></b-datetimeinput>
-                <b-icon name="arrow_right_alt" :size="34" class="b-timebar-dates-arrow"></b-icon>
-                <b-datetimeinput
-                    label="Fin"
-                    v-model="filters.dateOut"
-                    @input="computeTreasury"
-                ></b-datetimeinput>
-                <b-autocomplete
-                    label="Point"
-                    :suggestions="pointsOptions"
-                    v-model="filters.point"
-                    @input="computeTreasury"
-                ></b-autocomplete>
-                <b-autocomplete
-                    label="Fondation"
-                    :suggestions="fundationsOptions"
-                    v-model="filters.fundation"
-                    @input="computeTreasury"
-                    v-if="event.useFundations"
-                ></b-autocomplete>
-            </div>
+            <b-datetimeinput
+                label="Début"
+                v-model="filters.dateIn"
+                @input="computeTreasury"
+            ></b-datetimeinput>
+            <b-icon name="arrow_right_alt" :size="34" class="b-timebar-dates-arrow"></b-icon>
+            <b-datetimeinput
+                label="Fin"
+                v-model="filters.dateOut"
+                @input="computeTreasury"
+            ></b-datetimeinput>
+            <b-autocomplete
+                label="Point"
+                :suggestions="pointsOptions"
+                v-model="filters.point"
+                @input="computeTreasury"
+            ></b-autocomplete>
+            <b-autocomplete
+                label="Fondation"
+                :suggestions="fundationsOptions"
+                v-model="filters.fundation"
+                @input="computeTreasury"
+                v-if="event.useFundations"
+            ></b-autocomplete>
+
+            <div class="b--flexspacer"></div>
+            <b-button raised accent :to="`${$route.path}/export`">Rapport financier</b-button>
         </div>
         <div class="b-treasury-content">
             <div class="b-treasury-menu">
@@ -56,6 +57,7 @@
                 ></b-listitem>
             </div>
             <router-view :fields="filters" class="b-base-right"></router-view>
+            <router-view name="export" :key="$route.path"></router-view>
         </div>
     </div>
 </template>
@@ -106,7 +108,7 @@ export default {
 
     & > .b-treasury-content {
         display: flex;
-        height: 100%;
+        flex: 1;
 
         & > .b-treasury-menu {
             width: 340px;

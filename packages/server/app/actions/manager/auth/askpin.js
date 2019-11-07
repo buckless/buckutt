@@ -4,9 +4,9 @@ const mailer = require('server/app/mailer');
 const { knex } = require('server/app/db').bookshelf;
 
 const askpin = async (ctx, { mail }) => {
-    const user = await ctx.models.User
-        .where('mail', mail.toLowerCase().trim())
-        .fetch({ require: true });
+    const user = await ctx.models.User.where('mail', mail.toLowerCase().trim()).fetch({
+        require: true
+    });
 
     user.set('recoverKey', randomstring.generate());
 

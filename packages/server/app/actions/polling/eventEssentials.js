@@ -80,15 +80,12 @@ module.exports = async ctx => {
     }
 
     // step 6: fetch coupons
-    const embedCoupons = [
-        { embed: 'couponSet' },
-        { embed: 'couponSet.articles' }
-    ];
+    const embedCoupons = [{ embed: 'couponSet' }, { embed: 'couponSet.articles' }];
 
     // No need to embedFilter as the relations aren't required
-    coupons = await ctx.models.Coupon
-        .fetchAll({ withRelated: embedParser(embedCoupons) })
-        .then(coupon => coupon.toJSON());
+    coupons = await ctx.models.Coupon.fetchAll({ withRelated: embedParser(embedCoupons) }).then(
+        coupon => coupon.toJSON()
+    );
 
     coupons = coupons.map(coupon => ({
         ...pick(coupon, ['id', 'maxNumber', 'start', 'end', 'name', 'created_at']),
