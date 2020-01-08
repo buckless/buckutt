@@ -25,9 +25,7 @@ export default (items, coupons, buyerCatering) => {
             };
         });
 
-    const orderedItems = items
-        .slice()
-        .sort((a, b) => b.price.amount - a.price.amount);
+    const orderedItems = items.slice().sort((a, b) => b.price.amount - a.price.amount);
     const newItems = [];
 
     orderedItems.forEach(entry => {

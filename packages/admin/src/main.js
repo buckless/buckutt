@@ -92,5 +92,5 @@ const Admin = Vue.extend({
     render: h => h(App)
 });
 
-const vueApp = new Admin().$mount('#app');
+new Admin().$mount('#app');
 sync(store, router);

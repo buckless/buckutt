@@ -72,7 +72,7 @@ export default {
             name: state => state.auth.device.name
         }),
 
-        ...mapGetters(['sellerLogged']),
+        ...mapGetters(['sellerLogged'])
     },
 
     methods: {

@@ -7,7 +7,7 @@
             <div v-for="(price, index) in displayedPrices" :key="index" class="b-price">
                 <span class="b-price-entry">
                     <b-icon name="attach_money" /> {{ price.amount | price(true) }}
-                    <b-icon name="create" class="b-free" v-if="price.freePrice"/>
+                    <b-icon name="create" class="b-free" v-if="price.freePrice" />
                 </span>
                 <span v-if="event.usePeriods" class="b-price-entry">
                     <b-icon name="alarm" /> {{ price.period.name }}
@@ -18,10 +18,7 @@
                 <span v-if="event.useGroups" class="b-price-entry">
                     <b-icon name="group" /> {{ price.group.name }}
                 </span>
-                <b-confirm
-                    @confirm="removePrice(price)"
-                    class="b-price-delete"
-                >
+                <b-confirm @confirm="removePrice(price)" class="b-price-delete">
                     <b-button><b-icon name="delete"/></b-button>
                 </b-confirm>
                 <b-icon
@@ -59,7 +56,9 @@
                 v-if="event.useGroups"
                 class="b-prices-form-entry"
             />
-            <b-checkbox v-model="newPrice.freePrice" v-if="isArticle"><b-icon name="edit"/></b-checkbox>
+            <b-checkbox v-model="newPrice.freePrice" v-if="isArticle"
+                ><b-icon name="edit"
+            /></b-checkbox>
             <b-button :disabled="disabledAdd" class="b-prices-form-add"
                 ><b-icon name="add"
             /></b-button>
@@ -171,7 +170,7 @@ export default {
                 await this.removeObject({ route: 'prices', value: price });
                 this.notify("Le prix a bien été supprimé de l'article");
             } catch {
-                this.notify("Il y a eu une erreur lors de la suppression du prix")
+                this.notify('Il y a eu une erreur lors de la suppression du prix');
             }
         }
     }

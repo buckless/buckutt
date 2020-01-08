@@ -24,10 +24,10 @@ export const hooks = {
             rightIcon: 'delete'
         })),
     notifications: {
-        create: "Le webhook a bien été créé",
-        edit: "Le webhook a bien été modifié",
-        delete: "Le webhook a bien été supprimé",
-        error: "Il y a eu une erreur pour ce webhook"
+        create: 'Le webhook a bien été créé',
+        edit: 'Le webhook a bien été modifié',
+        delete: 'Le webhook a bien été supprimé',
+        error: 'Il y a eu une erreur pour ce webhook'
     }
 };
 
@@ -74,9 +74,9 @@ export const coupons = {
             subtitle: `Utilisable du ${parseDate(coupon.start)} au ${parseDate(coupon.end)}`
         })),
     notifications: {
-        create: "Le coupon a bien été créé",
-        edit: "Le coupon a bien été modifié",
-        error: "Il y a eu une erreur pour ce coupon"
+        create: 'Le coupon a bien été créé',
+        edit: 'Le coupon a bien été modifié',
+        error: 'Il y a eu une erreur pour ce coupon'
     }
 };
 
@@ -132,8 +132,8 @@ export const events = {
     ],
     removable: false,
     notifications: {
-        edit: "Les paramètres ont bien été modifiés",
-        error: "Il y a eu une erreur lors de la modification des paramètres"
+        edit: 'Les paramètres ont bien été modifiés',
+        error: 'Il y a eu une erreur lors de la modification des paramètres'
     }
 };
 
@@ -167,8 +167,8 @@ export const eventsReload = {
     ],
     removable: false,
     notifications: {
-        edit: "Les paramètres ont bien été modifiés",
-        error: "Il y a eu une erreur lors de la modification des paramètres"
+        edit: 'Les paramètres ont bien été modifiés',
+        error: 'Il y a eu une erreur lors de la modification des paramètres'
     }
 };
 
@@ -190,8 +190,8 @@ export const costsReload = {
     ],
     removable: false,
     notifications: {
-        edit: "Les paramètres ont bien été modifiés",
-        error: "Il y a eu une erreur lors de la modification des paramètres"
+        edit: 'Les paramètres ont bien été modifiés',
+        error: 'Il y a eu une erreur lors de la modification des paramètres'
     }
 };
 
@@ -219,8 +219,8 @@ export const eventsRefund = {
     ],
     removable: false,
     notifications: {
-        edit: "Les paramètres ont bien été modifiés",
-        error: "Il y a eu une erreur lors de la modification des paramètres"
+        edit: 'Les paramètres ont bien été modifiés',
+        error: 'Il y a eu une erreur lors de la modification des paramètres'
     }
 };
 
@@ -242,8 +242,8 @@ export const costsRefund = {
     ],
     removable: false,
     notifications: {
-        edit: "Les paramètres ont bien été modifiés",
-        error: "Il y a eu une erreur lors de la modification des paramètres"
+        edit: 'Les paramètres ont bien été modifiés',
+        error: 'Il y a eu une erreur lors de la modification des paramètres'
     }
 };
 
@@ -270,7 +270,7 @@ export const meansOfPayment = {
             field: 'step',
             label: "Valeur de l'unité de consigne",
             type: 'price',
-            compute: entry => entry.type === 'numeric' ? undefined : entry.step
+            compute: entry => (entry.type === 'numeric' ? undefined : entry.step)
         },
         {
             field: 'slug',
@@ -291,10 +291,10 @@ export const meansOfPayment = {
             }`
         })),
     notifications: {
-        create: "Le moyen de paiement a bien été ajouté",
-        edit: "Le moyen de paiement a bien été modifié",
-        delete: "Le moyen de paiement a bien été supprimé",
-        error: "Il y a eu une erreur pour ce moyen de paiement"
+        create: 'Le moyen de paiement a bien été ajouté',
+        edit: 'Le moyen de paiement a bien été modifié',
+        delete: 'Le moyen de paiement a bien été supprimé',
+        error: 'Il y a eu une erreur pour ce moyen de paiement'
     }
 };
 
@@ -338,7 +338,7 @@ export const giftReloads = {
         create: "L'offre a bien été ajoutée",
         edit: "L'offre a bien été modifiée",
         delete: "L'offre' a bien été supprimée",
-        error: "Il y a eu une erreur pour cette offre"
+        error: 'Il y a eu une erreur pour cette offre'
     }
 };
 
@@ -402,10 +402,10 @@ export const periods = {
                 subtitle: `Début: ${parseDate(period.start)} • Fin: ${parseDate(period.end)}`
             })),
     notifications: {
-        create: "La période a bien été créée",
-        edit: "La période a bien été modifiée",
-        delete: "La période a bien été supprimée",
-        error: "Il y a eu une erreur pour cette période"
+        create: 'La période a bien été créée',
+        edit: 'La période a bien été modifiée',
+        delete: 'La période a bien été supprimée',
+        error: 'Il y a eu une erreur pour cette période'
     }
 };
 
@@ -439,10 +439,10 @@ export const groups = {
                 title: group.name
             })),
     notifications: {
-        create: "Le groupe a bien été créé",
-        edit: "Le groupe a bien été modifié",
-        delete: "Le groupe a bien été supprimé",
-        error: "Il y a eu une erreur pour ce groupe"
+        create: 'Le groupe a bien été créé',
+        edit: 'Le groupe a bien été modifié',
+        delete: 'Le groupe a bien été supprimé',
+        error: 'Il y a eu une erreur pour ce groupe'
     }
 };
 
@@ -476,10 +476,10 @@ export const fundations = {
                 title: fundation.name
             })),
     notifications: {
-        create: "La fondation a bien été créée",
-        edit: "La fondation a bien été modifiée",
-        delete: "La fondation a bien été supprimée",
-        error: "Il y a eu une erreur pour cette fondation"
+        create: 'La fondation a bien été créée',
+        edit: 'La fondation a bien été modifiée',
+        delete: 'La fondation a bien été supprimée',
+        error: 'Il y a eu une erreur pour cette fondation'
     }
 };
 

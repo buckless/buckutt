@@ -78,6 +78,7 @@ export default {
     computed: {
         entries() {
             return this.history
+                .slice()
                 .sort((a, b) => b.date - a.date)
                 .map(e => this.resume(e));
         },
@@ -131,10 +132,12 @@ export default {
                 initialPromise = new Promise(resolve => {
                     window.app.$root.$emit('readyToWrite', newCredit, newOptions);
                     window.app.$root.$on('writeCompleted', () => resolve());
-                    window.app.$root.$on('rewriteCancelled', () => this.cancelEntry({
-                        ...this.selectedEntry,
-                        failed: true
-                    }));
+                    window.app.$root.$on('rewriteCancelled', () =>
+                        this.cancelEntry({
+                            ...this.selectedEntry,
+                            failed: true
+                        })
+                    );
                 });
             }
 
@@ -145,7 +148,7 @@ export default {
                 .then(() => this.loadHistory())
                 .then(() => {
                     this.$store.commit('OVERRIDE_BUYER_CREDIT', newCredit);
-                    this.$store.commit('OVERRIDE_BUYER_CATERING', newOptions.catering || [])
+                    this.$store.commit('OVERRIDE_BUYER_CATERING', newOptions.catering || []);
                     this.$store.commit('SET_DATA_LOADED', true);
 
                     setTimeout(() => {
@@ -160,7 +163,9 @@ export default {
 
         resume(entry) {
             const basketToSend = entry.basketToSend.filter(e => !e.uncancellable);
-            const items = basketToSend.filter(e => e.itemType === 'purchase' || e.itemType === 'catering');
+            const items = basketToSend.filter(
+                e => e.itemType === 'purchase' || e.itemType === 'catering'
+            );
             const refund = basketToSend
                 .filter(e => e.itemType === 'refund')
                 .reduce((a, b) => a + b.amount, 0);
@@ -201,7 +206,9 @@ export default {
                 ...options,
                 catering: options.catering.map(cat => ({
                     id: cat.id,
-                    balance: caterings[cat.id] ? cat.balance + caterings[cat.id].length : cat.balance
+                    balance: caterings[cat.id]
+                        ? cat.balance + caterings[cat.id].length
+                        : cat.balance
                 }))
             };
         },

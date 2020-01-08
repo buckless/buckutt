@@ -1,6 +1,9 @@
 <template>
     <div class="b-assign">
-        <p><strong>Note:</strong> Si deux périodes se chevauchent, la période ayant la durée la plus courte sera choisie.</p>
+        <p>
+            <strong>Note:</strong> Si deux périodes se chevauchent, la période ayant la durée la
+            plus courte sera choisie.
+        </p>
         <b-pagination :rows="displayedWikets" v-slot="{ rows }">
             <b-table :rows="rows" @action="startRemove" />
         </b-pagination>
@@ -42,19 +45,24 @@ export default {
                 id: wiket.id,
                 icon: 'group',
                 title: wiket.point.name,
-                subtitle:
-                    `${this.event.useGroups ? `Prix à afficher: groupe ${wiket.defaultGroup.name} ꞏ` : ''}
-                    ${(wiket.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods
-                        ? 'Attention: une période autre que la période par défaut est utilisée'
-                        : this.event.usePeriods
-                        ? `Période: ${wiket.period.name}`
-                        : '')}`,
+                subtitle: `${
+                    this.event.useGroups
+                        ? `Prix à afficher: groupe ${wiket.defaultGroup.name} ꞏ`
+                        : ''
+                }
+                    ${
+                        wiket.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods
+                            ? 'Attention: une période autre que la période par défaut est utilisée'
+                            : this.event.usePeriods
+                            ? `Période: ${wiket.period.name}`
+                            : ''
+                    }`,
                 rightIcon: 'delete'
             }));
         }
     },
 
-    methods: {  
+    methods: {
         ...mapActions(['removeObject', 'notify']),
 
         startRemove(wiketId) {
@@ -65,7 +73,7 @@ export default {
         async remove() {
             try {
                 await this.removeObject({ route: 'wikets', value: { id: this.wiketId } });
-                this.notify('Le guichet a bien été supprimé')
+                this.notify('Le guichet a bien été supprimé');
             } catch {
                 this.notify('Il y a eu une erreur lors de la suppression du guichet');
             }

@@ -43,8 +43,10 @@ export default {
                 icon: 'assignment_turned_in',
                 title: translateRight[right.name],
                 subtitle:
-                        right.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods
-                        ? `Point: ${this.pointName(right.point)} • Attention: une période autre que la période par défaut est utilisée`
+                    right.period_id !== this.event.defaultPeriod_id && !this.event.usePeriods
+                        ? `Point: ${this.pointName(
+                              right.point
+                          )} • Attention: une période autre que la période par défaut est utilisée`
                         : this.event.usePeriods
                         ? `Point: ${this.pointName(right.point)} • Période: ${right.period.name}`
                         : `Point: ${this.pointName(right.point)}`,

@@ -75,13 +75,10 @@ export default {
         },
 
         remainingArticlesOptions() {
-            return this.articlesOptions
-                .filter(
-                    option =>
-                        !(this.focusedCategory.articles || []).some(
-                            article => article.id === option.id
-                        )
-                );
+            return this.articlesOptions.filter(
+                option =>
+                    !(this.focusedCategory.articles || []).some(article => article.id === option.id)
+            );
         }
     }
 };

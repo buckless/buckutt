@@ -42,7 +42,7 @@ export default {
         async create() {
             try {
                 await this.reloadWallet({ wallet: this.focusedWallet, reload: this.reload });
-                this.notify("Le support a bien été crédité");
+                this.notify('Le support a bien été crédité');
                 this.back();
             } catch {
                 this.notify("Le support n'a pas pu être crédité");

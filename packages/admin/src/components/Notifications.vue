@@ -1,11 +1,10 @@
 <template>
     <div class="b-notifications">
-        <b-notification v-for="{id, content} in notifications" :key="id" class="b-notification">
+        <b-notification v-for="{ id, content } in notifications" :key="id" class="b-notification">
             {{ content }}
         </b-notification>
     </div>
 </template>
-
 
 <script>
 import { mapState } from 'vuex';

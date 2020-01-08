@@ -14,15 +14,19 @@ export default [
         component: Base,
         children: [
             { path: '', props: config, component: Protip },
-            { path: 'export', props: { default: config }, components: { default: Protip, export: Export }},
+            {
+                path: 'export',
+                props: { default: config },
+                components: { default: Protip, export: Export }
+            },
             { path: 'reloads', component: Reloads },
-            { path: 'reloads/export', components: { default: Reloads, export: Export }},
+            { path: 'reloads/export', components: { default: Reloads, export: Export } },
             { path: 'purchases', component: Purchases },
-            { path: 'purchases/export', components: { default: Purchases, export: Export }},
+            { path: 'purchases/export', components: { default: Purchases, export: Export } },
             { path: 'refunds', component: Refunds },
-            { path: 'refunds/export', components: { default: Refunds, export: Export }},
+            { path: 'refunds/export', components: { default: Refunds, export: Export } },
             { path: 'withdrawals', component: Withdrawals },
-            { path: 'withdrawals/export', components: { default: Withdrawals, export: Export }}
+            { path: 'withdrawals/export', components: { default: Withdrawals, export: Export } }
         ]
     }
 ];

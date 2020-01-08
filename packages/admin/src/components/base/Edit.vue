@@ -32,9 +32,9 @@ export default {
         },
         notifications: {
             type: Object,
-            default: {
+            default: () => ({
                 error: 'Erreur inconnue'
-            }
+            })
         }
     },
 

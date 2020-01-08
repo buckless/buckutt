@@ -43,9 +43,9 @@ export default {
         },
         notifications: {
             type: Object,
-            default: {
+            default: () => ({
                 error: 'Erreur inconnue'
-            }
+            })
         }
     },
 
@@ -75,7 +75,7 @@ export default {
 
                 if (image) {
                     await postImage(element.id, image);
-                    this.fetchImage()
+                    this.fetchImage();
                 }
 
                 this.notify(this.notifications.edit);

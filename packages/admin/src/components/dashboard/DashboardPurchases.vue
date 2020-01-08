@@ -78,25 +78,25 @@
                         ]"
                         :suggestions="[
                             { label: 'Tous', id: 'all', section: 'common' },
-                            ...this.articlesOptions.map(option => ({ ...option, section: 'articles' })),
-                            ...this.promotionsOptions.map(option => ({ ...option, section: 'promotions' })),
+                            ...this.articlesOptions.map(option => ({
+                                ...option,
+                                section: 'articles'
+                            })),
+                            ...this.promotionsOptions.map(option => ({
+                                ...option,
+                                section: 'promotions'
+                            }))
                         ]"
                     ></b-autocomplete>
                     <b-autocomplete
                         label="Point"
                         v-model="fields.point"
-                        :suggestions="[
-                            { label: 'Tous', id: 'all' },
-                            ...this.pointsOptions
-                        ]"
+                        :suggestions="[{ label: 'Tous', id: 'all' }, ...this.pointsOptions]"
                     ></b-autocomplete>
                     <b-autocomplete
                         label="Fondation"
                         v-model="fields.fundation"
-                        :suggestions="[
-                            { label: 'Toutes', id: 'all' },
-                            ...this.fundationsOptions
-                        ]"
+                        :suggestions="[{ label: 'Toutes', id: 'all' }, ...this.fundationsOptions]"
                         v-if="event.useFundations"
                     ></b-autocomplete>
                     <b-button><b-icon name="add"/></b-button>

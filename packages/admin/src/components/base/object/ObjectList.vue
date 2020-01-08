@@ -69,7 +69,9 @@ export default {
         sort: {
             type: Function,
             required: false,
-            default: function(a, b) { return sortOrder(a[this.title], b[this.title]) }
+            default: function(a, b) {
+                return sortOrder(a[this.title], b[this.title]);
+            }
         }
     },
 

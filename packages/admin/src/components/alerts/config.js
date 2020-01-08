@@ -16,6 +16,6 @@ export default {
     ],
     notifications: {
         create: "L'alerte a bien été envoyée",
-        error: "Il y a eu une erreur pour cette alerte"
+        error: 'Il y a eu une erreur pour cette alerte'
     }
 };

@@ -60,7 +60,9 @@ export default {
 
         async updateElement() {
             const fields = ['id', 'authorized', 'doubleValidation', 'alcohol', 'sendPrivateKey'];
-            this.options.sendPrivateKey = this.focusedElement.sendPrivateKey || (!this.focusedElement.authorized && this.options.authorized);
+            this.options.sendPrivateKey =
+                this.focusedElement.sendPrivateKey ||
+                (!this.focusedElement.authorized && this.options.authorized);
 
             try {
                 await this.updateObject({ route: 'devices', value: pick(this.options, fields) });

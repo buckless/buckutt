@@ -22,7 +22,12 @@ export default [
                 children: [
                     { path: '', props: config, component: Details },
                     { path: 'options', component: Options },
-                    { path: 'assign', props: config, component: Assign, children: [{ path: 'add', props: config, component: Add }] }
+                    {
+                        path: 'assign',
+                        props: config,
+                        component: Assign,
+                        children: [{ path: 'add', props: config, component: Add }]
+                    }
                 ]
             }
         ]

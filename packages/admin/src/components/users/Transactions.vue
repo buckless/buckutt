@@ -18,6 +18,7 @@ export default {
 
         transactions() {
             return this.focusedElements[0].transactions
+                .slice()
                 .sort((a, b) => sortOrder(a.created_at, b.created_at, 'DESC'));
         },
 
@@ -28,12 +29,14 @@ export default {
 
             return this.transactions.map(transaction => ({
                 icon: 'credit_card',
-                right:
-                    !transaction.isAuthorization
-                        ? `+${parsePrice(transaction.amount, true)}` : '',
+                right: !transaction.isAuthorization
+                    ? `+${parsePrice(transaction.amount, true)}`
+                    : '',
                 id: transaction.id,
                 title: transaction.isAuthorization ? 'Enregistrement CB' : 'Transaction CB',
-                subtitle: `Date: ${parseDate(transaction.created_at)} • État: ${this.translateState(transaction.state)}`
+                subtitle: `Date: ${parseDate(transaction.created_at)} • État: ${this.translateState(
+                    transaction.state
+                )}`
             }));
         }
     },
@@ -45,7 +48,7 @@ export default {
                     return 'En cours de traitement';
                 case 'ACCEPTED':
                     return 'Paiement accepté';
-                case 'CANCELLED': 
+                case 'CANCELLED':
                     return 'Paiement annulé';
                 case 'REFUSED':
                     return 'Paiement refusé';

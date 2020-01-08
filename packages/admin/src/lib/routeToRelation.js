@@ -35,7 +35,7 @@ export default route => {
                 required: true
             }
         ],
-        coupons: [ 'couponSet', 'couponSet.articles' ],
+        coupons: ['couponSet', 'couponSet.articles'],
         devices: [
             'wikets',
             {
@@ -70,11 +70,7 @@ export default route => {
             'wikets.accesses.wallet.user',
             'wikets.accesses.operator'
         ],
-        prices: [
-            'period',
-            'fundation',
-            'group'
-        ],
+        prices: ['period', 'fundation', 'group'],
         promotions: [
             'sets',
             'sets.articles',
@@ -117,7 +113,7 @@ export default route => {
                 filters: [['end', '>', now]],
                 required: true
             },
-            { 
+            {
                 embed: 'rights.point',
                 required: true
             },

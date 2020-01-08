@@ -12,7 +12,10 @@
             :sort="itemList.sort"
             @search="search"
         ></b-objectlist>
-        <router-view :key="focusedElements[0] ? focusedElements[0].id : $route.path" class="b-base-right"></router-view>
+        <router-view
+            :key="focusedElements[0] ? focusedElements[0].id : $route.path"
+            class="b-base-right"
+        ></router-view>
     </div>
 </template>
 

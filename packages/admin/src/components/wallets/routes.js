@@ -33,7 +33,10 @@ export default [
                     {
                         path: 'history',
                         component: History,
-                        children: [{ path: 'refund', component: Refund }, { path: 'reload', component: Reload }]
+                        children: [
+                            { path: 'refund', component: Refund },
+                            { path: 'reload', component: Reload }
+                        ]
                     },
                     {
                         path: 'groups',

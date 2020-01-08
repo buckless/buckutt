@@ -3,7 +3,10 @@
  */
 
 export const reloadWallet = async ({ state, dispatch, getters }, reloadData) => {
-    const refundedWallet = await dispatch('retrieveObject', { route: 'wallets', id: reloadData.wallet.id });
+    const refundedWallet = await dispatch('retrieveObject', {
+        route: 'wallets',
+        id: reloadData.wallet.id
+    });
 
     const reload = {
         credit: reloadData.reload.credit,
@@ -28,7 +31,10 @@ export const reloadWallet = async ({ state, dispatch, getters }, reloadData) => 
 };
 
 export const refundWallet = async ({ state, dispatch, getters }, refundData) => {
-    const refundedWallet = await dispatch('retrieveObject', { route: 'wallets', id: refundData.wallet.id });
+    const refundedWallet = await dispatch('retrieveObject', {
+        route: 'wallets',
+        id: refundData.wallet.id
+    });
 
     if (refundData.refund.amount > refundedWallet.credit) {
         return Promise.reject(new Error("The wallet doesn't have enough credit"));

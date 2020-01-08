@@ -46,7 +46,7 @@ export default {
     },
     itemList: {
         field: 'name',
-        subtitle: (item) => !item.authorized ? 'Équipement non associé' : undefined,
+        subtitle: item => (!item.authorized ? 'Équipement non associé' : undefined),
         sort: (a, b) => sortOrder(a.authorized, b.authorized) || sortOrder(a.name, b.name),
         hide: ['admin', 'manager']
     },
@@ -63,6 +63,6 @@ export default {
     notifications: {
         edit: "L'équipement a bien été modifié",
         delete: "L'équipement a bien été supprimé",
-        error: "Il y a eu une erreur pour cet équipement"
+        error: 'Il y a eu une erreur pour cet équipement'
     }
 };

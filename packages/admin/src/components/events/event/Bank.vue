@@ -59,9 +59,9 @@ export default {
         },
         notifications: {
             type: Object,
-            default: {
+            default: () => ({
                 error: 'Erreur inconnue'
-            }
+            })
         },
         removable: {
             type: Boolean,
@@ -82,8 +82,7 @@ export default {
         ...mapGetters(['event']),
 
         displayedObjects() {
-            const rightIcon = this.right ?
-                this.right.icon : (this.removable ? 'delete' : undefined);
+            const rightIcon = this.right ? this.right.icon : this.removable ? 'delete' : undefined;
 
             return this.display(this.objectsRaw).map(object => ({
                 ...object,
@@ -107,7 +106,9 @@ export default {
 
         action(id) {
             if (this.right && this.right.action === 'redirect') {
-                return this.$router.push(`/events/${this.category}/${this.model}/${id}/${this.right.link}`);
+                return this.$router.push(
+                    `/events/${this.category}/${this.model}/${id}/${this.right.link}`
+                );
             }
 
             return this.startRemoveBank(id);

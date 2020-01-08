@@ -202,7 +202,7 @@ export const updateEssentials = (store, force) => {
             }
 
             if (res.data.coupons) {
-                promises.push(store.dispatch('setCoupons', res.data.coupons))
+                promises.push(store.dispatch('setCoupons', res.data.coupons));
             }
 
             return Promise.all(promises);

@@ -70,7 +70,7 @@ export default {
                     value: this.wiket
                 });
 
-                this.notify("Le guichet a bien été associé à l'équipement")
+                this.notify("Le guichet a bien été associé à l'équipement");
                 this.back();
             } catch {
                 this.notify("Une erreur a eu lieu lors de l'association");
@@ -83,7 +83,13 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['event', 'pointsOptions', 'groupsOptions', 'currentPeriodsOptions', 'focusedElements']),
+        ...mapGetters([
+            'event',
+            'pointsOptions',
+            'groupsOptions',
+            'currentPeriodsOptions',
+            'focusedElements'
+        ]),
 
         focusedElement() {
             return this.focusedElements[0];

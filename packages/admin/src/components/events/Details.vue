@@ -36,9 +36,9 @@ export default {
         },
         notifications: {
             type: Object,
-            default: {
+            default: () => ({
                 error: 'Erreur inconnue'
-            }
+            })
         }
     },
     computed: {
@@ -56,7 +56,7 @@ export default {
     methods: {
         ...mapActions(['updateObject', 'removeObject', 'notify']),
 
-        async updateElement(element, image) {
+        async updateElement(element) {
             try {
                 const fields = ['id'].concat(
                     this.list.filter(entry => !entry.lockEdition).map(entry => entry.field)

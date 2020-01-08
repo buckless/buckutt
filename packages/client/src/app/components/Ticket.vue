@@ -32,7 +32,11 @@
             <template v-if="user.usedCatering.length > 0">
                 <br />
                 Tickets utilisés:
-                <div v-for="catering in user.usedCatering" class="b-ticket__catering">
+                <div
+                    v-for="catering in user.usedCatering"
+                    class="b-ticket__catering"
+                    :key="catering.id"
+                >
                     {{ getCateringName(catering.id) }} : {{ catering.count }}
                 </div>
             </template>

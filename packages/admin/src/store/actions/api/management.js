@@ -2,7 +2,7 @@ import { post, put, del } from '@/lib/fetch';
 import routeToRelation from '@/lib/routeToRelation';
 import pathToRoute from '@/lib/pathToRoute';
 
-export const createObject = async ({ commit, dispatch, state }, object) => {
+export const createObject = async ({ dispatch, state }, object) => {
     const embed = routeToRelation(object.route) ? `?embed=${routeToRelation(object.route)}` : '';
     const result = await post(`crud/${object.route.toLowerCase()}${embed}`, object.value);
 
@@ -60,7 +60,9 @@ export const createFocusedElementsRelation = async ({ commit, state, getters }, 
             const objects = [
                 {
                     ...storedObject,
-                    [object.route]: [...new Set((storedObject[object.route] || []).concat([object.value.id]))]
+                    [object.route]: [
+                        ...new Set((storedObject[object.route] || []).concat([object.value.id]))
+                    ]
                 }
             ];
 

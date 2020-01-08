@@ -32,6 +32,6 @@ export default {
         create: "L'article a bien été créé",
         edit: "L'article a bien été modifié",
         delete: "L'article a bien été supprimé",
-        error: "Il y a eu une erreur pour cet article"
+        error: 'Il y a eu une erreur pour cet article'
     }
 };

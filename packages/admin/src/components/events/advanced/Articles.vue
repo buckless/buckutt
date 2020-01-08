@@ -9,10 +9,7 @@
                         :key="article.id"
                     >
                         <span>{{ article.name }}</span>
-                        <b-confirm
-                            @confirm="removeArticle(article)"
-                            class="b--inline"
-                        >
+                        <b-confirm @confirm="removeArticle(article)" class="b--inline">
                             <b-button class="b-article-delete">
                                 <b-icon name="cancel" />
                             </b-button>
@@ -47,7 +44,13 @@ export default {
     }),
 
     methods: {
-        ...mapActions(['updateObject', 'notify', 'createSetWithArticles', 'addArticleToSet', 'removeArticleFromSet']),
+        ...mapActions([
+            'updateObject',
+            'notify',
+            'createSetWithArticles',
+            'addArticleToSet',
+            'removeArticleFromSet'
+        ]),
 
         back() {
             this.$router.go(-1);
@@ -71,7 +74,10 @@ export default {
 
         async createSet(article) {
             const set = await this.createSetWithArticles({ articles: [article] });
-            return this.updateObject({ route: 'coupons', value: { id: this.focusedCoupon.id, set_id: set.id } });
+            return this.updateObject({
+                route: 'coupons',
+                value: { id: this.focusedCoupon.id, set_id: set.id }
+            });
         },
 
         async removeArticle(article) {
@@ -96,9 +102,7 @@ export default {
                 return [];
             }
 
-            return this.focusedCoupon.couponSet.articles.map(
-                article => article.id
-            );
+            return this.focusedCoupon.couponSet.articles.map(article => article.id);
         },
 
         displayedArticlesOptions() {

@@ -171,7 +171,9 @@ export const validateBasket = async (store, { cardNumber, credit, options, versi
                 newCardVersion
             );
             window.app.$root.$on('writeCompleted', () => resolve());
-            window.app.$root.$on('rewriteCancelled', () => store.dispatch('sendBasket', { cardNumber, isFailed: true }));
+            window.app.$root.$on('rewriteCancelled', () =>
+                store.dispatch('sendBasket', { cardNumber, isFailed: true })
+            );
         });
     }
 
@@ -262,7 +264,7 @@ export const sendBasket = (store, payload = {}) => {
             article_id: catering.id,
             itemType: 'catering'
         });
-    })
+    });
 
     reloads.forEach(reload => {
         basketToSend.push({
@@ -315,11 +317,12 @@ export const sendBasket = (store, payload = {}) => {
             }
         })
         .then(lastWallet => {
-            const usedCatering = Object.entries(countBy(basket.catering.map(cat => cat.couponId)))
-                .map(([key, value]) => ({
-                    id: key,
-                    count: value
-                }));
+            const usedCatering = Object.entries(
+                countBy(basket.catering.map(cat => cat.couponId))
+            ).map(([key, value]) => ({
+                id: key,
+                count: value
+            }));
 
             store.commit('SET_LAST_USER', {
                 display: true,

@@ -11,7 +11,7 @@ export default () => {
     window.config = {
         ...window.config,
         coupons: window.coupons
-    }
+    };
 
     if (dataCoder && JSON.stringify(window.config) === lastConfig) {
         return dataCoder;
@@ -19,7 +19,9 @@ export default () => {
 
     lastConfig = JSON.stringify(window.config);
 
-    const articles = Object.values(window.config.coupons).sort((a, b) => a.created_at - b.created_at);
+    const articles = Object.values(window.config.coupons).sort(
+        (a, b) => a.created_at - b.created_at
+    );
 
     // The first bit is used by assignedCard parameter, the second by the lock state, the third by the paid state
     const usefulDataLength = articles.reduce((a, b) => a + b.maxNumber.toString(2).length, 3);

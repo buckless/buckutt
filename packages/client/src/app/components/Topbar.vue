@@ -5,7 +5,10 @@
         </div>
         <upper />
         <div class="b-header__buyer-credit" v-if="buyerLogged">
-            <span :class="{ 'b-header__buyer__credit--negative': buyer.credit < 0 }" @click="toCardDetails">
+            <span
+                :class="{ 'b-header__buyer__credit--negative': buyer.credit < 0 }"
+                @click="toCardDetails"
+            >
                 <currency :value="buyer.credit"></currency>
             </span>
         </div>

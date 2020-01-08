@@ -105,10 +105,10 @@ export default {
                 });
 
                 this.notify("L'article a bien été ajouté à la promotion.");
-            } catch(err) {
+            } catch (err) {
                 if (err.message === 'The article is already in this set') {
                     return this.notify("L'article est déjà présent dans cet ensemble.");
-                } 
+                }
 
                 this.notify("Une erreur inconue a eu lieu lors de l'ajout à la promotion");
             }

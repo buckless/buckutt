@@ -2,7 +2,8 @@
     <b-container dropShadow @close="back">
         <b-modal title="Exporter le rapport final" @close="back">
             <form @submit.prevent="create" class="b-export">
-                <strong>Note:</strong> L'export contiendra toutes les données de cet événement, au format XLSX.<br /><br />
+                <strong>Note:</strong> L'export contiendra toutes les données de cet événement, au
+                format XLSX.<br /><br />
                 <b-select v-model="type" :options="options" label="Trier par" />
             </form>
             <template slot="actions">
@@ -45,7 +46,10 @@ export default {
             const options = [{ value: 'points', name: 'Guichets' }];
 
             if (this.event.useFundations) {
-                options.push({ value: 'fundations', name: 'Fondations pour les ventes, guichets pour le reste' });
+                options.push({
+                    value: 'fundations',
+                    name: 'Fondations pour les ventes, guichets pour le reste'
+                });
             }
 
             return options;

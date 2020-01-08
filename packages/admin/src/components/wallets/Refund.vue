@@ -48,7 +48,7 @@ export default {
         async create() {
             try {
                 await this.refundWallet({ wallet: this.focusedWallet, refund: this.refund });
-                this.notify("Le remboursement a bien été effectué");
+                this.notify('Le remboursement a bien été effectué');
                 this.back();
             } catch {
                 this.notify("Le remboursement n'a pas pu être effectué");
