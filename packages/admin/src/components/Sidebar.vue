@@ -1,6 +1,6 @@
 <template>
     <div class="b-sidebar" v-if="logged">
-        <h1 class="b-sidebar__title">{{ name }}</h1>
+        <h1 class="b-sidebar__title">{{ event.name }}</h1>
         <div class="b-sidebar__links-wrapper">
             <ul class="b-sidebar__links">
                 <li class="b-sidebar__links__link">
@@ -84,15 +84,10 @@
 </template>
 
 <script>
-import { name } from 'config/admin';
 import { mapGetters } from 'vuex';
 
 export default {
-    data: () => ({
-        name
-    }),
-
-    computed: mapGetters(['logged'])
+    computed: mapGetters(['logged', 'event'])
 };
 </script>
 
