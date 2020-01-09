@@ -18,7 +18,11 @@ module.exports = async (ctx, { type }) => {
     // Get means of payment
     const resultsMop = await ctx.models.MeanOfPayment.fetchAll();
     const meansOfPayment = resultsMop.toJSON();
-    const translateMop = slug => meansOfPayment.find(mop => mop.slug === slug).name;
+    const translateMop = slug => {
+        const mop = meansOfPayment.find(mop => mop.slug === slug);
+
+        return mop ? mop.name : slug;
+    };
 
     // Purchases
     const groupField = type === 'points' ? 'point' : 'fundation';
