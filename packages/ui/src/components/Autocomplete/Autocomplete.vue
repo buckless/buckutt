@@ -16,7 +16,7 @@
                 ref="input"
                 v-model="search"
                 :small="small"
-                @input="selectFirstResult"
+                @input="onSearch"
                 @blur="onBlur"
                 @keydown.up.prevent="navigateUp"
                 @keydown.down.prevent="navigateDown"
@@ -64,11 +64,7 @@ import Popper from 'popper.js';
 import Input from '../Input/Input';
 import Card from '../Card/Card';
 
-import {
-    isSuggestions,
-    isSections
-} from './utils';
-
+import { isSuggestions, isSections } from './utils';
 
 export default {
     name: 'Autocomplete',
@@ -208,6 +204,11 @@ export default {
             this.close();
         },
 
+        onSearch() {
+            this.$emit('search', this.search);
+            this.selectFirstResult();
+        },
+
         sectionSuggestions(section) {
             return this.suggestions
                 .filter(suggestion => suggestion.section === section.id)
@@ -227,7 +228,9 @@ export default {
 
         hover(suggestionId) {
             this.hoveredId = suggestionId;
-            this.hoveredIndex = this.activeSuggestions.findIndex(suggestion => suggestion.id === suggestionId);
+            this.hoveredIndex = this.activeSuggestions.findIndex(
+                suggestion => suggestion.id === suggestionId
+            );
         },
 
         selectFirstResult() {
@@ -248,8 +251,8 @@ export default {
 
             if (!this.hoveredId || this.hoveredIndex === 0) {
                 this.hoveredIndex = this.activeSuggestions.length - 1;
-                this.hoveredId = this.activeSuggestions[this.hoveredIndex].id
-                return
+                this.hoveredId = this.activeSuggestions[this.hoveredIndex].id;
+                return;
             }
 
             this.hoveredIndex = this.hoveredIndex - 1;
@@ -263,8 +266,8 @@ export default {
 
             if (!this.hoveredId || this.hoveredIndex === this.activeSuggestions.length - 1) {
                 this.hoveredIndex = 0;
-                this.hoveredId = this.activeSuggestions[this.hoveredIndex].id
-                return
+                this.hoveredId = this.activeSuggestions[this.hoveredIndex].id;
+                return;
             }
 
             this.hoveredIndex = this.hoveredIndex + 1;

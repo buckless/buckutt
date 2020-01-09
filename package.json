@@ -19,8 +19,7 @@
     "packages/masterapp",
     "packages/server",
     "packages/config",
-    "packages/ui",
-    "packages/vue-cli-plugin-calm-serve"
+    "packages/ui"
   ],
   "scripts": {
     "admin": "cd packages/admin && yarn",

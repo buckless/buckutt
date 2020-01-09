@@ -29,6 +29,12 @@ Invalid state
         value="33"
         pattern="[a-zA-Z]+"
     />
+    <Input
+        label="Hello"
+        placeholder="Enter your name"
+        value="33"
+        invalid
+    />
 </div>
 ```
 

@@ -1,9 +1,11 @@
 module.exports = {
-    askpin: require('./askpin'),
-    assigner: require('./assigner'),
-    changepin: require('./changepin'),
-    generatepin: require('./generatepin'),
+    assignCard: require('./assignCard'),
+    assignWallet: require('./assignWallet'),
+    changePassword: require('./changePassword'),
+    forgot: require('./forgot'),
+    infos: require('./infos'),
     register: require('./register'),
+    resetPassword: require('./resetPassword'),
     searchuser: require('./searchuser'),
-    switchuser: require('./switchuser')
+    style: require('./style')
 };

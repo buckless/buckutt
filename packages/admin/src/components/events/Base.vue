@@ -10,17 +10,17 @@
             ></b-listitem>
             <b-listitem
                 icon="attach_money"
-                title="Rechargements"
-                subtitle="Coûts, moyens de paiement, offres..."
-                to="/events/reloads"
-                :active="isActive('reloads')"
+                title="Paiements"
+                subtitle="Limites, moyens de paiement, offres..."
+                to="/events/payments"
+                :active="isActive('payments')"
             ></b-listitem>
             <b-listitem
-                icon="money_off"
-                title="Remboursements"
-                subtitle="Dates d'ouverture, coûts..."
-                to="/events/refunds"
-                :active="isActive('refunds')"
+                icon="public"
+                title="Espace client"
+                subtitle="Paramètres généraux, transactions en ligne..."
+                to="/events/manager"
+                :active="isActive('manager')"
             ></b-listitem>
             <b-listitem
                 icon="developer_board"

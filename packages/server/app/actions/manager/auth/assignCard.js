@@ -7,7 +7,7 @@ const assignTicket = require('server/app/helpers/assignTicket');
 const APIError = require('server/app/utils/APIError');
 
 // Used to assign together a card, a ticket and a user in a wallet
-const assignCard = async (ctx, { physicalId, logicalId, ticketNumber, userId, clientTime }) => {
+module.exports = async (ctx, { physicalId, logicalId, ticketNumber, userId, clientTime }) => {
     // Check if the provided ticket already belongs to a wallet
     let ticket;
     if (ticketNumber) {
@@ -90,8 +90,4 @@ const assignCard = async (ctx, { physicalId, logicalId, ticketNumber, userId, cl
     }
 
     return wallet;
-};
-
-module.exports = {
-    assignCard
 };

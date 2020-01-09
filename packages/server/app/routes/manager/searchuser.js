@@ -4,7 +4,7 @@ const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const rightsDetails = require('server/app/utils/rightsDetails');
 
-const { searchuser } = require('server/app/actions/manager/auth/searchuser');
+const { searchuser } = require('server/app/actions/manager/auth');
 
 const router = require('express').Router();
 

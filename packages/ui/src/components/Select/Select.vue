@@ -2,12 +2,13 @@
     <label class="select-wrapper">
         <div class="label" v-if="label">{{ label }}</div>
         <div class="select">
-            <select :value="normalizedValue" @change="onChange">
+            <select @change="onChange">
                 <option
                     v-for="(option, i) in normalizedOptions"
                     :key="i"
                     :value="option.value"
                     :disabled="option.disabled"
+                    :selected="option.value === value"
                 >
                     {{ option.name }}
                 </option>
@@ -47,7 +48,7 @@ export default {
          * ```
          * {
          *   value: string,
-         *   name?: string,
+         *   name: string,
          *   disabled?: boolean
          * }
          * ```
@@ -61,17 +62,22 @@ export default {
         value: { type: [String, Number], default: '' }
     },
 
-    data() {
-        if (!Array.isArray(this.options)) {
-            return {};
+    computed: {
+        normalizedOptions() {
+            if (!Array.isArray(this.options)) {
+                return {};
+            }
+
+            return normalize(this.options);
+        },
+
+        normalizedValue() {
+            if (!Array.isArray(this.options)) {
+                return {};
+            }
+
+            return this.value;
         }
-
-        const normalizedOptions = normalize(this.options);
-
-        return {
-            normalizedOptions,
-            normalizedValue: this.value || (normalizedOptions.length && normalizedOptions[0].value)
-        };
     },
 
     methods: {
@@ -91,6 +97,10 @@ export default {
 </script>
 
 <style scoped>
+.select-wrapper {
+    display: block;
+}
+
 .label {
     display: inline-block;
     margin-bottom: 4px;

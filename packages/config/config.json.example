@@ -55,32 +55,11 @@
     "eventOrCompany": {
         "name": "Buckless",
         "shortName": "Buckless",
-        "contact": "contact@buckless.com",
-        "sender": "noreply@buckless.com",
-        "address": "2 rue Gustave Eiffel",
-        "postal": "10430",
-        "city": "Rosières-prés-Troyes",
-        "country": "France",
-        "phone": "+33101010101"
+        "sender": "noreply@buckless.com"
     },
     "letsencrypt": {
         "active": false,
         "mail": "contact@buckless.com"
-    },
-    "manager": {
-        "allowRegistration": 1,
-        "historyShowYears": 0,
-        "historyShowType": 0,
-        "historyShowOperator": 0,
-        "historyShowInvoice": 1,
-        "menuShowTicket": 1,
-        "menuShowCard": 1,
-        "accountShowQrcode": 1,
-        "colorsTheme": "#1abc9c",
-        "colorsForegroundTheme": "rgba(0,0,0,.9)",
-        "colorsBackground": "#fafafa",
-        "colorsCardBackground": "#fff",
-        "colorsForeground": "rgba(0,0,0,.9)"
     },
     "mail": {
         "smtp": {

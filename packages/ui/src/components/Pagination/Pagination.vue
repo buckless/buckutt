@@ -2,17 +2,32 @@
     <div class="pagination">
         <div class="header">
             <div class="left">
-                <SearchInput placeholder="Filtrer" v-model="filter" />
-                <span class="results"
-                    >{{ filteredRows.length }} résultat<template v-if="filteredRows.length > 1"
+                <SearchInput placeholder="Filter" v-model="filter" v-if="locale === 'en'" />
+                <SearchInput placeholder="Filtrer" v-model="filter" v-else />
+                <span class="results">
+                    {{ filteredRows.length }}
+                    <template v-if="locale === 'en'"
+                        >result</template
+                    >
+                    <template v-else
+                        >résultat</template
+                    >
+                    <template v-if="filteredRows.length > 1"
                         >s</template
-                    ></span
-                >
+                    >
+                </span>
             </div>
             <div class="space"></div>
             <div class="resultsPerPage">
                 <Select
-                    label="Nombre résultats par page :"
+                    v-if="locale === 'en'"
+                    label="Results per page :"
+                    v-model="resultsPerPage"
+                    :options="resultsPerPageOptions"
+                />
+                <Select
+                    v-else
+                    label="Résultats par page :"
                     v-model="resultsPerPage"
                     :options="resultsPerPageOptions"
                 />
@@ -23,8 +38,11 @@
             <slot :rows="visibleRows" />
         </div>
         <div class="table is-empty" v-else>
-            <slot name="empty-state">
+            <slot name="empty-state" v-if="locale === 'en'">
                 Aucun résultat.
+            </slot>
+            <slot name="empty-state" v-else>
+                No results.
             </slot>
         </div>
         <div class="buttons">
@@ -97,7 +115,9 @@ export default {
          * }
          * ```
          */
-        rows: { type: Array, validator, required: true }
+        rows: { type: Array, validator, required: true },
+
+        locale: { type: String, required: false, default: 'fr' }
     },
 
     data: () => ({
@@ -200,5 +220,20 @@ export default {
 .button,
 .dots {
     margin: 0 4px;
+}
+
+@media (max-width: 768px) {
+    .results {
+        display: none;
+    }
+
+    .resultsPerPage {
+        display: none;
+    }
+
+    .left,
+    .left > div {
+        width: 100%;
+    }
 }
 </style>

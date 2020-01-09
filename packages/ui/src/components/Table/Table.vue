@@ -123,4 +123,22 @@ export default {
     font-size: var(--typography-body-2-size);
     letter-spacing: var(--typography-body-2-spacing);
 }
+
+@media (max-width: 768px) {
+    .row {
+        padding: 0 8px;
+    }
+
+    .content {
+        margin-left: 4px;
+    }
+
+    .header {
+        font-size: 14px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+    }
+}
 </style>

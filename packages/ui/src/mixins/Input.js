@@ -6,6 +6,11 @@ export default {
 
     props: {
         /**
+         * Field name
+         */
+        name: { type: String },
+
+        /**
          * Text label above the input
          */
         label: { type: String, default: '' },
@@ -54,6 +59,10 @@ export default {
          * Adds elevation to input
          */
         elevation: { type: Boolean },
+        /**
+         * Marks the input as invalid
+         */
+        invalid: { type: Boolean },
         /**
          * Adds readonly to input
          */

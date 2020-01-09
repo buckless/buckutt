@@ -2,8 +2,10 @@
     <button
         v-if="!to"
         class="button"
+        :type="type"
         :raised="raised"
         :accent="accent"
+        :whiteBackground="whiteBackground"
         :disabled="disabled"
         @click="click"
     >
@@ -13,6 +15,7 @@
     <router-link
         v-else
         class="button"
+        :type="type"
         :raised="raised"
         :accent="accent"
         :disabled="disabled"
@@ -40,6 +43,14 @@ export default {
         },
 
         /**
+         * Button type
+         */
+        type: {
+            type: String,
+            default: 'submit'
+        },
+
+        /**
          * Makes the button a link using vue-router's router-link
          */
         to: {
@@ -51,6 +62,15 @@ export default {
          * Changes the button color to be accent
          */
         accent: {
+            type: Boolean,
+            default: false
+        },
+
+        /**
+         * Sets the background on white + alpha instead of accent
+         * Useful when you have a flat button on a accent-themed component
+         */
+        whiteBackground: {
             type: Boolean,
             default: false
         },
@@ -80,10 +100,13 @@ export default {
 
 <style scoped>
 .button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     height: 36px;
     line-height: 36px;
     padding: 0 16px;
+    min-width: 65px;
 
     background-color: transparent;
     border: 0;
@@ -98,11 +121,6 @@ export default {
     text-decoration: none;
 
     transition: background-color var(--transition-medium-out) var(--transition-easing);
-}
-
-/* Icon-only button, do not alter inline line height */
-.button > .icon {
-    transform: translateY(6px);
 }
 
 .button:active,
@@ -121,6 +139,18 @@ export default {
 
 .button:active {
     background-color: var(--primary-200);
+}
+
+.button[whiteBackground]:hover {
+    background-color: rgba(255,255,255,.12);
+}
+
+.button[whiteBackground]:focus {
+    background-color: rgba(255,255,255,.24);
+}
+
+.button[whiteBackground]:active {
+    background-color: rgba(255,255,255,.36);
 }
 
 .button[accent]:hover {
@@ -154,6 +184,7 @@ export default {
 }
 
 .button[accent][raised] {
+    color: var(--foreground-dark-300);
     background-color: var(--accent-300);
 }
 

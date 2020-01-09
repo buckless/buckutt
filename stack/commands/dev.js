@@ -3,10 +3,10 @@ const execa = require('execa');
 const chalk = require('chalk').default;
 
 const packages = {
-    admin: 'dev:calm',
-    client: 'dev:calm',
+    admin: 'dev',
+    client: 'dev:browser',
     'image-server': 'dev',
-    manager: 'dev:calm',
+    manager: 'serve',
     server: 'dev'
 };
 

@@ -15,8 +15,7 @@
     "start": "serve --single --listen tcp://0.0.0.0:8082 dist",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dev": "vue-cli-service serve",
-    "dev:calm": "cross-env NODE_ENV=development vue-cli-service calm-serve"
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "@buckless/datetime-picker": "^0.2.2",
@@ -66,10 +65,7 @@
     "postcss-url": "^8.0.0",
     "sass-loader": "^7.0.1",
     "serve": "^11.0.0",
-    "vue-cli-plugin-calm-serve": "*",
     "vue-template-compiler": "^2.6.10"
   },
-  "optionalDependencies": {
-    "cypress": "3.3.0"
-  }
+  "optionalDependencies": {}
 }

@@ -1,56 +1,6 @@
 {
   "name": "manager",
   "version": "1.0.0",
-  "scripts": {
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "start": "serve --single --listen tcp://0.0.0.0:8083 dist",
-    "dev": "vue-cli-service serve",
-    "dev:local": "cross-env DEV_PROXY=1 vue-cli-service serve",
-    "dev:calm": "cross-env NODE_ENV=development vue-cli-service calm-serve",
-    "test:e2e": "vue-cli-service test:e2e"
-  },
-  "dependencies": {
-    "@material/button": "^2.1.1",
-    "@material/checkbox": "^2.1.1",
-    "@material/elevation": "^1.1.0",
-    "@material/snackbar": "^2.1.1",
-    "config": "*",
-    "debounce": "^1.2.0",
-    "jspdf": "^1.4.1",
-    "jspdf-autotable": "^3.1.1",
-    "normalize.css": "^8.0.0",
-    "pdfmake": "^0.1.56",
-    "register-service-worker": "^1.6.2",
-    "uuid": "^3.3.2",
-    "vue": "^2.6.10",
-    "vue-i18n": "^8.11.2",
-    "vue-router": "^3.0.6",
-    "vuex": "^3.1.1",
-    "vuex-router-sync": "^5.0.0"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.7.0",
-    "@vue/cli-plugin-e2e-cypress": "^3.7.0",
-    "@vue/cli-plugin-eslint": "^3.7.0",
-    "@vue/cli-plugin-pwa": "^3.7.0",
-    "@vue/cli-service": "^3.7.0",
-    "@vue/eslint-config-prettier": "^4.0.1",
-    "cross-env": "^5.2.0",
-    "lint-staged": "^8.1.7",
-    "node-sass": "^4.12.0",
-    "postcss-color-mod-function": "^3.0.3",
-    "sass-loader": "^7.0.1",
-    "serve": "^11.0.1",
-    "vue-cli-plugin-calm-serve": "*",
-    "vue-cli-plugin-i18n": "^0.6.0",
-    "vue-template-compiler": "^2.6.10"
-  },
-  "repository": "https://lab.buckless.com/buckless/buckless.git",
-  "optionalDependencies": {
-    "cypress": "3.3.0"
-  },
-  "license": "UNLICENSED",
   "description": "manager",
   "author": "Buckless <contact@buckless.com> https://buckless.com",
   "contributors": [
@@ -58,5 +8,71 @@
     "Axel Mousset <axel@buckless.com>",
     "Lucas Soulier <lucas@buckless.com>"
   ],
-  "homepage": "https://buckless.com"
+  "repository": "https://lab.buckless.com/buckless/buckless.git",
+  "homepage": "https://buckless.com",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "serve --single --listen tcp://0.0.0.0:8083 dist",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --modern",
+    "lint": "vue-cli-service lint --config ../../.eslintrc.js",
+    "test:unit": "vue-cli-service test:unit"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "core-js": "^2.6.5",
+    "lodash.debounce": "^4.0.8",
+    "register-service-worker": "^1.6.2",
+    "uuid": "^3.3.3",
+    "validator": "^11.1.0",
+    "vue": "^2.6.10",
+    "vue-i18n": "^8.15.3",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-eslint": "^3.11.0",
+    "@vue/cli-plugin-pwa": "^3.11.0",
+    "@vue/cli-plugin-unit-jest": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "@vue/eslint-config-prettier": "5",
+    "@vue/test-utils": "1.0.0-beta.29",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "eslint": "5",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^5.0.0",
+    "prettier": "^1.18.2",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
 }

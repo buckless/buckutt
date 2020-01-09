@@ -41,12 +41,12 @@
     },
     "urls": {},
     "refund": {
-      "subject": "Demande de remboursement cashless"
+        "subject": "Demande de remboursement cashless"
     },
     "askpin": {
-        "subject": "Code PIN oublié"
+        "subject": "Mot de passe oublié"
     },
-    "assigner": {
-        "subject" : "Votre compte cashless"
+    "register": {
+        "subject": "Inscription finalisée"
     }
 }

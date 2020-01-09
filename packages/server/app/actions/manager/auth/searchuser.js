@@ -2,7 +2,7 @@ const { knex } = require('server/app/db').bookshelf;
 const { embedParser, embedFilter } = require('server/app/utils/embedParser');
 const leven = require('leven');
 
-const searchuser = async (ctx, { name, max, userRights }) => {
+module.exports = async (ctx, { name, max, userRights }) => {
     const now = new Date();
 
     const embedUsers = [
@@ -55,8 +55,4 @@ const searchuser = async (ctx, { name, max, userRights }) => {
 
             return leven(name, bName) - leven(name, aName);
         });
-};
-
-module.exports = {
-    searchuser
 };

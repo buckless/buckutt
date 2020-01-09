@@ -1,6 +1,6 @@
 const test = require('ava');
 const { factory, user, ticket, wallet, clear } = require('../utils/factory');
-const { register } = require('server/app/actions/manager/auth/register');
+const { register } = require('server/app/actions/manager/auth');
 
 test.before(t =>
     factory(
@@ -18,7 +18,8 @@ test('create a user with credentials provided', async t => {
     const user = await register(t.context.ctx, {
         firstname: 'Test',
         lastname: 'Test',
-        mail: 'test@buckless.com'
+        mail: 'test@buckless.com',
+        password: 'abcd'
     });
 
     t.is(user.firstname, 'Test');
@@ -61,6 +62,7 @@ test('create a user with credentials and card number provided', async t => {
         firstname: 'Test',
         lastname: 'Test',
         mail: 'test@buckless.com',
+        password: 'abcd',
         physicalId: 'P1'
     });
 
@@ -89,6 +91,7 @@ test('create a user with credentials and card number related to an anonymous wal
         firstname: 'Test',
         lastname: 'Test',
         mail: 'test@buckless.com',
+        password: 'abcd',
         physicalId: physical_id
     });
 
@@ -140,7 +143,10 @@ test('deny creation if the provided card already belongs to a user', async t => 
 
 test('create a user with a ticket number provided', async t => {
     const { firstname, lastname, mail, physical_id, logical_id } = t.context.ticket;
-    const user = await register(t.context.ctx, { ticketNumber: physical_id });
+    const user = await register(t.context.ctx, {
+        password: 'abcd',
+        ticketNumber: physical_id
+    });
 
     t.is(user.firstname, firstname);
     t.is(user.lastname, lastname);
@@ -169,7 +175,10 @@ test('create a user with a ticket number provided', async t => {
 
 test('create a user with an anonymous wallet related to the ticket number', async t => {
     const { physical_id, logical_id, ticket } = t.context.wallet2;
-    const user = await register(t.context.ctx, { ticketNumber: ticket.physical_id });
+    const user = await register(t.context.ctx, {
+        password: 'abcd',
+        ticketNumber: ticket.physical_id
+    });
 
     t.is(user.firstname, ticket.firstname);
     t.is(user.lastname, ticket.lastname);
@@ -196,6 +205,7 @@ test('create a user with an anonymous wallet related to the ticket number', asyn
 test('create a user with a provided anonymous wallet related to the ticket number', async t => {
     const { physical_id, logical_id, ticket } = t.context.wallet2;
     const user = await register(t.context.ctx, {
+        password: 'abcd',
         ticketNumber: ticket.physical_id,
         physicalId: physical_id
     });
@@ -242,7 +252,11 @@ test('deny creation if the provided ticket already belongs to a user', async t =
 
 test('create a user with a card and a ticket number provided', async t => {
     const { firstname, lastname, mail, physical_id, logical_id } = t.context.ticket;
-    const user = await register(t.context.ctx, { ticketNumber: physical_id, physicalId: 'P2' });
+    const user = await register(t.context.ctx, {
+        password: 'abcd',
+        ticketNumber: physical_id,
+        physicalId: 'P2'
+    });
 
     t.is(user.firstname, firstname);
     t.is(user.lastname, lastname);
@@ -274,6 +288,7 @@ test('create a user with a mail and a ticket number provided', async t => {
     const { firstname, lastname, physical_id, logical_id } = t.context.ticket;
     const user = await register(t.context.ctx, {
         mail: 'test@buckless.com',
+        password: 'abcd',
         ticketNumber: physical_id
     });
 

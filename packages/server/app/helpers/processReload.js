@@ -38,7 +38,7 @@ module.exports = async (ctx, { transaction }) => {
 
     const reloadGiftSave = reloadGiftAmount ? reloadGift.save() : Promise.resolve();
 
-    const updateWallet = creditWallet(ctx, transaction.wallet_id, amount);
+    const updateWallet = creditWallet(ctx, transaction.wallet_id, amount + reloadGiftAmount);
 
     await Promise.all([newReload.save(), updateWallet, reloadGiftSave]);
 };

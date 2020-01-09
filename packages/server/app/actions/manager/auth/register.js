@@ -6,10 +6,12 @@ const createWallet = require('server/app/helpers/createWallet');
 const assignWalletToUser = require('server/app/helpers/assignWalletToUser');
 const assignTicket = require('server/app/helpers/assignTicket');
 const APIError = require('server/app/utils/APIError');
+const mailer = require('server/app/mailer');
+const config = require('server/app/config');
 
-const register = async (
+module.exports = async (
     ctx,
-    { firstname, lastname, mail, ticketNumber, physicalId, clientTime }
+    { firstname, lastname, mail, password, ticketNumber, physicalId, clientTime }
 ) => {
     // Check if the provided ticket already belongs to a wallet
     let ticket;
@@ -72,7 +74,8 @@ const register = async (
     const userToCreate = {
         firstname: firstname || ticket.firstname,
         lastname: lastname || ticket.lastname,
-        mail: loweredMail
+        mail: loweredMail,
+        password
     };
 
     const user = await createUser(ctx, userToCreate, clientTime);
@@ -98,9 +101,24 @@ const register = async (
         user.wallet.ticket = await assignTicket(ctx, { ticket, wallet: user.wallet, clientTime });
     }
 
-    return omit(user, 'pin', 'password');
-};
+    await mailer
+        .send({
+            name: 'register',
+            data: {
+                brandname: ctx.event.name,
+                mail: user.mail,
+                link: config.urls.managerUrl
+            },
+            from: ctx.event.contactMail,
+            to: user.mail,
+            subject: `${ctx.event.name} — ${config.register.subject}`
+        })
+        .catch(err => {
+            const error = new Error('sendMail failed');
+            error.stack += `\nCaused by:\n${err.stack}`;
 
-module.exports = {
-    register
+            log.error(error);
+        });
+
+    return omit(user, 'pin', 'password', 'recoverKey');
 };

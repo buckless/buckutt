@@ -66,4 +66,21 @@ h6,
 p {
     margin: 8px 0;
 }
+
+@media (max-width: 768px) {
+    .card {
+        padding: 0 16px;
+    }
+
+    .icon {
+        font-size: 32px !important;
+        margin-right: 12px;
+    }
+
+    h6,
+    p {
+        font-size: 14px;
+        margin: 0;
+    }
+}
 </style>

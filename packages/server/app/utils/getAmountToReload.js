@@ -1,2 +1,2 @@
 module.exports = (event, fullAmount) =>
-    (fullAmount - event.fixedCostsReload) / (1 + event.variableCostsReload / 100);
+    Math.round((fullAmount - event.fixedCostsReload) / (1 + event.variableCostsReload / 100));

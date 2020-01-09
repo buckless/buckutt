@@ -11,7 +11,7 @@
                     <b-icon :name="entry.icon" :size="44"></b-icon>
                 </div>
                 <div class="b-details-list-entry-content" v-if="!edition || entry.lockEdition">
-                    <span class="b-details-list-entry-content-label">{{ entry.label }}</span>
+                    <span class="b-details-list-entry-label">{{ entry.label }}</span>
                     <span class="b-details-list-entry-content-data" v-if="entry.type === 'date'"
                         >{{ data[entry.field] | date }}
                         <b-icon name="lock" :size="14" v-if="edition"></b-icon
@@ -42,11 +42,14 @@
                     ></span>
                 </div>
                 <div class="b-details-list-entry-edit" v-else>
+                    <template v-if="entry.type === 'boolean'">
+                        <span class="b-details-list-entry-label">{{ entry.label }}</span><br />
+                    </template>
                     <b-checkbox
                         v-model="cloneData[entry.field]"
                         :key="entry.field"
                         v-if="entry.type === 'boolean'"
-                        >{{ entry.label }}</b-checkbox
+                        ></b-checkbox
                     >
                     <b-datetimeinput
                         v-model="cloneData[entry.field]"
@@ -263,13 +266,6 @@ export default {
             & > .b-details-list-entry-content {
                 display: flex;
                 flex-direction: column;
-
-                & > .b-details-list-entry-content-label {
-                    font-size: var(--typography-body-2-size);
-                    letter-spacing: var(--typography-body-2-spacing);
-                    font-weight: var(--typography-body-2-weight);
-                    color: var(--primary-500);
-                }
             }
 
             & > .b-details-list-entry-edit {
@@ -284,5 +280,12 @@ export default {
         display: flex;
         align-self: flex-end;
     }
+}
+
+.b-details-list-entry-label {
+    font-size: var(--typography-body-2-size);
+    letter-spacing: var(--typography-body-2-spacing);
+    font-weight: var(--typography-body-2-weight);
+    color: var(--primary-500);
 }
 </style>

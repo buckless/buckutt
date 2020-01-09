@@ -1,8 +1,9 @@
 <template>
-    <label>
+    <label class="container" :small="small" :label="label">
         <div class="label" v-if="label">{{ label }}</div>
         <input
             :type="type"
+            :name="name"
             :placeholder="placeholder"
             :disabled="disabled"
             :value="value"
@@ -13,7 +14,9 @@
             :max="max"
             :small="small"
             :elevation="elevation"
+            :invalid="invalid"
             :readonly="readonly"
+            :suffix="suffix"
             class="input"
             @input="onInput"
             @keydown="onKeydown"
@@ -22,6 +25,8 @@
             @focus="onFocus"
             @blur.capture="onBlur"
         />
+
+        <span class="suffix" v-if="suffix">{{ suffix }}</span>
     </label>
 </template>
 
@@ -35,6 +40,13 @@ export default {
     name: 'Input',
 
     mixins: [InputMixin],
+
+    props: {
+        suffix: {
+            type: String,
+            required: false
+        }
+    },
 
     methods: {
         onInput(e) {
@@ -101,6 +113,18 @@ export default {
 </script>
 
 <style scoped>
+.container {
+    position: relative;
+}
+
+.container[small] {
+    height: 30px;
+}
+
+.container[small][label] {
+    height: 55px;
+}
+
 .label {
     display: inline-block;
     margin-bottom: 4px;
@@ -141,7 +165,8 @@ export default {
     box-shadow: 0 0 0 3px color-mod(var(--primary-300) a(0.2));
 }
 
-.input:invalid {
+.input:invalid,
+.input[invalid] {
     border-color: var(--error-300);
     outline: 0;
     box-shadow: 0 0 0 3px color-mod(var(--error-300) a(0.2));
@@ -155,5 +180,25 @@ export default {
 .input[elevation]:focus {
     border: 1px solid var(--primary-300);
     box-shadow: 0 0 0 3px color-mod(var(--primary-300) a(0.2));
+}
+
+.input[suffix] {
+    padding-right: 40px;
+}
+
+.suffix {
+    position: absolute;
+    bottom: 20px;
+    transform: translateY(50%);
+    right: 16px;
+    display: inline-block;
+    line-height: 1;
+    height: 16px;
+
+    color: var(--foreground-dark-100);
+}
+
+.input[small] + .suffix {
+    bottom: 15px;
 }
 </style>

@@ -107,6 +107,7 @@ router.post(
         });
 
         user = sanitizeUser(user, req.wiket.point.id);
+        console.log(user);
 
         const info = infos.wallet ? `wallet ${infos.wallet}` : `mail ${infos.mail}`;
 

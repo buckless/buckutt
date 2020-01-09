@@ -5,7 +5,9 @@ const ctx = require('server/app/utils/ctx');
 const getAmountToReload = require('server/app/utils/getAmountToReload');
 const APIError = require('server/app/utils/APIError');
 
-const { getWallet, transfer, infos, accountRefund } = require('server/app/actions/manager/payment');
+const { getWallet, transfer, accountRefund } = require('server/app/actions/manager/payment');
+
+const { infos } = require('server/app/actions/manager/auth/infos');
 
 const router = require('express').Router();
 
@@ -103,9 +105,9 @@ router.post(
             );
         }
 
-        const creditorWallet = await getWallet(ctx(req), { id: req.body.creditor_id });
+        const creditorWallet = await getWallet(ctx(req), { id: req.body.creditor_id, physical_id: req.body.physical_id });
         if (!creditorWallet) {
-            throw new APIError(module, 400, 'Invalid reciever', { receiver: req.body.creditor_id });
+            return Promise.reject(new APIError(module, 400, 'Invalid reciever', { receiver: req.body.creditor_id, physical: req.body.physical_id }));
         }
 
         const amount = parseInt(req.body.amount, 10);
@@ -129,30 +131,6 @@ router.post(
     })
 );
 
-router.get(
-    '/infos',
-    asyncHandler(async (req, res) => {
-        isUser.loggedIn.orThrow(req.user);
-
-        const wallet = await getWallet(ctx(req), { id: req.query.wallet_id });
-
-        if (!wallet || req.user.id !== wallet.user_id) {
-            return Promise.reject(
-                new APIError(
-                    module,
-                    401,
-                    `This wallet doesn't belong to the logged user`,
-                    req.query.wallet
-                )
-            );
-        }
-
-        const result = await infos(ctx(req), { wallet });
-
-        res.json(result);
-    })
-);
-
 router.post(
     '/accountRefund',
     asyncHandler(async (req, res) => {
@@ -171,7 +149,8 @@ router.post(
             );
         }
 
-        const refundData = (await infos(ctx(req), { wallet })).refunds;
+        const informations = await infos(ctx(req));
+        const refundData = informations.wallets.find(w => w.id === wallet.id).refunds;
 
         if (!refundData.allowed || !refundData.cardRegistered) {
             throw new APIError(module, 403, 'Not authorized to refund');

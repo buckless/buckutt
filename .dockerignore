@@ -10,4 +10,3 @@ packages/manager/dist
 packages/manager/node_modules
 packages/masterapp
 packages/server/node_modules
-packages/vue-cli-plugin-calm-serve/node_modules

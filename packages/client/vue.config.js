@@ -41,6 +41,8 @@ module.exports = {
                 options.rootMode = 'upward';
                 return options;
             });
+
+        config.plugins.delete('progress');
     },
     configureWebpack: config => {
         if (target === 'browser' || target === 'cordova') {

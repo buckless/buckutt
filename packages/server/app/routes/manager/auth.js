@@ -4,12 +4,16 @@ const isUser = require('server/app/helpers/isUser');
 const ctx = require('server/app/utils/ctx');
 const APIError = require('server/app/utils/APIError');
 
-const { assignCard } = require('server/app/actions/manager/auth/assignCard');
-const { assignWallet } = require('server/app/actions/manager/auth/assignWallet');
-const { register } = require('server/app/actions/manager/auth/register');
-const { changePin } = require('server/app/actions/manager/auth/changePin');
-const { askpin } = require('server/app/actions/manager/auth/askpin');
-const { generatepin } = require('server/app/actions/manager/auth/generatepin');
+const {
+    assignCard,
+    assignWallet,
+    register,
+    changePassword,
+    forgot,
+    resetPassword,
+    infos,
+    style
+} = require('server/app/actions/manager/auth');
 
 const router = require('express').Router();
 
@@ -58,59 +62,79 @@ router.post(
 );
 
 router.put(
-    '/changepin',
+    '/changePassword',
     asyncHandler(async (req, res) => {
         isUser.loggedIn.orThrow(req.user);
 
-        const { currentPin, pin } = req.body;
+        const { currentPassword, password, currentPin, pin } = req.body;
 
-        log.info(`change pin for user ${req.user.id}`, req.details);
+        log.info(`change password or pin for user ${req.user.id}`, req.details);
 
-        await changePin(ctx(req), { currentPin, pin });
+        await changePassword(ctx(req), { currentPassword, password, currentPin, pin });
 
         res.json({ changed: true });
     })
 );
 
 router.get(
-    '/askpin',
+    '/forgot',
     asyncHandler(async (req, res) => {
         const mail = req.query.mail;
 
-        const user = await askpin(ctx(req), { mail });
+        const user = await forgot(ctx(req), { mail });
 
         req.details.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         req.details.mail = mail;
         req.details.user = user.id;
 
-        log.info(`ip ${req.details.ip} asked pin reset for user ${user.id}`, req.details);
+        log.info(`ip ${req.details.ip} asked password reset for user ${user.id}`, req.details);
 
         res.json({ success: true });
     })
 );
 
 router.put(
-    '/generatepin',
+    '/resetPassword',
     asyncHandler(async (req, res) => {
-        if (!req.body.pin) {
-            throw new APIError(module, 401, 'PIN is missing');
+        if (!req.body.password) {
+            throw new APIError(module, 401, 'Password is missing');
         }
 
-        if (req.body.pin.length !== 4) {
-            throw new APIError(module, 401, 'PIN has to be clear, not crypted');
+        if (req.body.password.length < 6) {
+            throw new APIError(module, 401, 'Password is too short');
         }
 
         if (!req.body.key) {
             throw new APIError(module, 401, 'Key is missing');
         }
 
-        const { pin, key } = req.body;
+        const { password, key } = req.body;
 
-        log.info(`generate pin with key ${req.body.key}`, req.details);
+        log.info(`generate password with key ${req.body.key}`, req.details);
 
-        await generatepin(ctx(req), { pin, recoverKey: key });
+        await resetPassword(ctx(req), { password, recoverKey: key });
 
         res.json({ success: true });
+    })
+);
+
+router.get(
+    '/infos',
+    asyncHandler(async (req, res) => {
+        isUser.loggedIn.orThrow(req.user);
+
+        const result = await infos(ctx(req));
+
+        res.json(result);
+    })
+);
+
+router.get(
+    '/style',
+    asyncHandler(async (req, res) => {
+        const result = await style(ctx(req));
+
+        res.json(result);
     })
 );
 

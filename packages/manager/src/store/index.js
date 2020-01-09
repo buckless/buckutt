@@ -1,34 +1,34 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import history from './modules/history';
-import notifications from './modules/notifications';
-import register from './modules/register';
-import user from './modules/user';
-import request from './modules/request';
-import reload from './modules/reload';
-import transfer from './modules/transfer';
-import pin from './modules/pin';
-import assign from './modules/assign';
-import refund from './modules/refund';
-import working from './modules/working';
-import changes from './modules/changes';
-
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+import notifications from './notifications';
+import user from './user';
+import reload from './reload';
+import refund from './refund';
+import history from './history';
+import infos from './infos';
+import register from './register';
+import ticket from './ticket';
+import transfer from './transfer';
+import wallet from './wallet';
+
+export const store = new Vuex.Store({
     modules: {
-        history,
         notifications,
-        register,
         user,
-        request,
         reload,
-        transfer,
-        pin,
-        assign,
         refund,
-        working,
-        changes
+        history,
+        infos,
+        register,
+        ticket,
+        transfer,
+        wallet
     }
 });
+
+if (process.env.NODE_ENV === 'development') {
+    window.store = store;
+}

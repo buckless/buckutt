@@ -6,8 +6,10 @@ module.exports = async (ctx, { refundData, wallet }) => {
     const refundCosts =
         (ctx.event.variableCostsRefund / 100) * refundData.refundable + ctx.event.fixedCostsRefund;
 
+    const amount = refundData.refundable - refundCosts;
+
     const refund = new ctx.models.Refund({
-        amount: refundData.refundable - refundCosts,
+        amount,
         type: 'card',
         trace: 'account-refund',
         wallet_id: wallet.id,
@@ -33,11 +35,11 @@ module.exports = async (ctx, { refundData, wallet }) => {
             name: 'refundConfirm',
             data: {
                 amount: ((refundData.refundable - refundCosts) / 100).toFixed(2),
-                brandname: config.merchantName
+                brandname: ctx.event.name
             },
-            from: config.askpin.from,
+            from: ctx.event.contactMail,
             to: ctx.user.mail,
-            subject: `${config.merchantName} — ${config.refund.subject}`
+            subject: `${ctx.event.name} — ${config.refund.subject}`
         })
         .catch(err => {
             const error = new Error('sendMail failed');
@@ -46,5 +48,8 @@ module.exports = async (ctx, { refundData, wallet }) => {
             log.error(error);
         });
 
-    return refund.toJSON();
+    return {
+        amount,
+        date: new Date()
+    };
 };

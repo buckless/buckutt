@@ -33,7 +33,8 @@ client:
 
 manager:
   script:
-    # - yarn manager test
+    - yarn manager test:unit
+    - yarn manager lint --no-fix --quiet --no-color
     - yarn manager build
 
 server:

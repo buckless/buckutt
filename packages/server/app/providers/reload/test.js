@@ -1,16 +1,19 @@
 const uuid = require('uuid');
+const randomstring = require('randomstring');
 const config = require('server/app/config');
 const processReload = require('server/app/helpers/processReload');
 const ctx = require('server/app/utils/ctx');
 
 const onlinePayment = async (ctx, data) => {
     const Transaction = ctx.models.Transaction;
+    const type = data.type || 'reload';
 
     const transaction = new Transaction({
         state: 'pending',
         amount: data.amount,
         wallet_id: data.wallet.id,
-        user_id: data.buyer.id
+        user_id: data.buyer.id,
+        isAuthorization: type === 'refund'
     });
 
     await transaction.save();
@@ -19,7 +22,7 @@ const onlinePayment = async (ctx, data) => {
 
     return {
         type: 'url',
-        res: `${config.urls.managerUrl}/reload/success`
+        res: `${config.urls.managerUrl}/${type}/success`
     };
 };
 
@@ -35,6 +38,9 @@ const fakeCallback = async (ctx, id, data) => {
 
     transaction.set('transactionId', uuid());
     transaction.set('state', 'ACCEPTED');
+    transaction.set('cardToken', randomstring.generate());
+    transaction.set('cardExpiration', '1234');
+    transaction.set('cardType', 'CB');
 
     await transaction.save();
 

@@ -51,6 +51,9 @@
         "template": "Hi !<br> You seems to have forgotten your pin. Follow <a href=\"{{=it.link}}\">this link</a> to generate a new one !",
         "managerUrl": "http://b.inst.buckless.com"
     },
+    "register": {
+      "subject": "Inscription finalisée"
+    },
     "assigner": {
         "ticketProviders": ["test"],
         "csv": {

@@ -108,4 +108,14 @@ h5 {
     background-color: var(--grey-100);
     border-top: 1px solid var(--grey-200);
 }
+
+@media (max-width: 768px) {
+    .modal {
+        max-width: calc(100vw - 20px);
+    }
+
+    .ticket {
+        margin-top: 0;
+    }
+}
 </style>

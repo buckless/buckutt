@@ -1,0 +1,169 @@
+{
+    "fr": [
+        {
+            "title": "Mon compte client",
+            "content": [
+                {
+                    "question": "L’inscription est-elle obligatoire ?",
+                    "answer": "Non. Il n’est pas obligatoire de s’inscrire pour activer ou utiliser votre puce cashless sur le site de l’événement. Il est cependant obligatoire de s’inscrire si vous souhaitez pouvoir bloquer votre support ou être remboursés de votre solde après l’événement."
+                },
+                {
+                    "question": "Quand s’inscrire ?",
+                    "answer": "Vous pouvez vous inscrire avant, pendant et après l’événement."
+                },
+                {
+                    "question": "Dois-je créer un compte par support ?",
+                    "answer": "Non, vous pouvez ajouter autant de supports que vous le désirez à votre compte."
+                },
+                {
+                    "question": "Je ne trouve pas mon mot de passe",
+                    "answer": "Assurez-vous de bien vous être inscrits avant. Vous devriez avoir reçu un mail de confirmation si cela est bien le cas."
+                },
+                {
+                    "question": "Je me suis trompé d’adresse mail, et mon support est associée à un compte auquel je ne peux pas accéder",
+                    "answer": "Contactez-nous à contact@buckless.com"
+                }
+            ]
+        },
+        {
+            "title": "Mon support",
+            "content": [
+                {
+                    "question": "Qu'est-ce qu'un support ?",
+                    "answer": "Votre support est la carte ou le bracelet cashless que vous avez reçu lors de l'événement."
+                },
+                {
+                    "question": "Où se trouve l’identifiant de mon support ?",
+                    "answer": "Il s’agit de la suite de 6 caractères situé au dos de votre carte ou de votre bracelet cashless."
+                },
+                {
+                    "question": "J’ai oublié de rentrer mon numéro de carte ou de billet à l’inscription",
+                    "answer": "Pas de panique, vous pouvez le faire à postériori, une fois connecté"
+                }
+            ]
+        },
+        {
+            "title": "Rechargement en ligne",
+            "content": [
+                {
+                    "question": "J’ai rechargé en ligne, mais mon support n’a pas été crédité",
+                    "answer": "Il peut y avoir un délai allant jusqu’à 15 minutes entre le rechargement en ligne et la disponibilité du solde sur votre carte."
+                }
+            ]
+        },
+        {
+            "title": "Remboursement en ligne",
+            "content": [
+                {
+                    "question": "Comment me faire rembourser mon solde ?",
+                    "answer": "Si l’organisateur a activé cette option, vous devez vous connecter à votre compte, enregistrer votre carte bleue puis demander le remboursement."
+                },
+                {
+                    "question": "Comment savoir que ma demande de remboursement a bien été prise en compte ?",
+                    "answer": "Un mail de confirmation vous sera envoyé, contenant le montant qui vous sera remboursé."
+                },
+                {
+                    "question": "Quand serais-je crédité sur mon compte bencaire ?",
+                    "answer": "Le remboursement apparaît généralement dans la semaine suivant la fin de la période de remboursement."
+                }
+            ]
+        },
+        {
+            "title": "Autres",
+            "content": [
+                {
+                    "question": "Mon historique personnel ne correspond pas à ma consommation réelle",
+                    "answer": "Nous ne sommes pas responsable des encaissements réalisés sur place, veuillez contacter directement l'organisateur de l'événement."
+                },
+                {
+                    "question": "Je n'ai pas trouvé la réponse à ma question",
+                    "answer": "Contactez-nous à contact@buckless.com"
+                }
+            ]
+        }
+    ],
+
+    "en": [
+        {
+            "title": "My customer account",
+            "content": [
+                {
+                    "question": "Is the registration mandatory ?",
+                    "answer": "No. It isn't mandatory to be registered to activate or use your cashless chip on the event site. However, you must be registered if you want to be able to lock your support or be refunded of your remaining balance after the event."
+                },
+                {
+                    "question": "When to register ?",
+                    "answer": "You can register before, during and after the event."
+                },
+                {
+                    "question": "Do I have to create an account per support ?",
+                    "answer": "No, you can add as many supports as you want to your account."
+                },
+                {
+                    "question": "I can't find my password.",
+                    "answer": "Be sure to have completed the full registration process. You should have received a confirmation mail if it is the case."
+                },
+                {
+                    "question": "I have entered the wrong email address, and my support is now linked to an account that I cannot access.",
+                    "answer": "Contact us at contact@buckless.com"
+                }
+            ]
+        },
+        {
+            "title": "My support",
+            "content": [
+                {
+                    "question": "What is a support ?",
+                    "answer": "Your support is the cashless card or wristband you received at the event."
+                },
+                {
+                    "question": "Where can I find my support identifier ?",
+                    "answer": "It is the 6 characters string written on the back of your cashless card or wristband."
+                },
+                {
+                    "question": "I forgot to enter my support or my ticket number at registering",
+                    "answer": "No worries, you still can do it when you're logged in."
+                }
+            ]
+        },
+        {
+            "title": "Online reload",
+            "content": [
+                {
+                    "question": "I reloaded online, but my support hasn't been credited",
+                    "answer": "There may be a delay up to 15 minutes between the online reload and the credit availability."
+                }
+            ]
+        },
+        {
+            "title": "Online refund",
+            "content": [
+                {
+                    "question": "How can I be refunded of my remaining balance ?",
+                    "answer": "If the option has been activated by the organizer, you have to log into your account, register your bank card and then request a refund."
+                },
+                {
+                    "question": "How can I know that my request has been taken in account ?",
+                    "answer": "A confirmation mail will be sent, including the amount to be refunded."
+                },
+                {
+                    "question": "When my bank account will be credited ?",
+                    "answer": "The refund usually appears within a week of the refunds period end."
+                }
+            ]
+        },
+        {
+            "title": "Others",
+            "content": [
+                {
+                    "question": "My personal history doesn't fit my real consumption.",
+                    "answer": "We're not in charge of payments made on site, please contact directly the event organizer."
+                },
+                {
+                    "question": "I cannot find an answer to my question",
+                    "answer": "Contact us at contact@buckless.com"
+                }
+            ]
+        }
+    ]
+}

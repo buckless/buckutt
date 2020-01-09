@@ -6,7 +6,7 @@ const assignTicket = require('server/app/helpers/assignTicket');
 const APIError = require('server/app/utils/APIError');
 
 // Used to assign a user-linked wallet to a card or a ticket, or both
-const assignWallet = async (ctx, { physicalId, logicalId, ticketNumber, walletId, clientTime }) => {
+module.exports = async (ctx, { physicalId, logicalId, ticketNumber, walletId, clientTime }) => {
     if (!walletId) {
         return Promise.reject(new APIError(module, 400, 'The wallet id is missing'));
     }
@@ -95,8 +95,4 @@ const assignWallet = async (ctx, { physicalId, logicalId, ticketNumber, walletId
     }
 
     return wallet;
-};
-
-module.exports = {
-    assignWallet
 };

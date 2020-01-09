@@ -1,201 +1,343 @@
 {
-    "tabs": {
-        "reload": "Charger",
-        "history": "Historique",
-        "transfer": "Virement",
-        "other": "Autre"
-    },
-    "login": {
-        "title": "Interface cashless",
-        "info": "Saisissez votre e-mail ainsi que votre code PIN pour accéder à l'interface cashless.",
-        "mail": "Mail",
-        "pin": "Code PIN",
-        "forgot": "Oublié ?",
+    "common": {
+        "language": "Français",
+        "close": "Fermer",
+        "send": "Envoyer",
         "login": "Connexion",
-        "noaccount": "Pas encore de compte cashless ?",
-        "register": "Inscription"
+        "register": "Inscription",
+        "back": "Retour",
+        "next": "Suivant",
+        "save": "Sauvegarder",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "validate": "Valider"
     },
-    "forgot": {
-        "title": "Code PIN oublié",
-        "info": "Saisissez votre e-mail ci-dessous. Vous receverez par e-mail un lien vous permettant de changer votre mot de passe.",
-        "mail": "E-mail",
-        "step2title": "Réinitialisation du code PIN",
-        "step2info": "Le nouveau code PIN doit exclusivement être composé de 4 chiffres.",
-        "wrongmail": "Cette adresse mail est inconnue",
-        "sent": "Lien envoyé",
-        "fail": "Impossible de changer le code PIN"
+
+    "errors": {
+        "default": "Une erreur est survenue. Veuillez contacter le support",
+        "wrongCredentials": "Identifiants incorrects",
+        "couldntTicket": "Ce billet n'existe pas",
+        "couldntSupport": "Ce support n'existe pas",
+        "cardAlready": "Ce support appartient déjà à un autre compte",
+        "ticketAlready": "Ce billet appartient déjà à un autre compte",
+        "duplicate": "Ce support est déjà associé à votre compte",
+        "mailTaken": "Cette adresse e-mail est déjà utilisée",
+        "mailFormat": "Le format de l'adresse e-mail est invalide",
+        "rights": "Droits insuffisants",
+        "notEnoughCredit": "Votre crédit est insuffisant pour transférer cette somme",
+        "tooMuchCredit": "Le receveur a un crédit déjà trop important pour recevoir cette somme",
+        "wrongPassword": "Le mot de passe actuel est faux",
+        "wrongPin": "Le code PIN actuel est faux",
+        "lessThan": "Le rechargement minimal est de {0}",
+        "maxExceeded": "Le solde maximal est de {0}"
     },
-    "register": {
-        "title": "Inscription",
-        "chooser": {
-            "ticketinfo": "Si vous possédez un billet pour le festival, cochez cette case. Si vous ne possédez pas de billet et souhaitez utiliser le cashless à l'évènement, ne cochez pas cette case.",
-            "ticketbox": "J'ai déjà un billet",
-            "cardinfo": "Si vous avez déjà votre support cashless, cochez cette case. Vous trouverez l'identifiant à rentrer au verso de votre support.",
-            "cardbox": "J'ai déjà un support cashless (carte, bracelet, ...)"
+
+    "store": {
+        "refund": {
+            "requestSuccess": "Votre demande de remboursement a bien été prise en compte."
         },
-        "form": {
+
+        "ticket": {
+            "linkSuccess": "Votre billet a bien été lié à ce support."
+        },
+
+        "transfer": {
+            "transferSuccess": "Virement effectué"
+        },
+
+        "user": {
+            "forgotSuccess": "Un mail de ré-initialisation de votre mot de passe vous a été envoyé",
+            "resetSuccess": "Votre mot de passe a bien été modifié.",
+            "pinAndPasswordSuccess": "Votre mot de passe et votre code PIN ont bien été modifiés.",
+            "pinSuccess": "Votre code PIN a bien été modifié",
+            "passwordSuccess": "Votre mot de passe a bien été modifié."
+        },
+
+        "wallet": {
+            "lockSuccess": "Votre support a bien été bloqué.",
+            "linkSuccess": "Le support a bien été lié à votre compte."
+        }
+    },
+
+    "components": {
+        "chooser": {
+            "support": "Support",
+            "empty": "Aucun support associé",
+            "add": "Associer un support"
+        },
+
+        "menu": {
+            "menu": "Menu",
+            "home": "Accueil",
+            "support": "Support",
+            "ticket": "Billet",
+            "account": "Compte",
+            "help": "Aide"
+        }
+    },
+
+    "layouts": {
+        "dashboard": {
+            "logout": "Déconnexion",
+            "legal": "Mentions légales",
+            "menu": "Menu"
+        },
+
+        "login": {
+            "title": "Interface cashless",
+            "legal": "Mentions légales"
+        }
+    },
+
+    "views": {
+        "faq": {
+            "title": "Foire aux questions"
+        },
+
+        "forgot": {
+            "title": "Mot de passe oublié",
+            "mail": "Adresse mail",
+            "reset": {
+                "title": "Nouveau mot de passe",
+                "password": "Nouveau mot de passe",
+                "confirmation": "Confirmation du mot de passe"
+            }
+        },
+
+        "home": {
+            "hero": {
+                "title": "Bonjour {0}, votre solde est de {1}",
+                "pending": "Solde en attente de synchronisation sur votre support :",
+                "hello": "Bonjour {0},",
+                "balance": "Votre solde est de",
+                "pendingMobile": "En synchronisation :",
+                "refund": {
+                    "title": "Demande de remboursement :",
+                    "already": "Vous avez effectué votre demande de {0} le {1}.",
+                    "week": "Vous serez recrédité sur votre compte bancaire environ 1 semaine après la fin de la période de remboursement.",
+                    "tooLow": "Vous ne pouvez vous faire rembourser qu'un crédit supérieur à {0}.",
+                    "register": "Enregistrer une carte bancaire",
+                    "description": "Vous devez enregistrer votre carte bleue afin de nous permettre d'effectuer votre remboursement.",
+                    "secure": "En cliquant sur le bouton ci-dessus, vous serez redirigés vers un site sécurisé.",
+                    "ask": "Demander mon remboursement",
+                    "another": "Enregistrer une autre carte",
+                    "lastCard": "Le remboursement sera effectué sur la dernière carte utilisée sur cet espace.",
+                    "costs": "Des frais bancaires de {0} seront retenus sur le montant remboursé.",
+                    "and": "et"
+                },
+                "reload": {
+                    "title": "Rechargement :",
+                    "other": "Autre montant",
+                    "gift": "Tous les {0}, recevez {1} {2}.",
+                    "additionalSingle": "supplémentaire",
+                    "additionalPlural": "supplémentaires",
+                    "costs": "Des frais bancaires de {0} seront ajoutés au montant total rechargé.",
+                    "and": "et"
+                },
+                "deactivated": "Il n'est pas possible de recharger ni de se faire rembourser pour le moment."
+            },
+
+            "tips": {
+                "reload": {
+                    "title": "Créditez votre support",
+                    "subtitle": "Rechargez votre support en amont ou pendant l'évènement"
+                },
+                "refund": {
+                    "title": "Demandez un remboursement",
+                    "future": "Les demandes seront ouvertes du {0} au {1}",
+                    "now": "Vous pouvez effectuer votre demande jusqu'au {0}",
+                    "past": "Les demandes étaient possibles du {0} au {1}"
+                }
+            },
+
+            "history": {
+                "title": "Historique des transactions",
+                "cancellation": "Annulation",
+                "refund": "Remboursement",
+                "promotion": "Achat",
+                "purchase": "Achat",
+                "reload": "Rechargement",
+                "transfer": "Virement",
+                "withdrawal": "Catering",
+                "other": "Autre",
+                "date": "Date",
+                "wiket": "Guichet",
+                "content": "Contenu"
+            }
+        },
+
+        "language": {
+            "title": "Changement de langue",
+            "fr": "Français",
+            "en": "English"
+        },
+
+        "login": {
+            "title": "Connexion",
+            "mail": "Adresse mail",
+            "password": "Mot de passe",
+            "forgot": "Mot de passe oublié"
+        },
+
+        "refund": {
+            "failed": {
+                "title": "Enregistrement échoué",
+                "message": "L'enregistrement de votre carte a échoué, veuillez ré-essayer.",
+                "problem": "Si le problème persiste, veuillez contacter {0}.",
+                "bank": "votre banque"
+            },
+
+            "success": {
+                "title": "Enregistrement accepté",
+                "message": "Votre carte a bien été enregistrée.",
+                "can": "Vous pouvez maintenant {0}.",
+                "request": "demander votre remboursement"
+            }
+        },
+
+        "register": {
+            "title": "Inscription",
+            "mail": "Adresse mail",
             "firstname": "Prénom",
             "lastname": "Nom",
-            "mail": "Mail",
-            "identifier": "Identifiant du support",
-            "ticket": "Numéro du billet",
-            "useticket": "Utiliser le mail lié au billet",
-            "usemail": "Utiliser un autre mail que celui du billet",
-            "conditions": "J'accepte les <a href='https://buckless.com/static/cgu.pdf' rel='noopener noref nofollow'>conditions générales de vente</a>.",
-            "signin": "Inscription"
-        },
-        "status": {
-            "success": "Votre inscription est validée. Vérifiez votre boîte mail, vous devriez avoir reçu votre code PIN. Vous pourrez le changer une fois connecté.",
-            "fail": "Échec de l'inscription. Vérifiez vos informations et réessayez, ou contactez un organisateur."
-        },
-        "invalid": {
-            "ticket": "Billet invalide",
-            "firstname": "Prénom invalide",
-            "lastname": "Nom invalide",
-            "mail": "Mail invalide",
-            "conditions": "Vous devez accepter les conditions générales."
-        }
-    },
-    "dashboard": {
-        "reload": {
-            "title": "Mon solde",
-            "pending": "en attente",
-            "infopending": "Les opérations peuvent prendre plusieurs minutes avant d'être synchronisée sur cet espace cashless. Les transactions en ligne seront marquées « en attente » jusqu'à une opération réalisée sur place.",
-            "reload": "Rechargement",
-            "custom": "Montant personnalisé",
-            "security": "Vous serez redirigé vers un site bancaire <strong>sécurisé</strong>.<br /> Les opérations en ligne ne sont validées qu'à la suite d'une transaction sur site.",
-            "bankcost1": "Des frais bancaires d'une valeur de {fixed} seront appliqués.",
-            "bankcost2": "Des frais bancaires d'une valeur de {variable} du montant de la transaction seront appliqués.",
-            "bankcost3": "Des frais bancaires d'une valeur de {fixed} + {variable} du montant de la transaction seront appliqués.",
-            "status": {
-                "title": "Rechargement",
-                "success": "Le paiement <strong>a bien été pris en compte</strong>. Il sera effectif d'ici quelques instants.",
-                "waiting": "Votre rechargement est en cours de traitement. S'il est accepté par votre banque, il sera effectif dans quelques instants.",
-                "fail": "Le paiement <strong>n'a pas été pris en compte</strong>. Contactez votre banque si vous ne pensez pas que cela correspond à un fonctionnement normal."
-            }
-        },
-        "account": {
-            "title": "Mes portes-monnaies",
-            "support": "Support",
-            "ticket": "Ticket",
-            "virtual": "Porte-monnaie virtuel",
-            "create": "Créer un nouveau porte-monnaie",
-            "createinfo": "Ajouter un nouveau porte-monnaie à votre espace cashless",
-            "changepin": "Changement de code PIN",
-            "changepininfo": "Changez votre code de connexion à votre espace cashless",
-            "logout": "Déconnexion"
-        },
-        "assign": {
-            "info": "Pour créer un nouveau porte-monnaie cashless à partir de votre support, saisissez ici l'identifiant présent au dos de celui-ci.",
-            "number": "Numéro de support",
-            "confirmticket": "Le billet a bien été lié à votre compte",
-            "confirmsupport": "Le support a bien été lié à votre porte-monnaie",
-            "confirmcreate": "Le porte-monnaie a bien été créé",
-            "lock": "Ce support est actuellement bloqué à votre demande. Adressez-vous à un organisateur pour le débloquer.",
-            "linkinfo": "Pour lier un nouveau support à ce porte-monnaie cashless, saisissez ici l'identifiant présent au dos de celui-ci."
-        },
-        "pin": {
-            "current": "Code PIN actuel",
-            "new": "Nouveau code PIN",
-            "confirm": "Confirmation",
-            "same": "Les deux codes PIN ne sont pas identiques",
-            "notnew": "L'ancien et le nouveau code PIN rentrés sont identiques",
-            "oldwrong": "L'ancien code PIN est faux",
-            "success": "Le code PIN a bien été changé"
-        },
-        "menu": {
-            "transfer": "Virement",
-            "transferinfo": "Effectuez un transfert vers un autre porte-monnaie",
-            "lock": "Bloquer mon support cashless",
-            "lockinfo": "Votre porte-monnaie cashless est associé avec la carte numéro",
-            "link": "Lier mon support cashless",
-            "linkinfo": "Synchronisez votre support avec votre porte-monnaie",
-            "ticket": "Mon billet",
-            "ticketinfo": "Ce porte-monnaie est associé avec le billet numéro",
-            "ticketlink": "Liez votre billet d'évènement à ce porte-monnaie cashless",
-            "qr": "Mon QR code",
-            "qrinfo": "Une fois sur place, vous pourrez utiliser ce QR Code ou votre billet pour récupérer votre support cashless.",
-            "refund": "Remboursement de solde",
-            "refundinfo": "Faites vous rembourser le solde restant de ce porte-monnaie"
-        },
-        "transfer": {
-            "info": "Recherchez le destinataire avec le champ puis cliquez sur son nom. La bulle colorée indique le compte receveur. Attention, vous ne pouvez virer de l'argent qu'à une personne ayant créé un compte.",
-            "recipient": "Destinataire",
-            "4min": "Entrez 4 caractères minimum",
-            "noresult": "Aucun résultat.",
-            "amount": "Montant (€)",
-            "confirmtext": "En cliquant sur « Envoyer », je confirme envoyer {amount} à {name}."
-        },
-        "history": {
-            "invoice": "Imprimer un reçu",
-            "date": "Date",
-            "location": "Point",
-            "object": "Objet",
-            "amount": "Valeur",
-            "type": "Type",
-            "operator": "Opérateur"
-        },
-        "lock": {
-            "question": "Souhaitez-vous bloquer le support ? Cette action est irreversible.",
-            "button": "Oui, bloquer mon support",
-            "info": "Ce porte-monnaie est associé avec le support bloqué suivant:",
-            "question": "Êtes-vous sûr de vouloir bloquer votre support ?",
-            "confirmlock": "Le support a bien été bloqué"
-        },
-        "invoice": {
-            "title": "Création d'un reçu",
-            "name": "Société",
-            "vat": "N° de TVA intracommunautaire",
-            "address": "Adresse",
-            "zip": "Code postal",
-            "city": "Ville",
-            "country": "Pays"
-        },
-        "ticket": {
-            "info": "Pour lier votre billet d'entrée à ce porte-monnaie cashless, saisissez ici votre numéro de billet.",
-            "number": "Numéro de billet"
-        },
-        "refund": {
-            "info": "Si l'organisateur a activé cette option, vous pouvez être remboursé de votre solde restant.",
-            "amount": "Vous pouvez demander le remboursement de {amount} jusqu'au {end}.",
-            "bankfee": "Des frais bancaires d'une valeur de {amount} seront retenus, {refunded} seront virés sur votre compte.",
-            "cardinfo": "Le remboursement sera effectué par défaut <strong>sur la dernière carte que vous avez utiliser pour créditer votre compte</strong>.",
-            "new": "Pour enregistrer une autre carte, cliquez",
-            "here": "ici",
-            "refund": "Remboursement",
-            "newcard": "Enregistrer une carte",
-            "status": {
-                "title": "Enregistrement de carte",
-                "success": "La carte a bien été enregistrée. Vous pouvez maintenant demander votre remboursement.",
-                "fail": "La carte n'a pas pu être enregistrée. Veuillez contacter votre banque pour plus d'informations.",
-                "backrefund": "Retour au remboursement"
+            "password": "Mot de passe",
+            "start": "Commencer",
+            "terms": "En cliquant sur Commencer, vous acceptez nos {0} ainsi que notre {1}.",
+            "tos": "conditions générales d'utilisation",
+            "confidentiality": "politique de confidentialité",
+            "card": {
+                "having": "J'ai déjà un support cashless (carte, bracelet, ...)",
+                "number": "Numéro du support"
             },
-            "errors": {
-                "deactivated": "Le remboursement n'a pas été activé par l'organisateur",
-                "minimum": "Le remboursement minimum est de {value}",
-                "start": "Les remboursements seront ouverts du {value} au {value2}",
-                "end": "Les remboursements sont fermés depuis le {value}",
-                "already": "Vous avez déjà fait votre demande de remboursement au {value}"
+            "ticket": {
+                "having": "J'ai déjà un billet d'entrée",
+                "number": "Numéro de billet"
+            },
+            "success": {
+                "valid": "Votre inscription est validée.",
+                "mail": "Vous allez bientôt recevoir un mail de confirmation."
+            }
+        },
+
+        "reload": {
+            "failed": {
+                "title": "Paiement échoué",
+                "message": "Votre paiement a échoué, veuillez ré-essayer.",
+                "problem": "Si le problème persiste, veuillez contacter {0}.",
+                "bank": "votre banque"
+            },
+
+            "success": {
+                "title": "Paiement accepté",
+                "message": "Votre paiement a bien été pris en compte.",
+                "accept": "S'il est accepté par votre banque, vous recevrez bientôt un {0}.",
+                "mail": "mail de confirmation",
+                "delay": "Votre crédit sera disponible sur l'événement dans les 15 minutes, sous réserve de réseau suffisant."
+            }
+        },
+
+        "ticket": {
+            "hero": {
+                "title": "Votre billet",
+                "link": "Lier un billet"
+            },
+
+            "tips": {
+                "preload": {
+                    "title": "Préchargez votre support en ligne",
+                    "subtitle": "Vous n'aurez plus qu'à présenter votre ticket ou votre QR Code pour récupérer votre support pré-chargé"
+                },
+                "fullscreen": {
+                    "title": "Mode plein écran",
+                    "subtitle": "Cliquez sur le QRCode pour l'afficher en plein écran"
+                },
+                "link": {
+                    "title": "Liez votre ticket",
+                    "subtitle": "Liez votre ticket pour récupérer le préchargement lié à celui-ci"
+                }
+            },
+
+            "qrcode": {
+                "title": "QR Code de récupération du préchargement"
+            },
+
+            "link": {
+                "title": "Lier mon billet",
+                "number": "Numéro de billet",
+                "alreadyLinked": "Le billet {0} est déjà associé à ce support.",
+                "link": "Lier"
+            }
+        },
+
+        "user": {
+            "hero": {
+                "title": "Mon compte"
+            },
+
+            "tips": {
+                "protect": {
+                    "title": "Protect your password",
+                    "subtitle": "Never give your password to anybody"
+                }
+            },
+
+            "profile": {
+                "title": "Profil",
+                "changePassword": "Changement de mot de passe",
+                "dontChange": "Ne pas changer",
+                "oldPassword": "Ancien mot de passe",
+                "password": "Nouveau mot de passe",
+                "confirmationPassword": "Confirmation du mot de passe",
+                "changePin": "Changement du code PIN opérateur",
+                "oldPin": "Ancien code PIN",
+                "pin": "Nouveau code PIN",
+                "confirmationPin": "Confirmation du code PIN"
+            }
+        },
+
+        "wallet": {
+            "hero": {
+                "title": "Mon support",
+                "pending": "Solde en attente de synchronisation sur votre support :",
+                "pendingMobile": "En attente de synchronisation :"
+            },
+
+            "tips": {
+                "lock": {
+                    "title": "Bloquez votre support",
+                    "subtitle": "En cas de perte, vol, ou si vous quittez définitivement l'événement"
+                },
+                "sync": {
+                    "title": "Solde en attente de synchronisation",
+                    "subtitle": "Il sera synchronisé au support à votre prochaine transaction à l'événément"
+                }
+            },
+
+            "transfer": {
+                "title": "Virement",
+                "receiver": "Destinataire",
+                "amount": "Montant",
+                "physicals": "Identifiants de puce",
+                "users": "Utilisateurs",
+                "process": "Effectuer le virement"
+            },
+
+            "lock": {
+                "title": "Blocage",
+                "description": "Le blocage d'un support empêche quiconque d'utiliser celui-ci jusqu'à la fin de l'événement.",
+                "warning": "Cette action est irréversible.",
+                "lock": "Bloquer ce support",
+                "locked": "Ce support est bloqué.",
+                "modalTitle": "Bloquer mon support",
+                "confirmation": "Êtes-vous sûr de vouloir bloquer le support {0} ?",
+                "already": "Le support {0} a déjà été bloqué."
+            },
+
+            "link": {
+                "title": "Lier mon support",
+                "identifier": "Identifiant écrit sur le support",
+                "link": "Lier"
             }
         }
-    },
-    "components": {
-        "table": {
-            "selector": "Afficher {selector} entrées",
-            "pages": "Affichage de {number} éléments sur {total}",
-            "noresult": "Aucune donnée à afficher",
-            "reload": "Recharger mon portefeuille"
-        }
-    },
-    "ui": {
-        "confirm": "Valider",
-        "back": "Retour",
-        "modify": "Modifier",
-        "send": "Envoyer",
-        "previous": "Précédent",
-        "next": "Suivant",
-        "page": "Page",
-        "download": "Télécharger",
-        "backhome": "Retour à l'accueil"
     }
 }

@@ -13,23 +13,23 @@ import Protip from '../base/Protip.vue';
 
 import {
     default as config,
-    hooks,
-    coupons,
     event,
     events,
-    advanced,
     dates,
     periods,
     groups,
     fundations,
+    payments,
+    limits,
+    meansOfPayment,
+    giftReloads,
+    manager,
+    managerConfig,
     reloads,
     refunds,
-    eventsReload,
-    costsReload,
-    giftReloads,
-    eventsRefund,
-    costsRefund,
-    meansOfPayment
+    advanced,
+    hooks,
+    coupons
 } from './config.js';
 
 export default [
@@ -39,12 +39,11 @@ export default [
         children: [
             { path: '', props: config, component: Protip },
             {
-                path: 'reloads',
-                props: reloads,
+                path: 'payments',
+                props: payments,
                 component: Show,
                 children: [
-                    { path: '', props: eventsReload, component: Details },
-                    { path: 'costs', props: costsReload, component: Details },
+                    { path: '', props: limits, component: Details },
                     {
                         path: 'meansofpayment',
                         component: Bank,
@@ -66,12 +65,13 @@ export default [
                 ]
             },
             {
-                path: 'refunds',
-                props: refunds,
+                path: 'manager',
+                props: manager,
                 component: Show,
                 children: [
-                    { path: '', props: eventsRefund, component: Details },
-                    { path: 'costs', props: costsRefund, component: Details }
+                    { path: '', props: managerConfig, component: Details },
+                    { path: 'reloads', props: reloads, component: Details },
+                    { path: 'refunds', props: refunds, component: Details }
                 ]
             },
             {

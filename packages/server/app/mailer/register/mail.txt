@@ -1,0 +1,22 @@
+Bonjour,
+
+Votre inscription à votre espace cashless {{=it.brandname}} a bien été prise en compte.
+
+Votre identifiant est {{=it.mail}} et votre mot de passe est celui que vous avez renseigné à l'inscription.
+
+Pour vous connecter, rendez-vous sur {{=it.link}}.
+
+---
+
+Hello,
+
+Your registration to {{=it.brandname}} cashless is now finalized.
+
+Your identifier is {{=it.mail}} and your password is the one chosen at registration.
+
+To login, go to {{=it.link}}.
+
+{{=it.brandname}} — Cashless.
+
+Buckless — Studio Async © 2018-2019
+
