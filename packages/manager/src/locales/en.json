@@ -90,6 +90,10 @@
     },
 
     "views": {
+        "app": {
+            "deactivated": "This website has been deactivated."
+        },
+
         "faq": {
             "title": "Frequently asked questions"
         },
@@ -239,7 +243,8 @@
         "ticket": {
             "hero": {
                 "title": "Your ticket",
-                "link": "Link a ticket"
+                "link": "Link a ticket",
+                "deactivated": "You're not allowed to link a ticket on this cashless manager."
             },
 
             "tips": {

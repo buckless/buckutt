@@ -90,6 +90,10 @@
     },
 
     "views": {
+        "app": {
+            "deactivated": "Ce site web a été désactivé."
+        },
+
         "faq": {
             "title": "Foire aux questions"
         },
@@ -239,7 +243,8 @@
         "ticket": {
             "hero": {
                 "title": "Votre billet",
-                "link": "Lier un billet"
+                "link": "Lier un billet",
+                "deactivated": "Il n'est pas possible de lier un billet sur cet espace cashless."
             },
 
             "tips": {

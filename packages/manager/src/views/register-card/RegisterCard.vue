@@ -19,7 +19,7 @@
 
             <div class="actions">
                 <Button to="/register" type="button">{{ $t('common.back') }}</Button>
-                <Button type="submit" raised>{{ $t('common.next') }}</Button>
+                <Button type="submit" raised :disabled="isFetching">{{ $t('common.next') }}</Button>
             </div>
         </form>
     </LoginLayout>
@@ -51,7 +51,9 @@ export default {
 
     computed: {
         ...mapGetters({
-            initialUserInfos: 'register/getRegisterFormData'
+            initialUserInfos: 'register/getRegisterFormData',
+            isFetching: 'register/getIsFetching',
+            registerStep: 'register/getRegisterState'
         })
     },
 
@@ -67,7 +69,9 @@ export default {
                 physicalId: havingCard && physicalId.length ? physicalId : null
             });
 
-            this.$router.push('/register/ticket');
+            if (this.registerStep !== 'failure') {
+                this.$router.push(`/register/${this.registerStep}`);
+            }
         }
     },
 

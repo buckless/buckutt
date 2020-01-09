@@ -3,14 +3,14 @@ const { pick } = require('lodash');
 module.exports = async ctx => {
     const date = new Date();
 
-    const start = ctx.event.accountRefundStart;
-    const end = ctx.event.accountRefundEnd;
-
     let wallets = await ctx.models.Wallet.where('user_id', ctx.user.id)
         .fetchAll({
             withRelated: ['ticket']
         })
         .then(ws => (ws ? ws.map(w => w.toJSON()) : null));
+
+    const start = ctx.event.accountRefundStart;
+    const end = ctx.event.accountRefundEnd;
 
     const reloads = {
         start: ctx.event.accountReloadStart,

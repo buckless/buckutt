@@ -1,10 +1,11 @@
 <template>
     <Loader v-if="loading" @loaded="handleLoaded" />
-    <div class="b-app" v-else>
+    <div class="b-app" v-else-if="event.activateManager">
         <router-view />
         <Notifications />
         <ChangeLanguage v-if="languageModalOpened" />
     </div>
+    <div v-else>{{ $t('views.app.deactivated') }}</div>
 </template>
 
 <script>
@@ -34,7 +35,8 @@ export default {
     },
 
     computed: mapGetters({
-        languageModalOpened: 'user/getLanguageModalOpened'
+        languageModalOpened: 'user/getLanguageModalOpened',
+        event: 'infos/getEvent'
     })
 };
 </script>

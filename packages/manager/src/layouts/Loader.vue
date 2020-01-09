@@ -7,16 +7,24 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 import { api } from '../api';
 
 export default {
+    methods: mapMutations({
+        setEvent: 'infos/SET_EVENT'
+    }),
+
     async mounted() {
         try {
-            const { data } = await api.get('auth/style');
+            const { data } = await api.get('auth/event');
+            const { style, event } = data;
 
-            for (const [themeVar, value] of Object.entries(data)) {
+            for (const [themeVar, value] of Object.entries(style)) {
                 document.documentElement.style.setProperty(`--${themeVar}`, value);
             }
+
+            await this.setEvent(event);
         } catch (err) {
             // eslint-disable-next-line no-console
             console.log(err);

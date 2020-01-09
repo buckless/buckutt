@@ -7,5 +7,5 @@ module.exports = {
     register: require('./register'),
     resetPassword: require('./resetPassword'),
     searchuser: require('./searchuser'),
-    style: require('./style')
+    event: require('./event')
 };

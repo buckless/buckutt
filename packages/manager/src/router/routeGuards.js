@@ -9,3 +9,7 @@ export const isUserAllowedToSeeRegisterStep = step =>
     (getRegisterState(store.state.register) === 'ticket' && step === 'card') ||
     // allow user to see his current step
     getRegisterState(store.state.register) === step;
+
+export const isUserAllowedToRegister = () => store.state.infos.event.allowRegistration;
+
+export const isUserAllowedToLinkTicket = () => store.state.infos.event.allowTicketLinking;

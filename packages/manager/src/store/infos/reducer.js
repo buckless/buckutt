@@ -4,7 +4,8 @@ export const initialState = {
     giftReloads: [],
     paymentCosts: [],
     meansOfPayment: {},
-    reloadAllowed: false
+    reloadAllowed: false,
+    event: {}
 };
 
 export const reducer = {
@@ -30,5 +31,9 @@ export const reducer = {
 
     SET_RELOAD_ALLOWED(state, reloadAllowed) {
         state.reloadAllowed = reloadAllowed;
+    },
+
+    SET_EVENT(state, event) {
+        state.event = event;
     }
 };

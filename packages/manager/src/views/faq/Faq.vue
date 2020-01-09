@@ -2,7 +2,7 @@
     <div class="faq">
         <Menu :isOpened="isMenuOpened" @close="toggleMenu" v-if="isDashboard" />
         <Button class="menu-button" @click="toggleMenu" v-if="isDashboard">Menu</Button>
-        <Button class="back-button" to="/login" v-else><Icon name="close" :size="32" /></Button>
+        <Button class="back-button" to="/login" v-else><Icon name="close" :size="32"/></Button>
 
         <div class="faq-content">
             <div class="title">
@@ -115,7 +115,8 @@ export default {
     display: none;
 }
 
-.back-button, .menu-button {
+.back-button,
+.menu-button {
     position: absolute;
     top: 12px;
     right: 12px;

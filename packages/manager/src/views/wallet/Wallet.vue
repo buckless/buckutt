@@ -131,7 +131,8 @@ export default {
 
         ...mapGetters({
             activeWallet: 'wallet/getActiveWallet',
-            userWallets: 'transfer/getUserWallets'
+            userWallets: 'transfer/getUserWallets',
+            event: 'infos/getEvent'
         })
     },
 

@@ -21,7 +21,12 @@ import Ticket from '../views/ticket/Ticket';
 import User from '../views/user/User';
 import Wallet from '../views/wallet/Wallet';
 
-import { isUserLoggedIn, isUserAllowedToSeeRegisterStep } from './routeGuards';
+import {
+    isUserLoggedIn,
+    isUserAllowedToSeeRegisterStep,
+    isUserAllowedToRegister,
+    isUserAllowedToLinkTicket
+} from './routeGuards';
 import { saveRouteBeforeAuth } from '../storage';
 
 Vue.use(Router);
@@ -40,7 +45,9 @@ const routes = [
                 path: 'ticket',
                 component: Ticket,
                 meta: { auth: true },
-                children: [{ path: 'link', component: LinkTicket, meta: { auth: true } }]
+                children: [
+                    { path: 'link', component: LinkTicket, meta: { auth: true, ticket: true } }
+                ]
             },
             { path: 'user', component: User, meta: { auth: true } },
             {
@@ -72,21 +79,21 @@ const routes = [
     { path: '/faq', component: Faq, meta: { guest: true }, props: { isDashboard: false } },
     { path: '/forgot', component: Forgot, meta: { guest: true } },
     { path: '/forgot/:key', component: Reset, meta: { guest: true } },
-    { path: '/register', component: Register, meta: { guest: true } },
+    { path: '/register', component: Register, meta: { guest: true, register: true } },
     {
         path: '/register/card',
         component: RegisterCard,
-        meta: { guest: true, registerStep: 'card' }
+        meta: { guest: true, register: true, registerStep: 'card' }
     },
     {
         path: '/register/ticket',
         component: RegisterTicket,
-        meta: { guest: true, registerStep: 'ticket' }
+        meta: { guest: true, register: true, registerStep: 'ticket' }
     },
     {
         path: '/register/success',
         component: RegisterSuccess,
-        meta: { guest: true, registerStep: 'success' }
+        meta: { guest: true, register: true, registerStep: 'success' }
     }
 ];
 
@@ -111,6 +118,16 @@ router.beforeEach((to, from, next) => {
     // register step check
     if (to.meta.registerStep && !isUserAllowedToSeeRegisterStep(to.meta.registerStep)) {
         return next('/register');
+    }
+
+    // register deactivation check
+    if (to.meta.register && !isUserAllowedToRegister()) {
+        return next('/login');
+    }
+
+    // link ticket deactivation check
+    if (to.meta.ticket && !isUserAllowedToLinkTicket()) {
+        return next('/dashboard');
     }
 
     next();

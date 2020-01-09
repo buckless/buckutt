@@ -1,5 +1,9 @@
-module.exports = async (ctx) => {
-    return {
+const { pick } = require('lodash');
+
+module.exports = async (ctx) => ({
+    event: pick(ctx.event, ['name', 'activateManager', 'allowRegistration', 'showInvoice', 'allowCardLinking', 'allowTicketLinking', 'showQrCode']),
+
+    style: {
         'grey-50': ctx.event.grey50,
         'grey-600': ctx.event.grey600,
         'black': ctx.event.black,
@@ -9,4 +13,4 @@ module.exports = async (ctx) => {
         'foreground-dark-300': ctx.event.foregroundDark300,
         'accent-300': ctx.event.accent300
     }
-};
+});

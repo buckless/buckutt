@@ -21,7 +21,7 @@
                     @blur="validate"
                 />
                 <Button class="login" raised>{{ $t('common.login') }}</Button>
-                <router-link class="register" to="/register">{{
+                <router-link class="register" to="/register" v-if="event.allowRegistration">{{
                     $t('common.register')
                 }}</router-link>
             </form>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import Input from 'ui/src/components/Input/Input';
 import Button from 'ui/src/components/Button/Button';
@@ -75,7 +75,11 @@ export default {
 
             this.login({ mail, password });
         }
-    }
+    },
+
+    computed: mapGetters({
+        event: 'infos/getEvent'
+    })
 };
 </script>
 

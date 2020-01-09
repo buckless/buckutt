@@ -16,7 +16,9 @@
             />
 
             <div class="actions">
-                <Button to="/register/card" type="button">{{ $t('common.back') }}</Button>
+                <Button :to="`/register${previousStep}`" type="button">{{
+                    $t('common.back')
+                }}</Button>
                 <Button type="submit" raised :disabled="isFetching">{{
                     $t('common.register')
                 }}</Button>
@@ -52,8 +54,14 @@ export default {
     computed: {
         ...mapGetters({
             isFetching: 'register/getIsFetching',
-            initialUserInfos: 'register/getRegisterFormData'
-        })
+            initialUserInfos: 'register/getRegisterFormData',
+            registerStep: 'register/getRegisterState',
+            event: 'infos/getEvent'
+        }),
+
+        previousStep() {
+            return this.event.allowCardLinking ? '/card' : '';
+        }
     },
 
     methods: {
@@ -69,10 +77,8 @@ export default {
                 ticketNumber: havingSupport && ticketNumber.length ? ticketNumber : null
             });
 
-            const success = await this.register();
-
-            if (success) {
-                this.$router.push('/register/success');
+            if (this.registerStep !== 'failure') {
+                this.$router.push(`/register/${this.registerStep}`);
             }
         }
     },

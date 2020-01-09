@@ -12,7 +12,7 @@ const {
     forgot,
     resetPassword,
     infos,
-    style
+    event
 } = require('server/app/actions/manager/auth');
 
 const router = require('express').Router();
@@ -130,9 +130,9 @@ router.get(
 );
 
 router.get(
-    '/style',
+    '/event',
     asyncHandler(async (req, res) => {
-        const result = await style(ctx(req));
+        const result = await event(ctx(req));
 
         res.json(result);
     })

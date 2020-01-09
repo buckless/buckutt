@@ -4,7 +4,8 @@ import {
     getIsReloadAllowed,
     getGiftReloads,
     getMeansOfPayment,
-    getPaymentCosts
+    getPaymentCosts,
+    getEvent
 } from '../selectors';
 
 describe('getError()', () => {
@@ -69,6 +70,17 @@ describe('getPaymentCosts()', () => {
 
         it('returns its value', () => {
             expect(res).toEqual({ foo: 0 });
+        });
+    });
+});
+
+describe('getEvent()', () => {
+    describe('given a state with a event object', () => {
+        const state = { event: { foo: 'Bar' } };
+        const res = getEvent(state);
+
+        it('returns its value', () => {
+            expect(res).toEqual({ foo: 'Bar' });
         });
     });
 });

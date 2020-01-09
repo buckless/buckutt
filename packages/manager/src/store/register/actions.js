@@ -2,21 +2,34 @@ import { api } from '../../api';
 import { humanError } from '../../api/humanError';
 import { i18n } from '../../locales';
 
-export const submitUserInfos = async ({ commit }, { mail, firstName, lastName, password }) => {
+export const submitUserInfos = async (
+    { commit, dispatch, rootGetters },
+    { mail, firstName, lastName, password }
+) => {
     commit('SET_STEP', 'card');
     commit('SET_MAIL', mail);
     commit('SET_FIRST_NAME', firstName);
     commit('SET_LAST_NAME', lastName);
     commit('SET_PASSWORD', password);
+
+    if (!rootGetters['infos/getEvent'].allowCardLinking) {
+        await dispatch('submitCardInfos', {});
+    }
 };
 
-export const submitCardInfos = async ({ commit }, { physicalId }) => {
+export const submitCardInfos = async ({ commit, dispatch, rootGetters }, { physicalId }) => {
     commit('SET_STEP', 'ticket');
     commit('SET_PHYSICAL_ID', physicalId);
+
+    if (!rootGetters['infos/getEvent'].allowTicketLinking) {
+        await dispatch('submitTicketInfos', {});
+    }
 };
 
-export const submitTicketInfos = async ({ commit }, { ticketNumber }) => {
+export const submitTicketInfos = async ({ commit, dispatch }, { ticketNumber }) => {
     commit('SET_TICKET_NUMBER', ticketNumber);
+
+    await dispatch('register');
 };
 
 export const register = async ({ commit, dispatch, getters }) => {
@@ -32,6 +45,8 @@ export const register = async ({ commit, dispatch, getters }) => {
 
         return true;
     } catch (err) {
+        commit('SET_STEP', 'failure');
+
         if (err.response) {
             const message = err.response.data.message;
 

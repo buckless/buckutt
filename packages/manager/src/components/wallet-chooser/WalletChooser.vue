@@ -30,7 +30,8 @@ export default {
         ...mapGetters({
             wallets: 'wallet/getWallets',
             activeWallet: 'wallet/getActiveWallet',
-            linkModalOpened: 'wallet/getLinkModalOpened'
+            linkModalOpened: 'wallet/getLinkModalOpened',
+            event: 'infos/getEvent'
         }),
 
         walletChooserValue() {
@@ -40,7 +41,8 @@ export default {
         walletChooserOptions() {
             const addOption = {
                 value: addOptionId,
-                name: this.$t('components.chooser.add')
+                name: this.$t('components.chooser.add'),
+                disabled: !this.event.allowCardLinking
             };
 
             if (this.wallets.length === 0) {

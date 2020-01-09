@@ -50,7 +50,7 @@
                 }}</a>
             </i18n>
 
-            <Button type="submit" class="start" raised>
+            <Button type="submit" class="start" raised :disabled="isFetching">
                 {{ $t('views.register.start') }}
                 <Icon name="arrow_forward" />
             </Button>
@@ -88,11 +88,11 @@ export default {
         errors: {}
     }),
 
-    computed: {
-        ...mapGetters({
-            initialUserInfos: 'register/getRegisterFormData'
-        })
-    },
+    computed: mapGetters({
+        initialUserInfos: 'register/getRegisterFormData',
+        isFetching: 'register/getIsFetching',
+        registerStep: 'register/getRegisterState'
+    }),
 
     methods: {
         ...mapActions({
@@ -118,7 +118,9 @@ export default {
                 password
             });
 
-            this.$router.push('/register/card');
+            if (this.registerStep !== 'failure') {
+                this.$router.push(`/register/${this.registerStep}`);
+            }
         }
     },
 

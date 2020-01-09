@@ -12,6 +12,7 @@ const openUrls = [
     '/manager/auth/forgot',
     '/manager/auth/resetPassword',
     '/manager/auth/register',
+    '/manager/auth/event',
     '/polling/eventEssentials',
     '/live/status',
     '/provider/callback'

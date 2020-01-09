@@ -71,3 +71,15 @@ describe('SET_RELOAD_ALLOWED()', () => {
         });
     });
 });
+
+describe('SET_EVENT()', () => {
+    describe('given an empty state', () => {
+        const state = { event: {} };
+
+        reducer.SET_EVENT(state, { foo: 'Bar' });
+
+        it('updated the state', () => {
+            expect(state.event).toEqual({ foo: 'Bar' });
+        });
+    });
+});

@@ -9,3 +9,5 @@ export const getGiftReloads = state => state.giftReloads;
 export const getMeansOfPayment = state => state.meansOfPayment;
 
 export const getPaymentCosts = state => state.paymentCosts;
+
+export const getEvent = state => state.event;

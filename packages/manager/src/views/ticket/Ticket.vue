@@ -2,11 +2,12 @@
     <DashboardPageLayout>
         <template v-slot:hero>
             <div class="ticket-hero">
-                <h2 class="title">{{ $t('views.ticket.hero.title') }} (add event name)</h2>
+                <h2 class="title">{{ $t('views.ticket.hero.title') }} {{ event.name }}</h2>
                 <Ticket v-if="ticket" :uid="ticket.physicalId" />
-                <Button v-else raised to="ticket/link">
+                <Button v-else-if="event.allowTicketLinking" raised to="ticket/link">
                     {{ $t('views.ticket.hero.link') }}
                 </Button>
+                <span v-else>{{ $t('views.ticket.hero.deactivated') }}</span>
             </div>
         </template>
 
@@ -20,20 +21,23 @@
                         :subtitle="$t('views.ticket.tips.preload.subtitle')"
                     />
                     <ProTip
-                        v-if="wallet && !ticket && !wallet.physicalId"
+                        v-if="wallet && !ticket && !wallet.physicalId && event.showQrCode"
                         class="protip"
                         :title="$t('views.ticket.tips.fullscreen.title')"
                         :subtitle="$t('views.ticket.tips.fullscreen.subtitle')"
                     />
                     <ProTip
-                        v-if="!ticket"
+                        v-if="!ticket && event.allowTicketLinking"
                         class="protip"
                         :title="$t('views.ticket.tips.link.title')"
                         :subtitle="$t('views.ticket.tips.link.subtitle')"
                     />
                 </div>
 
-                <div class="qrcode" v-if="wallet && !ticket && !wallet.physicalId">
+                <div
+                    class="qrcode"
+                    v-if="wallet && !ticket && !wallet.physicalId && event.showQrCode"
+                >
                     <h4 class="qrcode-title">{{ $t('views.ticket.qrcode.title') }}</h4>
                     <img ref="qrcode" :src="qrcodeUrl" @click.prevent="toggleFullscreen" />
                 </div>
@@ -64,7 +68,8 @@ export default {
     computed: {
         ...mapGetters({
             wallet: 'wallet/getActiveWallet',
-            ticket: 'ticket/getActiveTicket'
+            ticket: 'ticket/getActiveTicket',
+            event: 'infos/getEvent'
         }),
 
         qrcodeUrl() {
@@ -141,7 +146,6 @@ export default {
     .protip {
         min-width: calc(100vw - 20px - 20px - 4px -4px);
     }
-
 
     .ticket-hero {
         padding: 40px;
