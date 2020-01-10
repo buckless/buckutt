@@ -7,8 +7,10 @@ module.exports = async ctx => {
     ctx.defaultGroup = (await db.models.Group.where({ name: 'Défaut' }).fetch()).toJSON();
     ctx.defaultPeriod = (await db.models.Period.where({ name: 'Défaut' }).fetch()).toJSON();
 
-    const adminDevice = await db.models.Device.where({ name: 'admin' }).fetch();
-    ctx.adminWiket = (await db.models.Wiket.where({ device_id: adminDevice.get('id') })).toJSON();
+    const webDevice = await db.models.Device.where({ name: 'web' }).fetch();
+    ctx.webWiket = (await db.models.Wiket.where({ device_id: webDevice.get('id') }).fetch({
+        withRelated: ['device', 'point']
+    })).toJSON();
 
     return db;
 };

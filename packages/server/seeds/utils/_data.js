@@ -6,8 +6,7 @@ module.exports = {
     group_id: 'c18fb66b-339e-4ea7-9f56-640bce0e2002',
     fundation_id: '499b2ff0-583f-4c23-a78f-7b0d153327fe',
     nfc_id: '44d07229-ff52-4afb-91dc-d84eddbd8248',
-    admin_id: '711be5e6-ab04-42a5-97fc-067b81914fb7',
-    manager_id: '87781839-3dbb-4558-9a13-3f97e5890649',
+    web_id: 'fb1f6a3f-bbb3-407f-9ff7-b96cb158199b',
     item: obj =>
         Object.assign(obj, {
             created_at: new Date(),

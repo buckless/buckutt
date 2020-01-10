@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
     req.fingerprint = req.headers['x-fingerprint'] || req.query.fingerprint;
 
     if (!req.fingerprint) {
-        return next(new APIError(module, 401, 'Missing device fingerprint'));
+        req.fingerprint = 'web';
     }
 
     let event;
@@ -49,22 +49,24 @@ module.exports = async (req, res, next) => {
         return next(new APIError(module, 404, 'Device not found'));
     }
 
-    if (!device.authorized) {
-        return next(new APIError(module, 401, 'Unauthorized device'));
-    }
+    if (req.fingerprint !== 'web') {
+        if (!device.authorized) {
+            return next(new APIError(module, 401, 'Unauthorized device'));
+        }
 
-    req.signature = req.headers['x-signature'] || req.query.signature;
+        req.signature = req.headers['x-signature'] || req.query.signature;
 
-    if (!req.signature) {
-        return next(new APIError(module, 401, 'Device signature is missing'));
-    }
+        if (!req.signature) {
+            return next(new APIError(module, 401, 'Device signature is missing'));
+        }
 
-    const payloadToCompare = `${req.fingerprint}-${req.method}-${req.path}`;
-    const hmac = crypto.createHmac('sha256', device.privateKey).update(payloadToCompare);
-    const signatureToCompare = hmac.digest('hex');
+        const payloadToCompare = `${req.fingerprint}-${req.method}-${req.path}`;
+        const hmac = crypto.createHmac('sha256', device.privateKey).update(payloadToCompare);
+        const signatureToCompare = hmac.digest('hex');
 
-    if (req.signature !== signatureToCompare) {
-        return next(new APIError(module, 401, 'Wrong device signature'));
+        if (req.signature !== signatureToCompare) {
+            return next(new APIError(module, 401, 'Wrong device signature'));
+        }
     }
 
     let minPeriod = Infinity;

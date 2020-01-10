@@ -4,7 +4,9 @@ const APIError = require('server/app/utils/APIError');
 module.exports = async (ctx, { currentPassword, password, currentPin, pin }) => {
     const user = await ctx.models.User.where({ id: ctx.user.id }).fetch();
 
-    const matchPwd = currentPassword ? await bcrypt.compare(currentPassword.toString(), ctx.user.password) : true;
+    const matchPwd = currentPassword
+        ? await bcrypt.compare(currentPassword.toString(), ctx.user.password)
+        : true;
     const matchPin = currentPin ? await bcrypt.compare(currentPin.toString(), ctx.user.pin) : true;
 
     if (!matchPwd) {

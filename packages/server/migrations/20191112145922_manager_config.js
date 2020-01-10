@@ -36,6 +36,7 @@ exports.down = function(knex) {
     return knex.schema.table('events', t => {
         t.dropColumn('name');
         t.dropColumn('contactMail');
+        t.dropColumn('companyName');
         t.dropColumn('companyAddress');
         t.dropColumn('companyPostal');
         t.dropColumn('companyCity');

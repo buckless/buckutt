@@ -48,7 +48,7 @@ export default {
         field: 'name',
         subtitle: item => (!item.authorized ? 'Équipement non associé' : undefined),
         sort: (a, b) => sortOrder(a.authorized, b.authorized) || sortOrder(a.name, b.name),
-        hide: ['admin', 'manager']
+        hide: ['web']
     },
     extraTabs: [
         {

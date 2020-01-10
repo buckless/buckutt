@@ -26,6 +26,10 @@ const validateLoginBody = body => {
 };
 
 const login = async (ctx, { infos, pin, password }) => {
+    if (infos.connectType === 'pin' && ctx.wiket.device.fingerprint === 'web') {
+        throw new APIError(module, 401, 'Login error: Wrong credentials');
+    }
+
     let user;
     if (infos.mail) {
         user = await ctx.models.User.where('mail', infos.mail.trim().toLowerCase())

@@ -1,20 +1,11 @@
 import { api } from 'config/admin';
-import crypto from 'crypto';
 
 const authData = {
     headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Fingerprint': 'admin'
+        'Content-Type': 'application/json'
     }
 };
-
-export function generateSignature(method, url) {
-    const path = url.split('?');
-    const signaturePayload = `admin-${method}-/${path[0]}`;
-    const hmac = crypto.createHmac('sha256', 'admin').update(signaturePayload);
-    return hmac.digest('hex');
-}
 
 export function updateBearer(token) {
     if (token) {
@@ -45,8 +36,6 @@ export function get(url, opts_) {
         },
         opts_
     );
-
-    opts.headers['X-Signature'] = generateSignature('GET', url);
 
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
@@ -80,8 +69,6 @@ export function post(url, data, opts_) {
         opts_
     );
 
-    opts.headers['X-Signature'] = generateSignature('POST', url);
-
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
             if (res.status === 401) {
@@ -114,8 +101,6 @@ export function put(url, data, opts_) {
         opts_
     );
 
-    opts.headers['X-Signature'] = generateSignature('PUT', url);
-
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
             if (res.status === 401) {
@@ -146,8 +131,6 @@ export function del(url, opts_) {
         opts_
     );
 
-    opts.headers['X-Signature'] = generateSignature('DELETE', url);
-
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {
             if (res.status === 401) {
@@ -177,8 +160,6 @@ export function download(url, opts_) {
         },
         opts_
     );
-
-    opts.headers['X-Signature'] = generateSignature('GET', url);
 
     return fetch(`${api}/${url}`, opts).then(res => {
         if (!res.ok) {

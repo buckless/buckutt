@@ -1,5 +1,4 @@
 import { api } from 'config/admin';
-import { generateSignature } from '@/lib/fetch';
 
 let changes;
 
@@ -8,10 +7,8 @@ export const initSocket = ({ commit, dispatch }, token) => {
         changes.close();
     }
 
-    const signature = encodeURIComponent(generateSignature('GET', 'live/listenForModelChanges'));
-
     changes = new EventSource(
-        `${api}/live/listenForModelChanges?authorization=Bearer ${token}&fingerprint=admin&signature=${signature}&handshake-interval=10000&lastEventId=12345&retry=3000`
+        `${api}/live/listenForModelChanges?authorization=Bearer ${token}&handshake-interval=10000&lastEventId=12345&retry=3000`
     );
 
     changes.addEventListener('message', e => {

@@ -15,7 +15,7 @@ module.exports = {
                 pub: {
                     publish: () => Promise.resolve()
                 },
-                wiket: t.context.adminWiket
+                wiket: t.context.webWiket
             }
         };
 

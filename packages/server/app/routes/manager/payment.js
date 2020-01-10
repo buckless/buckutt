@@ -105,9 +105,17 @@ router.post(
             );
         }
 
-        const creditorWallet = await getWallet(ctx(req), { id: req.body.creditor_id, physical_id: req.body.physical_id });
+        const creditorWallet = await getWallet(ctx(req), {
+            id: req.body.creditor_id,
+            physical_id: req.body.physical_id
+        });
         if (!creditorWallet) {
-            return Promise.reject(new APIError(module, 400, 'Invalid reciever', { receiver: req.body.creditor_id, physical: req.body.physical_id }));
+            return Promise.reject(
+                new APIError(module, 400, 'Invalid reciever', {
+                    receiver: req.body.creditor_id,
+                    physical: req.body.physical_id
+                })
+            );
         }
 
         const amount = parseInt(req.body.amount, 10);
