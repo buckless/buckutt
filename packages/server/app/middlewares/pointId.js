@@ -32,7 +32,7 @@ module.exports = async (req, res, next) => {
         device = await req.app.locals.models.Device.where({
             fingerprint: req.fingerprint
         })
-            .fetch({ withRelated: ['wikets', 'wikets.point', 'wikets.period'] })
+            .fetch({ withRelated: ['wikets', 'wikets.point', 'wikets.period', 'wikets.device'] })
             .then(res => (res ? res.toJSON() : null));
     } catch (err) {
         return next(err);
