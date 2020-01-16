@@ -63,11 +63,11 @@ export const lockWallet = async ({ commit, dispatch, getters }) => {
     }
 };
 
-export const linkSupport = async ({ commit, dispatch, getters }, { support }) => {
+export const linkSupport = async ({ commit, dispatch, getters, rootGetters }, { support }) => {
     commit('SET_IS_FETCHING', true);
 
     const wallet = getters.getActiveWallet;
-    const user = getters.getUser;
+    const user = rootGetters['user/getUser'];
 
     let route, body;
 

@@ -79,14 +79,15 @@ describe('linkSupport()', () => {
             id: 'bar'
         };
 
-        const getters = { getActiveWallet, getUser };
+        const getters = { getActiveWallet };
+        const rootGetters = { 'user/getUser': getUser };
 
         beforeAll(async () => {
             api.post.mockImplementation(async () => ({
                 data: { id: 'foo', physical_id: 'ABCDEF', logical_id: 'bob' }
             }));
 
-            await linkSupport({ commit, dispatch, getters }, { support: 'ABCDEF' });
+            await linkSupport({ commit, dispatch, getters, rootGetters }, { support: 'ABCDEF' });
         });
 
         it('called the post function with the correct parameters', async () => {
@@ -124,14 +125,15 @@ describe('linkSupport()', () => {
             id: 'bar'
         };
 
-        const getters = { getActiveWallet, getUser };
+        const getters = { getActiveWallet };
+        const rootGetters = { 'user/getUser': getUser }
 
         beforeAll(async () => {
             api.post.mockImplementation(async () => ({
                 data: { id: 'foobar', physical_id: 'FOOBAR', logical_id: 'alice' }
             }));
 
-            await linkSupport({ commit, dispatch, getters }, { support: 'FOOBAR' });
+            await linkSupport({ commit, dispatch, getters, rootGetters }, { support: 'FOOBAR' });
         });
 
         it('called the post function with the correct parameters', async () => {
