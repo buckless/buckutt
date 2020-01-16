@@ -13,9 +13,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node src/app",
-    "dev": "cross-env NODE_ENV=development nodemon src/app.js",
-    "lint": "eslint . --fix",
-    "test": "cross-env NODE_ENV=test nyc --reporter=text-summary --reporter=html --reporter=lcov mocha",
+    "dev": "NODE_ENV=development nodemon src/app.js",
+    "test": "NODE_ENV=test nyc --reporter=text-summary --reporter=html --reporter=lcov mocha",
     "coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
@@ -37,10 +36,6 @@
   },
   "devDependencies": {
     "axios": "^0.18.0",
-    "cross-env": "^5.0.5",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.17.2",
     "nodemon": "^1.19.0",
     "rimraf": "^2.6.1"
   }
