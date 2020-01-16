@@ -36,14 +36,8 @@ export const checkApi = ({ dispatch }, payload) => {
 };
 
 export const setApi = ({ state, commit, dispatch }, payload) => {
-    const newHistory = {};
-    for (let [key, value] of Object.entries(state.history)) {
-        newHistory[key] = value;
-    }
-
     commit('CHANGE_API', {
-        api: state.device.api,
-        history: newHistory
+        api: state.device.api
     });
 
     commit('SET_API', payload);
