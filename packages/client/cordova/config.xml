@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.buckless.multiclient" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Buckless Cashless</name>
+<widget id="com.buckless.multiclient19" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Buckless caisse</name>
     <description>
         Application opérateur Cashless
     </description>
@@ -31,6 +31,6 @@
     </plugin>
     <plugin name="phonegap-plugin-media-stream" spec="^1.2.1" />
     <plugin name="cordova-plugin-mifare-ultralight" spec="~1.0.4" />
-    <engine name="android" spec="^6.4.0" />
     <plugin name="cordova-sqlite-storage" spec="^4.0.0" />
+    <engine name="android" spec="^6.4.0" />
 </widget>
