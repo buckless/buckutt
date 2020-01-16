@@ -76,15 +76,15 @@ router.put(
 
         log.info(`update ${req.params.model}(${id})`, req.details);
 
-        const results = await update(ctx(req), {
+        const result = await update(ctx(req), {
             id,
             model,
             data,
             ...req.crud
         });
-        const sanitizedResults = sanitizeCrud(req.params.model, results);
+        const sanitizedResults = sanitizeCrud(req.params.model, [result]);
 
-        res.json(sanitizedResults);
+        res.json(sanitizedResults[0]);
     })
 );
 
