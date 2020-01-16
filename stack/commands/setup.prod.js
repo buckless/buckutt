@@ -71,10 +71,8 @@ module.exports = async () => {
 
     const stackManifest = {
         ...manifestBaseFile,
-        name: configFile.eventOrCompany.name,
-        short_name: configFile.eventOrCompany.shortName,
-        background_color: configFile.manager.colorsBackground,
-        theme_color: configFile.manager.colorsTheme
+        name: 'Buckless cashless',
+        short_name: 'Cashless'
     };
 
     const manifest = path.join(
