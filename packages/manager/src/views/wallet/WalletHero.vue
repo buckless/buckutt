@@ -1,18 +1,19 @@
 <template>
     <div class="wallet-hero">
         <h2 class="title">{{ $t('views.wallet.hero.title') }}</h2>
-        <div class="supports">
-            <PhysicalCard
-                v-if="activeWallet"
-                :uid="activeWallet.physicalId"
-                :amount="activeWallet.credit"
-            />
-        </div>
-        <p class="pending desktop">
+        <PhysicalCard
+            v-if="activeWallet && activeWallet.logicalId"
+            :uid="activeWallet.physicalId || activeWallet.logicalId"
+            :amount="activeWallet.credit"
+        />
+        <Button v-else-if="isAnonymousWallet" raised @click="setLinkModalOpened">
+            {{ $t('views.wallet.hero.link') }}
+        </Button>
+        <p class="pending desktop" v-if="!isAnonymousWallet">
             {{ $t('views.wallet.hero.pending') }} {{ formattedPending }}
             <Icon name="hourglass_empty" :size="18" />
         </p>
-        <p class="pending mobile">
+        <p class="pending mobile" v-if="!isAnonymousWallet">
             <span>{{ $t('views.wallet.hero.pendingMobile') }} </span>
             <span class="amount"
                 >{{ formattedPending }} <Icon name="hourglass_empty" :size="18"
@@ -22,7 +23,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 import Icon from 'ui/src/components/Icon/Icon';
 import Button from 'ui/src/components/Button/Button';
 
@@ -45,8 +46,16 @@ export default {
 
         formattedPending() {
             return format({ amount: this.pending, showPlus: true });
+        },
+
+        isAnonymousWallet() {
+            return this.activeWallet && !this.activeWallet.logicalId;
         }
-    }
+    },
+
+    methods: mapMutations({
+        setLinkModalOpened: 'wallet/SET_LINK_MODAL_OPENED'
+    })
 };
 </script>
 
@@ -60,12 +69,6 @@ export default {
     font-size: var(--typography-h3-size);
     letter-spacing: var(--typography-h3-spacing);
     font-weight: 400;
-}
-
-.supports {
-    display: flex;
-    align-items: center;
-    height: calc(150px - 12px);
 }
 
 .physical-card {

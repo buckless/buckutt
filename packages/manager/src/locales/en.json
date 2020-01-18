@@ -131,6 +131,7 @@
                 },
                 "reload": {
                     "title": "Reload :",
+                    "preload": "Pre-load :",
                     "other": "Other amount",
                     "gift": "Every {0}, receive {1} {2}.",
                     "additionalSingle": "extra",
@@ -304,7 +305,8 @@
             "hero": {
                 "title": "My support",
                 "pending": "Balance pending synchronization to support :",
-                "pendingMobile": "Balance pending synchronization :"
+                "pendingMobile": "Balance pending synchronization :",
+                "link": "Link my support"
             },
 
             "tips": {
@@ -315,6 +317,10 @@
                 "sync": {
                     "title": "Balance pending synchronization",
                     "subtitle": "It will be synchronized to your support during your next transaction onsite"
+                },
+                "link": {
+                    "title": "Link your support",
+                    "subtitle": "Link your support abort to get your preloaded credit"
                 }
             },
 

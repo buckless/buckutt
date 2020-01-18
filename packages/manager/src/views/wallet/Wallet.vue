@@ -7,14 +7,22 @@
             <div class="wallet">
                 <div class="tips">
                     <ProTip
+                        v-if="!isAnonymousWallet"
                         class="protip"
                         :title="$t('views.wallet.tips.lock.title')"
                         :subtitle="$t('views.wallet.tips.lock.subtitle')"
                     />
                     <ProTip
+                        v-if="!isAnonymousWallet"
                         class="protip"
                         :title="$t('views.wallet.tips.sync.title')"
                         :subtitle="$t('views.wallet.tips.sync.subtitle')"
+                    />
+                    <ProTip
+                        v-if="isAnonymousWallet"
+                        class="protip"
+                        :title="$t('views.wallet.tips.link.title')"
+                        :subtitle="$t('views.wallet.tips.link.subtitle')"
                     />
                 </div>
 
@@ -46,18 +54,20 @@
                     <Button type="submit" raised>{{ $t('views.wallet.transfer.process') }}</Button>
                 </form>
 
-                <h3 class="wallet-title">{{ $t('views.wallet.lock.title') }}</h3>
-                {{ $t('views.wallet.lock.description') }}<br />
-                {{ $t('views.wallet.lock.warning') }}<br /><br />
+                <template v-if="!isAnonymousWallet">
+                    <h3 class="wallet-title">{{ $t('views.wallet.lock.title') }}</h3>
+                    {{ $t('views.wallet.lock.description') }}<br />
+                    {{ $t('views.wallet.lock.warning') }}<br /><br />
 
-                <Button
-                    raised
-                    accent
-                    to="wallet/lock"
-                    v-if="activeWallet && !activeWallet.blocked"
-                    >{{ $t('views.wallet.lock.lock') }}</Button
-                >
-                <strong v-else>{{ $t('views.wallet.lock.locked') }}</strong>
+                    <Button
+                        raised
+                        accent
+                        to="wallet/lock"
+                        v-if="activeWallet && !activeWallet.blocked"
+                        >{{ $t('views.wallet.lock.lock') }}</Button
+                    >
+                    <strong v-else>{{ $t('views.wallet.lock.locked') }}</strong>
+                </template>
             </div>
 
             <router-view />
@@ -133,7 +143,11 @@ export default {
             activeWallet: 'wallet/getActiveWallet',
             userWallets: 'transfer/getUserWallets',
             event: 'infos/getEvent'
-        })
+        }),
+
+        isAnonymousWallet() {
+            return this.activeWallet && !this.activeWallet.logicalId;
+        }
     },
 
     created() {

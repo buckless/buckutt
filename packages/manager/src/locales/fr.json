@@ -131,6 +131,7 @@
                 },
                 "reload": {
                     "title": "Rechargement :",
+                    "preload": "Pré-chargement :",
                     "other": "Autre montant",
                     "gift": "Tous les {0}, recevez {1} {2}.",
                     "additionalSingle": "supplémentaire",
@@ -281,8 +282,8 @@
 
             "tips": {
                 "protect": {
-                    "title": "Protect your password",
-                    "subtitle": "Never give your password to anybody"
+                    "title": "Protégez votre mot de passe",
+                    "subtitle": "Ne le communiquez jamais à quiconque"
                 }
             },
 
@@ -304,7 +305,8 @@
             "hero": {
                 "title": "Mon support",
                 "pending": "Solde en attente de synchronisation sur votre support :",
-                "pendingMobile": "En attente de synchronisation :"
+                "pendingMobile": "En attente de synchronisation :",
+                "link": "Lier mon support"
             },
 
             "tips": {
@@ -315,6 +317,10 @@
                 "sync": {
                     "title": "Solde en attente de synchronisation",
                     "subtitle": "Il sera synchronisé au support à votre prochaine transaction à l'événément"
+                },
+                "link": {
+                    "title": "Liez votre support",
+                    "subtitle": "Liez votre support ci-dessus pour récupérer votre crédit préchargé"
                 }
             },
 

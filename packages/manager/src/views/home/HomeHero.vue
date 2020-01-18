@@ -5,7 +5,7 @@
                 <Wave width="24" height="24" />
                 <template>{{ credit }}</template>
             </i18n>
-            <p class="synchro">
+            <p class="synchro" v-if="!isAnonymousWallet">
                 {{ $t('views.home.hero.pending') }} {{ pendingCredit }}
                 <Icon name="hourglass_empty" :size="16" />
             </p>
@@ -15,7 +15,7 @@
                 <Wave width="24" height="24" />
             </i18n>
             <p class="credit">{{ $t('views.home.hero.balance') }} {{ credit }}</p>
-            <p class="synchro">{{ $t('views.home.hero.pendingMobile') }} {{ pendingCredit }}</p>
+            <p class="synchro" v-if="!isAnonymousWallet">{{ $t('views.home.hero.pendingMobile') }} {{ pendingCredit }}</p>
         </div>
 
         <template v-if="isRefundOpened">
@@ -100,7 +100,8 @@
             </template>
         </template>
         <template v-else-if="isReloadAllowed">
-            <p class="reload">{{ $t('views.home.hero.reload.title') }}</p>
+            <p class="reload" v-if="!isAnonymousWallet">{{ $t('views.home.hero.reload.title') }}</p>
+            <p class="reload" v-else>{{ $t('views.home.hero.reload.preload') }}</p>
 
             <div class="buttons" v-show="customAmount === '0'">
                 <Button raised accent @click="reload({ amount: 1000 })">10€</Button>
@@ -265,6 +266,10 @@ export default {
                     ? format({ amount: this.activeWallet.refunds.alreadyAsked.amount })
                     : null
             };
+        },
+
+        isAnonymousWallet() {
+            return this.activeWallet && !this.activeWallet.logicalId;
         }
     },
 
