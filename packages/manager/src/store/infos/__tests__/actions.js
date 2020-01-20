@@ -57,12 +57,7 @@ describe('infos()', () => {
                 },
                 { root: true }
             );
-            expect(commit).toHaveBeenCalledWith('wallet/SET_ACTIVE_WALLET', 'a', { root: true });
             expect(commit).toHaveBeenCalledWith('SET_IS_FETCHING', false);
-        });
-
-        it('called all the actions', () => {
-            expect(dispatch).toHaveBeenCalledWith('history/load', null, { root: true });
         });
     });
 });

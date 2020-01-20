@@ -25,8 +25,6 @@ export const infos = async ({ commit, dispatch }) => {
         commit('SET_MEANS_OF_PAYMENT', meansOfPayment);
         commit('SET_RELOAD_ALLOWED', reloadAllowed);
         commit('ticket/SET_TICKETS', tickets, { root: true });
-
-        dispatch('history/load', null, { root: true });
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);

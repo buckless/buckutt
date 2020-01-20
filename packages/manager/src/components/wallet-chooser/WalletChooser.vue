@@ -9,12 +9,8 @@
             {{ currentWalletName }}
         </Button>
 
-        <Container dropShadow v-if="chooserModalOpened">
-            <Modal
-                :title="$t('components.chooser.wallets')"
-                @close="handleCloseWalletChooserModal"
-                class="modal"
-            >
+        <ModalLayout v-if="chooserModalOpened" @close="handleCloseWalletChooserModal" :title="$t('components.chooser.wallets')">
+            <template v-slot>
                 <div class="wallets">
                     <Button
                         v-for="wallet in formattedWallets"
@@ -25,14 +21,14 @@
                         {{ wallet.name }}
                     </Button>
                 </div>
+            </template>
 
-                <template slot="actions">
-                    <Button @click="handleOpenLinkModal">
-                        {{ $t('components.chooser.add') }}
-                    </Button>
-                </template>
-            </Modal>
-        </Container>
+            <template v-slot:actions>
+                <Button @click="handleOpenLinkModal">
+                    {{ $t('components.chooser.add') }}
+                </Button>
+            </template>
+        </ModalLayout>
 
         <LinkWallet v-if="linkModalOpened" />
     </div>
@@ -42,8 +38,7 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import Button from 'ui/src/components/Button/Button';
 import Icon from 'ui/src/components/Icon/Icon';
-import Container from 'ui/src/components/Modal/Container';
-import Modal from 'ui/src/components/Modal/Modal';
+import ModalLayout from '../../layouts/Modal';
 import { format } from '../../utils/money';
 
 import LinkWallet from '../../views/link-wallet/LinkWallet';
@@ -62,8 +57,7 @@ export default {
     components: {
         Button,
         Icon,
-        Container,
-        Modal,
+        ModalLayout,
         LinkWallet
     },
 
@@ -99,7 +93,7 @@ export default {
     methods: {
         ...mapMutations({
             setLinkModalOpened: 'wallet/SET_LINK_MODAL_OPENED',
-            setChooserModalOpened: 'wallet/SET_CHOOSER_MODAL_OPENED',
+            setChooserModalOpened: 'wallet/SET_CHOOSER_MODAL_OPENED'
         }),
 
         ...mapActions({
@@ -120,7 +114,7 @@ export default {
         },
 
         handleWalletChooserChange(wallet) {
-            this.changeActiveWallet(wallet);
+            this.changeActiveWallet(wallet.id);
             this.setChooserModalOpened(false);
         },
 

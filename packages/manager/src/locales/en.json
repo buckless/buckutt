@@ -14,7 +14,7 @@
     },
 
     "errors": {
-        "default": "An error occured. Please contact the support",
+        "common": "An error occured. Please contact the support",
         "wrongCredentials": "Wrong credentials",
         "couldntTicket": "This ticket doesn't exist",
         "couldntSupport": "This support doesn't exist",

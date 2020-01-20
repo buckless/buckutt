@@ -4,6 +4,8 @@ import { humanError } from '../../api/humanError';
 import { reshapeWallet } from './reshapers';
 import { i18n } from '../../locales';
 
+let source;
+
 export const updateWalletRefunds = async ({ commit }, { wallet, refunds }) => {
     commit('SET_WALLET', {
         ...wallet,
@@ -95,7 +97,7 @@ export const linkSupport = async ({ commit, dispatch, getters, rootGetters }, { 
 
         await dispatch('infos/infos', null, { root: true });
 
-        await dispatch('changeActiveWallet', data);
+        await dispatch('changeActiveWallet', data.id);
 
         dispatch(
             'notifications/push',
@@ -137,8 +139,36 @@ export const linkSupport = async ({ commit, dispatch, getters, rootGetters }, { 
     }
 };
 
-export const changeActiveWallet = async ({ commit, dispatch }, { id }) => {
+export const changeActiveWallet = async ({ commit, dispatch }, id) => {
     commit('SET_ACTIVE_WALLET', id);
     storage.saveUser({ wallet: id });
+    dispatch('listenCredit');
     await dispatch('history/load', null, { root: true });
+};
+
+export const listenCredit = async({ state, commit, dispatch, getters, rootGetters }) => {
+    if (source) {
+        source.close();
+    }
+
+    const wallet = getters.getActiveWallet;
+    const token = rootGetters['user/getToken'];
+
+    source = new EventSource(
+        `/live/credit?authorization=Bearer ${token}&handshake-interval=10000&lastEventId=12345&retry=3000&wallet=${wallet.id}`
+    );
+
+    source.addEventListener('message', e => {
+        const { credit, pending } = JSON.parse(e.data);
+
+        if (typeof credit === 'number') {
+            commit('UPDATE_WALLET_CREDIT', credit);
+        }
+
+        if (typeof pending === 'number') {
+            commit('history/SET_PENDING', pending, { root: true });
+        }
+        
+        dispatch('history/load', null, { root: true });
+    });
 };

@@ -48,7 +48,8 @@ export default {
         }),
 
         ...mapMutations({
-            setLinkModalOpened: 'wallet/SET_LINK_MODAL_OPENED'
+            setLinkModalOpened: 'wallet/SET_LINK_MODAL_OPENED',
+            setChooserModalOpened: 'wallet/SET_CHOOSER_MODAL_OPENED'
         }),
 
         async link() {
@@ -57,6 +58,7 @@ export default {
         },
 
         close() {
+            this.setChooserModalOpened(true);
             this.setLinkModalOpened(false);
         }
     },

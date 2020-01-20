@@ -70,8 +70,12 @@ describe('login()', () => {
                 { root: true }
             );
             expect(commit).toHaveBeenCalledWith('SET_TOKEN', token);
-            expect(commit).toHaveBeenCalledWith('wallet/SET_ACTIVE_WALLET', 'a', { root: true });
             expect(commit).toHaveBeenCalledWith('SET_IS_FETCHING', false);
+        });
+
+        it('called all the actions', () => {
+            expect(dispatch).toHaveBeenCalledWith('infos/infos', null, { root: true });
+            expect(dispatch).toHaveBeenCalledWith('wallet/changeActiveWallet', 'a', { root: true });
         });
 
         it('called the storage method saveUser', () => {

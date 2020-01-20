@@ -18,13 +18,13 @@ export const login = async ({ commit, dispatch }, { mail, password }) => {
         commit('ticket/SET_TICKETS', tickets, { root: true });
         commit('SET_TOKEN', token);
 
+        await dispatch('infos/infos', null, { root: true });
+
         if (walletIds.length > 0) {
-            commit('wallet/SET_ACTIVE_WALLET', walletIds[0], { root: true });
+            dispatch('wallet/changeActiveWallet', walletIds[0], { root: true });
         }
 
-        dispatch('infos/infos', null, { root: true });
-
-        storage.saveUser({ user, token,  });
+        storage.saveUser({ user, token });
 
         router.push('/dashboard');
     } catch (err) {
@@ -76,11 +76,11 @@ export const restoreSession = async ({ commit, dispatch }) => {
     commit('SET_USER', user);
     commit('SET_TOKEN', token);
 
-    if (wallet) {
-        commit('wallet/SET_ACTIVE_WALLET', wallet, { root: true });
-    }
+    await dispatch('infos/infos', null, { root: true });
 
-    dispatch('infos/infos', null, { root: true });
+    if (wallet) {
+        dispatch('wallet/changeActiveWallet', wallet, { root: true });
+    }
 
     if (router.currentRoute.meta.guest) {
         const route = storage.restoreRoute() || '/dashboard';
