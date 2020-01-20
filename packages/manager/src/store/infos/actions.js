@@ -18,7 +18,6 @@ export const infos = async ({ commit, dispatch }) => {
             wallets,
             tickets
         } = reshapeInfos(data);
-        const walletIds = Object.keys(wallets);
 
         commit('wallet/SET_WALLETS', wallets, { root: true });
         commit('SET_GIFT_RELOADS', giftReloads);
@@ -27,10 +26,7 @@ export const infos = async ({ commit, dispatch }) => {
         commit('SET_RELOAD_ALLOWED', reloadAllowed);
         commit('ticket/SET_TICKETS', tickets, { root: true });
 
-        if (walletIds.length > 0) {
-            commit('wallet/SET_ACTIVE_WALLET', walletIds[0], { root: true });
-            dispatch('history/load', null, { root: true });
-        }
+        dispatch('history/load', null, { root: true });
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);

@@ -11,6 +11,7 @@ import {
 
 const user = { foo: 'bar' };
 const token = 'baz';
+const wallet = 'foz';
 const path = '/dashboard/ticket';
 const lang = 'en';
 
@@ -47,7 +48,8 @@ describe('saveUser()', () => {
         saveUser(
             {
                 user,
-                token
+                token,
+                wallet
             },
             storage
         );
@@ -55,6 +57,7 @@ describe('saveUser()', () => {
         it('saves the user and token in the storage', () => {
             expect(storage['buckless/manager/user/user']).toBe(JSON.stringify(user));
             expect(storage['buckless/manager/user/token']).toBe(token);
+            expect(storage['buckless/manager/user/wallet']).toBe(wallet);
         });
     });
 });
@@ -75,7 +78,8 @@ describe('hasUser()', () => {
         saveUser(
             {
                 user,
-                token
+                token,
+                wallet
             },
             storage
         );
@@ -104,7 +108,8 @@ describe('loadUser()', () => {
         saveUser(
             {
                 user,
-                token
+                token,
+                wallet
             },
             storage
         );
@@ -114,7 +119,8 @@ describe('loadUser()', () => {
         it('returns the user and the token', () => {
             expect(res).toEqual({
                 user,
-                token
+                token,
+                wallet
             });
         });
     });
@@ -127,7 +133,8 @@ describe('removeUser()', () => {
         saveUser(
             {
                 user,
-                token
+                token,
+                wallet
             },
             storage
         );

@@ -24,7 +24,7 @@ export const login = async ({ commit, dispatch }, { mail, password }) => {
 
         dispatch('infos/infos', null, { root: true });
 
-        storage.saveUser({ user, token });
+        storage.saveUser({ user, token,  });
 
         router.push('/dashboard');
     } catch (err) {
@@ -71,10 +71,14 @@ export const restoreSession = async ({ commit, dispatch }) => {
         return;
     }
 
-    const { user, token } = storage.loadUser();
+    const { user, token, wallet } = storage.loadUser();
 
     commit('SET_USER', user);
     commit('SET_TOKEN', token);
+
+    if (wallet) {
+        commit('wallet/SET_ACTIVE_WALLET', wallet, { root: true });
+    }
 
     dispatch('infos/infos', null, { root: true });
 

@@ -1,4 +1,5 @@
 import { api } from '../../api';
+import * as storage from '../../storage/index';
 import { humanError } from '../../api/humanError';
 import { reshapeWallet } from './reshapers';
 import { i18n } from '../../locales';
@@ -138,5 +139,6 @@ export const linkSupport = async ({ commit, dispatch, getters, rootGetters }, { 
 
 export const changeActiveWallet = async ({ commit, dispatch }, { id }) => {
     commit('SET_ACTIVE_WALLET', id);
+    storage.saveUser({ wallet: id });
     await dispatch('history/load', null, { root: true });
 };

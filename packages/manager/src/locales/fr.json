@@ -14,7 +14,7 @@
     },
 
     "errors": {
-        "default": "Une erreur est survenue. Veuillez contacter le support",
+        "common": "Une erreur est survenue. Veuillez contacter le support",
         "wrongCredentials": "Identifiants incorrects",
         "couldntTicket": "Ce billet n'existe pas",
         "couldntSupport": "Ce support n'existe pas",
