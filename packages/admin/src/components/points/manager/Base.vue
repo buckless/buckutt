@@ -143,5 +143,6 @@ export default {
 
 .b-small-button {
     padding: 0 5px !important;
+    min-width: 40px !important;
 }
 </style>

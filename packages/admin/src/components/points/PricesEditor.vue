@@ -29,7 +29,7 @@
             </div>
         </div>
         <form @submit.prevent="createPrice(newPrice)" class="b-prices-form">
-            <div class="b-prices-form-amount b-prices-form-entry">
+            <div class="b-prices-form-entry">
                 <b-input placeholder="Montant (centimes)" v-model="newPrice.amount" small />
             </div>
             <b-autocomplete
@@ -217,11 +217,6 @@ export default {
         display: flex;
         align-items: center;
         margin-top: 15px;
-
-        & > .b-prices-form-amount {
-            display: flex;
-            align-items: center;
-        }
 
         & > .b-prices-form-entry {
             margin-right: 10px;

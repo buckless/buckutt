@@ -209,15 +209,18 @@ export default {
             }
 
             & > .b-promotions-step-content {
+                display: flex;
+                flex-wrap: wrap;
                 flex: 1;
                 align-self: center;
 
                 & > .b-promotions-step-content-article {
                     border: 1px solid var(--grey-300);
                     border-radius: 5px;
-                    display: inline-block;
+                    display: flex;
                     font-size: 14px;
                     margin: 5px;
+                    align-items: center;
 
                     & > span {
                         padding-left: 10px;
@@ -230,6 +233,7 @@ export default {
 
 .b-promotions-article-delete {
     padding: 0px 5px !important;
+    min-width: 40px !important;
 }
 
 .b-promotions-addForm {
