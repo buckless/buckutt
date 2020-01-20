@@ -1,6 +1,8 @@
 <template>
     <nav class="menu" :active="isOpened">
-        <Button class="menu-button" @click="close" whiteBackground>{{ $t('common.close') }}</Button>
+        <Button class="menu-button" @click="close" whiteBackground>
+            {{ $t('common.close') }}
+        </Button>
 
         <router-link to="/dashboard" class="link" active-class="active" exact>
             <Icon name="home" :size="32" />

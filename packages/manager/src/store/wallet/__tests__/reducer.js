@@ -78,6 +78,18 @@ describe('SET_WALLET()', () => {
     });
 });
 
+describe('SET_CHOOSER_MODAL_OPENED()', () => {
+    describe('given an empty state', () => {
+        const state = { chooserModalOpened: false };
+
+        reducer.SET_CHOOSER_MODAL_OPENED(state, true);
+
+        it('updated the state', () => {
+            expect(state.chooserModalOpened).toBe(true);
+        });
+    });
+});
+
 describe('SET_LINK_MODAL_OPENED()', () => {
     describe('given an empty state', () => {
         const state = { linkModalOpened: false };

@@ -4,6 +4,7 @@ export const initialState = {
     wallets: {},
     activeWallet: null,
     reloadAllowed: false,
+    chooserModalOpened: false,
     linkModalOpened: false
 };
 
@@ -30,6 +31,10 @@ export const reducer = {
 
     SET_RELOAD_ALLOWED(state, reloadAllowed) {
         state.reloadAllowed = reloadAllowed;
+    },
+
+    SET_CHOOSER_MODAL_OPENED(state, chooserModalOpened) {
+        state.chooserModalOpened = chooserModalOpened;
     },
 
     SET_LINK_MODAL_OPENED(state, linkModalOpened) {

@@ -1,12 +1,38 @@
 <template>
     <div>
-        <Select
-            class="wallet-chooser-select"
-            :label="$t('components.chooser.support')"
-            :options="walletChooserOptions"
-            :value="walletChooserValue"
-            @change="handleWalletChooserChange"
-        />
+        <Button
+            class="select"
+            :whiteBackground="isWindowSmall"
+            @click="handleOpenWalletChooserModal"
+        >
+            <Icon class="icon" name="credit_card" />
+            {{ currentWalletName }}
+        </Button>
+
+        <Container dropShadow v-if="chooserModalOpened">
+            <Modal
+                :title="$t('components.chooser.wallets')"
+                @close="handleCloseWalletChooserModal"
+                class="modal"
+            >
+                <div class="wallets">
+                    <Button
+                        v-for="wallet in formattedWallets"
+                        :key="wallet.id"
+                        :raised="activeWallet.id === wallet.id"
+                        @click="handleWalletChooserChange(wallet)"
+                    >
+                        {{ wallet.name }}
+                    </Button>
+                </div>
+
+                <template slot="actions">
+                    <Button @click="handleOpenLinkModal">
+                        {{ $t('components.chooser.add') }}
+                    </Button>
+                </template>
+            </Modal>
+        </Container>
 
         <LinkWallet v-if="linkModalOpened" />
     </div>
@@ -14,80 +40,121 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import Select from 'ui/src/components/Select/Select';
+import Button from 'ui/src/components/Button/Button';
+import Icon from 'ui/src/components/Icon/Icon';
+import Container from 'ui/src/components/Modal/Container';
+import Modal from 'ui/src/components/Modal/Modal';
+import { format } from '../../utils/money';
 
 import LinkWallet from '../../views/link-wallet/LinkWallet';
 
-const addOptionId = 'buckless-add';
+const getWalletName = (virtualWalletLabel, { physicalId, credit }) => {
+    const name = physicalId || virtualWalletLabel;
+
+    const walletCredit = format({
+        amount: credit
+    });
+
+    return `${name} (${walletCredit})`;
+};
 
 export default {
     components: {
-        Select,
+        Button,
+        Icon,
+        Container,
+        Modal,
         LinkWallet
     },
+
+    data: () => ({
+        isWindowSmall: window.matchMedia('(max-width: 768px)').matches,
+    }),
 
     computed: {
         ...mapGetters({
             wallets: 'wallet/getWallets',
             activeWallet: 'wallet/getActiveWallet',
             linkModalOpened: 'wallet/getLinkModalOpened',
+            chooserModalOpened: 'wallet/getChooserModalOpened',
             event: 'infos/getEvent'
         }),
 
-        walletChooserValue() {
-            return this.activeWallet && this.activeWallet.id;
-        },
-
-        walletChooserOptions() {
-            const addOption = {
-                value: addOptionId,
-                name: this.$t('components.chooser.add'),
-                disabled: !this.event.allowCardLinking
-            };
-
-            if (this.wallets.length === 0) {
-                return [
-                    {
-                        value: 'buckless-empty',
-                        name: this.$t('components.chooser.empty'),
-                        disabled: true
-                    },
-                    addOption
-                ];
+        currentWalletName() {
+            if (!this.activeWallet) {
+                return;
             }
 
-            return [
-                ...this.wallets.map(wallet => ({
-                    value: wallet.id,
-                    name: wallet.physicalId
-                })),
-                addOption
-            ];
+            return getWalletName(this.$t('components.chooser.virtualWallet'), this.activeWallet);
+        },
+
+        formattedWallets() {
+            return this.wallets.map(wallet => ({
+                id: wallet.id,
+                name: getWalletName(this.$t('components.chooser.virtualWallet'), wallet)
+            }));
         }
     },
 
     methods: {
         ...mapMutations({
-            setLinkModalOpened: 'wallet/SET_LINK_MODAL_OPENED'
+            setLinkModalOpened: 'wallet/SET_LINK_MODAL_OPENED',
+            setChooserModalOpened: 'wallet/SET_CHOOSER_MODAL_OPENED',
         }),
 
         ...mapActions({
             changeActiveWallet: 'wallet/changeActiveWallet'
         }),
 
-        handleWalletChooserChange(value) {
-            if (value === addOptionId) {
-                return this.setLinkModalOpened(true);
-            }
+        handleOpenWalletChooserModal() {
+            this.setChooserModalOpened(true);
+        },
 
-            this.changeActiveWallet({ id: value });
+        handleCloseWalletChooserModal() {
+            this.setChooserModalOpened(false);
+        },
+
+        handleOpenLinkModal() {
+            this.setChooserModalOpened(false);
+            this.setLinkModalOpened(true);
+        },
+
+        handleWalletChooserChange(wallet) {
+            this.changeActiveWallet(wallet);
+            this.setChooserModalOpened(false);
+        },
+
+        handleMediaQueryChange(e) {
+            this.isWindowSmall = e.matches;
         }
+    },
+
+    mounted() {
+        this.mql = window.matchMedia('(max-width: 768px)');
+
+        this.mql.addEventListener('change', this.handleMediaQueryChange);
+    },
+
+    beforeDestroy() {
+        this.mql.removeEventListener('change', this.handleMediaQueryChange);
     }
 };
 </script>
 
 <style scoped>
-.wallet-chooser-select {
-    color: var(--grey-50);
+.icon {
+    margin-right: 4px;
+}
+
+.wallets {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+@media (max-width: 768px) {
+    .select {
+        color: var(--grey-50);
+    }
 }
 </style>

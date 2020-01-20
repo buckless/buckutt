@@ -61,7 +61,8 @@
 
     "components": {
         "chooser": {
-            "support": "Support",
+            "wallets": "Supports",
+            "virtualWallet": "Virtual support",
             "empty": "No linked support",
             "add": "Link a support"
         },

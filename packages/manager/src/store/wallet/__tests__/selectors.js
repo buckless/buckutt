@@ -3,7 +3,8 @@ import {
     getIsFetching,
     getWallets,
     getActiveWallet,
-    getLinkModalOpened
+    getLinkModalOpened,
+    getChooserModalOpened
 } from '../selectors';
 
 describe('getError()', () => {
@@ -77,9 +78,20 @@ describe('getActiveWallet()', () => {
 });
 
 describe('getLinkModalOpened()', () => {
-    describe('given a state with a linkModalOpened object', () => {
+    describe('given a state with a linkModalOpened boolean', () => {
         const state = { linkModalOpened: false };
         const res = getLinkModalOpened(state);
+
+        it('returns its value', () => {
+            expect(res).toBe(false);
+        });
+    });
+});
+
+describe('getChooserModalOpened()', () => {
+    describe('given a state with a chooserModalOpened boolean', () => {
+        const state = { chooserModalOpened: false };
+        const res = getChooserModalOpened(state);
 
         it('returns its value', () => {
             expect(res).toBe(false);

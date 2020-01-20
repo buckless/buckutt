@@ -13,3 +13,4 @@ export const getActiveWallet = state => {
 };
 
 export const getLinkModalOpened = state => state.linkModalOpened;
+export const getChooserModalOpened = state => state.chooserModalOpened;
