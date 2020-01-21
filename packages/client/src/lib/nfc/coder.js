@@ -19,7 +19,7 @@ export default () => {
 
     lastConfig = JSON.stringify(window.config);
 
-    const articles = Object.values(window.config.coupons).sort(
+    const articles = window.coupons.concat().sort(
         (a, b) => a.created_at - b.created_at
     );
 

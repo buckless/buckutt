@@ -66,6 +66,7 @@ const store = new Vuex.Store({
 store.subscribe(mutation => {
     if (mutation.type === 'RESTORE_MUTATION') {
         window.config = store.state.device.config;
+        window.coupons = store.state.device.coupons;
         store.dispatch('setupClient');
         store.commit('SET_STORE_LOADED', true);
     }
