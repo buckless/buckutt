@@ -13,6 +13,7 @@ services:
         volumes:
             - ./volumes/reverse_proxy/server.prod.conf:/etc/nginx/conf.d/server.conf
             - ./volumes/reverse_proxy/le-certs:/etc/letsencrypt
+            - ./volumes/reverse_proxy/buck.utt.fr:/etc/certs
 
     sql:
         container_name: buckless_sql
