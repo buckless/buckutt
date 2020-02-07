@@ -220,9 +220,9 @@ export default {
                 });
             } else {
                 debug('no use card data');
-                nfc.on('uid', data => {
-                    debug('on uid');
-                    this.inputValue = data;
+                nfc.on('data', data => {
+                    debug('on data');
+                    this.inputValue = data.slice(0, -1);
                     this.onCard();
                 });
             }
