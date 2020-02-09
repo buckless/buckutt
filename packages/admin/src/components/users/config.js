@@ -51,6 +51,10 @@ export default {
     },
     extraTabs: [
         {
+            title: 'Puces',
+            route: 'wallets'
+        },
+        {
             title: 'Groupes',
             route: 'groups'
         },
