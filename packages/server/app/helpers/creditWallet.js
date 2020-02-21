@@ -5,7 +5,8 @@ module.exports = async (ctx, walletId, amount, alreadyWritten) => {
     const isFromInternet = ctx.point.name === 'Internet';
     const useCardData = ctx.event.useCardData;
 
-    const isAlreadyWritten = alreadyWritten || (!isFromInternet && useCardData);
+    // Don't create any pending card update if it has been made localy or if we are in full online mode
+    const isAlreadyWritten = alreadyWritten || (!isFromInternet && useCardData) || !useCardData;
 
     const wallet = await ctx.models.Wallet.where({ id: walletId }).fetch();
 
