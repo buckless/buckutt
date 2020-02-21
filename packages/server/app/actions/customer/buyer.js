@@ -29,6 +29,7 @@ module.exports = async (ctx, { walletId }) => {
 
     const user = {
         ...wallet.user,
+        credit: wallet.credit,
         memberships: wallet.user.memberships.filter(membership => membership.period)
     };
 

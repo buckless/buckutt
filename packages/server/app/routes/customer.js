@@ -64,7 +64,7 @@ router.get(
         }
 
         const foundBuyer = await buyer(ctx(req), {
-            wallet: req.query.wallet
+            walletId: req.query.walletId
         });
 
         res.json({ buyer: foundBuyer });
