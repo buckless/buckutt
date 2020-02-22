@@ -103,6 +103,7 @@ export default {
 
         onCard(credit = null, options = {}, version = null) {
             this.$store.commit('SET_DATA_LOADED', true);
+            this.inputValue = this.inputValue.slice(0, -1);
 
             if (this.rewrite) {
                 debug('onCard rewrite');
@@ -222,7 +223,7 @@ export default {
                 debug('no use card data');
                 nfc.on('data', data => {
                     debug('on data');
-                    this.inputValue = data.slice(0, -1);
+                    this.inputValue = data;
                     this.onCard();
                 });
             }
