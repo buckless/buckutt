@@ -134,11 +134,11 @@ export const periods = {
     ],
     display: rows =>
         rows
-            .filter(period => new Date(period.end) >= new Date() && period.name !== 'Défaut')
-            .sort((a, b) => sortOrder(a.start, b.start, 'DESC'))
+            .filter(period => period.name !== 'Défaut')
+            .sort((a, b) => sortOrder(a.end, b.end, 'DESC') || sortOrder(a.start, b.start, 'DESC'))
             .map(period => ({
                 id: period.id,
-                icon: 'alarm',
+                icon: new Date(period.end) >= new Date() ? 'alarm' : 'alarm_off',
                 title: period.name,
                 subtitle: `Début: ${parseDate(period.start)} • Fin: ${parseDate(period.end)}`
             })),
