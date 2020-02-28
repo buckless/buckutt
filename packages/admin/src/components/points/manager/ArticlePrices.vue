@@ -49,5 +49,6 @@ export default {
 <style scoped>
 .b-prices {
     max-width: unset !important;
+    overflow: visible !important;
 }
 </style>
