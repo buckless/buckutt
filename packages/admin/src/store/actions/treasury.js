@@ -29,9 +29,10 @@ export const downloadTreasury = async (_, { fields, route }) => {
     saveAs(data, `treasury-${route}-${currentTime}.csv`);
 };
 
-export const downloadReport = async (_, { type }) => {
+export const downloadReport = async (_, { type, filters }) => {
+    const qString = treasuryQueryString(filters);
     const currentTime = Math.floor(Date.now() / 1000);
 
-    const data = await download(`stats/report?type=${type}`);
+    const data = await download(`stats/report?type=${type}&${qString}`);
     saveAs(data, `final-report-${currentTime}.xslx`);
 };

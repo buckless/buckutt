@@ -184,7 +184,13 @@ router.get(
     asyncHandler(async (req, res) => {
         isUser.admin.orThrow(req.user, req.point, req.date);
 
-        const report = await statsReport(ctx(req), { type: req.query.type });
+        const report = await statsReport(ctx(req), {
+            type: req.query.type,
+            dateIn: req.query.dateIn,
+            dateOut: req.query.dateOut,
+            point: req.query.point,
+            fundation: req.query.fundation
+        });
 
         log.info(`Get full report sorted by ${req.query.type}`);
 

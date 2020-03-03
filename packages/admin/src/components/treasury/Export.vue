@@ -2,9 +2,18 @@
     <b-container dropShadow @close="back">
         <b-modal title="Exporter le rapport final" @close="back">
             <form @submit.prevent="create" class="b-export">
-                <strong>Note:</strong> L'export contiendra toutes les données de cet événement, au
-                format XLSX.<br /><br />
-                <b-select v-model="type" :options="options" label="Trier par" />
+                <b-select v-model="type" :options="options" label="Trier par" /><br />
+
+                <b-checkbox v-model="deactivateFilters">Désactiver les filtres</b-checkbox><br /><br />
+
+                <template v-if="deactivateFilters">
+                    <strong>Note:</strong> L'export contiendra toutes les données de cet événement, au
+                    format XLSX.
+                </template>
+                <template v-else>
+                    <strong>Note:</strong> L'export contiendra les données en respectant les filtres prédéfinis, au
+                    format XLSX.
+                </template>
             </form>
             <template slot="actions">
                 <b-button @click="back">Annuler</b-button>
@@ -18,9 +27,14 @@
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
+    props: {
+        fields: Object
+    },
+
     data() {
         return {
-            type: 'points'
+            type: 'points',
+            deactivateFilters: false
         };
     },
 
@@ -32,8 +46,10 @@ export default {
         },
 
         async download() {
+            const filters = this.deactivateFilters ? {} : this.fields;
+
             this.notify('Génération du fichier en cours...');
-            await this.downloadReport({ type: this.type });
+            await this.downloadReport({ type: this.type, filters });
             this.notify('Le téléchargement a été lancé');
             this.back();
         }

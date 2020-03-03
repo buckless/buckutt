@@ -1,12 +1,13 @@
 const xlsx = require('xlsx');
 const { groupBy } = require('lodash');
+const dateQuery = require('server/app/utils/statsDateQuery');
 
 const fitToColumn = arrayOfArray =>
     arrayOfArray[0].map((a, i) => ({
         wch: Math.max(...arrayOfArray.map(a2 => a2[i].toString().length))
     }));
 
-module.exports = async (ctx, { type }) => {
+module.exports = async (ctx, { type, dateIn, dateOut, point, fundation }) => {
     const workbook = xlsx.utils.book_new();
 
     workbook.Props = {
@@ -28,7 +29,17 @@ module.exports = async (ctx, { type }) => {
     const groupField = type === 'points' ? 'point' : 'fundation';
     const showFieldTitle = type === 'points' ? 'Fondation' : 'Guichet';
 
-    const resultsPurchases = await ctx.models.Purchase.query(knex => {
+    let purchaseQuery = dateQuery(ctx.models.Purchase, dateIn, dateOut);
+
+    if (point) {
+        purchaseQuery = purchaseQuery.where({ 'purchases.point_id': point });
+    }
+
+    const price = fundation
+        ? { price: q => q.where({ 'prices.fundation_id': fundation }) }
+        : { price: q => q };
+
+    const resultsPurchases = await purchaseQuery.query(knex => {
         knex.select(
             'articles.name as article_name',
             'promotions.name as promotion_name',
@@ -44,6 +55,7 @@ module.exports = async (ctx, { type }) => {
         knex.leftJoin('promotions', 'promotions.id', 'prices.promotion_id');
         knex.leftJoin('points', 'points.id', 'prices.point_id');
         knex.leftJoin('fundations', 'fundations.id', 'prices.fundation_id');
+        price.price(knex);
         knex.groupBy(
             'purchases.isCancellation',
             'purchases.amount',
@@ -102,7 +114,13 @@ module.exports = async (ctx, { type }) => {
     });
 
     // Withdrawals
-    const resultsWithdrawals = await ctx.models.Withdrawal.query(knex => {
+    let withDrawalsQuery = dateQuery(ctx.models.Withdrawal, dateIn, dateOut);
+
+    if (point) {
+        withDrawalsQuery = withDrawalsQuery.where({ point_id: point });
+    }
+
+    const resultsWithdrawals = await withDrawalsQuery.query(knex => {
         knex.select(
             'articles.name as article_name',
             'coupons.name as coupon_name',
@@ -147,7 +165,13 @@ module.exports = async (ctx, { type }) => {
     });
 
     // Reloads
-    const resultsReloads = await ctx.models.Reload.query(knex => {
+    let reloadQuery = dateQuery(ctx.models.Reload, dateIn, dateOut);
+
+    if (point) {
+        reloadQuery = reloadQuery.where({ point_id: point });
+    }
+
+    const resultsReloads = await reloadQuery.query(knex => {
         knex.select('reloads.type', 'reloads.isCancellation', 'points.name as point_name');
         knex.count('reloads.id as count');
         knex.sum('reloads.credit as total');
@@ -198,7 +222,13 @@ module.exports = async (ctx, { type }) => {
     });
 
     // Refunds
-    const resultsRefunds = await ctx.models.Refund.query(knex => {
+    let refundQuery = dateQuery(ctx.models.Refund, dateIn, dateOut);
+
+    if (point) {
+        refundQuery = refundQuery.where({ point_id: point });
+    }
+
+    const resultsRefunds = await refundQuery.query(knex => {
         knex.select('refunds.type', 'refunds.isCancellation', 'points.name as point_name');
         knex.count('refunds.id as count');
         knex.sum('refunds.amount as total');

@@ -8,7 +8,7 @@
             </b-pagination>
 
             <div class="b-treasury-actions">
-                <b-button raised @click="download">Exporter</b-button>
+                <b-button raised @click="download">Exporter la liste détaillée</b-button>
                 <div class="b--flexspacer"></div>
                 <h6>Total: {{ totalSell | price(true) }}</h6>
             </div>

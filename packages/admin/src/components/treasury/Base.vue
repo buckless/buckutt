@@ -14,20 +14,20 @@
             ></b-datetimeinput>
             <b-autocomplete
                 label="Point"
-                :suggestions="pointsOptions"
+                :suggestions="allPointsOptions"
                 v-model="filters.point"
                 @input="computeTreasury"
             ></b-autocomplete>
             <b-autocomplete
                 label="Fondation"
-                :suggestions="fundationsOptions"
+                :suggestions="allFundationsOptions"
                 v-model="filters.fundation"
                 @input="computeTreasury"
                 v-if="event.useFundations"
             ></b-autocomplete>
 
             <div class="b--flexspacer"></div>
-            <b-button raised accent :to="`${$route.path}/export`">Rapport financier</b-button>
+            <b-button raised accent :to="`${$route.path}/export`">Rapport</b-button>
         </div>
         <div class="b-treasury-content">
             <div class="b-treasury-menu">
@@ -57,7 +57,7 @@
                 ></b-listitem>
             </div>
             <router-view :fields="filters" class="b-base-right"></router-view>
-            <router-view name="export" :key="$route.path"></router-view>
+            <router-view :fields="filters" name="export" :key="$route.path"></router-view>
         </div>
     </div>
 </template>
@@ -80,7 +80,15 @@ export default {
             fullPath: state => state.route.fullPath
         }),
 
-        ...mapGetters(['pointsOptions', 'fundationsOptions', 'event'])
+        ...mapGetters(['pointsOptions', 'fundationsOptions', 'event']),
+
+        allPointsOptions() {
+            return [{ id: '', label: 'Tous les points'}].concat(this.pointsOptions);
+        },
+
+        allFundationsOptions() {
+            return [{ id: '', label: 'Toutes les fondations'}].concat(this.fundationsOptions);
+        }
     },
 
     methods: {
