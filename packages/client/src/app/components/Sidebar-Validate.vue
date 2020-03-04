@@ -2,7 +2,7 @@
     <button class="b-sidebar-validate" :class="statusClasses" @click="validate($event)">
         <span class="b-sidebar-validate__amount">
             <currency
-                :value="-reloadAmount - basketAmount - refundAmount"
+                :value="reloadAmount - basketAmount - refundAmount"
                 :showPlus="true"
             ></currency>
         </span>

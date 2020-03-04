@@ -9,7 +9,7 @@ export const wiketItems = state => state.items.wiketItems;
 export const tabs = (_, getters) => {
     let tabs = getters.wiketItems.items
         .map(item => item.category)
-        .sort((a, b) => b.priority - a.priority);
+        .sort((a, b) => b.priority - a.priority || a.name.localeCompare(b.name));
 
     // Reverse sort
     return uniqBy(tabs, 'name');
